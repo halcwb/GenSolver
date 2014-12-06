@@ -1,0 +1,5 @@
+build_script:
+  - nuget restore src\GenSolver.sln
+  - src\packages\FAKE.3.11.3\tools\Fake.exe src\Build.fsx
+
+test: off
