@@ -60,22 +60,19 @@ type Solve = Equation list -> Equation list
 /// the variables can no further be restricted
 type IsSolved = Equation -> bool
 
+type HasChanged = Yes | No
+type SolveProductEquation = Equation -> (HasChanged * Equation)
+type SolveSumEquation = Equation -> (HasChanged * Equation)
 
 module Solver =   
     
-    let createSolve solveEq isSolved : Solve  =
+    let createSolve solveProd solveSum isSolved : Solve  =
         fun eqs ->
 
             let rec solveEqs restEqs accEqs  =
                 match restEqs with
                 | [] -> accEqs
                 | eq::rest ->
-                    // Get the operators to be used to solve the equation
-                    let (op1, op2) =
-                        match eq with
-                        | ProductEquation(_, _) -> (*), (/)
-                        | SumEquation(_, _)     -> (+), (-)
-
                     // If the equation is already solved, just put it to 
                     // the accumulated equations and go on with the rest
                     if eq |> isSolved then
@@ -85,15 +82,21 @@ module Solver =
 
                     // Else go solve the equation
                     else
-                        match eq |> solveEq op1 op2 with
+                        // Pick the right solve function
+                        let solveEq =
+                            match eq with
+                            | ProductEquation(_, _) -> fun _ -> eq |> solveProd
+                            | SumEquation(_, _)     -> fun _ -> eq |> solveSum
+
+                        match solveEq ()  with
                         // Equation is changed, so every other equation can 
                         // be changed as well (if changed vars are in the other
                         // equations, so start new
-                        | true, eq' -> 
+                        | Yes, eq' -> 
                             solveEqs (accEqs @ [eq'] @ rest)  []
                         // Equation did not in fact change, so put it to
                         // the accumulated equations and go on with the rest
-                        | false, eq' ->
+                        | No, eq' ->
                             [eq'] 
                             |> List.append accEqs
                             |> solveEqs rest
