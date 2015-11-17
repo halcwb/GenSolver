@@ -1,5 +1,18 @@
+environment:
+  deploy_password:
+
+shallow_clone: true
+
+before_build:
+
 build_script:
-  - nuget restore src\GenSolver.sln
-  - src\packages\FAKE.3.11.3\tools\Fake.exe src\Build.fsx
+  - build.cmd
 
 test: off
+
+test_script:
+  #- nuget restore tests\Tests.sln
+  #- test.cmd
+  
+deploy_script:
+  #- deploy.cmd
