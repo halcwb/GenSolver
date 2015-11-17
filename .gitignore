@@ -48,6 +48,8 @@
 !/src/GenSolver/paket.references
 !/src/GenSolver/*.fs
 !/src/GenSolver/*.fsx
+!/src/GenSolver/Scripts/
+!/src/GenSolver/Scripts/*.fsx
 
 # Ignore generated documentation files
 /docs/content/**/*.md

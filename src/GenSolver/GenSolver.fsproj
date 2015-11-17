@@ -55,6 +55,8 @@
     <Compile Include="Utils.fs" />
     <Compile Include="Solver.fs" />
     <None Include="Script.fsx" />
+    <None Include="Scripts\load-references.fsx" />
+    <None Include="Scripts\load-project.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
