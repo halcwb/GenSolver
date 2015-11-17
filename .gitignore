@@ -53,3 +53,7 @@
 !/docs/tools/templates/*.cshtml
 !/docs/files/
 !/docs/files/img/*.png
+
+# Add solution file
+!*.sln
+
