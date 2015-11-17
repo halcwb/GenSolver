@@ -1,23 +1,16 @@
-Bootstrap Scaffold setup
+GenSolver 
+A Generic Solver that solves a set of product and/or sum equations with variables that are sets of values.
 
 Minimum Marketing Features:
-- Bootstraps all dependencies
-- Builds on both Linux and Windows environments
-- Runs tests
-- Creates docs
-- Automates CI
-- Automates deployment
+- Solves a product or sum euqation with value sets as variables
 
 User Stories:
-- User can set all project specific vars in one script
 
 Engineering tasks:
 
 
 To Do on current task:
-- Centralize all build en docs settings (remove duplicate code)
-- Put all scripting dependencies in one script file (remove duplicate code)
-- Update the index.fsx
+- Create tests for current functionality
+- Update documentation
 
 Future ideas:
-- Use local git settings to fill in project name etc..
