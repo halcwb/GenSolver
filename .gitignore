@@ -45,6 +45,7 @@
 !/src/
 !/src/GenSolver/
 !/src/GenSolver/*.fsproj
+!/src/GenSolver/paket.references
 !/src/GenSolver/*.fs
 !/src/GenSolver/*.fsx
 
