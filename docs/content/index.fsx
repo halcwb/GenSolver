@@ -4,7 +4,7 @@
 // #I "../../bin"
 
 (**
-Bootstrap
+GenSolver
 ======================
 
 Documentation
@@ -13,8 +13,8 @@ Documentation
   <div class="span1"></div>
   <div class="span6">
     <div class="well well-small" id="nuget">
-      The Bootstrap library can be <a href="https://nuget.org/packages/Bootstrap">installed from NuGet</a>:
-      <pre>PM> Install-Package Bootstrap</pre>
+      The GenSolver library can be <a href="https://nuget.org/packages/GenSolver">installed from NuGet</a>:
+      <pre>PM> Install-Package GenSolver</pre>
     </div>
   </div>
   <div class="span1"></div>
@@ -56,9 +56,9 @@ The library is available under Public Domain license, which allows modification 
 redistribution for both commercial and non-commercial purposes. For more information see the 
 [License file][license] in the GitHub repository. 
 
-  [content]: https://github.com/halcwb/Bootstrap/tree/master/docs/content
-  [gh]: https://github.com/halcwb/Bootstrap
-  [issues]: https://github.com/halcwb/Bootstrap/issues
-  [readme]: https://github.com/halcwb/Bootstrap/blob/master/README.md
-  [license]: https://github.com/halcwb/Bootstrap/blob/master/LICENSE.txt
+  [content]: https://github.com/halcwb/GenSolver/tree/master/docs/content
+  [gh]: https://github.com/halcwb/GenSolver
+  [issues]: https://github.com/halcwb/GenSolver/issues
+  [readme]: https://github.com/halcwb/GenSolver/blob/master/README.md
+  [license]: https://github.com/halcwb/GenSolver/blob/master/LICENSE.txt
 *)
