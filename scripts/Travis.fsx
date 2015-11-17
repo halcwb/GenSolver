@@ -1,21 +1,23 @@
 #I "./../packages/Newtonsoft.Json/lib/net45/"
 #r "Newtonsoft.Json.dll"
+
+open System
 open Newtonsoft.Json
 
 [<CLIMutable>]
 type Build = 
     {
-      commit_id: int
+      commit_id: Nullable<int>
       number: string
-      duration: int
-      finished_at: System.DateTime
-      started_at: System.DateTime
+      duration: Nullable<int>
+      finished_at: Nullable<DateTime>
+      started_at: Nullable<DateTime>
       state: string
     }
 
 type Commit = 
   {
-    id: int 
+    id: Nullable<int> 
     sha: string
     branch: string
     message: string
