@@ -23,7 +23,7 @@ let referenceBinaries = []
 // Web site location for the generated documentation
 let website = "/" + projectName
 
-let githubLink = sprintf "http://github.com/%s/%s" gitHome gitLink
+let githubLink = sprintf "http://github.com/%s/%s" gitHome projectName
 
 // Specify more information about your project
 let info =
