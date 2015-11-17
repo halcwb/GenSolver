@@ -121,8 +121,8 @@ Target "Integrate" (fun _ ->
                 Git.Branches.checkoutBranch currDir develop
             else 
                 failwith <| sprintf "Last build did not pass on %s" (if st = traVsucc then "AppVeyor" else "Travis")
-        | _   -> 
-            failwith "Cannot get last build, cannot integrate"
+        | e   -> 
+            failwith <| sprintf "Cannot get last build, cannot integrate: %A" e
 )
 
 
