@@ -36,9 +36,17 @@
 !appveyor.yml
 !.travis.yml
 
+# Add solution file
+!*.sln
+
 # Add source files
 !/scripts/
 !/scripts/*.fsx
+!/src/
+!/src/GenSolver/
+!/src/GenSolver/*.fsproj
+!/src/GenSolver/*.fs
+!/src/GenSolver/*.fsx
 
 # Ignore generated documentation files
 /docs/content/**/*.md
@@ -54,6 +62,6 @@
 !/docs/files/
 !/docs/files/img/*.png
 
-# Add solution file
-!*.sln
+
+
 
