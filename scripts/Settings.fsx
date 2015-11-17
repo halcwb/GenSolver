@@ -12,7 +12,7 @@
 
 // The name of the project
 // (used by attributes in AssemblyInfo, name of a NuGet package and directory in 'src')
-let project = "Bootstrap"
+let project = "GenSolver"
 
 // Short summary of the project
 // (used as description in AssemblyInfo and as a short summary for NuGet package)
@@ -20,16 +20,16 @@ let summary = ""
 
 // Longer description of the project
 // (used as a description for NuGet package; line breaks are automatically cleaned up)
-let description = "A scaffolding setup to enable automated building, testing, continous integration, documentation and deployment"
+let description = ""
 
 // List of author names (for NuGet package)
 let authors = [ "halcwb" ]
 
 // Tags for your project (for NuGet package)
-let tags = "Bootstrap"
+let tags = "Informedica"
 
 // File system information 
-let solutionFile  = ""
+let solutionFile  = "GenSolver.sln"
 
 // Pattern specifying assemblies to be tested using NUnit
 let testAssemblies = "tests/**/bin/Release/*Tests*.dll"
