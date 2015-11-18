@@ -51,6 +51,14 @@
 !/src/Informedica.GenSolver.Lib/Scripts/
 !/src/Informedica.GenSolver.Lib/Scripts/*.fsx
 
+# Add test files
+!/tests/
+!/tests/Informedica.GenSolver.Tests/
+!/tests/Informedica.GenSolver.Tests/*.fsproj
+!/tests/Informedica.GenSolver.Tests/paket.references
+!/tests/Informedica.GenSolver.Tests/*.fs
+!/tests/Informedica.GenSolver.Tests/*.fsx
+
 # Ignore generated documentation files
 /docs/content/**/*.md
 
