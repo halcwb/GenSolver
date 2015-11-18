@@ -38,163 +38,22 @@
 
   <h2>Informedica.GenSolver.Lib Namespace</h2>
     <div>
-      <table class="table table-bordered type-list">
-    <thead>
-      <tr><td>Type</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-equation.html">Equation</a>
-          </td>
-          <td class="xmldoc"><p>An equation is either a product equation
-or a sumequation, the first variable is the
-dependent variable, i.e. the result of the 
-equation, the second part are the independent
-variables in the equation</p>
-
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-haschanged.html">HasChanged</a>
-          </td>
-          <td class="xmldoc"><p>whether the any variable is changed, 
-i.e. the range of possible values has
-narrowed down.</p>
-
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-increment.html">Increment</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-issolved.html">IsSolved</a>
-          </td>
-          <td class="xmldoc"><p>An equation is solved, i.e. if all the variables
-in the equation have only one sinlge value, i.e. 
-the variables can no further be restricted</p>
-
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-maximum.html">Maximum</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-minimum.html">Minimum</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-name.html">Name</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-range.html">Range</a>
-          </td>
-          <td class="xmldoc"><p>A range is an unlimited set of
-rational numbers, when a set has
-both a minimum, maximum and an 
-increment then it is not a range
-anymore but a list of values</p>
-
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-solve.html">Solve</a>
-          </td>
-          <td class="xmldoc"><p>The solve function takes in a list of 
-equations in which a variable can participate
-in one or more equations, the solve function 
-calculates for each variable the possible values
-or the possible range, given the other variables 
-in the equation and other equations</p>
-
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-solveequation.html">SolveEquation</a>
-          </td>
-          <td class="xmldoc"><p>Solving an equation returns the
-resulting equation and whether this
-has changed from the original equation</p>
-
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-solveproductequation.html">SolveProductEquation</a>
-          </td>
-          <td class="xmldoc"><p>Solve a product equation</p>
-
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-solvesumequation.html">SolveSumEquation</a>
-          </td>
-          <td class="xmldoc"><p>Solve a sum equation</p>
-
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-value.html">Value</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-values.html">Values</a>
-          </td>
-          <td class="xmldoc"><p>Values is a discrete set of 
-rational numbers, the set is 
-either limited and then it 
-is a list or
-it is unlimited and then it 
-is a range</p>
-
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-variable.html">Variable</a>
-          </td>
-          <td class="xmldoc"><p>A Variable has a name 
-and values</p>
-
-
-</td>
-        </tr>
-    </tbody>
-  </table>
-  <table class="table table-bordered module-list">
+      <table class="table table-bordered module-list">
     <thead>
       <tr><td>Module</td><td>Description</td></tr>
     </thead>
     <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="informedica-gensolver-lib-equations.html">Equations</a>
+          </td>
+          <td class="xmldoc"><p>Contains equation types 
+and methods to create and
+solve the equations</p>
+
+
+</td>
+        </tr>
         <tr>
           <td class="module-name">
             <a href="informedica-gensolver-lib-solver.html">Solver</a>
@@ -202,6 +61,17 @@ and values</p>
           <td class="xmldoc"><p>Implementations of solvers for product equations
 sum equations and a set of product and/or sum
 equations</p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="informedica-gensolver-lib-variables.html">Variables</a>
+          </td>
+          <td class="xmldoc"><p>Contains the <a href="informedica-gensolver-lib-variables-variable.html" title="Variable"><code>Variable</code></a> type 
+and creation and update methods for that 
+type</p>
 
 
 </td>

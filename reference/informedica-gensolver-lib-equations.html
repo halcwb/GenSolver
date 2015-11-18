@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Solver - GenSolver</title>
+    <title>Equations - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,52 +35,109 @@
 
 
 
-<h1>Solver</h1>
+<h1>Equations</h1>
 <p>
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
 </p>
 <div class="xmldoc">
-<p>Implementations of solvers for product equations
-sum equations and a set of product and/or sum
-equations</p>
+<p>Contains equation types 
+and methods to create and
+solve the equations</p>
 
 
 </div>
 
 <!-- Render nested types and modules, if there are any -->
-
-  <h3>Functions and values</h3>
-  <table class="table table-bordered member-list">
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered type-list">
     <thead>
-      <tr><td>Function or value</td><td>Description</td></tr>
+      <tr><td>Type</td><td>Description</td></tr>
     </thead>
     <tbody>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '1', 1)" onmouseover="showTip(event, '1', 1)">
-            createSolve arg1 arg2 isSolved
-          </code>
-          <div class="tip" id="1">
-            <strong>Signature:</strong> SolveProductEquation -&gt; SolveSumEquation -&gt; isSolved:(Equation -&gt; bool) -&gt; Solve<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L127-127" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Create the equation solver using a 
-product equation and a sum equation solver
-and function to determine whether an 
-equation is solved</p>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equations-equation.html">Equation</a>
+          </td>
+          <td class="xmldoc"><p>An equation is either a product equation
+or a sumequation, the first variable is the
+dependent variable, i.e. the result of the 
+equation, the second part are the independent
+variables in the equation</p>
 
 
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equations-haschanged.html">HasChanged</a>
+          </td>
+          <td class="xmldoc"><p>whether the any variable is changed, 
+i.e. the range of possible values has
+narrowed down.</p>
 
-        </td>
-      </tr>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equations-issolved.html">IsSolved</a>
+          </td>
+          <td class="xmldoc"><p>An equation is solved, i.e. if all the variables
+in the equation have only one sinlge value, i.e. 
+the variables can no further be restricted</p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equations-solve.html">Solve</a>
+          </td>
+          <td class="xmldoc"><p>The solve function takes in a list of 
+equations in which a variable can participate
+in one or more equations, the solve function 
+calculates for each variable the possible values
+or the possible range, given the other variables 
+in the equation and other equations</p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equations-solveequation.html">SolveEquation</a>
+          </td>
+          <td class="xmldoc"><p>Solving an equation returns the
+resulting equation and whether this
+has changed from the original equation</p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equations-solveproductequation.html">SolveProductEquation</a>
+          </td>
+          <td class="xmldoc"><p>Solve a product equation</p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equations-solvesumequation.html">SolveSumEquation</a>
+          </td>
+          <td class="xmldoc"><p>Solve a sum equation</p>
+
+
+</td>
+        </tr>
     </tbody>
   </table>
+
+  </div>
+
 
         </div>
         <div class="span3">
