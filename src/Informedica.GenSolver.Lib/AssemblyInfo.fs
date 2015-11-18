@@ -1,7 +1,7 @@
 ﻿namespace System
 open System.Reflection
 
-[<assembly: AssemblyTitleAttribute("GenSolver")>]
+[<assembly: AssemblyTitleAttribute("Informedica.GenSolver.Lib")>]
 [<assembly: AssemblyProductAttribute("GenSolver")>]
 [<assembly: AssemblyDescriptionAttribute("")>]
 [<assembly: AssemblyVersionAttribute("0.0.1")>]
