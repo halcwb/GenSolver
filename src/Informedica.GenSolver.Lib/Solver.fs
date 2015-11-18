@@ -60,13 +60,33 @@ type Solve = Equation list -> Equation list
 /// the variables can no further be restricted
 type IsSolved = Equation -> bool
 
+/// whether the any variable is changed, 
+/// i.e. the range of possible values has
+/// narrowed down.
 type HasChanged = Yes | No
-type SolveProductEquation = Equation -> (HasChanged * Equation)
-type SolveSumEquation = Equation -> (HasChanged * Equation)
 
+/// Solving an equation returns the
+/// resulting equation and whether this
+/// has changed from the original equation
+type SolveEquation = Equation -> (HasChanged * Equation)
+
+/// Solve a product equation
+type SolveProductEquation = SolveProductEquation of SolveEquation
+
+/// Solve a sum equation
+type SolveSumEquation = SolveSumEquation of SolveEquation
+
+/// Implementations of solvers for product equations
+/// sum equations and a set of product and/or sum
+/// equations
 module Solver =   
-    
-    let createSolve solveProd solveSum isSolved : Solve  =
+    /// Create the equation solver using a 
+    /// product equation and a sum equation solver
+    /// and function to determine whether an 
+    /// equation is solved
+    let createSolve (SolveProductEquation solveProd) 
+                    (SolveSumEquation solveSum) 
+                    isSolved : Solve  =
         fun eqs ->
 
             let rec solveEqs restEqs accEqs  =
