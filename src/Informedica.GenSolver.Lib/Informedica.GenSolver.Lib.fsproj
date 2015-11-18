@@ -8,7 +8,7 @@
     <ProjectGuid>0007afe7-18bd-4a7d-971f-ad67ff22a16b</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>GenSolver</RootNamespace>
-    <AssemblyName>GenSolver</AssemblyName>
+    <AssemblyName>Informedica.GenSolver.Lib</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Name>Informedica.GenSolver.Lib</Name>
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
@@ -21,7 +21,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\GenSolver.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Informedica.GenSolver.Lib.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\GenSolver.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Informedica.GenSolver.Lib.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
