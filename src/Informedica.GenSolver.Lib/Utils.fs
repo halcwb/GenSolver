@@ -1,4 +1,4 @@
-﻿namespace GenSolver.Utils
+﻿namespace Informedica.GenSolver.Utils
 
 module List =
 

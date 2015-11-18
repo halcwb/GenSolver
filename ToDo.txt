@@ -3,11 +3,19 @@ A Generic Solver that solves a set of product and/or sum equations with variable
 
 Minimum Marketing Features:
 - Solves a product or sum euqation with value sets as variables
+- Solves a set of product and / or sum equations and solve the set
 
 User Stories:
+- Can create a product equation
+- Can solve a product equation
+- Can create a sum equation
+- Can solve a sum equation
+- Can create an equation set
+- Can solve an equation set
 
 Engineering tasks:
-
+- Add testing libs to main project and test project
+- Write tests in script file of main project and then move tests to test project
 
 To Do on current task:
 - Create tests for current functionality

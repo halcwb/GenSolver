@@ -7,12 +7,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		build.fsx = build.fsx
 		paket.dependencies = paket.dependencies
+	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Informedica.GenSolver.Lib", "src\Informedica.GenSolver.Lib\Informedica.GenSolver.Lib.fsproj", "{0007AFE7-18BD-4A7D-971F-AD67FF22A16B}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Informedica.GenSolver.Tests", "tests\Informedica.GenSolver.Tests\Informedica.GenSolver.Tests.fsproj", "{A03D800B-7636-4F46-A2CD-62FC4F5D3FFC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{E11EFC1F-17C9-4FF1-AC74-3D99328AD5B0}"
+	ProjectSection(SolutionItems) = preProject
+		docs\content\index.fsx = docs\content\index.fsx
 		README.md = README.md
 		RELEASE_NOTES.md = RELEASE_NOTES.md
 		scripts\Settings.fsx = scripts\Settings.fsx
 	EndProjectSection
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GenSolver", "src\GenSolver\GenSolver.fsproj", "{0007AFE7-18BD-4A7D-971F-AD67FF22A16B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +31,10 @@ Global
 		{0007AFE7-18BD-4A7D-971F-AD67FF22A16B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0007AFE7-18BD-4A7D-971F-AD67FF22A16B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0007AFE7-18BD-4A7D-971F-AD67FF22A16B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A03D800B-7636-4F46-A2CD-62FC4F5D3FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A03D800B-7636-4F46-A2CD-62FC4F5D3FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A03D800B-7636-4F46-A2CD-62FC4F5D3FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A03D800B-7636-4F46-A2CD-62FC4F5D3FFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
