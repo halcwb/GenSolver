@@ -1,4 +1,4 @@
-﻿namespace GenSolver
+﻿namespace Informedica.GenSolver.Lib
 
 /// A Variable has a name 
 /// and values
