@@ -46,10 +46,12 @@ module Variables =
 
     /// Create a variable
     type CreateVariable = Name -> NonZeroPositiveValues -> Variable
+    let createVariable: CreateVariable = fun n vs -> { Name = n; Values = vs }
 
     /// Create a Name that
     /// is a non empty string
     type CreateName = string -> Name
+    let createName: CreateName = fun n -> n |> Name
 
     /// Create Values that is
     /// either a list of values
@@ -145,8 +147,8 @@ module Solver =
                         // Pick the right solve function
                         let solveEq =
                             match eq with
-                            | ProductEquation(_, _) -> fun _ -> eq |> solveProd
-                            | SumEquation(_, _)     -> fun _ -> eq |> solveSum
+                            | ProductEquation(_) -> fun _ -> eq |> solveProd
+                            | SumEquation(_)     -> fun _ -> eq |> solveSum
 
                         match solveEq ()  with
                         // Equation is changed, so every other equation can 

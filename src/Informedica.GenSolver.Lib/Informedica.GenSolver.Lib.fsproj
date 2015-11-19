@@ -53,6 +53,7 @@
       <Paket>True</Paket>
     </Content>
     <Compile Include="Utils.fs" />
+    <Compile Include="Variable.fs" />
     <Compile Include="Solver.fs" />
     <None Include="Script.fsx" />
     <None Include="Scripts\load-references.fsx" />
