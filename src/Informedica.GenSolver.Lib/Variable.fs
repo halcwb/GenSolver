@@ -44,20 +44,20 @@ module Variable =
         let getValue = apply id
 
         /// Filter increment
-        let isIncr i (Value v) = 
-            match i with
+        let isIncr incr (Value v) = 
+            match incr with
             | Some(Value(x)) -> (v.Numerator * x.Denominator) % (x.Numerator * v.Denominator) = 0I
             | None   -> v > 0N
 
         /// Filter max
-        let isST m (Value v) =
-            match m with
+        let isST max (Value v) =
+            match max with
             | Some(Value(x)) -> v <= x
             | None -> true
 
         /// Filter min
-        let isLT m (Value v) =
-            match m with
+        let isLT max (Value v) =
+            match max with
             | Some(Value(x)) -> v >= x
             | None -> true
 
@@ -142,6 +142,15 @@ module Variable =
             | Values x -> x |> fv
             | Range x  -> x |> fr
 
+        /// Apply given functions to `range`.
+        let applyRange fAll fIncr fMin fMax fMinMax fIncrMin = function 
+            | All -> fAll
+            | Incr incr -> incr |> fIncr
+            | Min min   -> min  |> fMin
+            | Max max   -> max  |> fMax
+            | MinMax (min, max) -> fMinMax min max
+            | IncrMin (incr, min) -> fIncrMin incr min
+
         /// Count the number of values
         /// returns 0 when `values` is
         /// `range`
@@ -169,6 +178,8 @@ module Variable =
         let intersect v1 v2 =
             v1 |> Set.ofSeq |> Set.intersect (v2 |> Set.ofSeq)
 
+        /// Filter a list of values according
+        /// to increment, min and max constraints
         let filter incr min max = 
             let fv = List.filter (fun v -> v |> Value.isIncr incr &&
                                            v |> Value.isLT min &&
@@ -176,6 +187,9 @@ module Variable =
                      >> Values
             let fr = Range
             apply fv fr
+
+        let constrainRangeWith incr min max = failwith "Not implemented yet"
+            
 
         /// Set values `v2` to values `v1`. Returns
         /// the intersection of both.
@@ -185,16 +199,17 @@ module Variable =
                 intersect v1' v2' |> Set.toList |> Values
             | Range r, Values v
             | Values v, Range r ->
-                match r with
-                | All       -> v |> Values
-                | Incr incr -> v |> Values |> filter (Some incr) None None
-                | Min  min  -> v |> Values |> filter None (Some min) None
-                | Max  max  -> v |> Values |> filter None None (Some max)
-                | MinMax (min, max)   -> v |> Values |> filter None (Some min) (Some max)
-                | IncrMin (incr, min) -> v |> Values |> filter (Some incr) (Some min) None
-            | Range r1, Range r2 ->
-                
-                failwith "Not implemented yet"
+                let vs = v |> Values
+                let fAll = vs
+                let fIncr incr = vs |> filter (Some incr) None None
+                let fMin min   = vs |> filter None (Some min) None
+                let fMax max   = vs |> filter None None (Some max)
+                let fMinMax min max = vs |> filter None (Some min) (Some max)
+                let fIncrMin incr min = vs |> filter (Some incr) (Some min) None
+                // Filter the values with r
+                r |> applyRange fAll fIncr fMin fMax fMinMax fIncrMin
+
+            | Range r1, Range r2 -> failwith "Not implemented yet"
 
 
     open Name
