@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Range - GenSolver</title>
+    <title>Values - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,150 +35,113 @@
 
 
 
-<h1>Range</h1>
+<h1>Values</h1>
 <p>
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
-  <span>Parent Module: <a href="informedica-gensolver-lib-variables.html">Variables</a></span>
+  <span>Parent Module: <a href="informedica-gensolver-lib-variable-0.html">Variable</a></span>
 </p>
 <div class="xmldoc">
-<p>A range is an unlimited set of
-rational numbers, when a set has
-both a minimum, maximum and an 
-increment then it is not a range
-anymore but a list of values</p>
+<p>Functions to handle <a href="informedica-gensolver-lib-values.html" title="values"><code>values</code></a></p>
 
 
 </div>
-  <h3>Union Cases</h3>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
   <table class="table table-bordered member-list">
     <thead>
-      <tr><td>Union Case</td><td>Description</td></tr>
+      <tr><td>Function or value</td><td>Description</td></tr>
     </thead>
     <tbody>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '25', 25)" onmouseover="showTip(event, '25', 25)">
-            AnyPositiveValue
+          <code onmouseout="hideTip(event, '5', 5)" onmouseover="showTip(event, '5', 5)">
+            apply fv fr _arg1
           </code>
-          <div class="tip" id="25">
-            <strong>Signature:</strong> <br />
-                      </div>
+          <div class="tip" id="5">
+            <strong>Signature:</strong> fv:(value list -&gt; &#39;?6872) -&gt; fr:(range -&gt; &#39;?6872) -&gt; _arg1:values -&gt; &#39;?6872<br />
+                          <strong>Type parameters:</strong> '?6872          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L33-33" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L87-87" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Aply the give functions to <a href="informedica-gensolver-lib-values.html" title="values"><code>values</code></a>
+where fv is used for <code>value list</code> and
+fr is used for <a href="informedica-gensolver-lib-range.html" title="range"><code>range</code></a></p>
+
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '26', 26)" onmouseover="showTip(event, '26', 26)">
-            Increment(Increment)
+          <code onmouseout="hideTip(event, '6', 6)" onmouseover="showTip(event, '6', 6)">
+            count 
           </code>
-          <div class="tip" id="26">
-            <strong>Signature:</strong> Increment<br />
+          <div class="tip" id="6">
+            <strong>Signature:</strong> values -&gt; int<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L34-34" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L94-94" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Count the number of values
+returns 0 when <a href="informedica-gensolver-lib-values.html" title="values"><code>values</code></a> is
+<a href="informedica-gensolver-lib-range.html" title="range"><code>range</code></a></p>
+
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '27', 27)" onmouseover="showTip(event, '27', 27)">
-            Maximum(Maximum)
+          <code onmouseout="hideTip(event, '7', 7)" onmouseover="showTip(event, '7', 7)">
+            create vals incr min max
           </code>
-          <div class="tip" id="27">
-            <strong>Signature:</strong> Maximum<br />
+          <div class="tip" id="7">
+            <strong>Signature:</strong> vals:value list -&gt; incr:value option -&gt; min:value option -&gt; max:value option -&gt; values<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L36-36" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L68-68" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Create <a href="informedica-gensolver-lib-values.html" title="values"><code>values</code></a> from either a list of
+<code>BigRational</code> or an incr, min, max combi</p>
+
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '28', 28)" onmouseover="showTip(event, '28', 28)">
-            MaximumIncrement(Maximum,Increment)
+          <code onmouseout="hideTip(event, '8', 8)" onmouseover="showTip(event, '8', 8)">
+            toValues 
           </code>
-          <div class="tip" id="28">
-            <strong>Signature:</strong> Maximum * Increment<br />
+          <div class="tip" id="8">
+            <strong>Signature:</strong> BigRational list -&gt; value list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L39-39" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L64-64" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
+          <p>Convert <code>BigRational</code> list to 
+<a href="informedica-gensolver-lib-value.html" title="value"><code>value</code></a> list</p>
 
-          <code onmouseout="hideTip(event, '29', 29)" onmouseover="showTip(event, '29', 29)">
-            Minimum(Minimum)
-          </code>
-          <div class="tip" id="29">
-            <strong>Signature:</strong> Minimum<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L35-35" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
 
-          <code onmouseout="hideTip(event, '30', 30)" onmouseover="showTip(event, '30', 30)">
-            MinimumIncrement(Minimum,Increment)
-          </code>
-          <div class="tip" id="30">
-            <strong>Signature:</strong> Minimum * Increment<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L38-38" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
 
-          <code onmouseout="hideTip(event, '31', 31)" onmouseover="showTip(event, '31', 31)">
-            MinimumMaximum(Minimum,Maximum)
-          </code>
-          <div class="tip" id="31">
-            <strong>Signature:</strong> Minimum * Maximum<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L37-37" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
         </td>
       </tr>
     </tbody>
