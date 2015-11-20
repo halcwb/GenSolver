@@ -23,6 +23,13 @@ module Testing =
         member x.``A value can be created`` () =
             test<@ Variable.Value.create 1N = (1N |> value.Value) @>
 
+    type ``Given an infix operand`` () =
+        
+        member x.``The operand gives the same result as applied to BigRationals`` () =
+            let v1 = 1N |> Variable.Value.create
+            let v2 = 1N |> Variable.Value.create
+            test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.getValue = 2N @>
+
     type ``Given list = empty incr = None min = None max = None`` () =
         let incr = None
         let min = None
@@ -59,6 +66,9 @@ let runTests () =
     
     let test = new Testing.``Given a non zero positive value``()
     test.``A value can be created``()
+
+    let test = new Testing.``Given an infix operand``()
+    test.``The operand gives the same result as applied to BigRationals``()
 
     let test = new Testing.``Given list = empty incr = None min = None max = None``()
     test.``Counting values returns one``()

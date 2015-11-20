@@ -21,6 +21,15 @@ module Testing =
             [<Test>]
             member x.``A value can be created`` () =
                 test<@ Variable.Value.create 1N = (1N |> value.Value) @>
+        
+        [<TestFixture>]
+        type ``Given an infix operand`` () =
+            
+            [<Test>]
+            member x.``The operand gives the same result as applied to BigRationals`` () =
+                let v1 = 1N |> Variable.Value.create
+                let v2 = 1N |> Variable.Value.create
+                test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.getValue = 2N @>
 
 
     module Values =

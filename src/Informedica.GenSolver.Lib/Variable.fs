@@ -64,6 +64,18 @@ module Variable =
         let create n = 
             if n <= 0N then raise NonZeroOrPositiveValueException
             n |> Value
+
+        /// Apply a function `f` to value `x`
+        let apply f (Value x) = f x
+
+        /// Apply an infix operation `op` to
+        /// two values `v1` and `v2`
+        let calc op (Value v1) (Value v2) =
+            v1 |> op <| v2 |> create 
+
+        /// Get the `BigRational` from `value`
+        let getValue = apply id
+
     
     /// Functions to handle `values`
     module Values =
