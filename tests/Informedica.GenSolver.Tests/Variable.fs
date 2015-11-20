@@ -33,6 +33,7 @@ module Testing =
                 let v1 = 1N |> Variable.Value.create
                 let v2 = 1N |> Variable.Value.create
                 test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.getValue = 2N @>
+                test <@ (v1 + v2) |> Variable.Value.getValue = 2N @>
 
 
     module Values =

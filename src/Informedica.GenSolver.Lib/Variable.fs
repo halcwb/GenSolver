@@ -1,5 +1,6 @@
 ﻿namespace Informedica.GenSolver.Lib
 
+open System
 
 /// Contains functions to handle 
 /// the `variable` type and the types
@@ -42,29 +43,39 @@ module Variable =
         /// Get the `BigRational` from `value`
         let getValue = apply id
 
-        /// Add (+) calculation to type
+        /// Filter increment
+        let isIncr i (Value v) = 
+            match i with
+            | Some(Value(x)) -> (v.Numerator * x.Denominator) % (x.Numerator * v.Denominator) = 0I
+            | None   -> v > 0N
+
+        /// Filter max
+        let isST m (Value v) =
+            match m with
+            | Some(Value(x)) -> v <= x
+            | None -> true
+
+        /// Filter min
+        let isLT m (Value v) =
+            match m with
+            | Some(Value(x)) -> v >= x
+            | None -> true
+
+        /// Overload basic arrhythmic operations
         type value with
 
+            static member (*) (v1, v2) = calc (*) v1 v2
+            static member (/) (v1, v2) = calc (/) v1 v2
             static member (+) (v1, v2) = calc (+) v1 v2
+            static member (-) (v1, v2) = calc (-) v1 v2
 
-    
+
     /// Functions to handle `values`
     module Values =
 
-        open Value
+        open System.Collections.Generic
 
-        /// A range is an unlimited set of
-        /// rational numbers, when a set has
-        /// both a minimum, maximum and an 
-        /// increment then it is not a range
-        /// anymore but a list of values
-        type range = 
-            | All
-            | Incr    of value
-            | Min     of value
-            | Max     of value
-            | MinMax  of value * value
-            | IncrMin of value * value
+        open Value
 
         /// Values is a discrete set of 
         /// non-zero positive rational numbers,
@@ -75,6 +86,19 @@ module Variable =
         type values =
             | Values of value list
             | Range of range
+        /// A range is an unlimited set of
+        /// rational numbers, when a set has
+        /// both a minimum, maximum and an 
+        /// increment then it is not a range
+        /// anymore but a list of values
+        and range = 
+            | All
+            | Incr    of value
+            | Min     of value
+            | Max     of value
+            | MinMax  of value * value
+            | IncrMin of value * value
+
 
         /// Convert `BigRational` list to 
         /// `value` list
@@ -100,7 +124,16 @@ module Variable =
 
         /// Create values directly from a list of 
         /// `BigRational`.
-        let createFromBigR = toValues >> (create None None None)
+        let createValues = toValues >> (create None None None)
+
+        /// Create from a range with increment `incr`,
+        /// minimum `min` and maximum `max`.</br>
+        /// Note that if both increment and maximum 
+        /// are given a list of values is created with minimum
+        /// of increment and if all arguments values then 
+        /// likewise a list of values is generated, i.e. 
+        /// `[min..incr..max]`
+        let createRange incr min max = create incr min max []
 
         /// Aply the give functions to `values`
         /// where fv is used for `value list` and
@@ -116,6 +149,53 @@ module Variable =
             let fv = List.length
             let fr = fun _ -> 0
             apply fv fr
+
+        /// Applies an infix operator
+        /// to two `values`.
+        let calc op = function
+            | Values s1, Values s2 ->
+                let s1 = new ResizeArray<_>(s1)
+                let s2 = new ResizeArray<_>(s2)
+                let s3 = new ResizeArray<_>()
+
+                for x1 in s1 do
+                    for x2 in s2 do
+                        s3.Add(x1 |> op <| x2) 
+                new HashSet<_>(s3, HashIdentity.Structural) |> List.ofSeq |> Values
+            | _ -> range.All |> Range
+
+        /// Get the intersection of
+        /// two sequences
+        let intersect v1 v2 =
+            v1 |> Set.ofSeq |> Set.intersect (v2 |> Set.ofSeq)
+
+        let filter incr min max = 
+            let fv = List.filter (fun v -> v |> Value.isIncr incr &&
+                                           v |> Value.isLT min &&
+                                           v |> Value.isST max)
+                     >> Values
+            let fr = Range
+            apply fv fr
+
+        /// Set values `v2` to values `v1`. Returns
+        /// the intersection of both.
+        let setTo v1 v2 = 
+            match v1, v2 with
+            | Values v1', Values v2' -> 
+                intersect v1' v2' |> Set.toList |> Values
+            | Range r, Values v
+            | Values v, Range r ->
+                match r with
+                | All       -> v |> Values
+                | Incr incr -> v |> Values |> filter (Some incr) None None
+                | Min  min  -> v |> Values |> filter None (Some min) None
+                | Max  max  -> v |> Values |> filter None None (Some max)
+                | MinMax (min, max)   -> v |> Values |> filter None (Some min) (Some max)
+                | IncrMin (incr, min) -> v |> Values |> filter (Some incr) (Some min) None
+            | Range r1, Range r2 ->
+                
+                failwith "Not implemented yet"
+
 
     open Name
     open Values

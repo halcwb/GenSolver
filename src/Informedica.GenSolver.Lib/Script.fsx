@@ -9,9 +9,13 @@ open Informedica.GenSolver.Lib
 open Swensen.Unquote
 
 
-let v1 = 1N |> Variable.Value.create
+let v1 = 2N |> Variable.Value.create
 let v2 = 1N |> Variable.Value.create
 v1 + v2
+v1 - v2
+v1 * v2
+v1 / v2
+v1 > v2
 
 module Testing =
 
