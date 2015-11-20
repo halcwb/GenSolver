@@ -11,7 +11,7 @@
     <AssemblyName>Informedica.GenSolver.Lib</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Name>Informedica.GenSolver.Lib</Name>
-    <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
+    <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,6 +53,7 @@
       <Paket>True</Paket>
     </Content>
     <Compile Include="Utils.fs" />
+    <Compile Include="Variable.fs" />
     <Compile Include="Solver.fs" />
     <None Include="Script.fsx" />
     <None Include="Scripts\load-references.fsx" />
