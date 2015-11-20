@@ -5,6 +5,7 @@ type name = Name of string
 /// A non zero positive rational number
 type value = Value of BigRational
 
+
 /// A range is an unlimited set of
 /// rational numbers, when a set has
 /// both a minimum, maximum and an 
@@ -12,18 +13,11 @@ type value = Value of BigRational
 /// anymore but a list of values
 type range = 
     | All
-    | Increment of increment
-    | Minimum of minimum
-    | Maximum of maximum
-    | MinimumMaximum of minimum * maximum
-    | MinimumIncrement of minimum * increment
-    | MaximumIncrement of maximum * increment
-/// The increment of a series of values
-and increment = Increment of value
-/// The minimum value
-and minimum = Minimum of value
-/// The maximum value
-and maximum = Maximum of value
+    | Incr    of value
+    | Min     of value
+    | Max     of value
+    | MinMax  of value * value
+    | IncrMin of value * value
 
 /// Values is a discrete set of 
 /// non-zero positive rational numbers,
@@ -45,30 +39,64 @@ type variable =
     }
 
 
-/// Create a variable
-type CreateVariable = name -> values -> variable
-
-/// Create a Name that
-/// is a non empty string
-type CreateName = string -> name
-
-/// Create Values that is
-/// either a list of values
-/// or a range, if both Increment
-/// Minimum and Maximum or an Increment
-/// and a Maximum is given, the 
-/// Range is automatically converted
-/// to a list of Values
-type CreateValues = value list option -> increment option -> minimum option -> maximum option-> values
-
-/// Create a Value that 
-/// is a non-zero positive
-/// number
-type CreateValue = BigRational -> value
-
-
 module Variable =
 
-    let create: CreateVariable = fun n vs -> { Name = n; Values = vs }
+    /// Funcions to handle `name`
+    module Name =
+
+        /// Create a Name that
+        /// is a non empty string
+        let create n = n |> Name
+
+    /// Functions to handle `value`
+    module Value =
+        
+        /// Create a Value that 
+        /// is a non-zero positive
+        /// number
+        let create n = n |> Value
+    
+    /// Functions to handle `values`
+    module Values =
+
+        /// Convert `BigRational` list to 
+        /// `value` list
+        let toValues = List.map Value.create
+
+        /// Create `values` from either a list of
+        /// `BigRational` or an incr, min, max combi
+        let create vals incr min max =
+            if vals |> List.isEmpty |> not then vals |> Values
+            else
+                match incr, min, max with
+                | None,      None,     None     -> All                    |> Range
+                | Some incr, None,     None     -> incr        |> Incr    |> Range
+                | None,      Some min, None     -> min         |> Min     |> Range
+                | None,      None,     Some max -> max         |> Max     |> Range
+                | None,      Some min, Some max -> (min, max)  |> MinMax  |> Range
+                | Some incr, Some min, None     -> (incr, min) |> IncrMin |> Range
+
+                | Some (Value(incr)), None, Some(Value( max)) -> 
+                    [incr..incr..max] |> toValues |> Values
+                | Some (Value(incr)), Some(Value(min)), Some(Value( max)) -> 
+                    [min..incr..max]  |> toValues |> Values
+
+        /// Aply the give functions to `values`
+        /// where fv is used for `value list` and
+        /// fr is used for `range`
+        let apply fv fr = function
+            | Values x -> x |> fv
+            | Range x  -> x |> fr
+
+        /// Count the number of values
+        /// returns 0 when `values` is
+        /// `range`
+        let count = 
+            let fv = List.length
+            let fr = fun _ -> 0
+            apply fv fr
+
+    /// Create a variable
+    let create n vs = { Name = n; Values = vs }
 
 
