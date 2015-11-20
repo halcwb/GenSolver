@@ -7,6 +7,9 @@ open NUnit.Framework
 module Testing =
 
     module Value =
+
+        open Variable.Value
+        open Variable.Values
         
         [<TestFixture>]
         type ``Given a zero or negative number`` () =
@@ -33,6 +36,8 @@ module Testing =
 
 
     module Values =
+
+        open  Variable.Values
 
         [<TestFixture>]
         type ``Given list = empty incr = None min = None max = None`` () =

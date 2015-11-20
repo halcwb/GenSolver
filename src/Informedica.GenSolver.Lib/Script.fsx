@@ -8,7 +8,15 @@
 open Informedica.GenSolver.Lib
 open Swensen.Unquote
 
+
+let v1 = 1N |> Variable.Value.create
+let v2 = 1N |> Variable.Value.create
+v1 + v2
+
 module Testing =
+
+    open Variable.Value
+    open Variable.Values
 
     type ``Given a zero or negative number`` () =
 
@@ -29,6 +37,8 @@ module Testing =
             let v1 = 1N |> Variable.Value.create
             let v2 = 1N |> Variable.Value.create
             test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.getValue = 2N @>
+            test <@ (v1 + v2) |> Variable.Value.getValue = 2N @>
+
 
     type ``Given list = empty incr = None min = None max = None`` () =
         let incr = None

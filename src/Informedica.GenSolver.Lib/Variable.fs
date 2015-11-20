@@ -1,45 +1,5 @@
 ﻿namespace Informedica.GenSolver.Lib
 
-/// Represents a non empty/null string identifying a `variable`
-type name = Name of string
-/// Represents a non zero positive rational number.
-type value = Value of BigRational
-
-
-/// A range is an unlimited set of
-/// rational numbers, when a set has
-/// both a minimum, maximum and an 
-/// increment then it is not a range
-/// anymore but a list of values
-type range = 
-    | All
-    | Incr    of value
-    | Min     of value
-    | Max     of value
-    | MinMax  of value * value
-    | IncrMin of value * value
-
-/// Values is a discrete set of 
-/// non-zero positive rational numbers,
-/// the set is either limited
-/// and then it is a list or
-/// it is unlimited and then it 
-/// is a range.
-type values =
-    | Values of value list
-    | Range of range
-
-
-/// Represents a variable in an
-/// `equation`. The variable is 
-/// identified by `Name` and has
-/// a set of possible `Values`.
-type variable =
-    {
-        Name: name
-        Values: values
-    }
-
 
 /// Contains functions to handle 
 /// the `variable` type and the types
@@ -49,6 +9,9 @@ module Variable =
     /// Funcions to handle `name`
     module Name =
 
+        /// Represents a non empty/null string identifying a `variable`
+        type name = Name of string
+
         /// Create a Name that
         /// is a non empty string
         let create n = n |> Name
@@ -57,6 +20,9 @@ module Variable =
     module Value =
         
         exception NonZeroOrPositiveValueException
+
+        /// Represents a non zero positive rational number.
+        type value = Value of BigRational
 
         /// Create a Value that 
         /// is a non-zero positive
@@ -76,9 +42,39 @@ module Variable =
         /// Get the `BigRational` from `value`
         let getValue = apply id
 
+        /// Add (+) calculation to type
+        type value with
+
+            static member (+) (v1, v2) = calc (+) v1 v2
+
     
     /// Functions to handle `values`
     module Values =
+
+        open Value
+
+        /// A range is an unlimited set of
+        /// rational numbers, when a set has
+        /// both a minimum, maximum and an 
+        /// increment then it is not a range
+        /// anymore but a list of values
+        type range = 
+            | All
+            | Incr    of value
+            | Min     of value
+            | Max     of value
+            | MinMax  of value * value
+            | IncrMin of value * value
+
+        /// Values is a discrete set of 
+        /// non-zero positive rational numbers,
+        /// the set is either limited
+        /// and then it is a list or
+        /// it is unlimited and then it 
+        /// is a range.
+        type values =
+            | Values of value list
+            | Range of range
 
         /// Convert `BigRational` list to 
         /// `value` list
@@ -120,6 +116,19 @@ module Variable =
             let fv = List.length
             let fr = fun _ -> 0
             apply fv fr
+
+    open Name
+    open Values
+
+    /// Represents a variable in an
+    /// `equation`. The variable is 
+    /// identified by `Name` and has
+    /// a set of possible `Values`.
+    type variable =
+        {
+            Name: name
+            Values: values
+        }
 
     /// Create a variable
     let create n vs = { Name = n; Values = vs }
