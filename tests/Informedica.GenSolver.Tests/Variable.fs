@@ -35,11 +35,11 @@ module Testing =
         
             [<Test>]
             member x.``Creating values returns range All`` () =
-                test <@ Variable.Values.create [] incr min max = vals @>
+                test <@ Variable.Values.create incr min max [] = vals @>
         
             [<Test>]
             member x.``Counting values returns one`` () =
-                test <@ Variable.Values.create [] incr min max |> Variable.Values.count = 0 @>
+                test <@ Variable.Values.create incr min max [] |> Variable.Values.count = 0 @>
 
         [<TestFixture>]
         type ``Given list with one value incr = None min = None max = None`` () =
@@ -51,8 +51,8 @@ module Testing =
 
             [<Test>]
             member x.``Counting values returns one`` () =
-                test <@ Variable.Values.create vals incr min max |> Variable.Values.count = 1 @>
+                test <@ Variable.Values.create incr min max vals |> Variable.Values.count = 1 @>
         
             [<Test>]
             member x.``Creating values returns one value`` () =
-                test <@ Variable.Values.create vals incr min max = (vals |> values.Values) @>
+                test <@ Variable.Values.create incr min max vals = (vals |> values.Values) @>

@@ -31,10 +31,10 @@ module Testing =
         let vals = range.All |> values.Range
         
         member x.``Creating values returns range All`` () =
-            test <@ Variable.Values.create [] incr min max = vals @>
+            test <@ Variable.Values.create incr min max [] = vals @>
         
         member x.``Counting values returns one`` () =
-            test <@ Variable.Values.create [] incr min max |> Variable.Values.count = 0 @>
+            test <@ Variable.Values.create incr min max [] |> Variable.Values.count = 0 @>
 
     type ``Given list with one value incr = None min = None max = None`` () =
         let incr = None
@@ -45,10 +45,10 @@ module Testing =
 
         
         member x.``Counting values returns one`` () =
-            test <@ Variable.Values.create vals incr min max |> Variable.Values.count = 1 @>
+            test <@ Variable.Values.create incr min max vals |> Variable.Values.count = 1 @>
         
         member x.``Creating values returns one value`` () =
-            test <@ Variable.Values.create vals incr min max = (vals |> values.Values) @>
+            test <@ Variable.Values.create incr min max vals = (vals |> values.Values) @>
 
 
 let runTests () =

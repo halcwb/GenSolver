@@ -74,7 +74,7 @@ module Variable =
 
         /// Create `values` from either a list of
         /// `BigRational` or an incr, min, max combi
-        let create vals incr min max =
+        let create incr min max vals =
             if vals |> List.isEmpty |> not then vals |> Values
             else
                 match incr, min, max with
@@ -89,6 +89,10 @@ module Variable =
                     [incr..incr..max] |> toValues |> Values
                 | Some (Value(incr)), Some(Value(min)), Some(Value( max)) -> 
                     [min..incr..max]  |> toValues |> Values
+
+        /// Create values directly from a list of 
+        /// `BigRational`.
+        let createFromBigR = toValues >> (create None None None)
 
         /// Aply the give functions to `values`
         /// where fv is used for `value list` and

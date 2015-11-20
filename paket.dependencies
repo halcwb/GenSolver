@@ -3,8 +3,8 @@ source https://nuget.org/api/v2
 // build
 nuget FSharp.Formatting
 nuget FsUnit
-nuget NUnit 
-nuget NUnit.Runners 
+nuget NUnit ~> 2
+nuget NUnit.Runners ~> 2
 nuget Fake
 nuget SourceLink.Fake
 nuget Newtonsoft.Json
