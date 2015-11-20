@@ -1,8 +1,8 @@
 ﻿namespace Informedica.GenSolver.Lib
 
-/// A non empty/null string
+/// Represents a non empty/null string identifying a `variable`
 type name = Name of string
-/// A non zero positive rational number
+/// Represents a non zero positive rational number.
 type value = Value of BigRational
 
 
@@ -30,8 +30,10 @@ type values =
     | Range of range
 
 
-/// A Variable has a name 
-/// and values
+/// Represents a variable in an
+/// `equation`. The variable is 
+/// identified by `Name` and has
+/// a set of possible `Values`.
 type variable =
     {
         Name: name
@@ -39,6 +41,9 @@ type variable =
     }
 
 
+/// Contains functions to handle 
+/// the `variable` type and the types
+/// `variable` depends on.
 module Variable =
 
     /// Funcions to handle `name`
@@ -51,10 +56,14 @@ module Variable =
     /// Functions to handle `value`
     module Value =
         
+        exception NonZeroOrPositiveValueException
+
         /// Create a Value that 
         /// is a non-zero positive
         /// number
-        let create n = n |> Value
+        let create n = 
+            if n <= 0N then raise NonZeroOrPositiveValueException
+            n |> Value
     
     /// Functions to handle `values`
     module Values =
