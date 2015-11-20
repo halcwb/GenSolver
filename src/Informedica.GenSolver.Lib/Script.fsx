@@ -10,6 +10,19 @@ open Swensen.Unquote
 
 module Testing =
 
+    type ``Given a zero or negative number`` () =
+
+        member x.``With 0 an exception is raised`` () =
+            raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (0N |> value.Value) @>
+
+        member x.``With -1N an exception is raised`` () =
+            raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (-1N |> value.Value) @>
+
+    type ``Given a non zero positive value`` () =
+        
+        member x.``A value can be created`` () =
+            test<@ Variable.Value.create 1N = (1N |> value.Value) @>
+
     type ``Given list = empty incr = None min = None max = None`` () =
         let incr = None
         let min = None
@@ -39,11 +52,19 @@ module Testing =
 
 
 let runTests () =
-    let test1 = new Testing.``Given list = empty incr = None min = None max = None``()
-    test1.``Counting values returns one``()
-    test1.``Creating values returns range All``()
 
-    let test2 = new Testing.``Given list with one value incr = None min = None max = None``()
-    test2.``Counting values returns one``()
-    test2.``Creating values returns one value``()
+    let test = new Testing.``Given a zero or negative number``()
+    test.``With 0 an exception is raised``()
+    test.``With -1N an exception is raised``()
+    
+    let test = new Testing.``Given a non zero positive value``()
+    test.``A value can be created``()
+
+    let test = new Testing.``Given list = empty incr = None min = None max = None``()
+    test.``Counting values returns one``()
+    test.``Creating values returns range All``()
+
+    let test = new Testing.``Given list with one value incr = None min = None max = None``()
+    test.``Counting values returns one``()
+    test.``Creating values returns one value``()
     
