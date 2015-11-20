@@ -7,15 +7,17 @@ open System
 /// `variable` depends on.
 module Variable =
 
+
     /// Funcions to handle `name`
     module Name =
 
         /// Represents a non empty/null string identifying a `variable`
-        type name = Name of string
+        type Name = Name of string
 
         /// Create a Name that
         /// is a non empty string
         let create n = n |> Name
+
 
     /// Functions to handle `value`
     module Value =
@@ -23,7 +25,7 @@ module Variable =
         exception NonZeroOrPositiveValueException
 
         /// Represents a non zero positive rational number.
-        type value = Value of BigRational
+        type Value = Value of BigRational
 
         /// Create a Value that 
         /// is a non-zero positive
@@ -62,7 +64,7 @@ module Variable =
             | None -> true
 
         /// Overload basic arrhythmic operations
-        type value with
+        type Value with
 
             static member (*) (v1, v2) = calc (*) v1 v2
             static member (/) (v1, v2) = calc (/) v1 v2
@@ -83,21 +85,21 @@ module Variable =
         /// and then it is a list or
         /// it is unlimited and then it 
         /// is a range.
-        type values =
-            | Values of value list
-            | Range of range
+        type Values =
+            | Values of Value list
+            | Range of Range
         /// A range is an unlimited set of
         /// rational numbers, when a set has
         /// both a minimum, maximum and an 
         /// increment then it is not a range
         /// anymore but a list of values
-        and range = 
+        and Range = 
             | All
-            | Incr    of value
-            | Min     of value
-            | Max     of value
-            | MinMax  of value * value
-            | IncrMin of value * value
+            | Incr    of Value
+            | Min     of Value
+            | Max     of Value
+            | MinMax  of Value * Value
+            | IncrMin of Value * Value
 
 
         /// Convert `BigRational` list to 
@@ -171,7 +173,7 @@ module Variable =
                     for x2 in s2 do
                         s3.Add(x1 |> op <| x2) 
                 new HashSet<_>(s3, HashIdentity.Structural) |> List.ofSeq |> Values
-            | _ -> range.All |> Range
+            | _ -> Range.All |> Range
 
         /// Get the intersection of
         /// two sequences
@@ -211,6 +213,18 @@ module Variable =
 
             | Range r1, Range r2 -> failwith "Not implemented yet"
 
+        // Extend type with basic arrhythmic operations
+        type Values with
+
+            static member (*) (vs1, vs2) = calc (*) (vs1, vs2)
+
+            static member (/) (vs1, vs2) = calc (/) (vs1, vs2)
+
+            static member (+) (vs1, vs2) = calc (+) (vs1, vs2)
+
+            static member (-) (vs1, vs2) = calc (-) (vs1, vs2)
+
+            static member (=!) (res, expr) = expr |> setTo res
 
     open Name
     open Values
@@ -219,10 +233,10 @@ module Variable =
     /// `equation`. The variable is 
     /// identified by `Name` and has
     /// a set of possible `Values`.
-    type variable =
+    type Variable =
         {
-            Name: name
-            Values: values
+            Name: Name
+            Values: Values
         }
 
     /// Create a variable

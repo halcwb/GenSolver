@@ -15,15 +15,15 @@ module Testing =
         type ``Given a zero or negative number`` () =
             [<Test>]
             member x.``With 0 an exception is raised`` () =
-                raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (0N |> value.Value) @>
+                raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (0N |> Value.Value) @>
             [<Test>]
             member x.``With -1N an exception is raised`` () =
-                raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (-1N |> value.Value) @>
+                raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (-1N |> Value.Value) @>
         [<TestFixture>]
         type ``Given a non zero positive value`` () =
             [<Test>]
             member x.``A value can be created`` () =
-                test<@ Variable.Value.create 1N = (1N |> value.Value) @>
+                test<@ Variable.Value.create 1N = (1N |> Value.Value) @>
         
         [<TestFixture>]
         type ``Given an infix operand`` () =
@@ -46,7 +46,7 @@ module Testing =
             let min = None
             let max = None
 
-            let vals = range.All |> values.Range
+            let vals = Range.All |> Values.Range
         
             [<Test>]
             member x.``Creating values returns range All`` () =
@@ -70,4 +70,4 @@ module Testing =
         
             [<Test>]
             member x.``Creating values returns one value`` () =
-                test <@ Variable.Values.create incr min max vals = (vals |> values.Values) @>
+                test <@ Variable.Values.create incr min max vals = (vals |> Values.Values) @>

@@ -56,9 +56,6 @@
   </Target>
   -->
   <ItemGroup>
-    <Content Include="InstallationDummyFile.txt">
-      <Paket>True</Paket>
-    </Content>
     <Compile Include="Variable.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>
