@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>variable - GenSolver</title>
+    <title>Variable - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,58 +35,102 @@
 
 
 
-<h1>variable</h1>
+<h1>Variable</h1>
 <p>
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
 </p>
 <div class="xmldoc">
-<p>Represents a variable in an
-<code>equation</code>. The variable is 
-identified by <code>Name</code> and has
-a set of possible <a href="informedica-gensolver-lib-variable-values.html" title="Values"><code>Values</code></a>.</p>
+<p>Contains functions to handle 
+the <code>variable</code> type and the types
+<code>variable</code> depends on.</p>
 
 
 </div>
-  <h3>Record Fields</h3>
+
+<!-- Render nested types and modules, if there are any -->
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-variable-variable.html">Variable</a>
+          </td>
+          <td class="xmldoc"><p>Represents a variable in an
+<code>equation</code>. The variable is 
+identified by <code>Name</code> and has
+a set of possible <code>Values</code>.</p>
+
+
+</td>
+        </tr>
+    </tbody>
+  </table>
+  <table class="table table-bordered module-list">
+    <thead>
+      <tr><td>Module</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="informedica-gensolver-lib-variable-name.html">Name</a>
+          </td>
+          <td class="xmldoc"><p>Funcions to handle <code>name</code></p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="informedica-gensolver-lib-variable-value.html">Value</a>
+          </td>
+          <td class="xmldoc"><p>Functions to handle <code>value</code></p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="informedica-gensolver-lib-variable-values.html">Values</a>
+          </td>
+          <td class="xmldoc"><p>Functions to handle <code>values</code></p>
+
+
+</td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <h3>Functions and values</h3>
   <table class="table table-bordered member-list">
     <thead>
-      <tr><td>Record Field</td><td>Description</td></tr>
+      <tr><td>Function or value</td><td>Description</td></tr>
     </thead>
     <tbody>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '44', 44)" onmouseover="showTip(event, '44', 44)">
-            Name
+          <code onmouseout="hideTip(event, '2', 2)" onmouseover="showTip(event, '2', 2)">
+            create n vs
           </code>
-          <div class="tip" id="44">
-            <strong>Signature:</strong> name<br />
+          <div class="tip" id="2">
+            <strong>Signature:</strong> n:Name -&gt; vs:Values -&gt; Variable<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L39-39" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L252-252" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
+          <p>Create a variable</p>
 
-          <code onmouseout="hideTip(event, '45', 45)" onmouseover="showTip(event, '45', 45)">
-            Values
-          </code>
-          <div class="tip" id="45">
-            <strong>Signature:</strong> values<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L40-40" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
+
+
         </td>
       </tr>
     </tbody>

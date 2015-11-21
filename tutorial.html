@@ -33,16 +33,9 @@
       <div class="row">
         <div class="span9" id="main">
           
-<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
-<span class="l">2: </span>
-</pre></td>
-<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#I</span> <span class="s">&quot;../../src/Informedica.GenSolver.Lib/Scripts&quot;</span>
-<span class="prep">#load</span> <span class="s">&quot;load-project.fsx&quot;</span>
-</code></pre></td>
-</tr>
-</table>
-
 <h1><a name="How-to-use-this-library" class="anchor" href="#How-to-use-this-library">How to use this library</a></h1>
+
+<p>First open up the name space</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 </pre></td>
@@ -53,6 +46,8 @@
 
 <h2><a name="How-to-create-a-value" class="anchor" href="#How-to-create-a-value">How to create a value</a></h2>
 
+<p>Then create a value</p>
+
 <table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 </pre></td>
 <td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs4', 4)" onmouseover="showTip(event, 'fs4', 4)" class="i">value</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 5)" onmouseover="showTip(event, 'fs5', 5)" class="t">Variable</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs6', 6)" onmouseover="showTip(event, 'fs6', 6)" class="t">Value</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs7', 7)" onmouseover="showTip(event, 'fs7', 7)" class="f">create</span> <span class="n">1N</span>
@@ -60,13 +55,26 @@
 </tr>
 </table>
 
+<p>Or a list of <code>BigRational</code> can be used to create values</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs8', 8)" onmouseover="showTip(event, 'fs8', 8)" class="i">vals</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 9)" onmouseover="showTip(event, 'fs5', 9)" class="t">Variable</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs9', 10)" onmouseover="showTip(event, 'fs9', 10)" class="t">Values</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs10', 11)" onmouseover="showTip(event, 'fs10', 11)" class="f">create</span> [<span class="n">1N</span><span class="o">..</span><span class="n">2N</span><span class="o">..</span><span class="n">10N</span>] <span onmouseout="hideTip(event, 'fs11', 12)" onmouseover="showTip(event, 'fs11', 12)" class="p">None</span> <span onmouseout="hideTip(event, 'fs11', 13)" onmouseover="showTip(event, 'fs11', 13)" class="p">None</span> <span onmouseout="hideTip(event, 'fs11', 14)" onmouseover="showTip(event, 'fs11', 14)" class="p">None</span>
+</code></pre></td>
+</tr>
+</table>
+
 <div class="tip" id="fs1">namespace Informedica</div>
 <div class="tip" id="fs2">namespace Informedica.GenSolver</div>
 <div class="tip" id="fs3">namespace Informedica.GenSolver.Lib</div>
-<div class="tip" id="fs4">Multiple items<br />val value : value<br /><br />Full name: Tutorial.value<br /><br />--------------------<br />type value = | Value of BigRational<br /><br />Full name: Informedica.GenSolver.Lib.value<br /><em><br /><br />&#160;Represents a non zero positive rational number.</em></div>
+<div class="tip" id="fs4">val value : Variable.Value.Value<br /><br />Full name: Tutorial.value</div>
 <div class="tip" id="fs5">module Variable<br /><br />from Informedica.GenSolver.Lib<br /><em><br /><br />&#160;Contains functions to handle <br />&#160;the `variable` type and the types<br />&#160;`variable` depends on.</em></div>
 <div class="tip" id="fs6">module Value<br /><br />from Informedica.GenSolver.Lib.Variable<br /><em><br /><br />&#160;Functions to handle `value`</em></div>
-<div class="tip" id="fs7">val create : n:BigRational -&gt; value<br /><br />Full name: Informedica.GenSolver.Lib.Variable.Value.create<br /><em><br /><br />&#160;Create a Value that <br />&#160;is a non-zero positive<br />&#160;number</em></div>
+<div class="tip" id="fs7">val create : n:BigRational -&gt; Variable.Value.Value<br /><br />Full name: Informedica.GenSolver.Lib.Variable.Value.create<br /><em><br /><br />&#160;Create a Value that <br />&#160;is a non-zero positive<br />&#160;number</em></div>
+<div class="tip" id="fs8">val vals : Variable.Values.Values<br /><br />Full name: Tutorial.vals</div>
+<div class="tip" id="fs9">module Values<br /><br />from Informedica.GenSolver.Lib.Variable<br /><em><br /><br />&#160;Functions to handle `values`</em></div>
+<div class="tip" id="fs10">val create : incr:Variable.Value.Value option -&gt; min:Variable.Value.Value option -&gt; max:Variable.Value.Value option -&gt; vals:Variable.Value.Value list -&gt; Variable.Values.Values<br /><br />Full name: Informedica.GenSolver.Lib.Variable.Values.create<br /><em><br /><br />&#160;Create `values` from either a list of<br />&#160;`BigRational` or an incr, min, max combi</em></div>
+<div class="tip" id="fs11">union case Option.None: Option&lt;&#39;T&gt;</div>
 
         </div>
         <div class="span3">
