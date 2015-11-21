@@ -34,6 +34,9 @@ module Variable =
             if n <= 0N then raise NonZeroOrPositiveValueException
             n |> Value
 
+        /// Zero value
+        let zero = 0N |> Value
+
         /// Apply a function `f` to value `x`
         let apply f (Value x) = f x
 
@@ -155,14 +158,15 @@ module Variable =
 
         /// Count the number of values
         /// returns 0 when `values` is
-        /// `range`
+        /// `range`.
         let count = 
             let fv = List.length
             let fr = fun _ -> 0
             apply fv fr
 
         /// Applies an infix operator
-        /// to two `values`.
+        /// to two `values`. Only add values
+        /// to the result set if > 0.
         let calc op = function
             | Values s1, Values s2 ->
                 let s1 = new ResizeArray<_>(s1)
@@ -171,8 +175,11 @@ module Variable =
 
                 for x1 in s1 do
                     for x2 in s2 do
-                        s3.Add(x1 |> op <| x2) 
+                        let y = x1 |> op <| x2
+                        if y > Value.zero then s3.Add(x1 |> op <| x2) 
                 new HashSet<_>(s3, HashIdentity.Structural) |> List.ofSeq |> Values
+            // Do not perform any calcuation when one of the args is not
+            // a list of values
             | _ -> Range.All |> Range
 
         /// Get the intersection of
@@ -190,9 +197,10 @@ module Variable =
             let fr = Range
             apply fv fr
 
+        /// Function to determine how one range
+        /// constraints another range.
         let constrainRangeWith incr min max = failwith "Not implemented yet"
             
-
         /// Set values `v2` to values `v1`. Returns
         /// the intersection of both.
         let setTo v1 v2 = 
@@ -213,18 +221,19 @@ module Variable =
 
             | Range r1, Range r2 -> failwith "Not implemented yet"
 
-        // Extend type with basic arrhythmic operations
+        // Extend type with basic arrhythmic operations.
         type Values with
-
+            /// Multiply 
             static member (*) (vs1, vs2) = calc (*) (vs1, vs2)
-
+            /// Divide
             static member (/) (vs1, vs2) = calc (/) (vs1, vs2)
-
+            /// Add
             static member (+) (vs1, vs2) = calc (+) (vs1, vs2)
-
+            /// Subtract
             static member (-) (vs1, vs2) = calc (-) (vs1, vs2)
-
+            /// Add `expr` to `res`
             static member (=!) (res, expr) = expr |> setTo res
+
 
     open Name
     open Values
