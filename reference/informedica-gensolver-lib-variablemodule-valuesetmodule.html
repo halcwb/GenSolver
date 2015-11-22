@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>ValueSet - GenSolver</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="halcwb"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/GenSolver/content/style.css" />
+    <script type="text/javascript" src="/GenSolver/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/halcwb/GenSolver">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/GenSolver/index.html">GenSolver</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>ValueSet</h1>
+<p>
+  <span>Namespace: Informedica.GenSolver.Lib</span><br />
+  <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule.html">Variable</a></span>
+</p>
+<div class="xmldoc">
+<p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a></p>
+
+
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-range.html">Range</a>
+          </td>
+          <td class="xmldoc"><p>A <code>Range</code> is an unlimited set of
+rational numbers, when a set has
+both a minimum, maximum and an 
+increment then it is not a range
+anymore but a list of values</p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html">ValueSet</a>
+          </td>
+          <td class="xmldoc"><p><a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a> is a discrete set of 
+non-zero positive rational numbers,
+the set is either limited
+and then it is a list or
+it is unlimited and then it 
+is a range.</p>
+
+
+</td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14', 14)" onmouseover="showTip(event, '14', 14)">
+            apply fv fr _arg1
+          </code>
+          <div class="tip" id="14">
+            <strong>Signature:</strong> fv:(Set&lt;Value&gt; -&gt; &#39;?6893) -&gt; fr:(Range -&gt; &#39;?6893) -&gt; _arg1:ValueSet -&gt; &#39;?6893<br />
+                          <strong>Type parameters:</strong> '?6893          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L120-120" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Aply the give functions to <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a>
+where fv is used for <code>Value list</code> and
+fr is used for <code>Range</code></p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15', 15)" onmouseover="showTip(event, '15', 15)">
+            applyRange (...)
+          </code>
+          <div class="tip" id="15">
+            <strong>Signature:</strong> fAll:&#39;?6895 -&gt; fIncr:(Value -&gt; &#39;?6895) -&gt; fMin:(Value -&gt; &#39;?6895) -&gt; fMax:(Value -&gt; &#39;?6895) -&gt; fMinMax:(Value -&gt; Value -&gt; &#39;?6895) -&gt; fIncrMin:(Value -&gt; Value -&gt; &#39;?6895) -&gt; _arg1:Range -&gt; &#39;?6895<br />
+                          <strong>Type parameters:</strong> '?6895          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L125-125" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Apply given functions to <code>Range</code>.</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16', 16)" onmouseover="showTip(event, '16', 16)">
+            calc op (arg2, arg3)
+          </code>
+          <div class="tip" id="16">
+            <strong>Signature:</strong> op:(Value -&gt; Value -&gt; Value) -&gt; (ValueSet * ValueSet) -&gt; ValueSet<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L187-187" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Applies an infix operator
+to two <code>values</code>. Only add values
+to the result set if &gt; 0.</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '17', 17)" onmouseover="showTip(event, '17', 17)">
+            constrainRangeWith incr min max
+          </code>
+          <div class="tip" id="17">
+            <strong>Signature:</strong> incr:&#39;?6906 -&gt; min:&#39;?6907 -&gt; max:&#39;?6908 -&gt; &#39;?6909<br />
+                          <strong>Type parameters:</strong> '?6906, '?6907, '?6908, '?6909          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L215-215" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Function to determine how one range
+constraints another range.</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18', 18)" onmouseover="showTip(event, '18', 18)">
+            count 
+          </code>
+          <div class="tip" id="18">
+            <strong>Signature:</strong> ValueSet -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L179-179" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Count the number of values
+returns 0 when <code>values</code> is
+<code>Range</code>.</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '19', 19)" onmouseover="showTip(event, '19', 19)">
+            create incr min max vals
+          </code>
+          <div class="tip" id="19">
+            <strong>Signature:</strong> incr:Value option -&gt; min:Value option -&gt; max:Value option -&gt; vals:Value list -&gt; ValueSet<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L147-147" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Create <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a> from either a list of
+<code>BigRational</code> or an incr, min, max combi</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '20', 20)" onmouseover="showTip(event, '20', 20)">
+            createRange incr min max
+          </code>
+          <div class="tip" id="20">
+            <strong>Signature:</strong> incr:Value option -&gt; min:Value option -&gt; max:Value option -&gt; ValueSet<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L174-174" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Create a <code>Range</code> with increment <code>incr</code>,
+minimum <code>min</code> and maximum <code>max</code>.</br>
+Note that if both increment and maximum 
+are given a list of values is created with minimum
+of increment and if all arguments values then 
+likewise a list of values is generated, i.e. 
+<code>[min..incr..max]</code></p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '21', 21)" onmouseover="showTip(event, '21', 21)">
+            createValues 
+          </code>
+          <div class="tip" id="21">
+            <strong>Signature:</strong> BigRational list -&gt; ValueSet<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L165-165" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Create <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a> directly from a list of 
+<code>BigRational</code>.</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22', 22)" onmouseover="showTip(event, '22', 22)">
+            filter incr min max
+          </code>
+          <div class="tip" id="22">
+            <strong>Signature:</strong> incr:Value option -&gt; min:Value option -&gt; max:Value option -&gt; ValueSet -&gt; ValueSet<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L205-205" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Filter a set of values according
+to increment, min and max constraints</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '23', 23)" onmouseover="showTip(event, '23', 23)">
+            seqToValueSet vs
+          </code>
+          <div class="tip" id="23">
+            <strong>Signature:</strong> vs:seq&lt;Value&gt; -&gt; ValueSet<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L135-135" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Small helper function to turn a sequence
+of <a href="informedica-gensolver-lib-variablemodule-valuemodule-value.html" title="Value"><code>Value</code></a> to a <code>Vaue Set</code>.</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '24', 24)" onmouseover="showTip(event, '24', 24)">
+            setTo v1 v2
+          </code>
+          <div class="tip" id="24">
+            <strong>Signature:</strong> v1:ValueSet -&gt; v2:ValueSet -&gt; ValueSet<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L219-219" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Set values <code>v2</code> to values <code>v1</code>. Returns
+the intersection of both.</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '25', 25)" onmouseover="showTip(event, '25', 25)">
+            toValues 
+          </code>
+          <div class="tip" id="25">
+            <strong>Signature:</strong> BigRational list -&gt; Value list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L143-143" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Convert <code>BigRational</code> list to 
+<a href="informedica-gensolver-lib-variablemodule-valuemodule-value.html" title="Value"><code>Value</code></a> list</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '26', 26)" onmouseover="showTip(event, '26', 26)">
+            valueSetToList 
+          </code>
+          <div class="tip" id="26">
+            <strong>Signature:</strong> ValueSet -&gt; Value list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L139-139" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Small helper function to turn a <code>Value Set</code>
+to a <code>Value list</code>.</p>
+
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/GenSolver/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">GenSolver</li>
+            <li><a href="/GenSolver/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/##ProjectName##">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/halcwb/GenSolver">Source Code on GitHub</a></li>
+            <li><a href="/GenSolver/license.html">License</a></li>
+            <li><a href="/GenSolver/release-notes.html">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/GenSolver/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/GenSolver/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/halcwb/GenSolver"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

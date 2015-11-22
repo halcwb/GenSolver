@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>NonZeroPositiveValues - GenSolver</title>
+    <title>Variable - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,61 +35,102 @@
 
 
 
-<h1>NonZeroPositiveValues</h1>
+<h1>Variable</h1>
 <p>
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
-  <span>Parent Module: <a href="informedica-gensolver-lib-variables.html">Variables</a></span>
 </p>
 <div class="xmldoc">
-<p>Values is a discrete set of 
-non-zero positive rational numbers,
-the set is either limited
-and then it is a list or
-it is unlimited and then it 
-is a range.</p>
+<p>Contains functions to handle 
+the <code>Variable</code> type and the types
+<code>Variable</code> depends on.</p>
 
 
 </div>
-  <h3>Union Cases</h3>
+
+<!-- Render nested types and modules, if there are any -->
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-variablemodule-variable.html">Variable</a>
+          </td>
+          <td class="xmldoc"><p>Represents a variable in an
+<a href="informedica-gensolver-lib-equations-equation.html" title="Equation"><code>Equation</code></a>. The variable is 
+identified by <code>Name</code> and has
+a set of possible <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a>.</p>
+
+
+</td>
+        </tr>
+    </tbody>
+  </table>
+  <table class="table table-bordered module-list">
+    <thead>
+      <tr><td>Module</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="informedica-gensolver-lib-variablemodule-namemodule.html">Name</a>
+          </td>
+          <td class="xmldoc"><p>Funcions to handle <code>Name</code></p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="informedica-gensolver-lib-variablemodule-valuemodule.html">Value</a>
+          </td>
+          <td class="xmldoc"><p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuemodule-value.html" title="Value"><code>Value</code></a></p>
+
+
+</td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="informedica-gensolver-lib-variablemodule-valuesetmodule.html">ValueSet</a>
+          </td>
+          <td class="xmldoc"><p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a></p>
+
+
+</td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <h3>Functions and values</h3>
   <table class="table table-bordered member-list">
     <thead>
-      <tr><td>Union Case</td><td>Description</td></tr>
+      <tr><td>Function or value</td><td>Description</td></tr>
     </thead>
     <tbody>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '63', 63)" onmouseover="showTip(event, '63', 63)">
-            Range(Range)
+          <code onmouseout="hideTip(event, '2', 2)" onmouseover="showTip(event, '2', 2)">
+            create n vs
           </code>
-          <div class="tip" id="63">
-            <strong>Signature:</strong> Range<br />
+          <div class="tip" id="2">
+            <strong>Signature:</strong> n:Name -&gt; vs:ValueSet -&gt; Variable<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L24-24" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L264-264" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
+          <p>Create a variable</p>
 
-          <code onmouseout="hideTip(event, '64', 64)" onmouseover="showTip(event, '64', 64)">
-            Values(NonZeroPositiveValue list)
-          </code>
-          <div class="tip" id="64">
-            <strong>Signature:</strong> NonZeroPositiveValue list<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L23-23" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
+
+
         </td>
       </tr>
     </tbody>

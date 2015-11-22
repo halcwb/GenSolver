@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>NonZeroPositiveValues - GenSolver</title>
+    <title>Variable - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,39 +35,37 @@
 
 
 
-<h1>NonZeroPositiveValues</h1>
+<h1>Variable</h1>
 <p>
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
-  <span>Parent Module: <a href="informedica-gensolver-lib-variables.html">Variables</a></span>
+  <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule.html">Variable</a></span>
 </p>
 <div class="xmldoc">
-<p>Values is a discrete set of 
-non-zero positive rational numbers,
-the set is either limited
-and then it is a list or
-it is unlimited and then it 
-is a range.</p>
+<p>Represents a variable in an
+<a href="informedica-gensolver-lib-equations-equation.html" title="Equation"><code>Equation</code></a>. The variable is 
+identified by <code>Name</code> and has
+a set of possible <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a>.</p>
 
 
 </div>
-  <h3>Union Cases</h3>
+  <h3>Record Fields</h3>
   <table class="table table-bordered member-list">
     <thead>
-      <tr><td>Union Case</td><td>Description</td></tr>
+      <tr><td>Record Field</td><td>Description</td></tr>
     </thead>
     <tbody>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '63', 63)" onmouseover="showTip(event, '63', 63)">
-            Range(Range)
+          <code onmouseout="hideTip(event, '37', 37)" onmouseover="showTip(event, '37', 37)">
+            Name
           </code>
-          <div class="tip" id="63">
-            <strong>Signature:</strong> Range<br />
+          <div class="tip" id="37">
+            <strong>Signature:</strong> Name<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L24-24" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L259-259" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -77,15 +75,15 @@ is a range.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '64', 64)" onmouseover="showTip(event, '64', 64)">
-            Values(NonZeroPositiveValue list)
+          <code onmouseout="hideTip(event, '38', 38)" onmouseover="showTip(event, '38', 38)">
+            Value
           </code>
-          <div class="tip" id="64">
-            <strong>Signature:</strong> NonZeroPositiveValue list<br />
+          <div class="tip" id="38">
+            <strong>Signature:</strong> ValueSet<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L23-23" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L260-260" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
