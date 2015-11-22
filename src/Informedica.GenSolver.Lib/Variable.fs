@@ -5,10 +5,12 @@ open System
 /// Contains functions to handle 
 /// the `Variable` type and the types
 /// `Variable` depends on.
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Variable =
 
 
     /// Funcions to handle `Name`
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Name =
 
         /// Represents a non empty/null string identifying a `variable`
@@ -20,6 +22,7 @@ module Variable =
 
 
     /// Functions to handle `Value`
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Value =
         
         exception NonZeroOrPositiveValueException
@@ -76,6 +79,7 @@ module Variable =
 
 
     /// Functions to handle `ValueSet`
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module ValueSet =
 
         open System.Collections.Generic
