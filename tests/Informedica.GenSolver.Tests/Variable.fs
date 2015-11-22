@@ -9,7 +9,7 @@ module Testing =
     module Value =
 
         open Variable.Value
-        open Variable.Values
+        open Variable.ValueSet
         
         [<TestFixture>]
         type ``Given a zero or negative number`` () =
@@ -38,7 +38,7 @@ module Testing =
 
     module Values =
 
-        open  Variable.Values
+        open  Variable.ValueSet
 
         [<TestFixture>]
         type ``Given list = empty incr = None min = None max = None`` () =
@@ -46,15 +46,15 @@ module Testing =
             let min = None
             let max = None
 
-            let vals = Range.All |> Values.Range
+            let vals = Range.All |> ValueSet.Range
         
             [<Test>]
             member x.``Creating values returns range All`` () =
-                test <@ Variable.Values.create incr min max [] = vals @>
+                test <@ Variable.ValueSet.create incr min max [] = vals @>
         
             [<Test>]
             member x.``Counting values returns one`` () =
-                test <@ Variable.Values.create incr min max [] |> Variable.Values.count = 0 @>
+                test <@ Variable.ValueSet.create incr min max [] |> Variable.ValueSet.count = 0 @>
 
         [<TestFixture>]
         type ``Given list with one value incr = None min = None max = None`` () =
@@ -66,8 +66,8 @@ module Testing =
 
             [<Test>]
             member x.``Counting values returns one`` () =
-                test <@ Variable.Values.create incr min max vals |> Variable.Values.count = 1 @>
+                test <@ Variable.ValueSet.create incr min max vals |> Variable.ValueSet.count = 1 @>
         
             [<Test>]
             member x.``Creating values returns one value`` () =
-                test <@ Variable.Values.create incr min max vals = (vals |> Values.Values) @>
+                test <@ Variable.ValueSet.create incr min max vals = (vals |> Variable.ValueSet.seqToValueSet) @>
