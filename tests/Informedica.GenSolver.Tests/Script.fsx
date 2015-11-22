@@ -52,6 +52,22 @@ module Testing =
                     test<@ Variable.Value.create 1N = (1N |> Value.Value) @>
         
             [<TestFixture>]
+            type ``Given a get function`` () =
+                [<Test>]
+                member x.``The same value is returned as created`` () =
+                    let canGetValue v =
+                        if v > 0 then
+                            v
+                            |> BigRational.FromInt
+                            |> Variable.Value.create
+                            |> Variable.Value.get
+                            |> BigRational.ToInt32 = v
+                        else true
+
+                    Check.Quick canGetValue
+            
+            
+            [<TestFixture>]
             type ``Given an infix operand`` () =
             
                 [<Test>]
@@ -110,6 +126,9 @@ let runTests () =
 
     let test = new Testing.Variable.Value.``The create function``()
     test.``Will not create negative values``()
+
+    let test = new Testing.Variable.Value.``Given a get function``()
+    test.``The same value is returned as created``()
 
     let test = new Testing.Variable.Value.``Given an infix operand``()
     test.``The operand gives the same result as applied to BigRationals``()

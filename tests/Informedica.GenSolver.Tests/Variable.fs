@@ -44,14 +44,30 @@ module Testing =
                     test<@ Variable.Value.create 1N = (1N |> Value.Value) @>
         
             [<TestFixture>]
+            type ``Given a get function`` () =
+                [<Test>]
+                member x.``The same value is returned as created`` () =
+                    let canGetValue v =
+                        if v > 0 then
+                            v
+                            |> BigRational.FromInt
+                            |> Variable.Value.create
+                            |> Variable.Value.get
+                            |> BigRational.ToInt32 = v
+                        else true
+
+                    Check.Quick canGetValue
+            
+            
+            [<TestFixture>]
             type ``Given an infix operand`` () =
             
                 [<Test>]
                 member x.``The operand gives the same result as applied to BigRationals`` () =
                     let v1 = 1N |> Variable.Value.create
                     let v2 = 1N |> Variable.Value.create
-                    test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.getValue = 2N @>
-                    test <@ (v1 + v2) |> Variable.Value.getValue = 2N @>
+                    test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.get = 2N @>
+                    test <@ (v1 + v2) |> Variable.Value.get = 2N @>
 
 
         module Values =

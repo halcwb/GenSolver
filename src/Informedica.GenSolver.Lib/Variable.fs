@@ -49,7 +49,7 @@ module Variable =
             v1 |> op <| v2 |> create 
 
         /// Get the `BigRational` from `value`
-        let getValue = apply id
+        let get = apply id
 
         /// Filter increment
         let isIncr incr (Value v) = 
