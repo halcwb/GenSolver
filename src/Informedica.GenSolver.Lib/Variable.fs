@@ -5,10 +5,12 @@ open System
 /// Contains functions to handle 
 /// the `Variable` type and the types
 /// `Variable` depends on.
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Variable =
 
 
     /// Funcions to handle `Name`
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Name =
 
         /// Represents a non empty/null string identifying a `variable`
@@ -20,6 +22,7 @@ module Variable =
 
 
     /// Functions to handle `Value`
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Value =
         
         exception NonZeroOrPositiveValueException
@@ -37,6 +40,12 @@ module Variable =
         /// Zero value
         let zero = 0N |> Value
 
+        /// Zero value
+        let one = 1N |> Value
+
+        /// Zero value
+        let two = 2N |> Value
+
         /// Apply a function `f` to value `x`
         let apply f (Value x) = f x
 
@@ -46,7 +55,7 @@ module Variable =
             v1 |> op <| v2 |> create 
 
         /// Get the `BigRational` from `value`
-        let getValue = apply id
+        let get = apply id
 
         /// Filter increment
         let isIncr incr (Value v) = 
@@ -76,6 +85,7 @@ module Variable =
 
 
     /// Functions to handle `ValueSet`
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module ValueSet =
 
         open System.Collections.Generic
