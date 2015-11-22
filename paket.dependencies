@@ -1,6 +1,7 @@
 source https://nuget.org/api/v2
 
 // build
+nuget FsCheck
 nuget FSharp.Formatting
 nuget FsUnit
 nuget NUnit ~> 2
