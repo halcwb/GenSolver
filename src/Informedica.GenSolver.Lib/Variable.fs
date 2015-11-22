@@ -3,12 +3,12 @@
 open System
 
 /// Contains functions to handle 
-/// the `variable` type and the types
-/// `variable` depends on.
+/// the `Variable` type and the types
+/// `Variable` depends on.
 module Variable =
 
 
-    /// Funcions to handle `name`
+    /// Funcions to handle `Name`
     module Name =
 
         /// Represents a non empty/null string identifying a `variable`
@@ -19,7 +19,7 @@ module Variable =
         let create n = n |> Name
 
 
-    /// Functions to handle `value`
+    /// Functions to handle `Value`
     module Value =
         
         exception NonZeroOrPositiveValueException
@@ -75,23 +75,23 @@ module Variable =
             static member (-) (v1, v2) = calc (-) v1 v2
 
 
-    /// Functions to handle `values`
-    module Values =
+    /// Functions to handle `ValueSet`
+    module ValueSet =
 
         open System.Collections.Generic
 
         open Value
 
-        /// Values is a discrete set of 
+        /// `ValueSet` is a discrete set of 
         /// non-zero positive rational numbers,
         /// the set is either limited
         /// and then it is a list or
         /// it is unlimited and then it 
         /// is a range.
-        type Values =
-            | Values of Value list
+        type ValueSet =
+            | ValueSet of Value Set
             | Range of Range
-        /// A range is an unlimited set of
+        /// A `Range` is an unlimited set of
         /// rational numbers, when a set has
         /// both a minimum, maximum and an 
         /// increment then it is not a range
@@ -104,15 +104,38 @@ module Variable =
             | MinMax  of Value * Value
             | IncrMin of Value * Value
 
+        /// Aply the give functions to `ValueSet`
+        /// where fv is used for `Value list` and
+        /// fr is used for `Range`
+        let apply fv fr = function
+            | ValueSet x -> x |> fv
+            | Range x  -> x |> fr
+
+        /// Apply given functions to `Range`.
+        let applyRange fAll fIncr fMin fMax fMinMax fIncrMin = function 
+            | All -> fAll
+            | Incr incr -> incr |> fIncr
+            | Min min   -> min  |> fMin
+            | Max max   -> max  |> fMax
+            | MinMax (min, max) -> fMinMax min max
+            | IncrMin (incr, min) -> fIncrMin incr min
+
+        /// Small helper function to turn a sequence
+        /// of `Value` to a `Vaue Set`.
+        let inline seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
+
+        /// Small helper function to turn a `Value Set`
+        /// to a `Value list`.
+        let valueSetToList = apply Set.toList (fun _ -> [])
 
         /// Convert `BigRational` list to 
-        /// `value` list
+        /// `Value` list
         let toValues = List.map Value.create
 
-        /// Create `values` from either a list of
+        /// Create `ValueSet` from either a list of
         /// `BigRational` or an incr, min, max combi
         let create incr min max vals =
-            if vals |> List.isEmpty |> not then vals |> Values
+            if vals |> List.isEmpty |> not then vals |> seqToValueSet
             else
                 match incr, min, max with
                 | None,      None,     None     -> All                    |> Range
@@ -123,15 +146,15 @@ module Variable =
                 | Some incr, Some min, None     -> (incr, min) |> IncrMin |> Range
 
                 | Some (Value(incr)), None, Some(Value( max)) -> 
-                    [incr..incr..max] |> toValues |> Values
+                    [incr..incr..max] |> toValues |> seqToValueSet
                 | Some (Value(incr)), Some(Value(min)), Some(Value( max)) -> 
-                    [min..incr..max]  |> toValues |> Values
+                    [min..incr..max]  |> toValues |> seqToValueSet
 
-        /// Create values directly from a list of 
+        /// Create `ValueSet` directly from a list of 
         /// `BigRational`.
         let createValues = toValues >> (create None None None)
 
-        /// Create from a range with increment `incr`,
+        /// Create a `Range` with increment `incr`,
         /// minimum `min` and maximum `max`.</br>
         /// Note that if both increment and maximum 
         /// are given a list of values is created with minimum
@@ -140,27 +163,11 @@ module Variable =
         /// `[min..incr..max]`
         let createRange incr min max = create incr min max []
 
-        /// Aply the give functions to `values`
-        /// where fv is used for `value list` and
-        /// fr is used for `range`
-        let apply fv fr = function
-            | Values x -> x |> fv
-            | Range x  -> x |> fr
-
-        /// Apply given functions to `range`.
-        let applyRange fAll fIncr fMin fMax fMinMax fIncrMin = function 
-            | All -> fAll
-            | Incr incr -> incr |> fIncr
-            | Min min   -> min  |> fMin
-            | Max max   -> max  |> fMax
-            | MinMax (min, max) -> fMinMax min max
-            | IncrMin (incr, min) -> fIncrMin incr min
-
         /// Count the number of values
         /// returns 0 when `values` is
-        /// `range`.
+        /// `Range`.
         let count = 
-            let fv = List.length
+            let fv = Set.count
             let fr = fun _ -> 0
             apply fv fr
 
@@ -168,7 +175,7 @@ module Variable =
         /// to two `values`. Only add values
         /// to the result set if > 0.
         let calc op = function
-            | Values s1, Values s2 ->
+            | ValueSet s1, ValueSet s2 ->
                 let s1 = new ResizeArray<_>(s1)
                 let s2 = new ResizeArray<_>(s2)
                 let s3 = new ResizeArray<_>()
@@ -177,23 +184,19 @@ module Variable =
                     for x2 in s2 do
                         let y = x1 |> op <| x2
                         if y > Value.zero then s3.Add(x1 |> op <| x2) 
-                new HashSet<_>(s3, HashIdentity.Structural) |> List.ofSeq |> Values
+                new HashSet<_>(s3, HashIdentity.Structural) |> seqToValueSet
             // Do not perform any calcuation when one of the args is not
             // a list of values
             | _ -> Range.All |> Range
 
-        /// Get the intersection of
-        /// two sequences
-        let intersect v1 v2 =
-            v1 |> Set.ofSeq |> Set.intersect (v2 |> Set.ofSeq)
 
-        /// Filter a list of values according
+        /// Filter a set of values according
         /// to increment, min and max constraints
         let filter incr min max = 
-            let fv = List.filter (fun v -> v |> Value.isIncr incr &&
+            let fv = Set.filter (fun v -> v |> Value.isIncr incr &&
                                            v |> Value.isLT min &&
                                            v |> Value.isST max)
-                     >> Values
+                     >> seqToValueSet
             let fr = Range
             apply fv fr
 
@@ -205,11 +208,10 @@ module Variable =
         /// the intersection of both.
         let setTo v1 v2 = 
             match v1, v2 with
-            | Values v1', Values v2' -> 
-                intersect v1' v2' |> Set.toList |> Values
-            | Range r, Values v
-            | Values v, Range r ->
-                let vs = v |> Values
+            | ValueSet v1', ValueSet v2' -> v1' |> Set.intersect v2' |> ValueSet
+            | Range r, ValueSet v
+            | ValueSet v, Range r ->
+                let vs = v |> ValueSet
                 let fAll = vs
                 let fIncr incr = vs |> filter (Some incr) None None
                 let fMin min   = vs |> filter None (Some min) None
@@ -219,10 +221,10 @@ module Variable =
                 // Filter the values with r
                 r |> applyRange fAll fIncr fMin fMax fMinMax fIncrMin
 
-            | Range r1, Range r2 -> failwith "Not implemented yet"
+            | Range _, Range _ -> failwith "Not implemented yet"
 
         // Extend type with basic arrhythmic operations.
-        type Values with
+        type ValueSet with
             /// Multiply 
             static member (*) (vs1, vs2) = calc (*) (vs1, vs2)
             /// Divide
@@ -236,19 +238,19 @@ module Variable =
 
 
     open Name
-    open Values
+    open ValueSet
 
     /// Represents a variable in an
-    /// `equation`. The variable is 
+    /// `Equation`. The variable is 
     /// identified by `Name` and has
-    /// a set of possible `Values`.
+    /// a set of possible `ValueSet`.
     type Variable =
         {
             Name: Name
-            Values: Values
+            Value: ValueSet
         }
 
     /// Create a variable
-    let create n vs = { Name = n; Values = vs }
+    let create n vs = { Name = n; Value = vs }
 
 
