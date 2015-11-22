@@ -3,6 +3,7 @@
 open Informedica.GenSolver.Lib
 open Swensen.Unquote
 open NUnit.Framework
+open FsCheck
 
 module Testing =
 
@@ -12,6 +13,21 @@ module Testing =
 
             open Variable.Value
             open Variable.ValueSet
+
+            [<TestFixture>]
+            type ``The create function`` () =
+                [<Test>]
+                member x.``Will not create negative values`` () =
+                    let nonZeroOrNegative x =
+                        try
+                            x 
+                            |> BigRational.FromInt
+                            |> Variable.Value.create > Variable.Value.zero 
+                        with 
+                        | Variable.Value.NonZeroOrPositiveValueException _ -> true
+
+                    Check.Quick nonZeroOrNegative
+                    
         
             [<TestFixture>]
             type ``Given a zero or negative number`` () =
