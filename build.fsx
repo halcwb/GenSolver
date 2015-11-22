@@ -86,6 +86,9 @@ let (|Fsproj|Csproj|Vbproj|) (projFileName:string) =
 let getCurrentBranch () = (getGitResult "" "rev-parse --abbrev-ref HEAD").[0]
 
 
+// --------------------------------------------------------------------------------------
+// Integrate current branch with master
+
 Target "Integrate" (fun _ ->
     let master   = "master"
     let remote   = "origin"
@@ -190,12 +193,14 @@ Target "Build" (fun _ ->
 Target "RunTests" (fun _ ->
     match !! testAssemblies with
     | tests when tests |> Seq.length > 0 ->
+        Console.ForegroundColor <- ConsoleColor.Cyan
         tests
         |> NUnit (fun p ->
             { p with
                 DisableShadowCopy = true
                 TimeOut = TimeSpan.FromMinutes 20.
                 OutputFile = "TestResults.xml" })
+        Console.ForegroundColor <- ConsoleColor.White
     | _ -> ()
 )
 
