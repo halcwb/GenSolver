@@ -40,6 +40,12 @@ module Variable =
         /// Zero value
         let zero = 0N |> Value
 
+        /// Zero value
+        let one = 1N |> Value
+
+        /// Zero value
+        let two = 2N |> Value
+
         /// Apply a function `f` to value `x`
         let apply f (Value x) = f x
 

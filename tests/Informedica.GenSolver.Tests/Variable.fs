@@ -69,6 +69,50 @@ module Testing =
                     test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.get = 2N @>
                     test <@ (v1 + v2) |> Variable.Value.get = 2N @>
 
+            [<TestFixture>]
+            type ``Is overloaded with`` () =
+                [<Test>]
+                member x.``Basic arrhythmic functions`` () =
+                    let checkMult x1 x2 =
+                        let create = BigRational.FromInt >> Variable.Value.create
+                        let get = Variable.Value.get >> BigRational.ToInt32
+                        if x1 > 0 && x2 > 0 then
+                            let x1' = x1 |> create
+                            let x2' = x2 |> create
+                            (x1' + x2') |> get = (x1 + x2)
+                        else true
+
+                    let checkDiv x1 x2 =
+                        let create = BigRational.FromInt >> Variable.Value.create
+                        let get = Variable.Value.get >> BigRational.ToInt32
+                        if x1 > 0 && x2 > 0 then
+                            let x1' = x1 |> create
+                            let x2' = x2 |> create
+                            (x1' + x2') |> get = (x1 + x2)
+                        else true
+
+                    let checkAdd x1 x2 =
+                        let create = BigRational.FromInt >> Variable.Value.create
+                        let get = Variable.Value.get >> BigRational.ToInt32
+                        if x1 > 0 && x2 > 0 then
+                            let x1' = x1 |> create
+                            let x2' = x2 |> create
+                            (x1' + x2') |> get = (x1 + x2)
+                        else true
+
+                    let checkSubtr x1 x2 =
+                        let create = BigRational.FromInt >> Variable.Value.create
+                        let get = Variable.Value.get >> BigRational.ToInt32
+                        if x1 > 0 && x2 > 0 then
+                            let x1' = x1 |> create
+                            let x2' = x2 |> create
+                            (x1' + x2') |> get = (x1 + x2)
+                        else true
+
+                    Check.Quick checkMult
+                    Check.Quick checkDiv
+                    Check.Quick checkAdd
+                    Check.Quick checkSubtr
 
         module Values =
 

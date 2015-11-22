@@ -74,9 +74,53 @@ module Testing =
                 member x.``The operand gives the same result as applied to BigRationals`` () =
                     let v1 = 1N |> Variable.Value.create
                     let v2 = 1N |> Variable.Value.create
-                    test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.getValue = 2N @>
-                    test <@ (v1 + v2) |> Variable.Value.getValue = 2N @>
+                    test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.get = 2N @>
+                    test <@ (v1 + v2) |> Variable.Value.get = 2N @>
 
+            [<TestFixture>]
+            type ``Is overloaded with`` () =
+                [<Test>]
+                member x.``Basic arrhythmic functions`` () =
+                    let checkMult x1 x2 =
+                        let create = BigRational.FromInt >> Variable.Value.create
+                        let get = Variable.Value.get >> BigRational.ToInt32
+                        if x1 > 0 && x2 > 0 then
+                            let x1' = x1 |> create
+                            let x2' = x2 |> create
+                            (x1' + x2') |> get = (x1 + x2)
+                        else true
+
+                    let checkDiv x1 x2 =
+                        let create = BigRational.FromInt >> Variable.Value.create
+                        let get = Variable.Value.get >> BigRational.ToInt32
+                        if x1 > 0 && x2 > 0 then
+                            let x1' = x1 |> create
+                            let x2' = x2 |> create
+                            (x1' + x2') |> get = (x1 + x2)
+                        else true
+
+                    let checkAdd x1 x2 =
+                        let create = BigRational.FromInt >> Variable.Value.create
+                        let get = Variable.Value.get >> BigRational.ToInt32
+                        if x1 > 0 && x2 > 0 then
+                            let x1' = x1 |> create
+                            let x2' = x2 |> create
+                            (x1' + x2') |> get = (x1 + x2)
+                        else true
+
+                    let checkSubtr x1 x2 =
+                        let create = BigRational.FromInt >> Variable.Value.create
+                        let get = Variable.Value.get >> BigRational.ToInt32
+                        if x1 > 0 && x2 > 0 then
+                            let x1' = x1 |> create
+                            let x2' = x2 |> create
+                            (x1' + x2') |> get = (x1 + x2)
+                        else true
+
+                    Check.Quick checkMult
+                    Check.Quick checkDiv
+                    Check.Quick checkAdd
+                    Check.Quick checkSubtr
 
         module Values =
 
@@ -132,6 +176,9 @@ let runTests () =
 
     let test = new Testing.Variable.Value.``Given an infix operand``()
     test.``The operand gives the same result as applied to BigRationals``()
+
+    let test = new Testing.Variable.Value.``Is overloaded with``()
+    test.``Basic arrhythmic functions``()
 
     let test = new Testing.Variable.Values.``Given list = empty incr = None min = None max = None``()
     test.``Counting values returns one``()
