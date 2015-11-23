@@ -4,3 +4,4 @@
 #load "../Utils.fs"
       "../Variable.fs"
       "../Solver.fs"
+      "../AssemblyInfo.fs"

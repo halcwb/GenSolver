@@ -122,8 +122,8 @@ module Variable =
             | Range x  -> x |> fr
 
         /// Apply given functions to `Range`.
-        let applyRange fAll fIncr fMin fMax fMinMax fIncrMin = function 
-            | All -> fAll
+        let applyRange all fIncr fMin fMax fMinMax fIncrMin = function 
+            | All -> all
             | Incr incr -> incr |> fIncr
             | Min min   -> min  |> fMin
             | Max max   -> max  |> fMax
@@ -140,7 +140,7 @@ module Variable =
 
         /// Convert `BigRational` list to 
         /// `Value` list
-        let toValues = List.map Value.create
+        let bigRtoValueList = List.map Value.create
 
         /// Create `ValueSet` from either a list of
         /// `BigRational` or an incr, min, max combi
@@ -156,13 +156,13 @@ module Variable =
                 | Some incr, Some min, None     -> (incr, min) |> IncrMin |> Range
 
                 | Some (Value(incr)), None, Some(Value( max)) -> 
-                    [incr..incr..max] |> toValues |> seqToValueSet
+                    [incr..incr..max] |> bigRtoValueList |> seqToValueSet
                 | Some (Value(incr)), Some(Value(min)), Some(Value( max)) -> 
-                    [min..incr..max]  |> toValues |> seqToValueSet
+                    [min..incr..max]  |> bigRtoValueList |> seqToValueSet
 
         /// Create `ValueSet` directly from a list of 
         /// `BigRational`.
-        let createValues = toValues >> (create None None None)
+        let createValues = bigRtoValueList >> (create None None None)
 
         /// Create a `Range` with increment `incr`,
         /// minimum `min` and maximum `max`.</br>
@@ -189,11 +189,12 @@ module Variable =
                 let s1 = new ResizeArray<_>(s1)
                 let s2 = new ResizeArray<_>(s2)
                 let s3 = new ResizeArray<_>()
+                // Check whether the operand is subtraction
+                let opIsSubtr = (Value.two |> op <| Value.one) = Value.one
 
                 for x1 in s1 do
                     for x2 in s2 do
-                        let y = x1 |> op <| x2
-                        if y > Value.zero then s3.Add(x1 |> op <| x2) 
+                        if opIsSubtr && x1 > x2 || (not opIsSubtr) then s3.Add(x1 |> op <| x2) 
                 new HashSet<_>(s3, HashIdentity.Structural) |> seqToValueSet
             // Do not perform any calcuation when one of the args is not
             // a list of values

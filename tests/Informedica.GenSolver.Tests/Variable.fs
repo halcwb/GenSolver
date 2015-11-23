@@ -114,7 +114,7 @@ module Testing =
                     Check.Quick checkAdd
                     Check.Quick checkSubtr
 
-        module Values =
+        module ValueSet =
 
             open  Variable.ValueSet
 
@@ -131,7 +131,7 @@ module Testing =
                     test <@ Variable.ValueSet.create incr min max [] = vals @>
         
                 [<Test>]
-                member x.``Counting values returns one`` () =
+                member x.``Counting values returns zero`` () =
                     test <@ Variable.ValueSet.create incr min max [] |> Variable.ValueSet.count = 0 @>
 
             [<TestFixture>]
@@ -139,7 +139,7 @@ module Testing =
                 let incr = None
                 let min = None
                 let max = None
-
+                // List with one value
                 let vals = [1N |> Variable.Value.create] 
 
                 [<Test>]
@@ -147,5 +147,22 @@ module Testing =
                     test <@ Variable.ValueSet.create incr min max vals |> Variable.ValueSet.count = 1 @>
         
                 [<Test>]
-                member x.``Creating values returns one value`` () =
+                member x.``Creating values returns list with one value`` () =
                     test <@ Variable.ValueSet.create incr min max vals = (vals |> Variable.ValueSet.seqToValueSet) @>
+
+
+            [<TestFixture>]
+            type ``Given a list of Value`` () =
+    
+                [<Test>]
+                member x.``The resulting ValueSet contains an equal amount`` () =
+                    let equalCount c =
+                        if c >= 1 then
+                            let vals = 
+                                [1..c] 
+                                |> List.map BigRational.FromInt
+                                |> Variable.ValueSet.createValues
+                            vals |> Variable.ValueSet.valueSetToList |> List.length = c
+                        else true
+
+                    Check.Quick equalCount

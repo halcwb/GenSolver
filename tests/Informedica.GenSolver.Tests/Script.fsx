@@ -11,6 +11,44 @@ open Informedica.GenSolver.Lib
 open Swensen.Unquote
 open FsCheck
 open NUnit.Framework
+        
+let checkAdd l1 l2 =
+    let l1 = l1 |> List.filter ((<) 0)
+    let l2 = l2 |> List.filter ((<) 0)
+    let create = (List.map BigRational.FromInt) >> Variable.ValueSet.createValues
+    let add =
+        [ for x1 in l1 do
+            for x2 in l2 do
+                yield x1 + x2 ]
+        |> List.toSeq
+        // List will only contain distinct values
+        |> Seq.distinct
+        |> Seq.toList
+    let l1' = l1 |> create
+    let l2' = l2 |> create
+    (l1' + l2') |> Variable.ValueSet.valueSetToList |> List.length = add.Length
+
+let checkSubtr l1 l2 =
+    let l1 = l1 |> List.filter ((<) 0)
+    let l2 = l2 |> List.filter ((<) 0)
+    let create = (List.map BigRational.FromInt) >> Variable.ValueSet.createValues
+    let add =
+        [ for x1 in l1 do
+            for x2 in l2 do
+                yield x1 - x2 ]
+        |> List.toSeq
+        // List will contain only non zero/negative valuees
+        |> Seq.filter ((<) 0)
+        // List will only contain distinct values
+        |> Seq.distinct
+        |> Seq.toList
+    let l1' = l1 |> create
+    let l2' = l2 |> create
+    (l1' - l2') |> Variable.ValueSet.valueSetToList |> List.length = add.Length
+
+
+Check.Quick checkAdd
+Check.Quick checkSubtr
 
 
 module Testing =
@@ -122,7 +160,7 @@ module Testing =
                     Check.Quick checkAdd
                     Check.Quick checkSubtr
 
-        module Values =
+        module ValueSet =
 
             open  Variable.ValueSet
 
@@ -139,7 +177,7 @@ module Testing =
                     test <@ Variable.ValueSet.create incr min max [] = vals @>
         
                 [<Test>]
-                member x.``Counting values returns one`` () =
+                member x.``Counting values returns zero`` () =
                     test <@ Variable.ValueSet.create incr min max [] |> Variable.ValueSet.count = 0 @>
 
             [<TestFixture>]
@@ -147,7 +185,7 @@ module Testing =
                 let incr = None
                 let min = None
                 let max = None
-
+                // List with one value
                 let vals = [1N |> Variable.Value.create] 
 
                 [<Test>]
@@ -155,8 +193,25 @@ module Testing =
                     test <@ Variable.ValueSet.create incr min max vals |> Variable.ValueSet.count = 1 @>
         
                 [<Test>]
-                member x.``Creating values returns one value`` () =
+                member x.``Creating values returns list with one value`` () =
                     test <@ Variable.ValueSet.create incr min max vals = (vals |> Variable.ValueSet.seqToValueSet) @>
+
+
+            [<TestFixture>]
+            type ``Given a list of Value`` () =
+    
+                [<Test>]
+                member x.``The resulting ValueSet contains an equal amount`` () =
+                    let equalCount c =
+                        if c >= 1 then
+                            let vals = 
+                                [1..c] 
+                                |> List.map BigRational.FromInt
+                                |> Variable.ValueSet.createValues
+                            vals |> Variable.ValueSet.valueSetToList |> List.length = c
+                        else true
+
+                    Check.Quick equalCount
 
 
 let runTests () =
@@ -180,11 +235,14 @@ let runTests () =
     let test = new Testing.Variable.Value.``Is overloaded with``()
     test.``Basic arrhythmic functions``()
 
-    let test = new Testing.Variable.Values.``Given list = empty incr = None min = None max = None``()
-    test.``Counting values returns one``()
+    let test = new Testing.Variable.ValueSet.``Given list = empty incr = None min = None max = None``()
+    test.``Counting values returns zero``()
     test.``Creating values returns range All``()
 
-    let test = new Testing.Variable.Values.``Given list with one value incr = None min = None max = None``()
+    let test = new Testing.Variable.ValueSet.``Given list with one value incr = None min = None max = None``()
     test.``Counting values returns one``()
-    test.``Creating values returns one value``()
+    test.``Creating values returns list with one value``()
     
+    let test = new Testing.Variable.ValueSet.``Given a list of Value``()
+    test.``The resulting ValueSet contains an equal amount``()
+
