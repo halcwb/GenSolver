@@ -15,7 +15,7 @@ open NUnit.Framework
 let checkAdd l1 l2 =
     let l1 = l1 |> List.filter ((<) 0)
     let l2 = l2 |> List.filter ((<) 0)
-    let create = (List.map BigRational.FromInt) >> Variable.ValueSet.createValues
+    let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
     let add =
         [ for x1 in l1 do
             for x2 in l2 do
@@ -26,12 +26,12 @@ let checkAdd l1 l2 =
         |> Seq.toList
     let l1' = l1 |> create
     let l2' = l2 |> create
-    (l1' + l2') |> Variable.ValueSet.valueSetToList |> List.length = add.Length
+    (l1' + l2') |> Variable.Values.valueSetToList |> List.length = add.Length
 
 let checkSubtr l1 l2 =
     let l1 = l1 |> List.filter ((<) 0)
     let l2 = l2 |> List.filter ((<) 0)
-    let create = (List.map BigRational.FromInt) >> Variable.ValueSet.createValues
+    let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
     let add =
         [ for x1 in l1 do
             for x2 in l2 do
@@ -44,7 +44,7 @@ let checkSubtr l1 l2 =
         |> Seq.toList
     let l1' = l1 |> create
     let l2' = l2 |> create
-    (l1' - l2') |> Variable.ValueSet.valueSetToList |> List.length = add.Length
+    (l1' - l2') |> Variable.Values.valueSetToList |> List.length = add.Length
 
 
 Check.Quick checkAdd
@@ -58,7 +58,7 @@ module Testing =
         module Value =
 
             open Variable.Value
-            open Variable.ValueSet
+            open Variable.Values
 
             [<TestFixture>]
             type ``The create function`` () =
@@ -162,7 +162,7 @@ module Testing =
 
         module ValueSet =
 
-            open  Variable.ValueSet
+            open  Variable.Values
 
             [<TestFixture>]
             type ``Given list = empty incr = None min = None max = None`` () =
@@ -170,15 +170,15 @@ module Testing =
                 let min = None
                 let max = None
 
-                let vals = Range.All |> ValueSet.Range
+                let vals = Range.All |> Values.Range
         
                 [<Test>]
                 member x.``Creating values returns range All`` () =
-                    test <@ Variable.ValueSet.create incr min max [] = vals @>
+                    test <@ Variable.Values.create incr min max [] = vals @>
         
                 [<Test>]
                 member x.``Counting values returns zero`` () =
-                    test <@ Variable.ValueSet.create incr min max [] |> Variable.ValueSet.count = 0 @>
+                    test <@ Variable.Values.create incr min max [] |> Variable.Values.count = 0 @>
 
             [<TestFixture>]
             type ``Given list with one value incr = None min = None max = None`` () =
@@ -190,11 +190,11 @@ module Testing =
 
                 [<Test>]
                 member x.``Counting values returns one`` () =
-                    test <@ Variable.ValueSet.create incr min max vals |> Variable.ValueSet.count = 1 @>
+                    test <@ Variable.Values.create incr min max vals |> Variable.Values.count = 1 @>
         
                 [<Test>]
                 member x.``Creating values returns list with one value`` () =
-                    test <@ Variable.ValueSet.create incr min max vals = (vals |> Variable.ValueSet.seqToValueSet) @>
+                    test <@ Variable.Values.create incr min max vals = (vals |> Variable.Values.seqToValueSet) @>
 
 
             [<TestFixture>]
@@ -207,8 +207,8 @@ module Testing =
                             let vals = 
                                 [1..c] 
                                 |> List.map BigRational.FromInt
-                                |> Variable.ValueSet.createValues
-                            vals |> Variable.ValueSet.valueSetToList |> List.length = c
+                                |> Variable.Values.createValues
+                            vals |> Variable.Values.valueSetToList |> List.length = c
                         else true
 
                     Check.Quick equalCount

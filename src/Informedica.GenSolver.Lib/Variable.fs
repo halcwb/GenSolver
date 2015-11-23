@@ -84,21 +84,21 @@ module Variable =
             static member (-) (v1, v2) = calc (-) v1 v2
 
 
-    /// Functions to handle `ValueSet`
+    /// Functions to handle `Values`
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-    module ValueSet =
+    module Values =
 
         open System.Collections.Generic
 
         open Value
 
-        /// `ValueSet` is a discrete set of 
+        /// `Values` is a discrete set of 
         /// non-zero positive rational numbers,
         /// the set is either limited
         /// and then it is a list or
         /// it is unlimited and then it 
         /// is a range.
-        type ValueSet =
+        type Values =
             | ValueSet of Value Set
             | Range of Range
         /// A `Range` is an unlimited set of
@@ -114,7 +114,7 @@ module Variable =
             | MinMax  of Value * Value
             | IncrMin of Value * Value
 
-        /// Aply the give functions to `ValueSet`
+        /// Aply the give functions to `Values`
         /// where fv is used for `Value list` and
         /// fr is used for `Range`
         let apply fv fr = function
@@ -142,7 +142,7 @@ module Variable =
         /// `Value` list
         let bigRtoValueList = List.map Value.create
 
-        /// Create `ValueSet` from either a list of
+        /// Create `Values` from either a list of
         /// `BigRational` or an incr, min, max combi
         let create incr min max vals =
             if vals |> List.isEmpty |> not then vals |> seqToValueSet
@@ -160,7 +160,7 @@ module Variable =
                 | Some (Value(incr)), Some(Value(min)), Some(Value( max)) -> 
                     [min..incr..max]  |> bigRtoValueList |> seqToValueSet
 
-        /// Create `ValueSet` directly from a list of 
+        /// Create `Values` directly from a list of 
         /// `BigRational`.
         let createValues = bigRtoValueList >> (create None None None)
 
@@ -235,7 +235,7 @@ module Variable =
             | Range _, Range _ -> failwith "Not implemented yet"
 
         // Extend type with basic arrhythmic operations.
-        type ValueSet with
+        type Values with
             /// Multiply 
             static member (*) (vs1, vs2) = calc (*) (vs1, vs2)
             /// Divide
@@ -249,19 +249,19 @@ module Variable =
 
 
     open Name
-    open ValueSet
+    open Values
 
     /// Represents a variable in an
     /// `Equation`. The variable is 
     /// identified by `Name` and has
-    /// a set of possible `ValueSet`.
+    /// a set of possible `Values`.
     type Variable =
         {
             Name: Name
-            Value: ValueSet
+            Values: Values
         }
 
     /// Create a variable
-    let create n vs = { Name = n; Value = vs }
+    let create n vs = { Name = n; Values = vs }
 
 
