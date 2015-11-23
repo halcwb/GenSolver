@@ -11,47 +11,6 @@ open Informedica.GenSolver.Lib
 open Swensen.Unquote
 open FsCheck
 open NUnit.Framework
-        
-
-
-// ToDo add this to tests
-let checkAdd l1 l2 =
-    let l1 = l1 |> List.filter ((<) 0)
-    let l2 = l2 |> List.filter ((<) 0)
-    let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
-    let add =
-        [ for x1 in l1 do
-            for x2 in l2 do
-                yield x1 + x2 ]
-        |> List.toSeq
-        // List will only contain distinct values
-        |> Seq.distinct
-        |> Seq.toList
-    let l1' = l1 |> create
-    let l2' = l2 |> create
-    (l1' + l2') |> Variable.Values.valueSetToList |> List.length = add.Length
-
-let checkSubtr l1 l2 =
-    let l1 = l1 |> List.filter ((<) 0)
-    let l2 = l2 |> List.filter ((<) 0)
-    let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
-    let add =
-        [ for x1 in l1 do
-            for x2 in l2 do
-                yield x1 - x2 ]
-        |> List.toSeq
-        // List will contain only non zero/negative valuees
-        |> Seq.filter ((<) 0)
-        // List will only contain distinct values
-        |> Seq.distinct
-        |> Seq.toList
-    let l1' = l1 |> create
-    let l2' = l2 |> create
-    (l1' - l2') |> Variable.Values.valueSetToList |> List.length = add.Length
-
-
-Check.Quick checkAdd
-Check.Quick checkSubtr
 
 
 module Testing =
@@ -237,6 +196,94 @@ module Testing =
                     test <@ Variable.Values.filter incr min None vsincr  = ([6N..2N..10N] |> create) @>
                     test <@ Variable.Values.filter incr min max vsincr   = ([6N..2N..6N] |> create) @>
                     
+            [<TestFixture>]
+            type ``Given addition multiplication or division of two value sets`` () =
+                    
+                [<Test>]
+                member x.``The resultset will be a distinct set of added values`` () =
+                    let checkAdd l1 l2 =
+                        // Only values > 0
+                        let l1 = l1 |> List.filter ((<) 0)
+                        let l2 = l2 |> List.filter ((<) 0)
+
+                        let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
+                        let add =
+                            [ for x1 in l1 do
+                                for x2 in l2 do
+                                    yield x1 + x2 ]
+                            |> List.toSeq
+                            // List will only contain distinct values
+                            |> Seq.distinct
+                            |> Seq.toList
+                        let l1' = l1 |> create
+                        let l2' = l2 |> create
+                        (l1' + l2') |> Variable.Values.valueSetToList |> List.length = add.Length
+
+                    let checkMult l1 l2 =
+                        // Only values > 0
+                        let l1 = l1 |> List.filter ((<) 0)
+                        let l2 = l2 |> List.filter ((<) 0)
+
+                        let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
+                        let mult =
+                            [ for x1 in l1 do
+                                for x2 in l2 do
+                                    yield x1 * x2 ]
+                            |> List.toSeq
+                            // List will only contain distinct values
+                            |> Seq.distinct
+                            |> Seq.toList
+                        let l1' = l1 |> create
+                        let l2' = l2 |> create
+                        (l1' * l2') |> Variable.Values.valueSetToList |> List.length = mult.Length
+
+                    let checkDiv l1 l2 =
+                        // Only values > 0
+                        let l1 = l1 |> List.filter ((<) 0) |> List.map BigRational.FromInt
+                        let l2 = l2 |> List.filter ((<) 0) |> List.map BigRational.FromInt
+
+                        let create = Variable.Values.createValues
+                        let div =
+                            [ for x1 in l1 do
+                                for x2 in l2 do
+                                    yield x1 / x2 ]
+                            |> List.toSeq
+                            // List will only contain distinct values
+                            |> Seq.distinct
+                            |> Seq.toList
+                        let l1' = l1 |> create
+                        let l2' = l2 |> create
+                        (l1' / l2') |> Variable.Values.valueSetToList |> List.length = div.Length
+
+                    Check.Quick checkAdd
+                    Check.Quick checkMult
+                    Check.Quick checkDiv
+
+            [<TestFixture>]
+            type ``Given subtraction of two value sets`` () =
+                    
+                [<Test>]
+                member x.``The resultset will be a distinct set of positive values`` () =
+                    let checkSubtr l1 l2 =
+                        // Only values > 0
+                        let l1 = l1 |> List.filter ((<) 0)
+                        let l2 = l2 |> List.filter ((<) 0)
+
+                        let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
+                        let subtr =
+                            [ for x1 in l1 do
+                                for x2 in l2 do
+                                    yield x1 + x2 ]
+                            |> List.toSeq
+                            // List will only contain distinct values
+                            |> Seq.distinct
+                            |> Seq.toList
+                        let l1' = l1 |> create
+                        let l2' = l2 |> create
+                        (l1' + l2') |> Variable.Values.valueSetToList |> List.length = subtr.Length
+
+                    Check.Quick checkSubtr
+
 
 let runTests () =
 
@@ -273,4 +320,10 @@ let runTests () =
     let test = new Testing.Variable.Values.``Given a list of Value``()
     test.``The resulting ValueSet contains an equal amount``()
     test.``Can filter by incr, min and max``()
+
+    let test = new Testing.Variable.Values.``Given addition multiplication or division of two value sets``()
+    test.``The resultset will be a distinct set of added values``()
+
+    let test = new Testing.Variable.Values.``Given subtraction of two value sets``()
+    test.``The resultset will be a distinct set of positive values``()
 

@@ -187,3 +187,91 @@ module Testing =
                     test <@ Variable.Values.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
                     test <@ Variable.Values.filter incr min None vsincr  = ([6N..2N..10N] |> create) @>
                     test <@ Variable.Values.filter incr min max vsincr   = ([6N..2N..6N] |> create) @>
+                    
+            [<TestFixture>]
+            type ``Given addition multiplication or division of two value sets`` () =
+                    
+                [<Test>]
+                member x.``The resultset will be a distinct set of added values`` () =
+                    let checkAdd l1 l2 =
+                        // Only values > 0
+                        let l1 = l1 |> List.filter ((<) 0)
+                        let l2 = l2 |> List.filter ((<) 0)
+
+                        let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
+                        let add =
+                            [ for x1 in l1 do
+                                for x2 in l2 do
+                                    yield x1 + x2 ]
+                            |> List.toSeq
+                            // List will only contain distinct values
+                            |> Seq.distinct
+                            |> Seq.toList
+                        let l1' = l1 |> create
+                        let l2' = l2 |> create
+                        (l1' + l2') |> Variable.Values.valueSetToList |> List.length = add.Length
+
+                    let checkMult l1 l2 =
+                        // Only values > 0
+                        let l1 = l1 |> List.filter ((<) 0)
+                        let l2 = l2 |> List.filter ((<) 0)
+
+                        let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
+                        let mult =
+                            [ for x1 in l1 do
+                                for x2 in l2 do
+                                    yield x1 * x2 ]
+                            |> List.toSeq
+                            // List will only contain distinct values
+                            |> Seq.distinct
+                            |> Seq.toList
+                        let l1' = l1 |> create
+                        let l2' = l2 |> create
+                        (l1' * l2') |> Variable.Values.valueSetToList |> List.length = mult.Length
+
+                    let checkDiv l1 l2 =
+                        // Only values > 0
+                        let l1 = l1 |> List.filter ((<) 0) |> List.map BigRational.FromInt
+                        let l2 = l2 |> List.filter ((<) 0) |> List.map BigRational.FromInt
+
+                        let create = Variable.Values.createValues
+                        let div =
+                            [ for x1 in l1 do
+                                for x2 in l2 do
+                                    yield x1 / x2 ]
+                            |> List.toSeq
+                            // List will only contain distinct values
+                            |> Seq.distinct
+                            |> Seq.toList
+                        let l1' = l1 |> create
+                        let l2' = l2 |> create
+                        (l1' / l2') |> Variable.Values.valueSetToList |> List.length = div.Length
+
+                    Check.Quick checkAdd
+                    Check.Quick checkMult
+                    Check.Quick checkDiv
+
+            [<TestFixture>]
+            type ``Given subtraction of two value sets`` () =
+                    
+                [<Test>]
+                member x.``The resultset will be a distinct set of positive values`` () =
+                    let checkSubtr l1 l2 =
+                        // Only values > 0
+                        let l1 = l1 |> List.filter ((<) 0)
+                        let l2 = l2 |> List.filter ((<) 0)
+
+                        let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
+                        let subtr =
+                            [ for x1 in l1 do
+                                for x2 in l2 do
+                                    yield x1 + x2 ]
+                            |> List.toSeq
+                            // List will only contain distinct values
+                            |> Seq.distinct
+                            |> Seq.toList
+                        let l1' = l1 |> create
+                        let l2' = l2 |> create
+                        (l1' + l2') |> Variable.Values.valueSetToList |> List.length = subtr.Length
+
+                    Check.Quick checkSubtr
