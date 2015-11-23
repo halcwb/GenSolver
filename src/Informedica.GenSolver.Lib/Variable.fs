@@ -65,23 +65,10 @@ module Variable =
         /// Get the `BigRational` from `value`
         let get = apply id
 
-        /// Filter increment
-        let isIncr incr (Value v) = 
-            match incr with
-            | Some(Value(x)) -> (v.Numerator * x.Denominator) % (x.Numerator * v.Denominator) = 0I
-            | None   -> v > 0N
-
-        /// Filter max
-        let isST max (Value v) =
-            match max with
-            | Some(Value(x)) -> v <= x
-            | None -> true
-
-        /// Filter min
-        let isLT max (Value v) =
-            match max with
-            | Some(Value(x)) -> v >= x
-            | None -> true
+        /// Check whether a value `v` is 
+        /// an increment of `incr`.
+        let isIncr (Value incr) (Value v) = 
+            (v.Numerator * incr.Denominator) % (incr.Numerator * v.Denominator) = 0I
 
         /// Overload basic arrhythmic operations
         type Value with
@@ -198,7 +185,7 @@ module Variable =
             apply fv fr
 
         /// Applies an infix operator
-        /// to two `values`. Only add values
+        /// to two `Values`. Only add values
         /// to the result set if > 0.
         let calc op = function
             | ValueSet s1, ValueSet s2 ->
@@ -210,7 +197,10 @@ module Variable =
 
                 for x1 in s1 do
                     for x2 in s2 do
-                        if opIsSubtr && x1 > x2 || (not opIsSubtr) then s3.Add(x1 |> op <| x2) 
+                        // prevent subtraction resulting in a zero or negative result
+                        if opIsSubtr && x1 > x2 || (not opIsSubtr) then 
+                            // perform the arrhythmic operation and to the result set
+                            s3.Add(x1 |> op <| x2) 
                 new HashSet<_>(s3, HashIdentity.Structural) |> seqToValueSet
             // Do not perform any calcuation when one of the args is not
             // a list of values
@@ -220,9 +210,13 @@ module Variable =
         /// Filter a set of values according
         /// to increment, min and max constraints
         let filter incr min max = 
-            let fv = Set.filter (fun v -> v |> Value.isIncr incr &&
-                                           v |> Value.isLT min &&
-                                           v |> Value.isST max)
+            let returnTrue = fun _ -> true
+            let fIncr = function | None -> returnTrue | Some incr -> Value.isIncr incr
+            let fMin  = function | None -> returnTrue | Some min ->  (<) min
+            let fMax  = function | None -> returnTrue | Some max ->  (>) max
+            let fv = Set.filter (fun v -> v |> fIncr incr &&
+                                          v |> fMin min &&
+                                          v |> fMax max)
                      >> seqToValueSet
             let fr = Range
             apply fv fr
@@ -238,12 +232,12 @@ module Variable =
             | ValueSet v1', ValueSet v2' -> v1' |> Set.intersect v2' |> ValueSet
             | Range r, ValueSet v
             | ValueSet v, Range r ->
-                let vs = v |> ValueSet
-                let fAll = vs
-                let fIncr incr = vs |> filter (Some incr) None None
-                let fMin min   = vs |> filter None (Some min) None
-                let fMax max   = vs |> filter None None (Some max)
-                let fMinMax min max = vs |> filter None (Some min) (Some max)
+                let vs                = v |> ValueSet
+                let fAll              = vs
+                let fIncr incr        = vs |> filter (Some incr) None None
+                let fMin min          = vs |> filter None (Some min) None
+                let fMax max          = vs |> filter None None (Some max)
+                let fMinMax min max   = vs |> filter None (Some min) (Some max)
                 let fIncrMin incr min = vs |> filter (Some incr) (Some min) None
                 // Filter the values with r
                 r |> applyRange fAll fIncr fMin fMax fMinMax fIncrMin

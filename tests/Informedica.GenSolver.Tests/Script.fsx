@@ -169,7 +169,7 @@ module Testing =
                     let v2 = Variable.Value.create 2N
                     raises<Variable.Value.NonZeroOrPositiveValueException> <@ v1 - v2 @> 
 
-        module ValueSet =
+        module Values =
 
             open  Variable.Values
 
@@ -204,7 +204,6 @@ module Testing =
                 [<Test>]
                 member x.``Creating values returns list with one value`` () =
                     test <@ Variable.Values.create incr min max vals = (vals |> Variable.Values.seqToValueSet) @>
-
 
             [<TestFixture>]
             type ``Given a list of Value`` () =
@@ -247,14 +246,14 @@ let runTests () =
     let test = new Testing.Variable.Value.``Is overloaded with``()
     test.``Basic arrhythmic functions``()
 
-    let test = new Testing.Variable.ValueSet.``Given list = empty incr = None min = None max = None``()
+    let test = new Testing.Variable.Values.``Given list = empty incr = None min = None max = None``()
     test.``Counting values returns zero``()
     test.``Creating values returns range All``()
 
-    let test = new Testing.Variable.ValueSet.``Given list with one value incr = None min = None max = None``()
+    let test = new Testing.Variable.Values.``Given list with one value incr = None min = None max = None``()
     test.``Counting values returns one``()
     test.``Creating values returns list with one value``()
     
-    let test = new Testing.Variable.ValueSet.``Given a list of Value``()
+    let test = new Testing.Variable.Values.``Given a list of Value``()
     test.``The resulting ValueSet contains an equal amount``()
 
