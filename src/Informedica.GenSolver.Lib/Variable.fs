@@ -55,7 +55,7 @@ module Variable =
         let two = 2N |> Value
 
         /// Apply a function `f` to value `x`
-        let apply f (Value x) = f x
+        let apply f (Value x): 'a = f x
 
         /// Apply an infix operation `op` to
         /// two values `v1` and `v2`
@@ -120,12 +120,14 @@ module Variable =
         /// Aply the give functions to `Values`
         /// where fv is used for `Value list` and
         /// fr is used for `Range`
-        let apply fv fr = function
+        let apply fv fr vs : 'a =
+            match vs with
             | ValueSet x -> x |> fv
             | Range x  -> x |> fr
 
         /// Apply given functions to `Range`.
-        let applyRange all fIncr fMin fMax fMinMax fIncrMin = function 
+        let applyRange all fIncr fMin fMax fMinMax fIncrMin r : 'a = 
+            match r with 
             | All -> all
             | Incr incr -> incr |> fIncr
             | Min min   -> min  |> fMin
