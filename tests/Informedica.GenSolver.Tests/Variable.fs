@@ -37,6 +37,7 @@ module Testing =
                 [<Test>]
                 member x.``With -1N an exception is raised`` () =
                     raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (-1N |> Value.Value) @>
+
             [<TestFixture>]
             type ``Given a non zero positive value`` () =
                 [<Test>]
@@ -57,7 +58,6 @@ module Testing =
                         else true
 
                     Check.Quick canGetValue
-            
             
             [<TestFixture>]
             type ``Given an infix operand`` () =
@@ -113,8 +113,17 @@ module Testing =
                     Check.Quick checkDiv
                     Check.Quick checkAdd
                     Check.Quick checkSubtr
+        
+            [<TestFixture>]
+            type ``Given a negative subtraction result`` () =
+                
+                [<Test>]
+                member x.``A NonZeroOrPositive error is thrown`` () =
+                    let v1 = Variable.Value.create 1N
+                    let v2 = Variable.Value.create 2N
+                    raises<Variable.Value.NonZeroOrPositiveValueException> <@ v1 - v2 @> 
 
-        module ValueSet =
+        module Values =
 
             open  Variable.Values
 
@@ -150,7 +159,6 @@ module Testing =
                 member x.``Creating values returns list with one value`` () =
                     test <@ Variable.Values.create incr min max vals = (vals |> Variable.Values.seqToValueSet) @>
 
-
             [<TestFixture>]
             type ``Given a list of Value`` () =
     
@@ -166,3 +174,16 @@ module Testing =
                         else true
 
                     Check.Quick equalCount
+
+                [<Test>]
+                member x.``Can filter by incr, min and max`` () =
+                    // Check values filter
+                    let create = Variable.Values.createValues
+                    let vsincr = [1N..1N..10N] |> create
+                    let incr = Variable.Value.create 2N |> Some
+                    let min  = Variable.Value.create 4N |> Some 
+                    let max  = Variable.Value.create 8N |> Some
+                    test <@ Variable.Values.filter None None None vsincr = vsincr @>
+                    test <@ Variable.Values.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
+                    test <@ Variable.Values.filter incr min None vsincr  = ([6N..2N..10N] |> create) @>
+                    test <@ Variable.Values.filter incr min max vsincr   = ([6N..2N..6N] |> create) @>

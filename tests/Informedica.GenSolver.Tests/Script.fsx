@@ -12,6 +12,9 @@ open Swensen.Unquote
 open FsCheck
 open NUnit.Framework
         
+
+
+// ToDo add this to tests
 let checkAdd l1 l2 =
     let l1 = l1 |> List.filter ((<) 0)
     let l2 = l2 |> List.filter ((<) 0)
@@ -221,6 +224,19 @@ module Testing =
 
                     Check.Quick equalCount
 
+                [<Test>]
+                member x.``Can filter by incr, min and max`` () =
+                    // Check values filter
+                    let create = Variable.Values.createValues
+                    let vsincr = [1N..1N..10N] |> create
+                    let incr = Variable.Value.create 2N |> Some
+                    let min  = Variable.Value.create 4N |> Some 
+                    let max  = Variable.Value.create 8N |> Some
+                    test <@ Variable.Values.filter None None None vsincr = vsincr @>
+                    test <@ Variable.Values.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
+                    test <@ Variable.Values.filter incr min None vsincr  = ([6N..2N..10N] |> create) @>
+                    test <@ Variable.Values.filter incr min max vsincr   = ([6N..2N..6N] |> create) @>
+                    
 
 let runTests () =
 
@@ -256,4 +272,5 @@ let runTests () =
     
     let test = new Testing.Variable.Values.``Given a list of Value``()
     test.``The resulting ValueSet contains an equal amount``()
+    test.``Can filter by incr, min and max``()
 
