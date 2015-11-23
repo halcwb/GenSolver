@@ -83,6 +83,7 @@ module Testing =
                 [<Test>]
                 member x.``With -1N an exception is raised`` () =
                     raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (-1N |> Value.Value) @>
+
             [<TestFixture>]
             type ``Given a non zero positive value`` () =
                 [<Test>]
@@ -103,7 +104,6 @@ module Testing =
                         else true
 
                     Check.Quick canGetValue
-            
             
             [<TestFixture>]
             type ``Given an infix operand`` () =
@@ -159,6 +159,15 @@ module Testing =
                     Check.Quick checkDiv
                     Check.Quick checkAdd
                     Check.Quick checkSubtr
+        
+            [<TestFixture>]
+            type ``Given a negative subtraction result`` () =
+                
+                [<Test>]
+                member x.``A NonZeroOrPositive error is thrown`` () =
+                    let v1 = Variable.Value.create 1N
+                    let v2 = Variable.Value.create 2N
+                    raises<Variable.Value.NonZeroOrPositiveValueException> <@ v1 - v2 @> 
 
         module ValueSet =
 
@@ -219,6 +228,9 @@ let runTests () =
     let test = new Testing.Variable.Value.``Given a zero or negative number``()
     test.``With 0 an exception is raised``()
     test.``With -1N an exception is raised``()
+
+    let test = new Testing.Variable.Value.``Given a negative subtraction result``()
+    test.``A NonZeroOrPositive error is thrown``()
     
     let test = new Testing.Variable.Value.``Given a non zero positive value``()
     test.``A value can be created``()

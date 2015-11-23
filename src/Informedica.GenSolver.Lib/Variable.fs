@@ -4,7 +4,11 @@ open System
 
 /// Contains functions to handle 
 /// the `Variable` type and the types
-/// `Variable` depends on.
+/// `Variable` depends on:
+///
+/// * `Name`
+/// * `Value`
+/// * `Values`
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Variable =
 
@@ -22,6 +26,10 @@ module Variable =
 
 
     /// Functions to handle `Value`
+    /// A `Value` is a non zero 
+    /// positive value.
+    /// Basic arrhythmic operations
+    /// can be performed with this type.
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Value =
         
@@ -77,10 +85,18 @@ module Variable =
 
         /// Overload basic arrhythmic operations
         type Value with
-
+            /// Multiplication
             static member (*) (v1, v2) = calc (*) v1 v2
+            /// Division</br>
+            /// Note that because the type cannot be zero
+            /// this operation always succeds.
             static member (/) (v1, v2) = calc (/) v1 v2
+            /// Addition
             static member (+) (v1, v2) = calc (+) v1 v2
+            /// Subtraction </br>
+            /// Note that because the result 
+            /// has to be larger than zero, the
+            /// operation can fail.
             static member (-) (v1, v2) = calc (-) v1 v2
 
 
