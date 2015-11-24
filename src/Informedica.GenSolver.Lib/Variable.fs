@@ -139,7 +139,6 @@ module Variable =
         /// of `Value` to a `Vaue Set`.
         let inline seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
 
-
         /// Small helper function to turn a `Value Set`
         /// to a `Value list`.
         let valueSetToList = apply Set.toList (fun _ -> [])
@@ -170,7 +169,6 @@ module Variable =
         /// `BigRational`.
         let createValues = bigRtoValueList >> (create None None None)
 
-
         /// Create a `Range` with increment `incr`,
         /// minimum `min` and maximum `max`.</br>
         /// Note that if both increment and maximum 
@@ -179,7 +177,6 @@ module Variable =
         /// likewise a list of values is generated, i.e. 
         /// `[min..incr..max]`
         let createRange incr min max = create incr min max []
-
 
         /// Count the number of values
         /// returns 0 when `values` is
@@ -199,6 +196,8 @@ module Variable =
             let fr = applyRange None Some none none fMinMax fIncrMin
             apply none fr
 
+        /// Get the minimum from
+        /// values if there is one
         let getMin =
             let none = fun _ -> None
             let fMinMax  = fun min _ -> Some min
@@ -207,6 +206,8 @@ module Variable =
             let fr = applyRange None Some none none fMinMax fIncrMin
             apply (fun vs -> vs.MinimumElement |> Some ) fr
 
+        /// Get the maximum from
+        /// values if there is one
         let getMax =
             let none = fun _ -> None
             let fMinMax = fun _ max -> max |> Some
@@ -236,7 +237,6 @@ module Variable =
             // Do not perform any calcuation when one of the args is not
             // a list of values
             | _ -> Range.All |> Range
-
 
         /// Filter a set of values according
         /// to increment, min and max constraints
