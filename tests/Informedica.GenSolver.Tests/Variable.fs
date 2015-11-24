@@ -160,6 +160,23 @@ module Testing =
                     test <@ Variable.Values.create incr min max vals = (vals |> Variable.Values.seqToValueSet) @>
 
             [<TestFixture>]
+            type ``Given empty list incr = Some 1N min = None max = None`` () =
+                let incr = 1N |> Variable.Value.create |> Some
+                let min = None
+                let max = None
+                // List with one value
+                let vals = [] 
+
+                [<Test>]
+                member x.``Values contain no values`` () =
+                    test <@ Variable.Values.create incr min max vals |> Variable.Values.count = 0 @>
+
+                [<Test>]
+                member x.``Increment is one`` () =
+                    test <@ Variable.Values.create incr min max vals |> Variable.Values.getIncr = incr @>
+
+
+            [<TestFixture>]
             type ``Given a list of Value`` () =
     
                 [<Test>]
@@ -181,12 +198,12 @@ module Testing =
                     let create = Variable.Values.createValues
                     let vsincr = [1N..1N..10N] |> create
                     let incr = Variable.Value.create 2N |> Some
-                    let min  = Variable.Value.create 4N |> Some 
-                    let max  = Variable.Value.create 8N |> Some
+                    let min = Variable.Value.create 4N |> Some 
+                    let max = Variable.Value.create 8N |> Some
                     test <@ Variable.Values.filter None None None vsincr = vsincr @>
                     test <@ Variable.Values.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
-                    test <@ Variable.Values.filter incr min None vsincr  = ([6N..2N..10N] |> create) @>
-                    test <@ Variable.Values.filter incr min max vsincr   = ([6N..2N..6N] |> create) @>
+                    test <@ Variable.Values.filter incr min None vsincr = ([6N..2N..10N] |> create) @>
+                    test <@ Variable.Values.filter incr min max vsincr  = ([6N..2N..6N] |> create) @>
                     
             [<TestFixture>]
             type ``Given addition multiplication or division of two value sets`` () =

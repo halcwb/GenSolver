@@ -139,6 +139,7 @@ module Variable =
         /// of `Value` to a `Vaue Set`.
         let inline seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
 
+
         /// Small helper function to turn a `Value Set`
         /// to a `Value list`.
         let valueSetToList = apply Set.toList (fun _ -> [])
@@ -169,6 +170,7 @@ module Variable =
         /// `BigRational`.
         let createValues = bigRtoValueList >> (create None None None)
 
+
         /// Create a `Range` with increment `incr`,
         /// minimum `min` and maximum `max`.</br>
         /// Note that if both increment and maximum 
@@ -178,6 +180,7 @@ module Variable =
         /// `[min..incr..max]`
         let createRange incr min max = create incr min max []
 
+
         /// Count the number of values
         /// returns 0 when `values` is
         /// `Range`.
@@ -185,6 +188,32 @@ module Variable =
             let fv = Set.count
             let fr = fun _ -> 0
             apply fv fr
+
+        /// Get the increment from
+        /// values if there is one
+        let getIncr =
+            let none = fun _ -> None
+            let fMinMax = fun _ _ -> None
+            let fIncrMin = fun incr _ -> Some incr
+
+            let fr = applyRange None Some none none fMinMax fIncrMin
+            apply none fr
+
+        let getMin =
+            let none = fun _ -> None
+            let fMinMax  = fun min _ -> Some min
+            let fIncrMin = fun _ min -> Some min
+
+            let fr = applyRange None Some none none fMinMax fIncrMin
+            apply (fun vs -> vs.MinimumElement |> Some ) fr
+
+        let getMax =
+            let none = fun _ -> None
+            let fMinMax = fun _ max -> max |> Some
+            let fIncrMin = fun _ _ -> None
+
+            let fr = applyRange None Some none none fMinMax fIncrMin
+            apply (fun vs -> vs.MaximumElement |> Some) fr
 
         /// Applies an infix operator
         /// to two `Values`. Only add values

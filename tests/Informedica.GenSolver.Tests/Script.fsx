@@ -168,6 +168,23 @@ module Testing =
                     test <@ Variable.Values.create incr min max vals = (vals |> Variable.Values.seqToValueSet) @>
 
             [<TestFixture>]
+            type ``Given empty list incr = Some 1N min = None max = None`` () =
+                let incr = 1N |> Variable.Value.create |> Some
+                let min = None
+                let max = None
+                // List with one value
+                let vals = [] 
+
+                [<Test>]
+                member x.``Values contain no values`` () =
+                    test <@ Variable.Values.create incr min max vals |> Variable.Values.count = 0 @>
+
+                [<Test>]
+                member x.``Increment is one`` () =
+                    test <@ Variable.Values.create incr min max vals |> Variable.Values.getIncr = incr @>
+
+
+            [<TestFixture>]
             type ``Given a list of Value`` () =
     
                 [<Test>]
@@ -189,12 +206,12 @@ module Testing =
                     let create = Variable.Values.createValues
                     let vsincr = [1N..1N..10N] |> create
                     let incr = Variable.Value.create 2N |> Some
-                    let min  = Variable.Value.create 4N |> Some 
-                    let max  = Variable.Value.create 8N |> Some
+                    let min = Variable.Value.create 4N |> Some 
+                    let max = Variable.Value.create 8N |> Some
                     test <@ Variable.Values.filter None None None vsincr = vsincr @>
                     test <@ Variable.Values.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
-                    test <@ Variable.Values.filter incr min None vsincr  = ([6N..2N..10N] |> create) @>
-                    test <@ Variable.Values.filter incr min max vsincr   = ([6N..2N..6N] |> create) @>
+                    test <@ Variable.Values.filter incr min None vsincr = ([6N..2N..10N] |> create) @>
+                    test <@ Variable.Values.filter incr min max vsincr  = ([6N..2N..6N] |> create) @>
                     
             [<TestFixture>]
             type ``Given addition multiplication or division of two value sets`` () =
@@ -287,43 +304,54 @@ module Testing =
 
 let runTests () =
 
+    let tests = []
+    let add x xs = xs @ [x]
+
     let test = new Testing.Variable.Value.``Given a zero or negative number``()
-    test.``With 0 an exception is raised``()
-    test.``With -1N an exception is raised``()
+    let tests = tests |> add test.``With 0 an exception is raised``
+    let tests = tests |> add test.``With -1N an exception is raised``
 
     let test = new Testing.Variable.Value.``Given a negative subtraction result``()
-    test.``A NonZeroOrPositive error is thrown``()
+    let tests = tests |> add test.``A NonZeroOrPositive error is thrown``
     
     let test = new Testing.Variable.Value.``Given a non zero positive value``()
-    test.``A value can be created``()
+    let tests = tests |> add test.``A value can be created``
 
     let test = new Testing.Variable.Value.``The create function``()
-    test.``Will not create negative values``()
+    let tests = tests |> add test.``Will not create negative values``
 
     let test = new Testing.Variable.Value.``Given a get function``()
-    test.``The same value is returned as created``()
+    let tests = tests |> add test.``The same value is returned as created``
 
     let test = new Testing.Variable.Value.``Given an infix operand``()
-    test.``The operand gives the same result as applied to BigRationals``()
+    let tests = tests |> add test.``The operand gives the same result as applied to BigRationals``
 
     let test = new Testing.Variable.Value.``Is overloaded with``()
-    test.``Basic arrhythmic functions``()
+    let tests = tests |> add test.``Basic arrhythmic functions``
 
     let test = new Testing.Variable.Values.``Given list = empty incr = None min = None max = None``()
-    test.``Counting values returns zero``()
-    test.``Creating values returns range All``()
+    let tests = tests |> add test.``Counting values returns zero``
+    let tests = tests |> add test.``Creating values returns range All``
+
+    let test = new Testing.Variable.Values.``Given empty list incr = Some 1N min = None max = None``()
+    let tests = tests |> add test.``Values contain no values``
+    let tests = tests |> add test.``Increment is one``
 
     let test = new Testing.Variable.Values.``Given list with one value incr = None min = None max = None``()
-    test.``Counting values returns one``()
-    test.``Creating values returns list with one value``()
+    let tests = tests |> add test.``Counting values returns one``
+    let tests = tests |> add test.``Creating values returns list with one value``
     
     let test = new Testing.Variable.Values.``Given a list of Value``()
-    test.``The resulting ValueSet contains an equal amount``()
-    test.``Can filter by incr, min and max``()
+    let tests = tests |> add test.``The resulting ValueSet contains an equal amount``
+    let tests = tests |> add test.``Can filter by incr, min and max``
 
     let test = new Testing.Variable.Values.``Given addition multiplication or division of two value sets``()
-    test.``The resultset will be a distinct set of added values``()
+    let tests = tests |> add test.``The resultset will be a distinct set of added values``
 
     let test = new Testing.Variable.Values.``Given subtraction of two value sets``()
-    test.``The resultset will be a distinct set of positive values``()
+    let tests = tests |> add test.``The resultset will be a distinct set of positive values``
 
+    for t in tests do
+        t()
+
+    printfn "Completed %i tests" tests.Length
