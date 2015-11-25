@@ -127,6 +127,13 @@ module Testing =
 
             open  Variable.Values
 
+            let createSomeVal = Variable.Value.create >> Some
+            let createVals = Variable.Values.create
+
+            let getIncr = Variable.Values.getIncr
+            let getMin  = Variable.Values.getMin
+            let getMax  = Variable.Values.getMax
+
             [<TestFixture>]
             type ``Given list = empty incr = None min = None max = None`` () =
                 let incr = None
@@ -137,11 +144,11 @@ module Testing =
         
                 [<Test>]
                 member x.``Creating values returns range All`` () =
-                    test <@ Variable.Values.create incr min max [] = vals @>
+                    test <@ createVals incr min max [] = vals @>
         
                 [<Test>]
                 member x.``Counting values returns zero`` () =
-                    test <@ Variable.Values.create incr min max [] |> Variable.Values.count = 0 @>
+                    test <@ createVals incr min max [] |> Variable.Values.count = 0 @>
 
             [<TestFixture>]
             type ``Given list with one value incr = None min = None max = None`` () =
@@ -153,15 +160,15 @@ module Testing =
 
                 [<Test>]
                 member x.``Counting values returns one`` () =
-                    test <@ Variable.Values.create incr min max vals |> Variable.Values.count = 1 @>
+                    test <@ createVals incr min max vals |> Variable.Values.count = 1 @>
         
                 [<Test>]
                 member x.``Creating values returns list with one value`` () =
-                    test <@ Variable.Values.create incr min max vals = (vals |> Variable.Values.seqToValueSet) @>
+                    test <@ createVals incr min max vals = (vals |> Variable.Values.seqToValueSet) @>
 
             [<TestFixture>]
             type ``Given empty list incr = Some 1N min = None max = None`` () =
-                let incr = 1N |> Variable.Value.create |> Some
+                let incr = 1N |> createSomeVal
                 let min = None
                 let max = None
                 // List with one value
@@ -169,12 +176,95 @@ module Testing =
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ Variable.Values.create incr min max vals |> Variable.Values.count = 0 @>
+                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
 
                 [<Test>]
                 member x.``Increment is one`` () =
-                    test <@ Variable.Values.create incr min max vals |> Variable.Values.getIncr = incr @>
+                    test <@ createVals incr min max vals |> getIncr = incr @>
 
+            [<TestFixture>]
+            type ``Given empty list incr = None min = Some 1N max = None`` () =
+                let incr = None
+                let min = 1N |> createSomeVal
+                let max = None
+                // List with one value
+                let vals = [] 
+
+                [<Test>]
+                member x.``Values contain no values`` () =
+                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
+
+                [<Test>]
+                member x.``Minimum is one`` () =
+                    test <@ createVals incr min max vals |> getMin = min @>
+
+            [<TestFixture>]
+            type ``Given empty list incr = None min = None max = Some 1`` () =
+                let incr = None
+                let min = None
+                let max = 1N |> createSomeVal
+                // List with one value
+                let vals = [] 
+
+                [<Test>]
+                member x.``Values contain no values`` () =
+                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
+
+                [<Test>]
+                member x.``Maximum is one`` () =
+                    test <@ createVals incr min max vals |> getMax = max @>
+
+            [<TestFixture>]
+            type ``Given empty list incr = Some 1N min = Some 2N max = None`` () =
+                let incr = 1N |> createSomeVal
+                let min = 2N |> createSomeVal
+                let max = None
+                // List with one value
+                let vals = [] 
+
+                [<Test>]
+                member x.``Values contain no values`` () =
+                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
+
+                [<Test>]
+                member x.``Increment is one and minimum is two`` () =
+                    test <@ createVals incr min max vals |> getIncr = incr @>
+                    test <@ createVals incr min max vals |> getMin = min @>
+
+            [<TestFixture>]
+            type ``Given empty list incr = None min = Some 2N max = Some 4N`` () =
+                let incr = None
+                let min = 2N |> createSomeVal
+                let max = 4N |> createSomeVal
+                // List with one value
+                let vals = [] 
+
+                [<Test>]
+                member x.``Values contain no values`` () =
+                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
+
+                [<Test>]
+                member x.``Increment is one and minimum is two`` () =
+                    test <@ createVals incr min max vals |> getMin = min @>
+                    test <@ createVals incr min max vals |> getMax = max @>
+
+            [<TestFixture>]
+            type ``Given empty list incr = 2N min = None max = Some 4N`` () =
+                let incr = 2N |> createSomeVal
+                let min = None
+                let max = 4N |> createSomeVal
+                // List with one value
+                let vals = [] 
+
+                [<Test>]
+                member x.``Values now contains two values`` () =
+                    test <@ createVals incr min max vals |> Variable.Values.count = 2 @>
+
+                [<Test>]
+                member x.``Increment is 2 minimum is 2 and maximum is 4`` () =
+                    test <@ createVals incr min max vals |> getIncr = incr @>
+                    test <@ createVals incr min max vals |> getMin = min @>
+                    test <@ createVals incr min max vals |> getMax = max @>
 
             [<TestFixture>]
             type ``Given a list of Value`` () =
