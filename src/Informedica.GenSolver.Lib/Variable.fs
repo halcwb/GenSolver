@@ -203,7 +203,7 @@ module Variable =
             let fMinMax  = fun min _ -> Some min
             let fIncrMin = fun _ min -> Some min
 
-            let fr = applyRange None Some none none fMinMax fIncrMin
+            let fr = applyRange None Some Some none fMinMax fIncrMin
             apply (fun vs -> vs.MinimumElement |> Some ) fr
 
         /// Get the maximum from
@@ -213,7 +213,7 @@ module Variable =
             let fMinMax = fun _ max -> max |> Some
             let fIncrMin = fun _ _ -> None
 
-            let fr = applyRange None Some none none fMinMax fIncrMin
+            let fr = applyRange None none none Some fMinMax fIncrMin
             apply (fun vs -> vs.MaximumElement |> Some) fr
 
         /// Applies an infix operator

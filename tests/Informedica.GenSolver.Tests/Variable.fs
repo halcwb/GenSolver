@@ -261,9 +261,9 @@ module Testing =
                     test <@ createVals incr min max vals |> Variable.Values.count = 2 @>
 
                 [<Test>]
-                member x.``Increment is 2 minimum is 2 and maximum is 4`` () =
-                    test <@ createVals incr min max vals |> getIncr = incr @>
-                    test <@ createVals incr min max vals |> getMin = min @>
+                member x.``Increment is none minimum is 2 and maximum is 4`` () =
+                    test <@ createVals incr min max vals |> getIncr = None @>
+                    test <@ createVals incr min max vals |> getMin = incr @>
                     test <@ createVals incr min max vals |> getMax = max @>
 
             [<TestFixture>]
