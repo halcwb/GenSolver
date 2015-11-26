@@ -126,10 +126,11 @@ module Testing =
 
         module Values =
 
-            open  Variable.Values
+            open  Variable
 
             let createSomeVal = Variable.Value.create >> Some
             let createVals = Variable.Values.create
+            let createVal = Variable.Value.create
 
             let getIncr = Variable.Values.getIncr
             let getMin  = Variable.Values.getMin
@@ -141,7 +142,7 @@ module Testing =
                 let min = None
                 let max = None
 
-                let vals = Range.All |> Values.Range
+                let vals = Values.rangeAll 
         
                 [<Test>]
                 member x.``Creating values returns range All`` () =
@@ -157,7 +158,7 @@ module Testing =
                 let min = None
                 let max = None
                 // List with one value
-                let vals = [1N |> Variable.Value.create] 
+                let vals = [1N |> createVal] 
 
                 [<Test>]
                 member x.``Counting values returns one`` () =
@@ -288,9 +289,9 @@ module Testing =
                     // Check values filter
                     let create = Variable.Values.createValues
                     let vsincr = [1N..1N..10N] |> create
-                    let incr = Variable.Value.create 2N |> Some
-                    let min = Variable.Value.create 4N |> Some 
-                    let max = Variable.Value.create 8N |> Some
+                    let incr = createVal 2N |> Some
+                    let min = createVal 4N |> Some 
+                    let max = createVal 8N |> Some
                     test <@ Variable.Values.filter None None None vsincr = vsincr @>
                     test <@ Variable.Values.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
                     test <@ Variable.Values.filter incr min None vsincr = ([6N..2N..10N] |> create) @>

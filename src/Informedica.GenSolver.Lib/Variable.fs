@@ -117,6 +117,8 @@ module Variable =
             | MinMax  of Value * Value
             | IncrMin of Value * Value
 
+        let rangeAll = Range.All |> Range
+
         /// Aply the give functions to `Values`
         /// where fv is used for `Value list` and
         /// fr is used for `Range`
