@@ -11,8 +11,10 @@ module Testing =
 
         module Value =
 
-            open Variable.Value
-            open Variable.Values
+            open Variable
+
+            let create = Value.create
+            let calc = Value.calc
 
             [<TestFixture>]
             type ``The create function`` () =
@@ -28,21 +30,20 @@ module Testing =
 
                     Check.Quick nonZeroOrNegative
                     
-        
             [<TestFixture>]
             type ``Given a zero or negative number`` () =
                 [<Test>]
                 member x.``With 0 an exception is raised`` () =
-                    raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (0N |> Value.Value) @>
+                    raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> create <> (0N |> Value.Value) @>
                 [<Test>]
                 member x.``With -1N an exception is raised`` () =
-                    raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> Variable.Value.create <> (-1N |> Value.Value) @>
+                    raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> create <> (-1N |> Value.Value) @>
 
             [<TestFixture>]
             type ``Given a non zero positive value`` () =
                 [<Test>]
                 member x.``A value can be created`` () =
-                    test<@ Variable.Value.create 1N = (1N |> Value.Value) @>
+                    test<@ create 1N = (1N |> Value.Value) @>
         
             [<TestFixture>]
             type ``Given a get function`` () =
@@ -52,7 +53,7 @@ module Testing =
                         if v > 0 then
                             v
                             |> BigRational.FromInt
-                            |> Variable.Value.create
+                            |> create
                             |> Variable.Value.get
                             |> BigRational.ToInt32 = v
                         else true
@@ -64,9 +65,9 @@ module Testing =
             
                 [<Test>]
                 member x.``The operand gives the same result as applied to BigRationals`` () =
-                    let v1 = 1N |> Variable.Value.create
-                    let v2 = 1N |> Variable.Value.create
-                    test <@ Variable.Value.calc (+) v1 v2 |> Variable.Value.get = 2N @>
+                    let v1 = 1N |> create
+                    let v2 = 1N |> create
+                    test <@ calc (+) v1 v2 |> Variable.Value.get = 2N @>
                     test <@ (v1 + v2) |> Variable.Value.get = 2N @>
 
             [<TestFixture>]
@@ -74,7 +75,7 @@ module Testing =
                 [<Test>]
                 member x.``Basic arrhythmic functions`` () =
                     let checkMult x1 x2 =
-                        let create = BigRational.FromInt >> Variable.Value.create
+                        let create = BigRational.FromInt >> create
                         let get = Variable.Value.get >> BigRational.ToInt32
                         if x1 > 0 && x2 > 0 then
                             let x1' = x1 |> create
@@ -83,7 +84,7 @@ module Testing =
                         else true
 
                     let checkDiv x1 x2 =
-                        let create = BigRational.FromInt >> Variable.Value.create
+                        let create = BigRational.FromInt >> create
                         let get = Variable.Value.get >> BigRational.ToInt32
                         if x1 > 0 && x2 > 0 then
                             let x1' = x1 |> create
@@ -92,7 +93,7 @@ module Testing =
                         else true
 
                     let checkAdd x1 x2 =
-                        let create = BigRational.FromInt >> Variable.Value.create
+                        let create = BigRational.FromInt >> create
                         let get = Variable.Value.get >> BigRational.ToInt32
                         if x1 > 0 && x2 > 0 then
                             let x1' = x1 |> create
@@ -101,7 +102,7 @@ module Testing =
                         else true
 
                     let checkSubtr x1 x2 =
-                        let create = BigRational.FromInt >> Variable.Value.create
+                        let create = BigRational.FromInt >> create
                         let get = Variable.Value.get >> BigRational.ToInt32
                         if x1 > 0 && x2 > 0 then
                             let x1' = x1 |> create
@@ -119,8 +120,8 @@ module Testing =
                 
                 [<Test>]
                 member x.``A NonZeroOrPositive error is thrown`` () =
-                    let v1 = Variable.Value.create 1N
-                    let v2 = Variable.Value.create 2N
+                    let v1 = create 1N
+                    let v2 = create 2N
                     raises<Variable.Value.NonZeroOrPositiveValueException> <@ v1 - v2 @> 
 
         module Values =

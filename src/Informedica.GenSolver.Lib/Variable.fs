@@ -187,7 +187,8 @@ module Variable =
             apply fv fr
 
         /// Get the increment from
-        /// values if there is one
+        /// values if there is one</br>
+        /// *Note: a set of values has no increment* 
         let getIncr =
             let none = fun _ -> None
             let fMinMax = fun _ _ -> None
@@ -198,6 +199,9 @@ module Variable =
 
         /// Get the minimum from
         /// values if there is one
+        /// *Note when no minimum is specified 
+        /// but there is an increment, then
+        /// the increment is the minimum*
         let getMin =
             let none = fun _ -> None
             let fMinMax  = fun min _ -> Some min
