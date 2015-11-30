@@ -56,7 +56,7 @@ module Variable =
         
         // ---- EXCEPTIONS ----
 
-        exception NonZeroOrPositiveValueException
+        exception NonZeroOrPositiveValueException of BigRational
 
         // ---- TYPES ----
 
@@ -65,17 +65,28 @@ module Variable =
 
         // ---- APPLY -----
 
-        /// Apply a function `f` to value `x`
+        /// Apply a function `f` to value `x`.
         let apply f (Value x): 'a = f x
 
         // ----- CREATE ----
 
+        /// Creates a `Value` and calls 
+        /// `succ` when success and `fail` when
+        /// failure.
+        let createCont succ fail n =
+            if n <= 0N then n |> fail
+            else n |> Value |> succ
+
+        /// Create `Value` option when
+        /// success.
+        let createSome = createCont Some (fun _ -> None)
+
         /// Create a Value that 
         /// is a non-zero positive
-        /// number
-        let create n = 
-            if n <= 0N then raise NonZeroOrPositiveValueException
-            n |> Value
+        /// number.
+        let create = 
+            let fail n = n |> NonZeroOrPositiveValueException |> raise
+            createCont id fail
 
         /// Zero value
         let zero = 0N |> Value
@@ -125,6 +136,8 @@ module Variable =
     module Values =
 
         open System.Collections.Generic
+
+        exception MinLargerThanMaxException of BigRational * BigRational
 
         open Value
 
@@ -189,23 +202,50 @@ module Variable =
         /// to a `Value list`.
         let valueSetToList = apply Set.toList (fun _ -> [])
 
-        /// Create `Values` from either a list of
-        /// `BigRational` or an incr, min, max combi
-        let create incr min max vals =
-            if vals |> List.isEmpty |> not then vals |> seqToValueSet
+
+        let createCont succ fail  incr min max vals =
+            // create range all
+            let all = All   |> Range |> succ 
+            // create range incr, min or max
+            let range n = n |> Range |> succ
+            // create range MinMax
+            let minMax (min, max) =
+                if min > max then (min, max)       |> fail
+                else (min, max) |> MinMax |> Range |> succ
+            // create range IncrMin
+            let incrMin (incr, min) = (incr, min) |> IncrMin |> Range |> succ
+            // create valueset from incr, max
+            let incrMax (incr, max) =
+                if incr > max then (incr, max) |> fail
+                else 
+                    let Value(incr'), Value(max') = incr, max
+                    [incr'..incr'..max'] |> bigRtoValueList |> seqToValueSet |> succ
+            // create valueset from incr, min, max
+            let incrMinMax (incr, min, max) =
+                match incr, min, max with
+                | _ when min > max -> (min, max)   |> fail
+                | _ when incr > max -> (incr, max) |> fail
+                | _ -> 
+                    let Value(min'), Value(incr'), Value(max') = min, incr, max
+                    [min'..incr'..max'] |> bigRtoValueList |> seqToValueSet |> succ
+
+            if vals |> List.isEmpty |> not then vals |> seqToValueSet |> succ
             else
                 match incr, min, max with
-                | None,      None,     None     -> All                    |> Range
-                | Some incr, None,     None     -> incr        |> Incr    |> Range
-                | None,      Some min, None     -> min         |> Min     |> Range
-                | None,      None,     Some max -> max         |> Max     |> Range
-                | None,      Some min, Some max -> (min, max)  |> MinMax  |> Range
-                | Some incr, Some min, None     -> (incr, min) |> IncrMin |> Range
+                | None,      None,     None     -> all
+                | Some incr, None,     None     -> incr |> Incr |> range
+                | None,      Some min, None     -> min  |> Min  |> range
+                | None,      None,     Some max -> max  |> Max  |> range
+                | None,      Some min, Some max -> (min, max)   |> minMax
+                | Some incr, Some min, None     -> (incr, min)  |> incrMin
+                | Some incr, None,     Some max -> (incr, max)  |> incrMax
+                | Some incr, Some min, Some max -> (incr, min, max) |> incrMinMax
 
-                | Some (Value(incr)), None, Some(Value( max)) -> 
-                    [incr..incr..max] |> bigRtoValueList |> seqToValueSet
-                | Some (Value(incr)), Some(Value(min)), Some(Value( max)) -> 
-                    [min..incr..max]  |> bigRtoValueList |> seqToValueSet
+        /// Create `Values` from either a list of
+        /// `BigRational` or an incr, min, max combi
+        let create = 
+            let fail ((Value min), (Value max)) = raise (MinLargerThanMaxException(min, max))
+            createCont id fail
 
         /// Create `Values` directly from a list of 
         /// `BigRational`.
