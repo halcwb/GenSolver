@@ -416,10 +416,21 @@ module Variable =
 
         // #endregion
 
-    open Name
-    open Values
 
-    // #region ---- TYPES ---- 
+    module Dto =
+        
+        [<AllowNullLiteralAttribute>]
+        type Dto () =
+            member val Name = null : string with get, set
+            member val Values = [||] : BigRational[] with get, set
+            member val Increment = None : BigRational option with get, set
+            member val Minimum = None:  BigRational option with get, set
+            member val Maximum = None: BigRational option with get, set
+
+        let create n = new Dto(Name = n)
+
+    
+    // #region ---- TYPES ----
 
     /// Represents a variable in an
     /// `Equation`. The variable is 
@@ -427,8 +438,8 @@ module Variable =
     /// a set of possible `Values`.
     type Variable =
         {
-            Name: Name
-            Values: Values
+            Name: Name.Name
+            Values: Values.Values
         }
 
     // #endregion
@@ -438,6 +449,18 @@ module Variable =
     /// Create a variable
 
     let create n vs = { Name = n; Values = vs }
+
+    let dtoToVariable (dto: Dto.Dto) =
+        let createValue = Option.bind Value.createSome
+        
+        let name = dto.Name |> Name.create
+        let incr = dto.Increment |> createValue
+        let min  = dto.Minimum   |> createValue
+        let max  = dto.Maximum   |> createValue
+        let vs = Values.bigRtoValueList (dto.Values |> Array.toList)
+        let vs = Values.create incr min max vs
+
+        create name vs
 
     // #endregion
 
