@@ -18,16 +18,20 @@ module Variable =
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Name =
 
+        // #region ---- Exceptions ----
+
         exception NullOrWhiteSpaceException
 
+        // #endregion
 
-        // ---- TYPES -----
+        // #region ---- TYPES -----
 
         /// Represents a non empty/null string identifying a `variable`
         type Name = Name of string
 
+        // #endregion
 
-        // ---- CREATE -----
+        // #region ---- CREATE -----
 
         /// Create with `succ` function when success
         /// and `fail` function when failure
@@ -45,6 +49,7 @@ module Variable =
         /// when string is null or white space
         let create = createCont id (fun _ -> raise NullOrWhiteSpaceException)
 
+        // #endregion
 
     /// Functions to handle `Value`
     /// A `Value` is a non zero 
@@ -54,21 +59,27 @@ module Variable =
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Value =
         
-        // ---- EXCEPTIONS ----
+        // #region ---- EXCEPTIONS ----
 
         exception NonZeroOrPositiveValueException of BigRational
 
-        // ---- TYPES ----
+        // #endregion
+
+        // #region ---- TYPES ----
 
         /// Represents a non zero positive rational number.
         type Value = Value of BigRational
 
-        // ---- APPLY -----
+        // #endregion
+
+        // #region ---- APPLY -----
 
         /// Apply a function `f` to value `x`.
         let apply f (Value x): 'a = f x
 
-        // ----- CREATE ----
+        // #endregion
+
+        // #region ----- CREATE ----
 
         /// Creates a `Value` and calls 
         /// `succ` when success and `fail` when
@@ -97,12 +108,16 @@ module Variable =
         /// Two value
         let two = 2N |> Value
 
-        // ---- GETTERS ----
+        // #endregion
+
+        // #region ---- GETTERS ----
 
         /// Get the `BigRational` from `value`
         let get = apply id
 
-        // ---- CALCULATION ---- 
+        // #endregion
+
+        // #region ---- CALCULATION ---- 
 
         /// Apply an infix operation `op` to
         /// two values `v1` and `v2`
@@ -130,18 +145,22 @@ module Variable =
             /// operation can fail.
             static member (-) (v1, v2) = calc (-) v1 v2
 
+        // #endregion
 
     /// Functions to handle `Values`
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Values =
 
         open System.Collections.Generic
+        open Value
+
+        // #region Exceptions
 
         exception MinLargerThanMaxException of BigRational * BigRational
 
-        open Value
+        // #endregion
 
-        // ---- TYPES ----
+        // #region ---- TYPES ----
 
         /// `Values` is a discrete set of 
         /// non-zero positive rational numbers,
@@ -165,7 +184,9 @@ module Variable =
             | MinMax  of Value * Value
             | IncrMin of Value * Value
 
-        // ---- APPLY -----
+        // #endregion
+        
+        // #region ---- APPLY -----
 
         /// Aply the give functions to `Values`
         /// where fv is used for `Value list` and
@@ -185,7 +206,9 @@ module Variable =
             | MinMax (min, max) -> fMinMax min max
             | IncrMin (incr, min) -> fIncrMin incr min
 
-        // ----- CREATE ----
+        // #endregion
+
+        // #region ----- CREATE ----
 
         let rangeAll = Range.All |> Range
 
@@ -242,7 +265,16 @@ module Variable =
                 | Some incr, Some min, Some max -> (incr, min, max) |> incrMinMax
 
         /// Create `Values` from either a list of
-        /// `BigRational` or an incr, min, max combi
+        /// `BigRational` or an incr, min, max combi.
+        /// *Note: returns `None` when
+        /// minimum or increment is larger than maximum.
+        let createSome = createCont Some (fun _ -> None)
+
+
+        /// Create `Values` from either a list of
+        /// `BigRational` or an incr, min, max combi.
+        /// *Note: raises an `MinLargerThanMaxException`when
+        /// minimum or increment is larger than maximum.
         let create = 
             let fail ((Value min), (Value max)) = raise (MinLargerThanMaxException(min, max))
             createCont id fail
@@ -259,6 +291,10 @@ module Variable =
         /// likewise a list of values is generated, i.e. 
         /// `[min..incr..max]`
         let createRange incr min max = create incr min max []
+
+        // #endregion
+
+        // #region ---- GETTERS ----
 
         /// Count the number of values
         /// returns 0 when `values` is
@@ -301,6 +337,10 @@ module Variable =
 
             let fr = applyRange None none none Some fMinMax fIncrMin
             apply (fun vs -> vs.MaximumElement |> Some) fr
+
+        // #endregion
+
+        // #region ---- CALCULATION -----
 
         /// Applies an infix operator
         /// to two `Values`. Only add values
@@ -374,9 +414,12 @@ module Variable =
             /// Add `expr` to `res`
             static member (=!) (res, expr) = expr |> setTo res
 
+        // #endregion
 
     open Name
     open Values
+
+    // #region ---- TYPES ---- 
 
     /// Represents a variable in an
     /// `Equation`. The variable is 
@@ -388,7 +431,13 @@ module Variable =
             Values: Values
         }
 
+    // #endregion
+
+    // #region ---- CREATE -----
+
     /// Create a variable
+
     let create n vs = { Name = n; Values = vs }
 
+    // #endregion
 
