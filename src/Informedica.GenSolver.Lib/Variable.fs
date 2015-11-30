@@ -447,9 +447,9 @@ module Variable =
     // #region ---- CREATE -----
 
     /// Create a variable
-
     let create n vs = { Name = n; Values = vs }
 
+    ///  Create a variable from `Variable.Dto.Dto`.
     let dtoToVariable (dto: Dto.Dto) =
         let createValue = Option.bind Value.createSome
         
