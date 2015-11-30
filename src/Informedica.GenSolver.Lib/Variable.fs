@@ -1,5 +1,6 @@
 ﻿namespace Informedica.GenSolver.Lib
 
+
 open System
 
 /// Contains functions to handle 
@@ -17,12 +18,32 @@ module Variable =
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Name =
 
+        exception NullOrWhiteSpaceException
+
+
+        // ---- TYPES -----
+
         /// Represents a non empty/null string identifying a `variable`
         type Name = Name of string
 
+
+        // ---- CREATE -----
+
+        /// Create with `succ` function when success
+        /// and `fail` function when failure
+        let createCont succ fail n =
+            if n |> String.IsNullOrWhiteSpace then n |> fail
+            else n |> Name |> succ
+
+        /// Returns a `Name` option when creation
+        /// succeeds
+        let createSome = createCont Some (fun _ -> None)
+
         /// Create a Name that
         /// is a non empty string
-        let create n = n |> Name
+        /// Note: this function will fail
+        /// when string is null or white space
+        let create = createCont id (fun _ -> raise NullOrWhiteSpaceException)
 
 
     /// Functions to handle `Value`
@@ -33,10 +54,21 @@ module Variable =
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Value =
         
+        // ---- EXCEPTIONS ----
+
         exception NonZeroOrPositiveValueException
+
+        // ---- TYPES ----
 
         /// Represents a non zero positive rational number.
         type Value = Value of BigRational
+
+        // ---- APPLY -----
+
+        /// Apply a function `f` to value `x`
+        let apply f (Value x): 'a = f x
+
+        // ----- CREATE ----
 
         /// Create a Value that 
         /// is a non-zero positive
@@ -48,22 +80,23 @@ module Variable =
         /// Zero value
         let zero = 0N |> Value
 
-        /// Zero value
+        /// One value
         let one = 1N |> Value
 
-        /// Zero value
+        /// Two value
         let two = 2N |> Value
 
-        /// Apply a function `f` to value `x`
-        let apply f (Value x): 'a = f x
+        // ---- GETTERS ----
+
+        /// Get the `BigRational` from `value`
+        let get = apply id
+
+        // ---- CALCULATION ---- 
 
         /// Apply an infix operation `op` to
         /// two values `v1` and `v2`
         let calc op (Value v1) (Value v2) =
             v1 |> op <| v2 |> create 
-
-        /// Get the `BigRational` from `value`
-        let get = apply id
 
         /// Check whether a value `v` is 
         /// an increment of `incr`.
@@ -95,6 +128,8 @@ module Variable =
 
         open Value
 
+        // ---- TYPES ----
+
         /// `Values` is a discrete set of 
         /// non-zero positive rational numbers,
         /// the set is either limited
@@ -117,7 +152,7 @@ module Variable =
             | MinMax  of Value * Value
             | IncrMin of Value * Value
 
-        let rangeAll = Range.All |> Range
+        // ---- APPLY -----
 
         /// Aply the give functions to `Values`
         /// where fv is used for `Value list` and
@@ -137,17 +172,22 @@ module Variable =
             | MinMax (min, max) -> fMinMax min max
             | IncrMin (incr, min) -> fIncrMin incr min
 
-        /// Small helper function to turn a sequence
-        /// of `Value` to a `Vaue Set`.
-        let inline seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
+        // ----- CREATE ----
 
-        /// Small helper function to turn a `Value Set`
-        /// to a `Value list`.
-        let valueSetToList = apply Set.toList (fun _ -> [])
+        let rangeAll = Range.All |> Range
 
         /// Convert `BigRational` list to 
         /// `Value` list
         let bigRtoValueList = List.map Value.create
+
+        /// Small helper function to turn a sequence
+        /// of `Value` to a `Vaue Set`.
+        let inline seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
+
+
+        /// Small helper function to turn a `Value Set`
+        /// to a `Value list`.
+        let valueSetToList = apply Set.toList (fun _ -> [])
 
         /// Create `Values` from either a list of
         /// `BigRational` or an incr, min, max combi
