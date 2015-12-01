@@ -213,11 +213,15 @@ module Variable =
         let rangeAll = Range.All |> Range
 
         /// Convert `BigRational` list to 
-        /// `Value` list
-        let bigRtoValueList = List.map Value.create
+        /// `Value` list. Removes zero and
+        /// negative values.
+        let bigRtoValueList vs =
+            vs
+            |> List.filter ((<) 0N)
+            |> List.map Value.create
 
         /// Small helper function to turn a sequence
-        /// of `Value` to a `Vaue Set`.
+        /// of `Value` to a `Value Set`.
         let inline seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
 
 
@@ -225,7 +229,12 @@ module Variable =
         /// to a `Value list`.
         let valueSetToList = apply Set.toList (fun _ -> [])
 
-
+        /// Create 'Values' using either the list of
+        /// Values, `vals` or using the provided
+        /// `incr`, `min` and/or `max`. </br>
+        /// * Note that when both increment, minimum
+        /// and maximum or increment and maximum are 
+        /// given, a list of values is generated.
         let createCont succ fail  incr min max vals =
             // create range all
             let all = All   |> Range |> succ 
