@@ -152,6 +152,7 @@ module Variable =
     module Values =
 
         open System.Collections.Generic
+        open Informedica.GenSolver.Utils
         open Value
 
         // #region Exceptions
@@ -209,6 +210,8 @@ module Variable =
         // #endregion
 
         // #region ---- HELPERS ----
+
+        let optChoose x1 x2 = if x2 |> Option.isSome then x2.Value else x1
 
         /// Convert `BigRational` list to 
         /// `Value` list. Removes zero and
@@ -387,6 +390,131 @@ module Variable =
 
         // #endregion
 
+        // #region ---- SETTERS ----
+
+        let setIncr incr vs =
+            let min = vs |> getMin
+            let max = vs |> getMax
+            let vals = vs |> valueSetToList
+
+            create (Some incr) min max vals
+
+        let setMin min vs =
+            let incr = vs |> getIncr
+            let max = vs |> getMax
+            let vals = vs |> valueSetToList
+
+            create incr (Some min) max vals
+
+        let setMax max vs =
+            let min = vs |> getMin
+            let incr = vs |> getIncr
+            let vals = vs |> valueSetToList
+
+            create incr min (Some max) vals
+
+        let setValues vals vs =
+            let incr = vs |> getIncr
+            let min = vs |> getMin
+            let max = vs |> getMax
+
+            create incr min max vals
+
+        // #endregion
+
+        // #region ---- SOLVE MIN MAX ----
+
+        let solveProductMinMax x1 x2 y =
+
+            let set cmp op getf setf x = function
+                | Some v1, Some v2 ->
+                    let r = v1 |> op <| v2
+                    match x |> getf with
+                    | Some v3 -> 
+                        if cmp r v3 then x |> setf r 
+                        else x 
+                        |> Some
+                    | None -> x |> setf r |> Some
+                | _ -> None
+
+            let setXmin = set (>) (/) getMin setMin
+            let setXmax = set (<) (/) getMax setMax
+
+            let setYmin = set (>) (*) getMin setMin 
+            let setYmax = set (<) (*) getMax setMax
+
+            // Rule 1: x2.min = y.min / x1.max if x1.max = set && y.max / x1.max > x2.min || x2.min = not set 
+            let x1 = setXmin x1 (y |> getMin, x2 |> getMax) |> optChoose x1
+            let x2 = setXmin x2 (y |> getMin, x1 |> getMax) |> optChoose x2
+
+            // Rule 2: x2.max = y.max / x1.min if x1.min = set and vice versa
+            let x1 = setXmax x1 (y |> getMax, x2 |> getMin) |> optChoose x1
+            let x2 = setXmax x2 (y |> getMax, x1 |> getMin) |> optChoose x2
+            // Rule 3: y.min = Product(x.min) if all x.min = set
+            let y = setYmin y (x1 |> getMin, x2 |> getMin) |> optChoose y
+            // Rule 4: y.max = Product(x.max) if all x.max = set
+            let y = setYmax y (x2 |> getMax, x2 |> getMax) |> optChoose y
+        
+            [y;x1;x2]
+
+        let solveSumMinMax vars sum =
+        
+            let sumVar getf vars  =
+                vars 
+                |> List.map getf 
+                |> List.filter Option.isSome
+                |> List.map Option.get
+                |> List.fold (+) Value.zero
+
+            let set cmp getf setf v var =
+                match v, var |> getf with
+                | Some v', Some x -> 
+                    if cmp v' x then var |> setf v' |> Some
+                    else None
+                | Some v', None   -> 
+                    if v' > Value.zero then var |> setf v' |> Some
+                    else None
+                | _ -> None
+        
+            let setMax = set (<) (getMax) (setMax)
+            let setMin = set (>) (getMin) (setMin)
+        
+            // Rule 1: var.max = sum.max if var.max = not set || sum.max < var.max
+            let vars = vars |> List.map (fun v ->
+                v |> setMax (sum |> getMax) |> optChoose v)
+
+            // Rule 2: var.min = sum.min - Sum(var.min) if n - 1 var.min = set
+            let vars = 
+                match vars |> List.filter(getMin >> Option.isNone) with
+                | [var] -> 
+                    let min = 
+                        match sum |> getMin with
+                        | None -> None
+                        | Some min -> min - (vars 
+                                             |> List.map getMin 
+                                             |> List.filter Option.isSome 
+                                             |> List.map Option.get
+                                             |> List.fold (+) Value.zero) 
+                                      |> Some
+                    let var' = var |> setMin min |> optChoose var
+                    vars |> List.replace ((=) var) var'
+                | _ -> vars
+
+            // Rule 3: sum.min = Sum(var.min) if Sum(var.min) > sum.min
+            let sum =
+                setMin (match sumVar getMin vars with | v when v > Value.zero -> v |> Some | _ -> None) sum
+                |> optChoose sum
+            
+            // Rule 4: sum.max = Sum(var.max) if all var.max = set
+            let sum =
+                if vars |> List.map getMax |> List.exists Option.isNone then sum
+                else
+                    setMax (match sumVar getMax vars with | v when v > Value.zero -> v |> Some | _ -> None) sum |> optChoose sum
+        
+            sum::vars
+
+            // #endregion
+        
         // #region ---- CALCULATION -----
 
         /// Applies an infix operator
@@ -432,7 +560,7 @@ module Variable =
                 // Filter the values with r
                 r |> applyRange fAll fIncr fMin fMax fMinMax fIncrMin
 
-            | Range _, Range _ -> failwith "Not implemented yet"
+            | Range _, Range _ -> failwith "Not implemented"
 
         // Extend type with basic arrhythmic operations.
         type Values with
@@ -446,6 +574,10 @@ module Variable =
             static member (-) (vs1, vs2) = calc (-) (vs1, vs2)
             /// Add `expr` to `res`
             static member (=!) (res, expr) = expr |> setTo res
+            /// Solve a product
+            static member (=*) (vs1, vs2) = vs1 * vs2 |> solveProductMinMax vs1 vs2
+            /// Solve a sum
+            static member (=+) (vs1, vs2) = vs1 + vs2 |> solveSumMinMax [vs1; vs2]
 
         // #endregion
 

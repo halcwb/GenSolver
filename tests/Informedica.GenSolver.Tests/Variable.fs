@@ -8,6 +8,7 @@ open FsCheck
 module Testing =
 
     // #region ---- QUICK CHECK GENERATORS ----
+
     let bigRGen (n, d) = 
         let n' = abs(n) |> BigRational.FromInt
         let d' = abs(d) |> BigRational.FromInt
@@ -322,7 +323,8 @@ module Testing =
             type ``Given addition multiplication or division of two value sets`` () =
                     
                 [<Test>]
-                member x.``The resultset will be a distinct set of added values`` () =
+                member x.``The resultset will be a distinct set of calculated values`` () =
+
                     let checkAdd l1 l2 =
                         // Only values > 0
                         let l1 = l1 |> List.filter ((<) 0)
@@ -385,7 +387,7 @@ module Testing =
             type ``Given subtraction of two value sets`` () =
                     
                 [<Test>]
-                member x.``The resultset will be a distinct set of positive values`` () =
+                member x.``The resultset will be a distinct set of only positive values`` () =
                     let checkSubtr l1 l2 =
                         // Only values > 0
                         let l1 = l1 |> List.filter ((<) 0)
