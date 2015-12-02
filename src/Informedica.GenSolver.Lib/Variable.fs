@@ -208,9 +208,7 @@ module Variable =
 
         // #endregion
 
-        // #region ----- CREATE ----
-
-        let rangeAll = Range.All |> Range
+        // #region ---- HELPERS ----
 
         /// Convert `BigRational` list to 
         /// `Value` list. Removes zero and
@@ -220,21 +218,52 @@ module Variable =
             |> List.filter ((<) 0N)
             |> List.map Value.create
 
+        let valueSetToBigR vs =
+            vs 
+            |> Set.toList
+            |> List.map (fun (Value v) -> v)
+
         /// Small helper function to turn a sequence
         /// of `Value` to a `Value Set`.
-        let inline seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
-
+        let seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
 
         /// Small helper function to turn a `Value Set`
         /// to a `Value list`.
         let valueSetToList = apply Set.toList (fun _ -> [])
 
+        // #endregion
+
+        // #region ---- FILTERS -----
+
+        /// Filter a set of values according
+        /// to increment, min and max constraints
+        let filter incr min max = 
+            let returnTrue = fun _ -> true
+            let fIncr = function | None -> returnTrue | Some incr -> Value.isIncr incr
+            let fMin  = function | None -> returnTrue | Some min ->  (<=) min
+            let fMax  = function | None -> returnTrue | Some max ->  (>=) max
+            let fv = Set.filter (fun v -> v |> fIncr incr &&
+                                          v |> fMin min &&
+                                          v |> fMax max)
+                     >> seqToValueSet
+            let fr = Range
+            apply fv fr
+
+        // #endregion
+
+        // #region ----- CREATE ----
+
+        let rangeAll = Range.All |> Range
+
         /// Create 'Values' using either the list of
         /// Values, `vals` or using the provided
         /// `incr`, `min` and/or `max`. </br>
-        /// * Note that when both increment, minimum
+        /// * Note * that when both increment, minimum
         /// and maximum or increment and maximum are 
-        /// given, a list of values is generated.
+        /// given, a list of values is generated.</br>
+        /// * Note * that when both a list is given and
+        /// increment and/or minimum and/or maximum, the 
+        /// list is filtered.
         let createCont succ fail  incr min max vals =
             // create range all
             let all = All   |> Range |> succ 
@@ -261,7 +290,11 @@ module Variable =
                     let Value(min'), Value(incr'), Value(max') = min, incr, max
                     [min'..incr'..max'] |> bigRtoValueList |> seqToValueSet |> succ
 
-            if vals |> List.isEmpty |> not then vals |> seqToValueSet |> succ
+            if vals |> List.isEmpty |> not then 
+                vals 
+                |> seqToValueSet 
+                |> filter incr min max
+                |> succ
             else
                 match incr, min, max with
                 | None,      None,     None     -> all
@@ -347,6 +380,11 @@ module Variable =
             let fr = applyRange None none none Some fMinMax fIncrMin
             apply (fun vs -> vs.MaximumElement |> Some) fr
 
+        /// Get the values set, returns 
+        /// empty set when values is a 
+        /// range.
+        let getValues = apply id (fun  _ -> Set.empty)
+
         // #endregion
 
         // #region ---- CALCULATION -----
@@ -372,20 +410,6 @@ module Variable =
             // Do not perform any calcuation when one of the args is not
             // a list of values
             | _ -> Range.All |> Range
-
-        /// Filter a set of values according
-        /// to increment, min and max constraints
-        let filter incr min max = 
-            let returnTrue = fun _ -> true
-            let fIncr = function | None -> returnTrue | Some incr -> Value.isIncr incr
-            let fMin  = function | None -> returnTrue | Some min ->  (<) min
-            let fMax  = function | None -> returnTrue | Some max ->  (>) max
-            let fv = Set.filter (fun v -> v |> fIncr incr &&
-                                          v |> fMin min &&
-                                          v |> fMax max)
-                     >> seqToValueSet
-            let fr = Range
-            apply fv fr
 
         /// Function to determine how one range
         /// constraints another range.
@@ -459,7 +483,7 @@ module Variable =
     let create n vs = { Name = n; Values = vs }
 
     ///  Create a variable from `Variable.Dto.Dto`.
-    let dtoToVariable (dto: Dto.Dto) =
+    let fromDto (dto: Dto.Dto) =
         let createValue = Option.bind Value.createSome
         
         let name = dto.Name |> Name.create
@@ -470,6 +494,22 @@ module Variable =
         let vs = Values.create incr min max vs
 
         create name vs
+
+    let toDto (v: Variable) =
+
+        let someValueToBigR = function
+            | Some v' -> let (Value.Value v) = v' in v |> Some
+            | None    -> None
+
+        let dto = Dto.create (let (Name.Name n) = v.Name in n)
+
+        dto.Increment <- v.Values |> Values.getIncr |> someValueToBigR
+        dto.Minimum   <- v.Values |> Values.getMin  |> someValueToBigR
+        dto.Maximum   <- v.Values |> Values.getMax  |> someValueToBigR
+
+        dto.Values    <- v.Values |> Values.getValues |> Values.valueSetToBigR |> List.toArray
+
+        dto
 
     // #endregion
 

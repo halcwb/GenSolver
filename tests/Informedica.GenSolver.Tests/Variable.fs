@@ -7,6 +7,27 @@ open FsCheck
 
 module Testing =
 
+    // #region ---- QUICK CHECK GENERATORS ----
+    let bigRGen (n, d) = 
+        let n' = abs(n) |> BigRational.FromInt
+        let d' = abs(d) |> BigRational.FromInt
+        n'/d'
+
+    let bigRGenerator =
+        gen {
+            let n, d = Random.m1, Random.m2
+            return bigRGen(n, d)
+        }
+
+    type MyGenerators () =
+        static member BigRational () =
+            { new Arbitrary<BigRational>() with
+                override x.Generator = bigRGenerator }
+
+    Arb.register<MyGenerators>() |> ignore
+
+    // #endregion
+
     module Variable =
 
         module Value =
@@ -294,8 +315,8 @@ module Testing =
                     let max = createVal 8N |> Some
                     test <@ Variable.Values.filter None None None vsincr = vsincr @>
                     test <@ Variable.Values.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
-                    test <@ Variable.Values.filter incr min None vsincr = ([6N..2N..10N] |> create) @>
-                    test <@ Variable.Values.filter incr min max vsincr  = ([6N..2N..6N] |> create) @>
+                    test <@ Variable.Values.filter incr min None vsincr = ([4N..2N..10N] |> create) @>
+                    test <@ Variable.Values.filter incr min max vsincr  = ([4N..2N..8N] |> create) @>
                     
             [<TestFixture>]
             type ``Given addition multiplication or division of two value sets`` () =
@@ -384,3 +405,26 @@ module Testing =
                         (l1' + l2') |> Variable.Values.valueSetToList |> List.length = subtr.Length
 
                     Check.Quick checkSubtr
+
+
+        [<TestFixture>]
+        type ``There and back again`` () =
+    
+
+            let theraAndBackAgainProp n incr min max vs =
+    
+                if n |> System.String.IsNullOrWhiteSpace then true
+                else
+
+                    let dto = Variable.Dto.create n
+                    dto.Increment <- incr
+                    dto.Minimum   <- min
+                    dto.Maximum   <- max
+                    dto.Values    <- vs
+     
+                    (dto |> Variable.fromDto |> Variable.toDto |> Variable.fromDto) = (dto |> Variable.fromDto)
+                
+            [<Test>]
+            member x.``Creating from dto has same result as creating from dto, back to dto and again from dto`` () =
+
+                Check.Quick theraAndBackAgainProp 
