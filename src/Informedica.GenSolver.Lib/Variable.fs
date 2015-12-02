@@ -1,10 +1,15 @@
 ﻿namespace Informedica.GenSolver.Lib
 
+
 open System
 
 /// Contains functions to handle 
 /// the `Variable` type and the types
-/// `Variable` depends on.
+/// `Variable` depends on:
+///
+/// * `Name`
+/// * `Value`
+/// * `Values`
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Variable =
 
@@ -13,92 +18,157 @@ module Variable =
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Name =
 
+        // #region ---- Exceptions ----
+
+        exception NullOrWhiteSpaceException
+
+        // #endregion
+
+        // #region ---- TYPES -----
+
         /// Represents a non empty/null string identifying a `variable`
         type Name = Name of string
 
+        // #endregion
+
+        // #region ---- CREATE -----
+
+        /// Create with `succ` function when success
+        /// and `fail` function when failure
+        let createCont succ fail n =
+            if n |> String.IsNullOrWhiteSpace then n |> fail
+            else n |> Name |> succ
+
+        /// Returns a `Name` option when creation
+        /// succeeds
+        let createSome = createCont Some (fun _ -> None)
+
         /// Create a Name that
         /// is a non empty string
-        let create n = n |> Name
+        /// Note: this function will fail
+        /// when string is null or white space
+        let create = createCont id (fun _ -> raise NullOrWhiteSpaceException)
 
+        // #endregion
 
     /// Functions to handle `Value`
+    /// A `Value` is a non zero 
+    /// positive value.
+    /// Basic arrhythmic operations
+    /// can be performed with this type.
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Value =
         
-        exception NonZeroOrPositiveValueException
+        // #region ---- EXCEPTIONS ----
+
+        exception NonZeroOrPositiveValueException of BigRational
+
+        // #endregion
+
+        // #region ---- TYPES ----
 
         /// Represents a non zero positive rational number.
         type Value = Value of BigRational
 
+        // #endregion
+
+        // #region ---- APPLY -----
+
+        /// Apply a function `f` to value `x`.
+        let apply f (Value x): 'a = f x
+
+        // #endregion
+
+        // #region ----- CREATE ----
+
+        /// Creates a `Value` and calls 
+        /// `succ` when success and `fail` when
+        /// failure.
+        let createCont succ fail n =
+            if n <= 0N then n |> fail
+            else n |> Value |> succ
+
+        /// Create `Value` option when
+        /// success.
+        let createSome = createCont Some (fun _ -> None)
+
         /// Create a Value that 
         /// is a non-zero positive
-        /// number
-        let create n = 
-            if n <= 0N then raise NonZeroOrPositiveValueException
-            n |> Value
+        /// number.
+        let create = 
+            let fail n = n |> NonZeroOrPositiveValueException |> raise
+            createCont id fail
 
         /// Zero value
         let zero = 0N |> Value
 
-        /// Zero value
+        /// One value
         let one = 1N |> Value
 
-        /// Zero value
+        /// Two value
         let two = 2N |> Value
 
-        /// Apply a function `f` to value `x`
-        let apply f (Value x) = f x
+        // #endregion
+
+        // #region ---- GETTERS ----
+
+        /// Get the `BigRational` from `value`
+        let get = apply id
+
+        // #endregion
+
+        // #region ---- CALCULATION ---- 
 
         /// Apply an infix operation `op` to
         /// two values `v1` and `v2`
         let calc op (Value v1) (Value v2) =
             v1 |> op <| v2 |> create 
 
-        /// Get the `BigRational` from `value`
-        let get = apply id
-
-        /// Filter increment
-        let isIncr incr (Value v) = 
-            match incr with
-            | Some(Value(x)) -> (v.Numerator * x.Denominator) % (x.Numerator * v.Denominator) = 0I
-            | None   -> v > 0N
-
-        /// Filter max
-        let isST max (Value v) =
-            match max with
-            | Some(Value(x)) -> v <= x
-            | None -> true
-
-        /// Filter min
-        let isLT max (Value v) =
-            match max with
-            | Some(Value(x)) -> v >= x
-            | None -> true
+        /// Check whether a value `v` is 
+        /// an increment of `incr`.
+        let isIncr (Value incr) (Value v) = 
+            (v.Numerator * incr.Denominator) % (incr.Numerator * v.Denominator) = 0I
 
         /// Overload basic arrhythmic operations
         type Value with
-
+            /// Multiplication
             static member (*) (v1, v2) = calc (*) v1 v2
+            /// Division</br>
+            /// Note that because the type cannot be zero
+            /// this operation always succeds.
             static member (/) (v1, v2) = calc (/) v1 v2
+            /// Addition
             static member (+) (v1, v2) = calc (+) v1 v2
+            /// Subtraction </br>
+            /// Note that because the result 
+            /// has to be larger than zero, the
+            /// operation can fail.
             static member (-) (v1, v2) = calc (-) v1 v2
 
+        // #endregion
 
-    /// Functions to handle `ValueSet`
+    /// Functions to handle `Values`
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-    module ValueSet =
+    module Values =
 
         open System.Collections.Generic
-
         open Value
 
-        /// `ValueSet` is a discrete set of 
+        // #region Exceptions
+
+        exception MinLargerThanMaxException of BigRational * BigRational
+
+        // #endregion
+
+        // #region ---- TYPES ----
+
+        /// `Values` is a discrete set of 
         /// non-zero positive rational numbers,
         /// the set is either limited
         /// and then it is a list or
         /// it is unlimited and then it 
         /// is a range.
-        type ValueSet =
+        type Values =
             | ValueSet of Value Set
             | Range of Range
         /// A `Range` is an unlimited set of
@@ -114,55 +184,146 @@ module Variable =
             | MinMax  of Value * Value
             | IncrMin of Value * Value
 
-        /// Aply the give functions to `ValueSet`
+        // #endregion
+        
+        // #region ---- APPLY -----
+
+        /// Aply the give functions to `Values`
         /// where fv is used for `Value list` and
         /// fr is used for `Range`
-        let apply fv fr = function
+        let apply fv fr vs : 'a =
+            match vs with
             | ValueSet x -> x |> fv
             | Range x  -> x |> fr
 
         /// Apply given functions to `Range`.
-        let applyRange fAll fIncr fMin fMax fMinMax fIncrMin = function 
-            | All -> fAll
+        let applyRange all fIncr fMin fMax fMinMax fIncrMin r : 'a = 
+            match r with 
+            | All -> all
             | Incr incr -> incr |> fIncr
             | Min min   -> min  |> fMin
             | Max max   -> max  |> fMax
             | MinMax (min, max) -> fMinMax min max
             | IncrMin (incr, min) -> fIncrMin incr min
 
+        // #endregion
+
+        // #region ---- HELPERS ----
+
+        /// Convert `BigRational` list to 
+        /// `Value` list. Removes zero and
+        /// negative values.
+        let bigRtoValueList vs =
+            vs
+            |> List.filter ((<) 0N)
+            |> List.map Value.create
+
+        let valueSetToBigR vs =
+            vs 
+            |> Set.toList
+            |> List.map (fun (Value v) -> v)
+
         /// Small helper function to turn a sequence
-        /// of `Value` to a `Vaue Set`.
-        let inline seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
+        /// of `Value` to a `Value Set`.
+        let seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
 
         /// Small helper function to turn a `Value Set`
         /// to a `Value list`.
         let valueSetToList = apply Set.toList (fun _ -> [])
 
-        /// Convert `BigRational` list to 
-        /// `Value` list
-        let toValues = List.map Value.create
+        // #endregion
 
-        /// Create `ValueSet` from either a list of
-        /// `BigRational` or an incr, min, max combi
-        let create incr min max vals =
-            if vals |> List.isEmpty |> not then vals |> seqToValueSet
+        // #region ---- FILTERS -----
+
+        /// Filter a set of values according
+        /// to increment, min and max constraints
+        let filter incr min max = 
+            let returnTrue = fun _ -> true
+            let fIncr = function | None -> returnTrue | Some incr -> Value.isIncr incr
+            let fMin  = function | None -> returnTrue | Some min ->  (<=) min
+            let fMax  = function | None -> returnTrue | Some max ->  (>=) max
+            let fv = Set.filter (fun v -> v |> fIncr incr &&
+                                          v |> fMin min &&
+                                          v |> fMax max)
+                     >> seqToValueSet
+            let fr = Range
+            apply fv fr
+
+        // #endregion
+
+        // #region ----- CREATE ----
+
+        let rangeAll = Range.All |> Range
+
+        /// Create 'Values' using either the list of
+        /// Values, `vals` or using the provided
+        /// `incr`, `min` and/or `max`. </br>
+        /// * Note * that when both increment, minimum
+        /// and maximum or increment and maximum are 
+        /// given, a list of values is generated.</br>
+        /// * Note * that when both a list is given and
+        /// increment and/or minimum and/or maximum, the 
+        /// list is filtered.
+        let createCont succ fail  incr min max vals =
+            // create range all
+            let all = All   |> Range |> succ 
+            // create range incr, min or max
+            let range n = n |> Range |> succ
+            // create range MinMax
+            let minMax (min, max) =
+                if min > max then (min, max)       |> fail
+                else (min, max) |> MinMax |> Range |> succ
+            // create range IncrMin
+            let incrMin (incr, min) = (incr, min) |> IncrMin |> Range |> succ
+            // create valueset from incr, max
+            let incrMax (incr, max) =
+                if incr > max then (incr, max) |> fail
+                else 
+                    let Value(incr'), Value(max') = incr, max
+                    [incr'..incr'..max'] |> bigRtoValueList |> seqToValueSet |> succ
+            // create valueset from incr, min, max
+            let incrMinMax (incr, min, max) =
+                match incr, min, max with
+                | _ when min > max -> (min, max)   |> fail
+                | _ when incr > max -> (incr, max) |> fail
+                | _ -> 
+                    let Value(min'), Value(incr'), Value(max') = min, incr, max
+                    [min'..incr'..max'] |> bigRtoValueList |> seqToValueSet |> succ
+
+            if vals |> List.isEmpty |> not then 
+                vals 
+                |> seqToValueSet 
+                |> filter incr min max
+                |> succ
             else
                 match incr, min, max with
-                | None,      None,     None     -> All                    |> Range
-                | Some incr, None,     None     -> incr        |> Incr    |> Range
-                | None,      Some min, None     -> min         |> Min     |> Range
-                | None,      None,     Some max -> max         |> Max     |> Range
-                | None,      Some min, Some max -> (min, max)  |> MinMax  |> Range
-                | Some incr, Some min, None     -> (incr, min) |> IncrMin |> Range
+                | None,      None,     None     -> all
+                | Some incr, None,     None     -> incr |> Incr |> range
+                | None,      Some min, None     -> min  |> Min  |> range
+                | None,      None,     Some max -> max  |> Max  |> range
+                | None,      Some min, Some max -> (min, max)   |> minMax
+                | Some incr, Some min, None     -> (incr, min)  |> incrMin
+                | Some incr, None,     Some max -> (incr, max)  |> incrMax
+                | Some incr, Some min, Some max -> (incr, min, max) |> incrMinMax
 
-                | Some (Value(incr)), None, Some(Value( max)) -> 
-                    [incr..incr..max] |> toValues |> seqToValueSet
-                | Some (Value(incr)), Some(Value(min)), Some(Value( max)) -> 
-                    [min..incr..max]  |> toValues |> seqToValueSet
+        /// Create `Values` from either a list of
+        /// `BigRational` or an incr, min, max combi.
+        /// *Note: returns `None` when
+        /// minimum or increment is larger than maximum.
+        let createSome = createCont Some (fun _ -> None)
 
-        /// Create `ValueSet` directly from a list of 
+
+        /// Create `Values` from either a list of
+        /// `BigRational` or an incr, min, max combi.
+        /// *Note: raises an `MinLargerThanMaxException`when
+        /// minimum or increment is larger than maximum.
+        let create = 
+            let fail ((Value min), (Value max)) = raise (MinLargerThanMaxException(min, max))
+            createCont id fail
+
+        /// Create `Values` directly from a list of 
         /// `BigRational`.
-        let createValues = toValues >> (create None None None)
+        let createValues = bigRtoValueList >> (create None None None)
 
         /// Create a `Range` with increment `incr`,
         /// minimum `min` and maximum `max`.</br>
@@ -173,6 +334,10 @@ module Variable =
         /// `[min..incr..max]`
         let createRange incr min max = create incr min max []
 
+        // #endregion
+
+        // #region ---- GETTERS ----
+
         /// Count the number of values
         /// returns 0 when `values` is
         /// `Range`.
@@ -181,34 +346,70 @@ module Variable =
             let fr = fun _ -> 0
             apply fv fr
 
+        /// Get the increment from
+        /// values if there is one</br>
+        /// *Note: a set of values has no increment* 
+        let getIncr =
+            let none = fun _ -> None
+            let fMinMax = fun _ _ -> None
+            let fIncrMin = fun incr _ -> Some incr
+
+            let fr = applyRange None Some none none fMinMax fIncrMin
+            apply none fr
+
+        /// Get the minimum from
+        /// values if there is one
+        /// *Note when no minimum is specified 
+        /// but there is an increment, then
+        /// the increment is the minimum*
+        let getMin =
+            let none = fun _ -> None
+            let fMinMax  = fun min _ -> Some min
+            let fIncrMin = fun _ min -> Some min
+
+            let fr = applyRange None Some Some none fMinMax fIncrMin
+            apply (fun vs -> vs.MinimumElement |> Some ) fr
+
+        /// Get the maximum from
+        /// values if there is one
+        let getMax =
+            let none = fun _ -> None
+            let fMinMax = fun _ max -> max |> Some
+            let fIncrMin = fun _ _ -> None
+
+            let fr = applyRange None none none Some fMinMax fIncrMin
+            apply (fun vs -> vs.MaximumElement |> Some) fr
+
+        /// Get the values set, returns 
+        /// empty set when values is a 
+        /// range.
+        let getValues = apply id (fun  _ -> Set.empty)
+
+        // #endregion
+
+        // #region ---- CALCULATION -----
+
         /// Applies an infix operator
-        /// to two `values`. Only add values
+        /// to two `Values`. Only add values
         /// to the result set if > 0.
         let calc op = function
             | ValueSet s1, ValueSet s2 ->
                 let s1 = new ResizeArray<_>(s1)
                 let s2 = new ResizeArray<_>(s2)
                 let s3 = new ResizeArray<_>()
+                // Check whether the operand is subtraction
+                let opIsSubtr = (Value.two |> op <| Value.one) = Value.one
 
                 for x1 in s1 do
                     for x2 in s2 do
-                        let y = x1 |> op <| x2
-                        if y > Value.zero then s3.Add(x1 |> op <| x2) 
+                        // prevent subtraction resulting in a zero or negative result
+                        if opIsSubtr && x1 > x2 || (not opIsSubtr) then 
+                            // perform the arrhythmic operation and to the result set
+                            s3.Add(x1 |> op <| x2) 
                 new HashSet<_>(s3, HashIdentity.Structural) |> seqToValueSet
             // Do not perform any calcuation when one of the args is not
             // a list of values
             | _ -> Range.All |> Range
-
-
-        /// Filter a set of values according
-        /// to increment, min and max constraints
-        let filter incr min max = 
-            let fv = Set.filter (fun v -> v |> Value.isIncr incr &&
-                                           v |> Value.isLT min &&
-                                           v |> Value.isST max)
-                     >> seqToValueSet
-            let fr = Range
-            apply fv fr
 
         /// Function to determine how one range
         /// constraints another range.
@@ -221,12 +422,12 @@ module Variable =
             | ValueSet v1', ValueSet v2' -> v1' |> Set.intersect v2' |> ValueSet
             | Range r, ValueSet v
             | ValueSet v, Range r ->
-                let vs = v |> ValueSet
-                let fAll = vs
-                let fIncr incr = vs |> filter (Some incr) None None
-                let fMin min   = vs |> filter None (Some min) None
-                let fMax max   = vs |> filter None None (Some max)
-                let fMinMax min max = vs |> filter None (Some min) (Some max)
+                let vs                = v |> ValueSet
+                let fAll              = vs
+                let fIncr incr        = vs |> filter (Some incr) None None
+                let fMin min          = vs |> filter None (Some min) None
+                let fMax max          = vs |> filter None None (Some max)
+                let fMinMax min max   = vs |> filter None (Some min) (Some max)
                 let fIncrMin incr min = vs |> filter (Some incr) (Some min) None
                 // Filter the values with r
                 r |> applyRange fAll fIncr fMin fMax fMinMax fIncrMin
@@ -234,7 +435,7 @@ module Variable =
             | Range _, Range _ -> failwith "Not implemented yet"
 
         // Extend type with basic arrhythmic operations.
-        type ValueSet with
+        type Values with
             /// Multiply 
             static member (*) (vs1, vs2) = calc (*) (vs1, vs2)
             /// Divide
@@ -246,21 +447,69 @@ module Variable =
             /// Add `expr` to `res`
             static member (=!) (res, expr) = expr |> setTo res
 
+        // #endregion
 
-    open Name
-    open ValueSet
+
+    module Dto =
+        
+        [<AllowNullLiteralAttribute>]
+        type Dto () =
+            member val Name = null : string with get, set
+            member val Values = [||] : BigRational[] with get, set
+            member val Increment = None : BigRational option with get, set
+            member val Minimum = None:  BigRational option with get, set
+            member val Maximum = None: BigRational option with get, set
+
+        let create n = new Dto(Name = n)
+
+    
+    // #region ---- TYPES ----
 
     /// Represents a variable in an
     /// `Equation`. The variable is 
     /// identified by `Name` and has
-    /// a set of possible `ValueSet`.
+    /// a set of possible `Values`.
     type Variable =
         {
-            Name: Name
-            Value: ValueSet
+            Name: Name.Name
+            Values: Values.Values
         }
 
-    /// Create a variable
-    let create n vs = { Name = n; Value = vs }
+    // #endregion
 
+    // #region ---- CREATE -----
+
+    /// Create a variable
+    let create n vs = { Name = n; Values = vs }
+
+    ///  Create a variable from `Variable.Dto.Dto`.
+    let fromDto (dto: Dto.Dto) =
+        let createValue = Option.bind Value.createSome
+        
+        let name = dto.Name |> Name.create
+        let incr = dto.Increment |> createValue
+        let min  = dto.Minimum   |> createValue
+        let max  = dto.Maximum   |> createValue
+        let vs = Values.bigRtoValueList (dto.Values |> Array.toList)
+        let vs = Values.create incr min max vs
+
+        create name vs
+
+    let toDto (v: Variable) =
+
+        let someValueToBigR = function
+            | Some v' -> let (Value.Value v) = v' in v |> Some
+            | None    -> None
+
+        let dto = Dto.create (let (Name.Name n) = v.Name in n)
+
+        dto.Increment <- v.Values |> Values.getIncr |> someValueToBigR
+        dto.Minimum   <- v.Values |> Values.getMin  |> someValueToBigR
+        dto.Maximum   <- v.Values |> Values.getMax  |> someValueToBigR
+
+        dto.Values    <- v.Values |> Values.getValues |> Values.valueSetToBigR |> List.toArray
+
+        dto
+
+    // #endregion
 

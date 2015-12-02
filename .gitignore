@@ -31,6 +31,7 @@
 # Add dependencies file
 !paket.dependencies
 !paket.lock
+!paket.references
 
 # Add yml files to ci on appveyor and travis
 !appveyor.yml
@@ -39,25 +40,24 @@
 # Add solution file
 !*.sln
 
+# Add fsharp project files
+!*.fsproj
+
+# Add configurarion files
+!*App.config
+
+# Add fsharp source files
+!*.fs
+
 # Add source files
 !/scripts/
-!/scripts/*.fsx
 !/src/
 !/src/Informedica.GenSolver.Lib/
-!/src/Informedica.GenSolver.Lib/*.fsproj
-!/src/Informedica.GenSolver.Lib/paket.references
-!/src/Informedica.GenSolver.Lib/*.fs
-!/src/Informedica.GenSolver.Lib/*.fsx
 !/src/Informedica.GenSolver.Lib/Scripts/
-!/src/Informedica.GenSolver.Lib/Scripts/*.fsx
 
 # Add test files
 !/tests/
 !/tests/Informedica.GenSolver.Tests/
-!/tests/Informedica.GenSolver.Tests/*.fsproj
-!/tests/Informedica.GenSolver.Tests/paket.references
-!/tests/Informedica.GenSolver.Tests/*.fs
-!/tests/Informedica.GenSolver.Tests/*.fsx
 
 # Ignore generated documentation files
 /docs/content/**/*.md
@@ -65,9 +65,7 @@
 # Add documentation
 !/docs/
 !/docs/content/
-!/docs/content/*.fsx
 !/docs/tools/
-!/docs/tools/*.fsx
 !/docs/tools/templates/
 !/docs/tools/templates/*.cshtml
 !/docs/files/
