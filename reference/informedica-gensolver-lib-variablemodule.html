@@ -42,7 +42,13 @@
 <div class="xmldoc">
 <p>Contains functions to handle 
 the <code>Variable</code> type and the types
-<code>Variable</code> depends on.</p>
+<code>Variable</code> depends on:</p>
+
+<ul>
+<li><code>Name</code></li>
+<li><a href="informedica-gensolver-lib-variablemodule-valuemodule-value.html" title="Value"><code>Value</code></a></li>
+<li><a href="informedica-gensolver-lib-variablemodule-valuesmodule-values.html" title="Values"><code>Values</code></a></li>
+</ul>
 
 
 </div>
@@ -62,7 +68,7 @@ the <code>Variable</code> type and the types
           <td class="xmldoc"><p>Represents a variable in an
 <a href="informedica-gensolver-lib-equations-equation.html" title="Equation"><code>Equation</code></a>. The variable is 
 identified by <code>Name</code> and has
-a set of possible <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a>.</p>
+a set of possible <a href="informedica-gensolver-lib-variablemodule-valuesmodule-values.html" title="Values"><code>Values</code></a>.</p>
 
 
 </td>
@@ -76,6 +82,12 @@ a set of possible <a href="informedica-gensolver-lib-variablemodule-valuesetmodu
     <tbody>
         <tr>
           <td class="module-name">
+            <a href="informedica-gensolver-lib-variablemodule-dto.html">Dto</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
             <a href="informedica-gensolver-lib-variablemodule-namemodule.html">Name</a>
           </td>
           <td class="xmldoc"><p>Funcions to handle <code>Name</code></p>
@@ -87,16 +99,20 @@ a set of possible <a href="informedica-gensolver-lib-variablemodule-valuesetmodu
           <td class="module-name">
             <a href="informedica-gensolver-lib-variablemodule-valuemodule.html">Value</a>
           </td>
-          <td class="xmldoc"><p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuemodule-value.html" title="Value"><code>Value</code></a></p>
+          <td class="xmldoc"><p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuemodule-value.html" title="Value"><code>Value</code></a>
+A <a href="informedica-gensolver-lib-variablemodule-valuemodule-value.html" title="Value"><code>Value</code></a> is a non zero 
+positive value.
+Basic arrhythmic operations
+can be performed with this type.</p>
 
 
 </td>
         </tr>
         <tr>
           <td class="module-name">
-            <a href="informedica-gensolver-lib-variablemodule-valuesetmodule.html">ValueSet</a>
+            <a href="informedica-gensolver-lib-variablemodule-valuesmodule.html">Values</a>
           </td>
-          <td class="xmldoc"><p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuesetmodule-valueset.html" title="ValueSet"><code>ValueSet</code></a></p>
+          <td class="xmldoc"><p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuesmodule-values.html" title="Values"><code>Values</code></a></p>
 
 
 </td>
@@ -119,11 +135,11 @@ a set of possible <a href="informedica-gensolver-lib-variablemodule-valuesetmodu
             create n vs
           </code>
           <div class="tip" id="2">
-            <strong>Signature:</strong> n:Name -&gt; vs:ValueSet -&gt; Variable<br />
+            <strong>Signature:</strong> n:Name -&gt; vs:Values -&gt; Variable<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L264-264" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L483-483" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -131,6 +147,45 @@ a set of possible <a href="informedica-gensolver-lib-variablemodule-valuesetmodu
 
 
 
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3', 3)" onmouseover="showTip(event, '3', 3)">
+            fromDto dto
+          </code>
+          <div class="tip" id="3">
+            <strong>Signature:</strong> dto:Dto -&gt; Variable<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L486-486" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Create a variable from <code>Variable.Dto.Dto</code>.</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4', 4)" onmouseover="showTip(event, '4', 4)">
+            toDto v
+          </code>
+          <div class="tip" id="4">
+            <strong>Signature:</strong> v:Variable -&gt; Dto<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L498-498" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
     </tbody>

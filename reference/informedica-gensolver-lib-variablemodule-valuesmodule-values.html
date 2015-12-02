@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Value - GenSolver</title>
+    <title>Values - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,13 +35,18 @@
 
 
 
-<h1>Value</h1>
+<h1>Values</h1>
 <p>
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
-  <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule-valuemodule.html">Value</a></span>
+  <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule-valuesmodule.html">Values</a></span>
 </p>
 <div class="xmldoc">
-<p>Represents a non zero positive rational number.</p>
+<p><a href="informedica-gensolver-lib-variablemodule-valuesmodule-values.html" title="Values"><code>Values</code></a> is a discrete set of 
+non-zero positive rational numbers,
+the set is either limited
+and then it is a list or
+it is unlimited and then it 
+is a range.</p>
 
 
 </div>
@@ -54,15 +59,33 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '65', 65)" onmouseover="showTip(event, '65', 65)">
-            Value(BigRational)
+          <code onmouseout="hideTip(event, '78', 78)" onmouseover="showTip(event, '78', 78)">
+            Range(Range)
           </code>
-          <div class="tip" id="65">
-            <strong>Signature:</strong> BigRational<br />
+          <div class="tip" id="78">
+            <strong>Signature:</strong> Range<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L71-71" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L173-173" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '79', 79)" onmouseover="showTip(event, '79', 79)">
+            ValueSet(Set&lt;Value&gt;)
+          </code>
+          <div class="tip" id="79">
+            <strong>Signature:</strong> Set&lt;Value&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L172-172" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -80,22 +103,19 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '66', 66)" onmouseover="showTip(event, '66', 66)">
-            ( - )(v1, v2)
+          <code onmouseout="hideTip(event, '80', 80)" onmouseover="showTip(event, '80', 80)">
+            ( - )(vs1, vs2)
           </code>
-          <div class="tip" id="66">
-            <strong>Signature:</strong> (v1:Value * v2:Value) -&gt; Value<br />
+          <div class="tip" id="80">
+            <strong>Signature:</strong> (vs1:Values * vs2:Values) -&gt; Values<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L146-146" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L446-446" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Subtraction </br>
-Note that because the result 
-has to be larger than zero, the
-operation can fail.</p>
+          <p>Subtract</p>
 
 
 
@@ -104,19 +124,19 @@ operation can fail.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '67', 67)" onmouseover="showTip(event, '67', 67)">
-            ( * )(v1, v2)
+          <code onmouseout="hideTip(event, '81', 81)" onmouseover="showTip(event, '81', 81)">
+            ( * )(vs1, vs2)
           </code>
-          <div class="tip" id="67">
-            <strong>Signature:</strong> (v1:Value * v2:Value) -&gt; Value<br />
+          <div class="tip" id="81">
+            <strong>Signature:</strong> (vs1:Values * vs2:Values) -&gt; Values<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L135-135" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L440-440" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Multiplication</p>
+          <p>Multiply</p>
 
 
 
@@ -125,21 +145,19 @@ operation can fail.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '68', 68)" onmouseover="showTip(event, '68', 68)">
-            ( / )(v1, v2)
+          <code onmouseout="hideTip(event, '82', 82)" onmouseover="showTip(event, '82', 82)">
+            ( / )(vs1, vs2)
           </code>
-          <div class="tip" id="68">
-            <strong>Signature:</strong> (v1:Value * v2:Value) -&gt; Value<br />
+          <div class="tip" id="82">
+            <strong>Signature:</strong> (vs1:Values * vs2:Values) -&gt; Values<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L139-139" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L442-442" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Division</br>
-Note that because the type cannot be zero
-this operation always succeds.</p>
+          <p>Divide</p>
 
 
 
@@ -148,19 +166,40 @@ this operation always succeds.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '69', 69)" onmouseover="showTip(event, '69', 69)">
-            ( + )(v1, v2)
+          <code onmouseout="hideTip(event, '83', 83)" onmouseover="showTip(event, '83', 83)">
+            ( + )(vs1, vs2)
           </code>
-          <div class="tip" id="69">
-            <strong>Signature:</strong> (v1:Value * v2:Value) -&gt; Value<br />
+          <div class="tip" id="83">
+            <strong>Signature:</strong> (vs1:Values * vs2:Values) -&gt; Values<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L141-141" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L444-444" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Addition</p>
+          <p>Add</p>
+
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '84', 84)" onmouseover="showTip(event, '84', 84)">
+            ( =! )(res, expr)
+          </code>
+          <div class="tip" id="84">
+            <strong>Signature:</strong> (res:Values * expr:Values) -&gt; Values<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L448-448" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Add <code>expr</code> to <code>res</code></p>
 
 
 

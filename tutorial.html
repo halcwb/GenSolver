@@ -59,7 +59,7 @@
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 </pre></td>
-<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs8', 8)" onmouseover="showTip(event, 'fs8', 8)" class="i">vals</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 9)" onmouseover="showTip(event, 'fs5', 9)" class="i">Variable</span><span class="o">.</span><span class="i">Values</span><span class="o">.</span><span class="i">create</span> [<span class="n">1N</span><span class="o">..</span><span class="n">2N</span><span class="o">..</span><span class="n">10N</span>] <span onmouseout="hideTip(event, 'fs9', 10)" onmouseover="showTip(event, 'fs9', 10)" class="i">None</span> <span onmouseout="hideTip(event, 'fs9', 11)" onmouseover="showTip(event, 'fs9', 11)" class="i">None</span> <span onmouseout="hideTip(event, 'fs9', 12)" onmouseover="showTip(event, 'fs9', 12)" class="i">None</span>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs8', 8)" onmouseover="showTip(event, 'fs8', 8)" class="i">vals</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 9)" onmouseover="showTip(event, 'fs5', 9)" class="t">Variable</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs9', 10)" onmouseover="showTip(event, 'fs9', 10)" class="t">Values</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs10', 11)" onmouseover="showTip(event, 'fs10', 11)" class="f">create</span> [<span class="n">1N</span><span class="o">..</span><span class="n">2N</span><span class="o">..</span><span class="n">10N</span>] <span onmouseout="hideTip(event, 'fs11', 12)" onmouseover="showTip(event, 'fs11', 12)" class="p">None</span> <span onmouseout="hideTip(event, 'fs11', 13)" onmouseover="showTip(event, 'fs11', 13)" class="p">None</span> <span onmouseout="hideTip(event, 'fs11', 14)" onmouseover="showTip(event, 'fs11', 14)" class="p">None</span>
 </code></pre></td>
 </tr>
 </table>
@@ -68,11 +68,13 @@
 <div class="tip" id="fs2">namespace Informedica.GenSolver</div>
 <div class="tip" id="fs3">namespace Informedica.GenSolver.Lib</div>
 <div class="tip" id="fs4">val value : Variable.Value.Value<br /><br />Full name: Tutorial.value</div>
-<div class="tip" id="fs5">module Variable<br /><br />from Informedica.GenSolver.Lib<br /><em><br /><br />&#160;Contains functions to handle <br />&#160;the `Variable` type and the types<br />&#160;`Variable` depends on.</em></div>
-<div class="tip" id="fs6">module Value<br /><br />from Informedica.GenSolver.Lib.VariableModule<br /><em><br /><br />&#160;Functions to handle `Value`</em></div>
-<div class="tip" id="fs7">val create : n:BigRational -&gt; Variable.Value.Value<br /><br />Full name: Informedica.GenSolver.Lib.VariableModule.ValueModule.create<br /><em><br /><br />&#160;Create a Value that <br />&#160;is a non-zero positive<br />&#160;number</em></div>
-<div class="tip" id="fs8">val vals : obj<br /><br />Full name: Tutorial.vals</div>
-<div class="tip" id="fs9">union case Option.None: Option&lt;&#39;T&gt;</div>
+<div class="tip" id="fs5">module Variable<br /><br />from Informedica.GenSolver.Lib<br /><em><br /><br />&#160;Contains functions to handle <br />&#160;the `Variable` type and the types<br />&#160;`Variable` depends on:<br /><br />&#160;* `Name`<br />&#160;* `Value`<br />&#160;* `Values`</em></div>
+<div class="tip" id="fs6">module Value<br /><br />from Informedica.GenSolver.Lib.VariableModule<br /><em><br /><br />&#160;Functions to handle `Value`<br />&#160;A `Value` is a non zero <br />&#160;positive value.<br />&#160;Basic arrhythmic operations<br />&#160;can be performed with this type.</em></div>
+<div class="tip" id="fs7">val create : (BigRational -&gt; Variable.Value.Value)<br /><br />Full name: Informedica.GenSolver.Lib.VariableModule.ValueModule.create<br /><em><br /><br />&#160;Create a Value that <br />&#160;is a non-zero positive<br />&#160;number.</em></div>
+<div class="tip" id="fs8">val vals : Variable.Values.Values<br /><br />Full name: Tutorial.vals</div>
+<div class="tip" id="fs9">module Values<br /><br />from Informedica.GenSolver.Lib.VariableModule<br /><em><br /><br />&#160;Functions to handle `Values`</em></div>
+<div class="tip" id="fs10">val create : (Variable.Value.Value option -&gt; Variable.Value.Value option -&gt; Variable.Value.Value option -&gt; Variable.Value.Value list -&gt; Variable.Values.Values)<br /><br />Full name: Informedica.GenSolver.Lib.VariableModule.ValuesModule.create<br /><em><br /><br />&#160;Create `Values` from either a list of<br />&#160;`BigRational` or an incr, min, max combi.<br />&#160;*Note: raises an `MinLargerThanMaxException`when<br />&#160;minimum or increment is larger than maximum.</em></div>
+<div class="tip" id="fs11">union case Option.None: Option&lt;&#39;T&gt;</div>
 
         </div>
         <div class="span3">
