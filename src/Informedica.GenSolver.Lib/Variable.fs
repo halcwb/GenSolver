@@ -392,33 +392,54 @@ module Variable =
 
         // #region ---- SETTERS ----
 
-        let setIncr incr vs =
-            let min = vs |> getMin
-            let max = vs |> getMax
-            let vals = vs |> valueSetToList
+        let getAll vs = vs |> getIncr, vs |> getMin, vs |> getMax, (vs |> valueSetToList)
 
-            create (Some incr) min max vals
+        let setIncr incr vs =
+            let incr', min, max, vals = vs |> getAll
+
+            if incr' |> Option.isSome then vs
+            else
+                create (Some incr) min max vals
 
         let setMin min vs =
-            let incr = vs |> getIncr
-            let max = vs |> getMax
-            let vals = vs |> valueSetToList
+            let incr, min', max, vals = vs |> getAll
 
-            create incr (Some min) max vals
+            match min' with
+            | Some min'' -> if min > min'' then create incr (Some min) max vals else vs
+            | None       -> create incr (Some min) max vals
 
         let setMax max vs =
-            let min = vs |> getMin
-            let incr = vs |> getIncr
-            let vals = vs |> valueSetToList
+            let incr, min, max', vals = vs |> getAll
 
-            create incr min (Some max) vals
+            match max' with
+            | Some max'' -> if max < max'' then create incr min (Some max) vals else vs
+            | None       -> create incr min (Some max) vals
 
         let setValues vals vs =
-            let incr = vs |> getIncr
-            let min = vs |> getMin
-            let max = vs |> getMax
+            let incr, min, max, vals' = vs |> getAll
 
-            create incr min max vals
+            let vals = vals |> seqToValueSet |> filter incr min max |> valueSetToList
+            create incr min max (vals |> seqToValueSet |> Set.intersect vals' |> ValueSet)
+
+        /// Set values `v2` to values `v1`. Returns
+        /// the intersection of both.
+        let setTo v1 v2 = 
+            match v1, v2 with
+            | ValueSet v1', ValueSet v2' -> v1' |> Set.intersect v2' |> ValueSet
+            | Range r, ValueSet v
+            | ValueSet v, Range r ->
+                let vs                = v |> ValueSet
+                let fAll              = vs
+                let fIncr incr        = vs |> filter (Some incr) None None
+                let fMin min          = vs |> filter None (Some min) None
+                let fMax max          = vs |> filter None None (Some max)
+                let fMinMax min max   = vs |> filter None (Some min) (Some max)
+                let fIncrMin incr min = vs |> filter (Some incr) (Some min) None
+                // Filter the values with r
+                r |> applyRange fAll fIncr fMin fMax fMinMax fIncrMin
+
+            | Range _, Range _ -> failwith "Not implemented"
+
 
         // #endregion
 
@@ -543,24 +564,6 @@ module Variable =
         /// constraints another range.
         let constrainRangeWith incr min max = failwith "Not implemented yet"
             
-        /// Set values `v2` to values `v1`. Returns
-        /// the intersection of both.
-        let setTo v1 v2 = 
-            match v1, v2 with
-            | ValueSet v1', ValueSet v2' -> v1' |> Set.intersect v2' |> ValueSet
-            | Range r, ValueSet v
-            | ValueSet v, Range r ->
-                let vs                = v |> ValueSet
-                let fAll              = vs
-                let fIncr incr        = vs |> filter (Some incr) None None
-                let fMin min          = vs |> filter None (Some min) None
-                let fMax max          = vs |> filter None None (Some max)
-                let fMinMax min max   = vs |> filter None (Some min) (Some max)
-                let fIncrMin incr min = vs |> filter (Some incr) (Some min) None
-                // Filter the values with r
-                r |> applyRange fAll fIncr fMin fMax fMinMax fIncrMin
-
-            | Range _, Range _ -> failwith "Not implemented"
 
         // Extend type with basic arrhythmic operations.
         type Values with
@@ -574,10 +577,6 @@ module Variable =
             static member (-) (vs1, vs2) = calc (-) (vs1, vs2)
             /// Add `expr` to `res`
             static member (=!) (res, expr) = expr |> setTo res
-            /// Solve a product
-            static member (=*) (vs1, vs2) = vs1 * vs2 |> solveProductMinMax vs1 vs2
-            /// Solve a sum
-            static member (=+) (vs1, vs2) = vs1 + vs2 |> solveSumMinMax [vs1; vs2]
 
         // #endregion
 
