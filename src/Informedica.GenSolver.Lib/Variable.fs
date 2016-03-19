@@ -152,6 +152,7 @@ module Variable =
     module Values =
 
         open System.Collections.Generic
+        open Informedica.GenSolver.Utils
         open Value
 
         // #region Exceptions
@@ -210,6 +211,8 @@ module Variable =
 
         // #region ---- HELPERS ----
 
+        let optChoose x1 x2 = if x2 |> Option.isSome then x2.Value else x1
+
         /// Convert `BigRational` list to 
         /// `Value` list. Removes zero and
         /// negative values.
@@ -226,6 +229,8 @@ module Variable =
         /// Small helper function to turn a sequence
         /// of `Value` to a `Value Set`.
         let seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
+
+        let intersect vs1 vs2 = apply (Set.intersect vs1 >> ValueSet) (fun x -> x |> Range) vs2
 
         /// Small helper function to turn a `Value Set`
         /// to a `Value list`.
@@ -387,6 +392,153 @@ module Variable =
 
         // #endregion
 
+        // #region ---- SETTERS ----
+
+        let getAll vs = vs |> getIncr, vs |> getMin, vs |> getMax, (vs |> valueSetToList)
+
+        let setIncr incr vs =
+            let incr', min, max, vals = vs |> getAll
+
+            if incr' |> Option.isSome then vs
+            else
+                create (Some incr) min max vals
+
+        let setMin min vs =
+            let incr, min', max, vals = vs |> getAll
+
+            match min' with
+            | Some min'' -> if min > min'' then create incr (Some min) max vals else vs
+            | None       -> create incr (Some min) max vals
+
+        let setMax max vs =
+            let incr, min, max', vals = vs |> getAll
+
+            match max' with
+            | Some max'' -> if max < max'' then create incr min (Some max) vals else vs
+            | None       -> create incr min (Some max) vals
+
+        let setValues vals vs =
+            let incr, min, max, vals' = vs |> getAll
+
+            let vals' = vals' |> Set.ofList
+            let vals = vals |> seqToValueSet |> filter incr min max //|> valueSetToList
+            create incr min max (intersect vals' vals |> valueSetToList)
+
+        /// Set values `v2` to values `v1`. Returns
+        /// the intersection of both.
+        let setTo v1 v2 = 
+            match v1, v2 with
+            | ValueSet v1', ValueSet v2' -> v1' |> Set.intersect v2' |> ValueSet
+            | Range r, ValueSet v
+            | ValueSet v, Range r ->
+                let vs                = v |> ValueSet
+                let fAll              = vs
+                let fIncr incr        = vs |> filter (Some incr) None None
+                let fMin min          = vs |> filter None (Some min) None
+                let fMax max          = vs |> filter None None (Some max)
+                let fMinMax min max   = vs |> filter None (Some min) (Some max)
+                let fIncrMin incr min = vs |> filter (Some incr) (Some min) None
+                // Filter the values with r
+                r |> applyRange fAll fIncr fMin fMax fMinMax fIncrMin
+
+            | Range _, Range _ -> failwith "Not implemented"
+
+
+        // #endregion
+
+        // #region ---- SOLVE MIN MAX ----
+
+        let solveProductMinMax x1 x2 y =
+
+            let set cmp op getf setf x = function
+                | Some v1, Some v2 ->
+                    let r = v1 |> op <| v2
+                    match x |> getf with
+                    | Some v3 -> 
+                        if cmp r v3 then x |> setf r 
+                        else x 
+                        |> Some
+                    | None -> x |> setf r |> Some
+                | _ -> None
+
+            let setXmin = set (>) (/) getMin setMin
+            let setXmax = set (<) (/) getMax setMax
+
+            let setYmin = set (>) (*) getMin setMin 
+            let setYmax = set (<) (*) getMax setMax
+
+            // Rule 1: x2.min = y.min / x1.max if x1.max = set && y.max / x1.max > x2.min || x2.min = not set 
+            let x1 = setXmin x1 (y |> getMin, x2 |> getMax) |> optChoose x1
+            let x2 = setXmin x2 (y |> getMin, x1 |> getMax) |> optChoose x2
+
+            // Rule 2: x2.max = y.max / x1.min if x1.min = set and vice versa
+            let x1 = setXmax x1 (y |> getMax, x2 |> getMin) |> optChoose x1
+            let x2 = setXmax x2 (y |> getMax, x1 |> getMin) |> optChoose x2
+            // Rule 3: y.min = Product(x.min) if all x.min = set
+            let y = setYmin y (x1 |> getMin, x2 |> getMin) |> optChoose y
+            // Rule 4: y.max = Product(x.max) if all x.max = set
+            let y = setYmax y (x2 |> getMax, x2 |> getMax) |> optChoose y
+        
+            [y;x1;x2]
+
+        let solveSumMinMax vars sum =
+        
+            let sumVar getf vars  =
+                vars 
+                |> List.map getf 
+                |> List.filter Option.isSome
+                |> List.map Option.get
+                |> List.fold (+) Value.zero
+
+            let set cmp getf setf v var =
+                match v, var |> getf with
+                | Some v', Some x -> 
+                    if cmp v' x then var |> setf v' |> Some
+                    else None
+                | Some v', None   -> 
+                    if v' > Value.zero then var |> setf v' |> Some
+                    else None
+                | _ -> None
+        
+            let setMax = set (<) (getMax) (setMax)
+            let setMin = set (>) (getMin) (setMin)
+        
+            // Rule 1: var.max = sum.max if var.max = not set || sum.max < var.max
+            let vars = vars |> List.map (fun v ->
+                v |> setMax (sum |> getMax) |> optChoose v)
+
+            // Rule 2: var.min = sum.min - Sum(var.min) if n - 1 var.min = set
+            let vars = 
+                match vars |> List.filter(getMin >> Option.isNone) with
+                | [var] -> 
+                    let min = 
+                        match sum |> getMin with
+                        | None -> None
+                        | Some min -> min - (vars 
+                                             |> List.map getMin 
+                                             |> List.filter Option.isSome 
+                                             |> List.map Option.get
+                                             |> List.fold (+) Value.zero) 
+                                      |> Some
+                    let var' = var |> setMin min |> optChoose var
+                    vars |> List.replace ((=) var) var'
+                | _ -> vars
+
+            // Rule 3: sum.min = Sum(var.min) if Sum(var.min) > sum.min
+            let sum =
+                setMin (match sumVar getMin vars with | v when v > Value.zero -> v |> Some | _ -> None) sum
+                |> optChoose sum
+            
+            // Rule 4: sum.max = Sum(var.max) if all var.max = set
+            let sum =
+                if vars |> List.map getMax |> List.exists Option.isNone then sum
+                else
+                    setMax (match sumVar getMax vars with | v when v > Value.zero -> v |> Some | _ -> None) sum |> optChoose sum
+        
+            sum::vars
+
+            // #endregion
+        
         // #region ---- CALCULATION -----
 
         /// Applies an infix operator
@@ -415,24 +567,6 @@ module Variable =
         /// constraints another range.
         let constrainRangeWith incr min max = failwith "Not implemented yet"
             
-        /// Set values `v2` to values `v1`. Returns
-        /// the intersection of both.
-        let setTo v1 v2 = 
-            match v1, v2 with
-            | ValueSet v1', ValueSet v2' -> v1' |> Set.intersect v2' |> ValueSet
-            | Range r, ValueSet v
-            | ValueSet v, Range r ->
-                let vs                = v |> ValueSet
-                let fAll              = vs
-                let fIncr incr        = vs |> filter (Some incr) None None
-                let fMin min          = vs |> filter None (Some min) None
-                let fMax max          = vs |> filter None None (Some max)
-                let fMinMax min max   = vs |> filter None (Some min) (Some max)
-                let fIncrMin incr min = vs |> filter (Some incr) (Some min) None
-                // Filter the values with r
-                r |> applyRange fAll fIncr fMin fMax fMinMax fIncrMin
-
-            | Range _, Range _ -> failwith "Not implemented yet"
 
         // Extend type with basic arrhythmic operations.
         type Values with

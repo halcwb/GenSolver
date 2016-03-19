@@ -5,17 +5,20 @@ open Swensen.Unquote
 open NUnit.Framework
 open FsCheck
 
-module Testing =
 
-    // #region ---- QUICK CHECK GENERATORS ----
+/// Create the necessary test generators
+module Generators =
+
     let bigRGen (n, d) = 
-        let n' = abs(n) |> BigRational.FromInt
-        let d' = abs(d) |> BigRational.FromInt
-        n'/d'
+            let d = if d = 0 then 1 else d
+            let n' = abs(n) |> BigRational.FromInt
+            let d' = abs(d) |> BigRational.FromInt
+            n'/d'
 
     let bigRGenerator =
         gen {
-            let n, d = Random.m1, Random.m2
+            let! n = Arb.generate<int>
+            let! d = Arb.generate<int>
             return bigRGen(n, d)
         }
 
@@ -24,8 +27,45 @@ module Testing =
             { new Arbitrary<BigRational>() with
                 override x.Generator = bigRGenerator }
 
-    Arb.register<MyGenerators>() |> ignore
 
+[<SetUpFixture>]
+type Config () =
+    
+    /// Make sure the generators are
+    /// registered before running any
+    /// test code.
+    [<SetUp>]
+    member x.Setup () = 
+
+        Arb.register<Generators.MyGenerators>() |> ignore
+        
+
+module Testing =
+
+    // #region ---- QUICK CHECK GENERATORS ----
+
+//
+//    let bigRGen (n, d) = 
+//            let d = if d = 0 then 1 else d
+//            let n' = abs(n) |> BigRational.FromInt
+//            let d' = abs(d) |> BigRational.FromInt
+//            n'/d'
+//
+//    let bigRGenerator =
+//        gen {
+//            let! n = Arb.generate<int>
+//            let! d = Arb.generate<int>
+//            return bigRGen(n, d)
+//        }
+//
+//    type MyGenerators () =
+//        static member BigRational () =
+//            { new Arbitrary<BigRational>() with
+//                override x.Generator = bigRGenerator }
+//
+//    Arb.register<MyGenerators>() |> ignore
+
+    
     // #endregion
 
     module Variable =
@@ -322,7 +362,8 @@ module Testing =
             type ``Given addition multiplication or division of two value sets`` () =
                     
                 [<Test>]
-                member x.``The resultset will be a distinct set of added values`` () =
+                member x.``The resultset will be a distinct set of calculated values`` () =
+
                     let checkAdd l1 l2 =
                         // Only values > 0
                         let l1 = l1 |> List.filter ((<) 0)
@@ -385,7 +426,7 @@ module Testing =
             type ``Given subtraction of two value sets`` () =
                     
                 [<Test>]
-                member x.``The resultset will be a distinct set of positive values`` () =
+                member x.``The resultset will be a distinct set of only positive values`` () =
                     let checkSubtr l1 l2 =
                         // Only values > 0
                         let l1 = l1 |> List.filter ((<) 0)
@@ -410,7 +451,6 @@ module Testing =
         [<TestFixture>]
         type ``There and back again`` () =
     
-
             let theraAndBackAgainProp n incr min max vs =
     
                 if n |> System.String.IsNullOrWhiteSpace then true
