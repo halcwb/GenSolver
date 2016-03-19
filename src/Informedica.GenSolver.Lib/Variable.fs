@@ -230,6 +230,8 @@ module Variable =
         /// of `Value` to a `Value Set`.
         let seqToValueSet vs = vs |> Set.ofSeq |> ValueSet
 
+        let intersect vs1 vs2 = apply (Set.intersect vs1 >> ValueSet) (fun x -> x |> Range) vs2
+
         /// Small helper function to turn a `Value Set`
         /// to a `Value list`.
         let valueSetToList = apply Set.toList (fun _ -> [])
@@ -418,8 +420,9 @@ module Variable =
         let setValues vals vs =
             let incr, min, max, vals' = vs |> getAll
 
-            let vals = vals |> seqToValueSet |> filter incr min max |> valueSetToList
-            create incr min max (vals |> seqToValueSet |> Set.intersect vals' |> ValueSet)
+            let vals' = vals' |> Set.ofList
+            let vals = vals |> seqToValueSet |> filter incr min max //|> valueSetToList
+            create incr min max (intersect vals' vals |> valueSetToList)
 
         /// Set values `v2` to values `v1`. Returns
         /// the intersection of both.
