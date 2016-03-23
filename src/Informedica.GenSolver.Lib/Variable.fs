@@ -149,7 +149,7 @@ module Variable =
 
     /// Functions to handle `Values`
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-    module Values =
+    module ValueRange =
 
         open System.Collections.Generic
         open Informedica.GenSolver.Utils
@@ -169,7 +169,7 @@ module Variable =
         /// and then it is a list or
         /// it is unlimited and then it 
         /// is a range.
-        type Values =
+        type ValueRange =
             | ValueSet of Value Set
             | Range of Range
         /// A `Range` is an unlimited set of
@@ -569,7 +569,7 @@ module Variable =
             
 
         // Extend type with basic arrhythmic operations.
-        type Values with
+        type ValueRange with
             /// Multiply 
             static member (*) (vs1, vs2) = calc (*) (vs1, vs2)
             /// Divide
@@ -653,7 +653,9 @@ module Variable =
     type Variable =
         {
             Name: Name.Name
-            Values: Values.Values
+            Values: ValueRange.ValueRange
+            Min: Value.Value option
+            Max: Value.Value option
         }
 
     // #endregion
@@ -661,7 +663,7 @@ module Variable =
     // #region ---- CREATE -----
 
     /// Create a variable
-    let create n vs = { Name = n; Values = vs }
+    let create n vs = { Name = n; Values = vs; Min = None; Max = None }
 
     ///  Create a variable from `Variable.Dto.Dto`.
     let fromDto (dto: Dto.Dto) =
@@ -678,8 +680,8 @@ module Variable =
             dto.Vals 
             |> Array.map BigRational.Parse 
             |> Array.toList
-            |> Values.bigRtoValueList 
-        let vs = Values.create incr min max vs
+            |> ValueRange.bigRtoValueList 
+        let vs = ValueRange.create incr min max vs
 
         create name vs
 
@@ -692,14 +694,14 @@ module Variable =
 
         let dto = Dto.createNew (let (Name.Name n) = v.Name in n)
 
-        let min  = v.Values |> Values.getMin  |> someValueToBigR
-        let incr = v.Values |> Values.getIncr |> someValueToBigR
-        let max  = v.Values |> Values.getMax  |> someValueToBigR
+        let min  = v.Values |> ValueRange.getMin  |> someValueToBigR
+        let incr = v.Values |> ValueRange.getIncr |> someValueToBigR
+        let max  = v.Values |> ValueRange.getMax  |> someValueToBigR
 
         let vals = 
             v.Values 
-            |> Values.getValues 
-            |> Values.valueSetToBigR
+            |> ValueRange.getValues 
+            |> ValueRange.valueSetToBigR
             |> List.map (fun n -> n.ToString()) 
             |> List.toArray
 

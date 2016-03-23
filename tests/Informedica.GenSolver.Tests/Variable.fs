@@ -165,12 +165,12 @@ module Testing =
             open  Variable
 
             let createSomeVal = Variable.Value.create >> Some
-            let createVals = Variable.Values.create
+            let createVals = Variable.ValueRange.create
             let createVal = Variable.Value.create
 
-            let getIncr = Variable.Values.getIncr
-            let getMin  = Variable.Values.getMin
-            let getMax  = Variable.Values.getMax
+            let getIncr = Variable.ValueRange.getIncr
+            let getMin  = Variable.ValueRange.getMin
+            let getMax  = Variable.ValueRange.getMax
 
             [<TestFixture>]
             type ``Given list = empty incr = None min = None max = None`` () =
@@ -178,7 +178,7 @@ module Testing =
                 let min = None
                 let max = None
 
-                let vals = Values.rangeAll 
+                let vals = ValueRange.rangeAll 
         
                 [<Test>]
                 member x.``Creating values returns range All`` () =
@@ -186,7 +186,7 @@ module Testing =
         
                 [<Test>]
                 member x.``Counting values returns zero`` () =
-                    test <@ createVals incr min max [] |> Variable.Values.count = 0 @>
+                    test <@ createVals incr min max [] |> Variable.ValueRange.count = 0 @>
 
             [<TestFixture>]
             type ``Given list with one value incr = None min = None max = None`` () =
@@ -198,11 +198,11 @@ module Testing =
 
                 [<Test>]
                 member x.``Counting values returns one`` () =
-                    test <@ createVals incr min max vals |> Variable.Values.count = 1 @>
+                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 1 @>
         
                 [<Test>]
                 member x.``Creating values returns list with one value`` () =
-                    test <@ createVals incr min max vals = (vals |> Variable.Values.seqToValueSet) @>
+                    test <@ createVals incr min max vals = (vals |> Variable.ValueRange.seqToValueSet) @>
 
             [<TestFixture>]
             type ``Given empty list incr = Some 1N min = None max = None`` () =
@@ -214,7 +214,7 @@ module Testing =
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
+                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Increment is one`` () =
@@ -230,7 +230,7 @@ module Testing =
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
+                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Minimum is one`` () =
@@ -246,7 +246,7 @@ module Testing =
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
+                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Maximum is one`` () =
@@ -262,7 +262,7 @@ module Testing =
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
+                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Increment is one and minimum is two`` () =
@@ -279,7 +279,7 @@ module Testing =
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.Values.count = 0 @>
+                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Increment is one and minimum is two`` () =
@@ -296,7 +296,7 @@ module Testing =
 
                 [<Test>]
                 member x.``Values now contains two values`` () =
-                    test <@ createVals incr min max vals |> Variable.Values.count = 2 @>
+                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 2 @>
 
                 [<Test>]
                 member x.``Increment is none minimum is 2 and maximum is 4`` () =
@@ -314,8 +314,8 @@ module Testing =
                             let vals = 
                                 [1..c] 
                                 |> List.map BigRational.FromInt
-                                |> Variable.Values.createValues
-                            vals |> Variable.Values.valueSetToList |> List.length = c
+                                |> Variable.ValueRange.createValues
+                            vals |> Variable.ValueRange.valueSetToList |> List.length = c
                         else true
 
                     Check.Quick equalCount
@@ -323,15 +323,15 @@ module Testing =
                 [<Test>]
                 member x.``Can filter by incr, min and max`` () =
                     // Check values filter
-                    let create = Variable.Values.createValues
+                    let create = Variable.ValueRange.createValues
                     let vsincr = [1N..1N..10N] |> create
                     let incr = createVal 2N |> Some
                     let min = createVal 4N |> Some 
                     let max = createVal 8N |> Some
-                    test <@ Variable.Values.filter None None None vsincr = vsincr @>
-                    test <@ Variable.Values.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
-                    test <@ Variable.Values.filter incr min None vsincr = ([4N..2N..10N] |> create) @>
-                    test <@ Variable.Values.filter incr min max vsincr  = ([4N..2N..8N] |> create) @>
+                    test <@ Variable.ValueRange.filter None None None vsincr = vsincr @>
+                    test <@ Variable.ValueRange.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
+                    test <@ Variable.ValueRange.filter incr min None vsincr = ([4N..2N..10N] |> create) @>
+                    test <@ Variable.ValueRange.filter incr min max vsincr  = ([4N..2N..8N] |> create) @>
                     
             [<TestFixture>]
             type ``Given addition multiplication or division of two value sets`` () =
@@ -344,7 +344,7 @@ module Testing =
                         let l1 = l1 |> List.filter ((<) 0)
                         let l2 = l2 |> List.filter ((<) 0)
 
-                        let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
+                        let create = (List.map BigRational.FromInt) >> Variable.ValueRange.createValues
                         let add =
                             [ for x1 in l1 do
                                 for x2 in l2 do
@@ -355,14 +355,14 @@ module Testing =
                             |> Seq.toList
                         let l1' = l1 |> create
                         let l2' = l2 |> create
-                        (l1' + l2') |> Variable.Values.valueSetToList |> List.length = add.Length
+                        (l1' + l2') |> Variable.ValueRange.valueSetToList |> List.length = add.Length
 
                     let checkMult l1 l2 =
                         // Only values > 0
                         let l1 = l1 |> List.filter ((<) 0)
                         let l2 = l2 |> List.filter ((<) 0)
 
-                        let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
+                        let create = (List.map BigRational.FromInt) >> Variable.ValueRange.createValues
                         let mult =
                             [ for x1 in l1 do
                                 for x2 in l2 do
@@ -373,14 +373,14 @@ module Testing =
                             |> Seq.toList
                         let l1' = l1 |> create
                         let l2' = l2 |> create
-                        (l1' * l2') |> Variable.Values.valueSetToList |> List.length = mult.Length
+                        (l1' * l2') |> Variable.ValueRange.valueSetToList |> List.length = mult.Length
 
                     let checkDiv l1 l2 =
                         // Only values > 0
                         let l1 = l1 |> List.filter ((<) 0) |> List.map BigRational.FromInt
                         let l2 = l2 |> List.filter ((<) 0) |> List.map BigRational.FromInt
 
-                        let create = Variable.Values.createValues
+                        let create = Variable.ValueRange.createValues
                         let div =
                             [ for x1 in l1 do
                                 for x2 in l2 do
@@ -391,7 +391,7 @@ module Testing =
                             |> Seq.toList
                         let l1' = l1 |> create
                         let l2' = l2 |> create
-                        (l1' / l2') |> Variable.Values.valueSetToList |> List.length = div.Length
+                        (l1' / l2') |> Variable.ValueRange.valueSetToList |> List.length = div.Length
 
                     Check.Quick checkAdd
                     Check.Quick checkMult
@@ -407,7 +407,7 @@ module Testing =
                         let l1 = l1 |> List.filter ((<) 0)
                         let l2 = l2 |> List.filter ((<) 0)
 
-                        let create = (List.map BigRational.FromInt) >> Variable.Values.createValues
+                        let create = (List.map BigRational.FromInt) >> Variable.ValueRange.createValues
                         let subtr =
                             [ for x1 in l1 do
                                 for x2 in l2 do
@@ -418,7 +418,7 @@ module Testing =
                             |> Seq.toList
                         let l1' = l1 |> create
                         let l2' = l2 |> create
-                        (l1' + l2') |> Variable.Values.valueSetToList |> List.length = subtr.Length
+                        (l1' + l2') |> Variable.ValueRange.valueSetToList |> List.length = subtr.Length
 
                     Check.Quick checkSubtr
 
