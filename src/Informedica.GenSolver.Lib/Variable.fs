@@ -584,18 +584,65 @@ module Variable =
         // #endregion
 
 
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Dto =
+
+        open Informedica.GenSolver.Utils
         
-        [<AllowNullLiteralAttribute>]
-        type Dto () =
-            member val Name = null : string with get, set
-            member val Values = [||] : BigRational[] with get, set
-            member val Increment = None : BigRational option with get, set
-            member val Minimum = None:  BigRational option with get, set
-            member val Maximum = None: BigRational option with get, set
+        [<CLIMutable>]
+        type Dto = { Name: string; Vals: string[]; Min: string; Incr: string; Max: string }
 
-        let create n = new Dto(Name = n)
+        let create n vals min max incr =  { Name = n; Vals = vals; Min = min; Incr = incr; Max = max}
 
+        let createNew n = create n [||] "" "" ""
+
+        let apply f (d: Dto) = f d
+
+        let setVals vals dto = { dto with Vals = vals }
+        let setMin  min  dto = { dto with Min = min }
+        let setMax  max  dto = { dto with Max = max }
+        let setIncr incr dto = { dto with Incr = incr }
+
+        let (|Vals|Min|Max|Incr|NoProp|) p =  
+            match p |> String.toLower with
+            | "vals" -> Vals
+            | "min"  -> Min
+            | "max"  -> Max
+            | "incr" -> Incr
+            | _      -> NoProp
+
+        let setProp p v var =
+            match p with 
+            | Vals -> var |> setVals (v |> String.splitAt ',')
+            | Min  -> var |> setMin v
+            | Max  -> var |> setMax v
+            | Incr -> var |> setIncr v
+            | NoProp -> var
+
+        let toString { Name = name; Vals = vals; Min = min; Incr = incr; Max = max } = 
+            let printRange min incr max =
+                match min, incr, max with
+                | Some min, None,      None     -> sprintf "[%s..]" min
+                | Some min, Some incr, None     -> sprintf "[%s..%s..]" min incr
+                | Some min, Some incr, Some max -> sprintf "[%s..%s..%s]" min incr max
+                | Some min, None,      Some max -> sprintf "[%s..%s]" min max
+                | None,     Some incr, None     -> sprintf "[..%s..]" incr
+                | None,     Some incr, Some max -> sprintf "[..%s..%s]" incr max
+                | None,     None,      Some max -> sprintf "[..%s]" max
+                | None,     None,      None     -> "[]"
+
+            let printVals vals =
+                "[" + (vals |> Array.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
+
+            let vals = 
+                if vals |> Array.isEmpty then
+                    let min = if min = "" then None else Some min
+                    let max = if max = "" then None else Some max
+                    let incr = if incr = "" then None else Some incr
+                    printRange min max incr
+                else vals |> printVals
+
+            sprintf "%s%s" name vals
     
     // #region ---- TYPES ----
 
@@ -618,32 +665,45 @@ module Variable =
 
     ///  Create a variable from `Variable.Dto.Dto`.
     let fromDto (dto: Dto.Dto) =
-        let createValue = Option.bind Value.createSome
+        let strToBigR s = 
+            if s |> String.IsNullOrWhiteSpace then None
+            else s |> BigRational.Parse |> Some
+        let createValue = strToBigR >> (Option.bind Value.createSome)
         
         let name = dto.Name |> Name.create
-        let incr = dto.Increment |> createValue
-        let min  = dto.Minimum   |> createValue
-        let max  = dto.Maximum   |> createValue
-        let vs = Values.bigRtoValueList (dto.Values |> Array.toList)
+        let min  = dto.Min  |> createValue
+        let incr = dto.Incr |> createValue
+        let max  = dto.Max  |> createValue
+        let vs = 
+            dto.Vals 
+            |> Array.map BigRational.Parse 
+            |> Array.toList
+            |> Values.bigRtoValueList 
         let vs = Values.create incr min max vs
 
         create name vs
 
+
     let toDto (v: Variable) =
 
         let someValueToBigR = function
-            | Some v' -> let (Value.Value v) = v' in v |> Some
-            | None    -> None
+            | Some v' -> let (Value.Value v) = v' in v.ToString()
+            | None    -> ""
 
-        let dto = Dto.create (let (Name.Name n) = v.Name in n)
+        let dto = Dto.createNew (let (Name.Name n) = v.Name in n)
 
-        dto.Increment <- v.Values |> Values.getIncr |> someValueToBigR
-        dto.Minimum   <- v.Values |> Values.getMin  |> someValueToBigR
-        dto.Maximum   <- v.Values |> Values.getMax  |> someValueToBigR
+        let min  = v.Values |> Values.getMin  |> someValueToBigR
+        let incr = v.Values |> Values.getIncr |> someValueToBigR
+        let max  = v.Values |> Values.getMax  |> someValueToBigR
 
-        dto.Values    <- v.Values |> Values.getValues |> Values.valueSetToBigR |> List.toArray
+        let vals = 
+            v.Values 
+            |> Values.getValues 
+            |> Values.valueSetToBigR
+            |> List.map (fun n -> n.ToString()) 
+            |> List.toArray
 
-        dto
+        { dto with Vals = vals; Min = min; Incr = incr; Max = max }
 
     // #endregion
 

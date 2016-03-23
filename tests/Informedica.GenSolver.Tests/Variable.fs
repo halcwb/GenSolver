@@ -42,31 +42,6 @@ type Config () =
 
 module Testing =
 
-    // #region ---- QUICK CHECK GENERATORS ----
-
-//
-//    let bigRGen (n, d) = 
-//            let d = if d = 0 then 1 else d
-//            let n' = abs(n) |> BigRational.FromInt
-//            let d' = abs(d) |> BigRational.FromInt
-//            n'/d'
-//
-//    let bigRGenerator =
-//        gen {
-//            let! n = Arb.generate<int>
-//            let! d = Arb.generate<int>
-//            return bigRGen(n, d)
-//        }
-//
-//    type MyGenerators () =
-//        static member BigRational () =
-//            { new Arbitrary<BigRational>() with
-//                override x.Generator = bigRGenerator }
-//
-//    Arb.register<MyGenerators>() |> ignore
-
-    
-    // #endregion
 
     module Variable =
 
@@ -451,16 +426,20 @@ module Testing =
         [<TestFixture>]
         type ``There and back again`` () =
     
-            let theraAndBackAgainProp n incr min max vs =
-    
+            let theraAndBackAgainProp n vs min incr max =
+                
+                let toStr(n: BigRational) = n.ToString()
+
                 if n |> System.String.IsNullOrWhiteSpace then true
                 else
-
-                    let dto = Variable.Dto.create n
-                    dto.Increment <- incr
-                    dto.Minimum   <- min
-                    dto.Maximum   <- max
-                    dto.Values    <- vs
+                    let dto = 
+                        let dto = Variable.Dto.createNew "test"
+                        let vals = vs |> Array.map toStr
+                        let dto = dto |> Variable.Dto.setVals vals
+                        let dto = dto |> Variable.Dto.setMin (min |> toStr)
+                        let dto = dto |> Variable.Dto.setIncr (incr |> toStr)
+                        let dto = dto |> Variable.Dto.setMax (max |> toStr)
+                        dto
      
                     (dto |> Variable.fromDto |> Variable.toDto |> Variable.fromDto) = (dto |> Variable.fromDto)
                 

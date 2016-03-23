@@ -12,9 +12,10 @@ module Variable =
 
         open Informedica.GenSolver.Utils
         
-        type Dto = { Name: string; Vals: string[]; Min: string; Max: string; Incr: string }
+        [<CLIMutable>]
+        type Dto = { Name: string; Vals: string[]; Min: string; Incr: string; Max: string }
 
-        let create n vals min max incr =  { Name = n; Vals = vals; Min = min; Max = max; Incr = incr}
+        let create n vals min max incr =  { Name = n; Vals = vals; Min = min; Incr = incr; Max = max}
 
         let createNew n = create n [||] "" "" ""
 
@@ -41,15 +42,17 @@ module Variable =
             | Incr -> var |> setIncr v
             | NoProp -> var
 
-        let toString { Name = name; Vals = vals; Min = min; Max = max; Incr = incr } = 
-            let printRange min max incr =
-                match min, max, incr with
-                | Some min, None, None      -> sprintf "[%s..]" min
-                | Some min, None, Some incr -> sprintf "[%s..%s..]" min incr
-                | Some min, Some max, None  -> sprintf "[%s..%s]" min max
-                | None, Some max, None      -> sprintf "[..%s]" max
-                | None, None, Some incr      -> sprintf "[..%s..]" incr
-                | _ -> "[]"
+        let toString { Name = name; Vals = vals; Min = min; Incr = incr; Max = max } = 
+            let printRange min incr max =
+                match min, incr, max with
+                | Some min, None,      None     -> sprintf "[%s..]" min
+                | Some min, Some incr, None     -> sprintf "[%s..%s..]" min incr
+                | Some min, Some incr, Some max -> sprintf "[%s..%s..%s]" min incr max
+                | Some min, None,      Some max -> sprintf "[%s..%s]" min max
+                | None,     Some incr, None     -> sprintf "[..%s..]" incr
+                | None,     Some incr, Some max -> sprintf "[..%s..%s]" incr max
+                | None,     None,      Some max -> sprintf "[..%s]" max
+                | None,     None,      None     -> "[]"
 
             let printVals vals =
                 "[" + (vals |> Array.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
@@ -73,6 +76,7 @@ module Equation =
 
         open Informedica.GenSolver.Utils
         
+        [<CLIMutable>]
         type Dto = { Vars: Variable.Dto.Dto[]; IsProdEq: bool }
 
         let create isProd vars  = { Vars = vars; IsProdEq = isProd }
