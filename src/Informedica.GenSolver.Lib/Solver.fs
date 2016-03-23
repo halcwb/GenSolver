@@ -73,3 +73,8 @@ module Solver =
         eqs
         |> List.map (Equation.Dto.setVar n p v), false
 
+    /// Print a set of equations to the stdout.
+    let printEqs eqs = 
+        for e in eqs do printfn "%s" (e |> Equation.Dto.toString)
+
+
