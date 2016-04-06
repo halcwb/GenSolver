@@ -49,8 +49,12 @@ module Testing =
 
             open Variable
 
-            let create = Value.create
-            let calc = Value.calc
+            let fs = id
+            let ff = fun v -> v |> ValueRange.Value.NonZeroOrPositiveValueException |> raise
+
+            let create = ValueRange.Value.create fs ff
+            let calc = ValueRange.Value.calc fs ff
+            let toValue = ValueRange.Value.Value
 
             [<TestFixture>]
             type ``The create function`` () =
@@ -60,9 +64,9 @@ module Testing =
                         try
                             x 
                             |> BigRational.FromInt
-                            |> Variable.Value.create > Variable.Value.zero 
+                            |> create > Variable.ValueRange.Value.zero 
                         with 
-                        | Variable.Value.NonZeroOrPositiveValueException _ -> true
+                        | Variable.ValueRange.Value.NonZeroOrPositiveValueException _ -> true
 
                     Check.Quick nonZeroOrNegative
                     
@@ -70,16 +74,16 @@ module Testing =
             type ``Given a zero or negative number`` () =
                 [<Test>]
                 member x.``With 0 an exception is raised`` () =
-                    raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> create <> (0N |> Value.Value) @>
+                    raises<Variable.ValueRange.Value.NonZeroOrPositiveValueException> <@ 0N |> create <> (0N |> toValue) @>
                 [<Test>]
                 member x.``With -1N an exception is raised`` () =
-                    raises<Variable.Value.NonZeroOrPositiveValueException> <@ 0N |> create <> (-1N |> Value.Value) @>
+                    raises<Variable.ValueRange.Value.NonZeroOrPositiveValueException> <@ 0N |> create <> (-1N |> toValue) @>
 
             [<TestFixture>]
             type ``Given a non zero positive value`` () =
                 [<Test>]
                 member x.``A value can be created`` () =
-                    test<@ create 1N = (1N |> Value.Value) @>
+                    test<@ create 1N = (1N |> toValue) @>
         
             [<TestFixture>]
             type ``Given a get function`` () =
@@ -90,7 +94,7 @@ module Testing =
                             v
                             |> BigRational.FromInt
                             |> create
-                            |> Variable.Value.get
+                            |> Variable.ValueRange.Value.get
                             |> BigRational.ToInt32 = v
                         else true
 
@@ -103,8 +107,8 @@ module Testing =
                 member x.``The operand gives the same result as applied to BigRationals`` () =
                     let v1 = 1N |> create
                     let v2 = 1N |> create
-                    test <@ calc (+) v1 v2 |> Variable.Value.get = 2N @>
-                    test <@ (v1 + v2) |> Variable.Value.get = 2N @>
+                    test <@ calc (+) v1 v2 |> Variable.ValueRange.Value.get = 2N @>
+                    test <@ (v1 + v2) |> Variable.ValueRange.Value.get = 2N @>
 
             [<TestFixture>]
             type ``Is overloaded with`` () =
@@ -112,7 +116,7 @@ module Testing =
                 member x.``Basic arrhythmic functions`` () =
                     let checkMult x1 x2 =
                         let create = BigRational.FromInt >> create
-                        let get = Variable.Value.get >> BigRational.ToInt32
+                        let get = Variable.ValueRange.Value.get >> BigRational.ToInt32
                         if x1 > 0 && x2 > 0 then
                             let x1' = x1 |> create
                             let x2' = x2 |> create
@@ -121,7 +125,7 @@ module Testing =
 
                     let checkDiv x1 x2 =
                         let create = BigRational.FromInt >> create
-                        let get = Variable.Value.get >> BigRational.ToInt32
+                        let get = Variable.ValueRange.Value.get >> BigRational.ToInt32
                         if x1 > 0 && x2 > 0 then
                             let x1' = x1 |> create
                             let x2' = x2 |> create
@@ -130,7 +134,7 @@ module Testing =
 
                     let checkAdd x1 x2 =
                         let create = BigRational.FromInt >> create
-                        let get = Variable.Value.get >> BigRational.ToInt32
+                        let get = Variable.ValueRange.Value.get >> BigRational.ToInt32
                         if x1 > 0 && x2 > 0 then
                             let x1' = x1 |> create
                             let x2' = x2 |> create
@@ -139,7 +143,7 @@ module Testing =
 
                     let checkSubtr x1 x2 =
                         let create = BigRational.FromInt >> create
-                        let get = Variable.Value.get >> BigRational.ToInt32
+                        let get = Variable.ValueRange.Value.get >> BigRational.ToInt32
                         if x1 > 0 && x2 > 0 then
                             let x1' = x1 |> create
                             let x2' = x2 |> create
@@ -158,15 +162,21 @@ module Testing =
                 member x.``A NonZeroOrPositive error is thrown`` () =
                     let v1 = create 1N
                     let v2 = create 2N
-                    raises<Variable.Value.NonZeroOrPositiveValueException> <@ v1 - v2 @> 
+                    raises<Variable.ValueRange.Value.NonZeroOrPositiveValueException> <@ v1 - v2 @> 
 
         module Values =
 
             open  Variable
 
-            let createSomeVal = Variable.Value.create >> Some
-            let createVals = Variable.ValueRange.create
-            let createVal = Variable.Value.create
+            let fs = id
+            let ff = fun minmax -> 
+                minmax 
+                |> ValueRange.Range.MinLargerThanMaxException 
+                |> raise
+
+            let createSomeVal = ValueRange.Value.create Some (fun _ -> None)
+            let createVals incr min max vs = Variable.ValueRange.create fs ff vs min incr max
+            let createVal = Variable.ValueRange.Value.create id (fun _ -> failwith "Cannot create")
 
             let getIncr = Variable.ValueRange.getIncr
             let getMin  = Variable.ValueRange.getMin
@@ -178,15 +188,15 @@ module Testing =
                 let min = None
                 let max = None
 
-                let vals = ValueRange.rangeAll 
+                let vals = ValueRange.empty 
         
                 [<Test>]
                 member x.``Creating values returns range All`` () =
-                    test <@ createVals incr min max [] = vals @>
+                    test <@ createVals incr min max Set.empty = vals @>
         
                 [<Test>]
                 member x.``Counting values returns zero`` () =
-                    test <@ createVals incr min max [] |> Variable.ValueRange.count = 0 @>
+                    test <@ createVals incr min max Set.empty |> Variable.ValueRange.count = 0 @>
 
             [<TestFixture>]
             type ``Given list with one value incr = None min = None max = None`` () =
@@ -194,7 +204,14 @@ module Testing =
                 let min = None
                 let max = None
                 // List with one value
-                let vals = [1N |> createVal] 
+                let create vs = 
+                    let ff = fun _ -> failwith "Cannot create"
+                    ValueRange.create id ff vs None None None
+                let vals = Set.empty
+                let vr = 
+                    Set.empty
+                    |> Set.add (1N |> createVal)
+                    |> create
 
                 [<Test>]
                 member x.``Counting values returns one`` () =
@@ -202,7 +219,7 @@ module Testing =
         
                 [<Test>]
                 member x.``Creating values returns list with one value`` () =
-                    test <@ createVals incr min max vals = (vals |> Variable.ValueRange.seqToValueSet) @>
+                    test <@ createVals incr min max vals = vr @>
 
             [<TestFixture>]
             type ``Given empty list incr = Some 1N min = None max = None`` () =
@@ -210,7 +227,7 @@ module Testing =
                 let min = None
                 let max = None
                 // List with one value
-                let vals = [] 
+                let vals = Set.empty 
 
                 [<Test>]
                 member x.``Values contain no values`` () =
@@ -226,7 +243,7 @@ module Testing =
                 let min = 1N |> createSomeVal
                 let max = None
                 // List with one value
-                let vals = [] 
+                let vals = Set.empty
 
                 [<Test>]
                 member x.``Values contain no values`` () =
@@ -242,7 +259,7 @@ module Testing =
                 let min = None
                 let max = 1N |> createSomeVal
                 // List with one value
-                let vals = [] 
+                let vals = Set.empty
 
                 [<Test>]
                 member x.``Values contain no values`` () =
@@ -258,7 +275,7 @@ module Testing =
                 let min = 2N |> createSomeVal
                 let max = None
                 // List with one value
-                let vals = [] 
+                let vals = Set.empty
 
                 [<Test>]
                 member x.``Values contain no values`` () =
@@ -275,7 +292,7 @@ module Testing =
                 let min = 2N |> createSomeVal
                 let max = 4N |> createSomeVal
                 // List with one value
-                let vals = [] 
+                let vals = Set.empty
 
                 [<Test>]
                 member x.``Values contain no values`` () =
@@ -292,7 +309,7 @@ module Testing =
                 let min = None
                 let max = 4N |> createSomeVal
                 // List with one value
-                let vals = [] 
+                let vals = Set.empty
 
                 [<Test>]
                 member x.``Values now contains two values`` () =
@@ -306,16 +323,26 @@ module Testing =
 
             [<TestFixture>]
             type ``Given a list of Value`` () =
+
+                let ff = fun _ -> failwith "Cannot create"
+
+                let createVals ns =
+                    let create vs = ValueRange.createValueSet id ff vs None None None
+
+                    ns
+                    |> List.map (ValueRange.Value.create id ff)
+                    |> Set.ofList
+                    |> create
     
                 [<Test>]
                 member x.``The resulting ValueSet contains an equal amount`` () =
                     let equalCount c =
                         if c >= 1 then
-                            let vals = 
-                                [1..c] 
-                                |> List.map BigRational.FromInt
-                                |> Variable.ValueRange.createValues
-                            vals |> Variable.ValueRange.valueSetToList |> List.length = c
+                            [1..c] 
+                            |> List.map BigRational.FromInt
+                            |> createVals
+                            |> ValueRange.getValueSet
+                            |> Set.count = c
                         else true
 
                     Check.Quick equalCount
@@ -323,28 +350,40 @@ module Testing =
                 [<Test>]
                 member x.``Can filter by incr, min and max`` () =
                     // Check values filter
-                    let create = Variable.ValueRange.createValues
-                    let vsincr = [1N..1N..10N] |> create
-                    let incr = createVal 2N |> Some
+                    let vsincr = [1N..1N..10N] |> createVals
                     let min = createVal 4N |> Some 
+                    let incr = createVal 2N |> Some
                     let max = createVal 8N |> Some
                     test <@ Variable.ValueRange.filter None None None vsincr = vsincr @>
-                    test <@ Variable.ValueRange.filter incr None None vsincr = ([2N..2N..10N] |> create) @>
-                    test <@ Variable.ValueRange.filter incr min None vsincr = ([4N..2N..10N] |> create) @>
-                    test <@ Variable.ValueRange.filter incr min max vsincr  = ([4N..2N..8N] |> create) @>
+                    test <@ Variable.ValueRange.filter None incr None vsincr = ([2N..2N..10N] |> createVals) @>
+                    test <@ Variable.ValueRange.filter min incr None vsincr = ([4N..2N..10N] |> createVals) @>
+                    test <@ Variable.ValueRange.filter min incr max vsincr  = ([4N..2N..8N] |> createVals) @>
                     
             [<TestFixture>]
             type ``Given addition multiplication or division of two value sets`` () =
                     
+                let ff = fun _ -> failwith "Cannot create"
+
+                let createVals ns =
+                    let create vs = ValueRange.createValueSet id ff vs None None None
+
+                    ns
+                    |> List.map BigRational.FromInt
+                    |> List.map (ValueRange.Value.create id ff)
+                    |> Set.ofList
+                    |> create
+    
+
                 [<Test>]
                 member x.``The resultset will be a distinct set of calculated values`` () =
+
+                    let create = createVals
 
                     let checkAdd l1 l2 =
                         // Only values > 0
                         let l1 = l1 |> List.filter ((<) 0)
                         let l2 = l2 |> List.filter ((<) 0)
 
-                        let create = (List.map BigRational.FromInt) >> Variable.ValueRange.createValues
                         let add =
                             [ for x1 in l1 do
                                 for x2 in l2 do
@@ -355,14 +394,13 @@ module Testing =
                             |> Seq.toList
                         let l1' = l1 |> create
                         let l2' = l2 |> create
-                        (l1' + l2') |> Variable.ValueRange.valueSetToList |> List.length = add.Length
+                        (l1' + l2') |> ValueRange.count = add.Length
 
                     let checkMult l1 l2 =
                         // Only values > 0
                         let l1 = l1 |> List.filter ((<) 0)
                         let l2 = l2 |> List.filter ((<) 0)
 
-                        let create = (List.map BigRational.FromInt) >> Variable.ValueRange.createValues
                         let mult =
                             [ for x1 in l1 do
                                 for x2 in l2 do
@@ -373,14 +411,18 @@ module Testing =
                             |> Seq.toList
                         let l1' = l1 |> create
                         let l2' = l2 |> create
-                        (l1' * l2') |> Variable.ValueRange.valueSetToList |> List.length = mult.Length
+                        (l1' * l2') |> ValueRange.count = mult.Length
 
                     let checkDiv l1 l2 =
                         // Only values > 0
                         let l1 = l1 |> List.filter ((<) 0) |> List.map BigRational.FromInt
                         let l2 = l2 |> List.filter ((<) 0) |> List.map BigRational.FromInt
 
-                        let create = Variable.ValueRange.createValues
+                        let create =
+                            List.map (ValueRange.Value.create id (fun _ -> failwith "Could not create"))
+                            >> Set.ofList
+                            >> ValueRange.ValueSet
+
                         let div =
                             [ for x1 in l1 do
                                 for x2 in l2 do
@@ -391,7 +433,8 @@ module Testing =
                             |> Seq.toList
                         let l1' = l1 |> create
                         let l2' = l2 |> create
-                        (l1' / l2') |> Variable.ValueRange.valueSetToList |> List.length = div.Length
+
+                        (l1' / l2') |> Variable.ValueRange.count = div.Length
 
                     Check.Quick checkAdd
                     Check.Quick checkMult
@@ -400,6 +443,17 @@ module Testing =
             [<TestFixture>]
             type ``Given subtraction of two value sets`` () =
                     
+                let ff = fun _ -> failwith "Cannot create"
+
+                let createVals ns =
+                    let create vs = ValueRange.createValueSet id ff vs None None None
+
+                    ns
+                    |> List.map BigRational.FromInt
+                    |> List.map (ValueRange.Value.create id ff)
+                    |> Set.ofList
+                    |> create
+
                 [<Test>]
                 member x.``The resultset will be a distinct set of only positive values`` () =
                     let checkSubtr l1 l2 =
@@ -407,7 +461,7 @@ module Testing =
                         let l1 = l1 |> List.filter ((<) 0)
                         let l2 = l2 |> List.filter ((<) 0)
 
-                        let create = (List.map BigRational.FromInt) >> Variable.ValueRange.createValues
+                        let create = createVals
                         let subtr =
                             [ for x1 in l1 do
                                 for x2 in l2 do
@@ -418,13 +472,18 @@ module Testing =
                             |> Seq.toList
                         let l1' = l1 |> create
                         let l2' = l2 |> create
-                        (l1' + l2') |> Variable.ValueRange.valueSetToList |> List.length = subtr.Length
+                        (l1' + l2') |> ValueRange.count = subtr.Length
 
                     Check.Quick checkSubtr
 
 
         [<TestFixture>]
         type ``There and back again`` () =
+
+            let fromDto dto =
+                match dto |> Variable.fromDtoOpt with
+                | Some vr -> vr
+                | None -> failwith "Could not fromdto"
     
             let theraAndBackAgainProp n vs min incr max =
                 
@@ -441,7 +500,7 @@ module Testing =
                         let dto = dto |> Variable.Dto.setMax (max |> toStr)
                         dto
      
-                    (dto |> Variable.fromDto |> Variable.toDto |> Variable.fromDto) = (dto |> Variable.fromDto)
+                    (dto |> fromDto |> Variable.toDto |> fromDto) = (dto |> fromDto)
                 
             [<Test>]
             member x.``Creating from dto has same result as creating from dto, back to dto and again from dto`` () =

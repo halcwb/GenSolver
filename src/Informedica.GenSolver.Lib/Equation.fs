@@ -60,10 +60,14 @@ module Equation =
 
     let solveProductMinMax x1 x2 y =
 
+        // ToDo Temp hack
+        let fs = id
+        let ff = fun _ -> failwith "Cannot set"
+
         let getMin = Variable.ValueRange.getMin
-        let setMin = Variable.ValueRange.setMin
+        let setMin = Variable.ValueRange.setMin fs ff
         let getMax = Variable.ValueRange.getMax
-        let setMax = Variable.ValueRange.setMax
+        let setMax = Variable.ValueRange.setMax fs ff
 
 
         let set cmp op getf setf x = function
@@ -99,17 +103,21 @@ module Equation =
 
     let solveSumMinMax vars sum =
         
+        // ToDo Temp hack
+        let fs = id
+        let ff = fun _ -> failwith "Cannot set"
+
         let getMin = Variable.ValueRange.getMin
-        let setMin = Variable.ValueRange.setMin
+        let setMin = Variable.ValueRange.setMin fs ff
         let getMax = Variable.ValueRange.getMax
-        let setMax = Variable.ValueRange.setMax
+        let setMax = Variable.ValueRange.setMax fs ff
 
         let sumVar getf vars  =
             vars 
             |> List.map getf 
             |> List.filter Option.isSome
             |> List.map Option.get
-            |> List.fold (+) Variable.Value.zero
+            |> List.fold (+) Variable.ValueRange.Value.zero
 
         let set cmp getf setf v var =
             match v, var |> getf with
@@ -117,7 +125,7 @@ module Equation =
                 if cmp v' x then var |> setf v' |> Some
                 else None
             | Some v', None   -> 
-                if v' > Variable.Value.zero then var |> setf v' |> Some
+                if v' > Variable.ValueRange.Value.zero then var |> setf v' |> Some
                 else None
             | _ -> None
         
@@ -139,7 +147,7 @@ module Equation =
                                             |> List.map getMin 
                                             |> List.filter Option.isSome 
                                             |> List.map Option.get
-                                            |> List.fold (+) Variable.Value.zero) 
+                                            |> List.fold (+) Variable.ValueRange.Value.zero) 
                                     |> Some
                 let var' = var |> setMin min |> optChoose var
                 vars |> List.replace ((=) var) var'
@@ -147,14 +155,14 @@ module Equation =
 
         // Rule 3: sum.min = Sum(var.min) if Sum(var.min) > sum.min
         let sum =
-            setMin (match sumVar getMin vars with | v when v > Variable.Value.zero -> v |> Some | _ -> None) sum
+            setMin (match sumVar getMin vars with | v when v > Variable.ValueRange.Value.zero -> v |> Some | _ -> None) sum
             |> optChoose sum
             
         // Rule 4: sum.max = Sum(var.max) if all var.max = set
         let sum =
             if vars |> List.map getMax |> List.exists Option.isNone then sum
             else
-                setMax (match sumVar getMax vars with | v when v > Variable.Value.zero -> v |> Some | _ -> None) sum |> optChoose sum
+                setMax (match sumVar getMax vars with | v when v > Variable.ValueRange.Value.zero -> v |> Some | _ -> None) sum |> optChoose sum
         
         sum::vars
 
