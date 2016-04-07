@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Name - GenSolver</title>
+    <title>String - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,42 +35,14 @@
 
 
 
-<h1>Name</h1>
+<h1>String</h1>
 <p>
-  <span>Namespace: Informedica.GenSolver.Lib</span><br />
-  <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule.html">Variable</a></span>
+  <span>Namespace: Informedica.GenSolver.Utils</span><br />
 </p>
 <div class="xmldoc">
-<p>Funcions to handle <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a></p>
-
 </div>
 
 <!-- Render nested types and modules, if there are any -->
-  <h2>Nested types and modules</h2>
-  <div>
-      <table class="table table-bordered type-list">
-    <thead>
-      <tr><td>Type</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html">Name</a>
-          </td>
-          <td class="xmldoc"><p>Represents a non empty/null string identifying a <code>variable</code></p>
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-variablemodule-namemodule-nullorwhitespaceexception.html">NullOrWhiteSpaceException</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
 
   <h3>Functions and values</h3>
   <table class="table table-bordered member-list">
@@ -81,66 +53,109 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '29', 29)" onmouseover="showTip(event, '29', 29)">
-            create 
+          <code onmouseout="hideTip(event, '73', 73)" onmouseover="showTip(event, '73', 73)">
+            apply f s
           </code>
-          <div class="tip" id="29">
-            <strong>Signature:</strong> string -&gt; Name<br />
-                      </div>
+          <div class="tip" id="73">
+            <strong>Signature:</strong> f:(String -&gt; &#39;?6714) -&gt; s:String -&gt; &#39;?6714<br />
+                          <strong>Type parameters:</strong> '?6714          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L49-49" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Utils.fs#L8-8" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a Name that
-is a non empty string
-Note: this function will fail
-when string is null or white space</p>
-
-
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '30', 30)" onmouseover="showTip(event, '30', 30)">
-            createCont succ fail n
+          <code onmouseout="hideTip(event, '74', 74)" onmouseover="showTip(event, '74', 74)">
+            contains c s
           </code>
-          <div class="tip" id="30">
-            <strong>Signature:</strong> succ:(Name -&gt; &#39;?6766) -&gt; fail:(string -&gt; &#39;?6766) -&gt; n:string -&gt; &#39;?6766<br />
-                          <strong>Type parameters:</strong> '?6766          </div>
+          <div class="tip" id="74">
+            <strong>Signature:</strong> c:string -&gt; s:String -&gt; bool<br />
+                      </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L37-37" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Utils.fs#L14-14" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create with <code>succ</code> function when success
-and <code>fail</code> function when failure</p>
-
-
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '31', 31)" onmouseover="showTip(event, '31', 31)">
-            createSome 
+          <code onmouseout="hideTip(event, '75', 75)" onmouseover="showTip(event, '75', 75)">
+            get 
           </code>
-          <div class="tip" id="31">
-            <strong>Signature:</strong> string -&gt; Name option<br />
+          <div class="tip" id="75">
+            <strong>Signature:</strong> String -&gt; String<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L43-43" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Utils.fs#L10-10" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Returns a <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> option when creation
-succeeds</p>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
 
+          <code onmouseout="hideTip(event, '76', 76)" onmouseover="showTip(event, '76', 76)">
+            splitAt c s
+          </code>
+          <div class="tip" id="76">
+            <strong>Signature:</strong> c:char -&gt; s:String -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Utils.fs#L12-12" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
 
+          <code onmouseout="hideTip(event, '77', 77)" onmouseover="showTip(event, '77', 77)">
+            toLower s
+          </code>
+          <div class="tip" id="77">
+            <strong>Signature:</strong> s:String -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Utils.fs#L18-18" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '78', 78)" onmouseover="showTip(event, '78', 78)">
+            trim s
+          </code>
+          <div class="tip" id="78">
+            <strong>Signature:</strong> s:String -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Utils.fs#L16-16" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
     </tbody>

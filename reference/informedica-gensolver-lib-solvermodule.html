@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Name - GenSolver</title>
+    <title>Solver - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,42 +35,18 @@
 
 
 
-<h1>Name</h1>
+<h1>Solver</h1>
 <p>
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
-  <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule.html">Variable</a></span>
 </p>
 <div class="xmldoc">
-<p>Funcions to handle <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a></p>
+<p>Implementations of solvers for product equations
+sum equations and a set of product and/or sum
+equations</p>
 
 </div>
 
 <!-- Render nested types and modules, if there are any -->
-  <h2>Nested types and modules</h2>
-  <div>
-      <table class="table table-bordered type-list">
-    <thead>
-      <tr><td>Type</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html">Name</a>
-          </td>
-          <td class="xmldoc"><p>Represents a non empty/null string identifying a <code>variable</code></p>
-
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="informedica-gensolver-lib-variablemodule-namemodule-nullorwhitespaceexception.html">NullOrWhiteSpaceException</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
 
   <h3>Functions and values</h3>
   <table class="table table-bordered member-list">
@@ -81,22 +57,22 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '29', 29)" onmouseover="showTip(event, '29', 29)">
-            create 
+          <code onmouseout="hideTip(event, '11', 11)" onmouseover="showTip(event, '11', 11)">
+            createSolve arg1 arg2 isSolved
           </code>
-          <div class="tip" id="29">
-            <strong>Signature:</strong> string -&gt; Name<br />
+          <div class="tip" id="11">
+            <strong>Signature:</strong> SolveProductEquation -&gt; SolveSumEquation -&gt; isSolved:(Equation -&gt; bool) -&gt; Solve<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L49-49" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L17-17" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a Name that
-is a non empty string
-Note: this function will fail
-when string is null or white space</p>
+          <p>Create the equation solver using a
+product equation and a sum equation solver
+and function to determine whether an
+equation is solved</p>
 
 
         </td>
@@ -104,20 +80,19 @@ when string is null or white space</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '30', 30)" onmouseover="showTip(event, '30', 30)">
-            createCont succ fail n
+          <code onmouseout="hideTip(event, '12', 12)" onmouseover="showTip(event, '12', 12)">
+            init eqs
           </code>
-          <div class="tip" id="30">
-            <strong>Signature:</strong> succ:(Name -&gt; &#39;?6766) -&gt; fail:(string -&gt; &#39;?6766) -&gt; n:string -&gt; &#39;?6766<br />
-                          <strong>Type parameters:</strong> '?6766          </div>
+          <div class="tip" id="12">
+            <strong>Signature:</strong> eqs:String list -&gt; Dto list<br />
+                      </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L37-37" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L57-57" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create with <code>succ</code> function when success
-and <code>fail</code> function when failure</p>
+          <p>Initialize the solver returning a set of equations</p>
 
 
         </td>
@@ -125,20 +100,39 @@ and <code>fail</code> function when failure</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '31', 31)" onmouseover="showTip(event, '31', 31)">
-            createSome 
+          <code onmouseout="hideTip(event, '13', 13)" onmouseover="showTip(event, '13', 13)">
+            printEqs eqs
           </code>
-          <div class="tip" id="31">
-            <strong>Signature:</strong> string -&gt; Name option<br />
+          <div class="tip" id="13">
+            <strong>Signature:</strong> eqs:seq&lt;Dto&gt; -&gt; unit<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L43-43" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L77-77" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Returns a <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> option when creation
-succeeds</p>
+          <p>Print a set of equations to the stdout.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14', 14)" onmouseover="showTip(event, '14', 14)">
+            solve eqs n p v
+          </code>
+          <div class="tip" id="14">
+            <strong>Signature:</strong> eqs:Dto list -&gt; n:string -&gt; p:String -&gt; v:String -&gt; Dto list * bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L72-72" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Initial dummy implementation of solve</p>
 
 
         </td>

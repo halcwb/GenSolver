@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Variable - GenSolver</title>
+    <title>Equation - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,21 +35,11 @@
 
 
 
-<h1>Variable</h1>
+<h1>Equation</h1>
 <p>
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
 </p>
 <div class="xmldoc">
-<p>Contains functions to handle
-the <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> type and the types
-<a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> depends on:</p>
-<ul>
-<li><a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a></li>
-<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a></li>
-<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-rangemodule-range.html" title="Range"><code>Range</code></a></li>
-<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a></li>
-</ul>
-
 </div>
 
 <!-- Render nested types and modules, if there are any -->
@@ -62,18 +52,72 @@ the <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Vari
     <tbody>
         <tr>
           <td class="type-name">
-            <a href="informedica-gensolver-lib-variablemodule-dtostrat-5.html">DtoStrat<'Name, 'Value, 'ValueSet, 'ValueRange, 'Variable></a>
+            <a href="informedica-gensolver-lib-equationmodule-equation.html">Equation</a>
           </td>
-          <td class="xmldoc"></td>
+          <td class="xmldoc"><p>An equation is either a product equation
+or a sumequation, the first variable is the
+dependent variable, i.e. the result of the
+equation, the second part are the independent
+variables in the equation</p>
+
+</td>
         </tr>
         <tr>
           <td class="type-name">
-            <a href="informedica-gensolver-lib-variablemodule-variable.html">Variable</a>
+            <a href="informedica-gensolver-lib-equationmodule-haschanged.html">HasChanged</a>
           </td>
-          <td class="xmldoc"><p>Represents a variable in an
-<a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a>. The variable is
-identified by <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> and has
-a set of possible <code>Values</code>.</p>
+          <td class="xmldoc"><p>whether the any variable is changed,
+i.e. the range of possible values has
+narrowed down.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equationmodule-issolved.html">IsSolved</a>
+          </td>
+          <td class="xmldoc"><p>An equation is solved, i.e. if all the variables
+in the equation have only one sinlge value, i.e.
+the variables can no further be restricted</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equationmodule-solve.html">Solve</a>
+          </td>
+          <td class="xmldoc"><p>The solve function takes in a list of
+equations in which a variable can participate
+in one or more equations, the solve function
+calculates for each variable the possible values
+or the possible range, given the other variables
+in the equation and other equations</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equationmodule-solveequation.html">SolveEquation</a>
+          </td>
+          <td class="xmldoc"><p>Solving an equation returns the
+resulting equation and whether this
+has changed from the original equation</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equationmodule-solveproductequation.html">SolveProductEquation</a>
+          </td>
+          <td class="xmldoc"><p>Solve a product equation</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="informedica-gensolver-lib-equationmodule-solvesumequation.html">SolveSumEquation</a>
+          </td>
+          <td class="xmldoc"><p>Solve a sum equation</p>
 
 </td>
         </tr>
@@ -86,25 +130,9 @@ a set of possible <code>Values</code>.</p>
     <tbody>
         <tr>
           <td class="module-name">
-            <a href="informedica-gensolver-lib-variablemodule-dtomodule.html">Dto</a>
+            <a href="informedica-gensolver-lib-equationmodule-dtomodule.html">Dto</a>
           </td>
           <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="informedica-gensolver-lib-variablemodule-namemodule.html">Name</a>
-          </td>
-          <td class="xmldoc"><p>Funcions to handle <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a></p>
-
-</td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="informedica-gensolver-lib-variablemodule-valuerangemodule.html">ValueRange</a>
-          </td>
-          <td class="xmldoc"><p>Functions to handle <code>Values</code></p>
-
-</td>
         </tr>
     </tbody>
   </table>
@@ -120,55 +148,15 @@ a set of possible <code>Values</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '15', 15)" onmouseover="showTip(event, '15', 15)">
-            create n vs
+          <code onmouseout="hideTip(event, '1', 1)" onmouseover="showTip(event, '1', 1)">
+            optChoose x1 x2
           </code>
-          <div class="tip" id="15">
-            <strong>Signature:</strong> n:Name -&gt; vs:ValueRange -&gt; Variable<br />
-                      </div>
+          <div class="tip" id="1">
+            <strong>Signature:</strong> x1:&#39;?6921 -&gt; x2:&#39;?6921 option -&gt; &#39;?6921<br />
+                          <strong>Type parameters:</strong> '?6921          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L568-568" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Create a variable</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '16', 16)" onmouseover="showTip(event, '16', 16)">
-            fromDto strat dto
-          </code>
-          <div class="tip" id="16">
-            <strong>Signature:</strong> strat:DtoStrat&lt;&#39;?6743,&#39;?6744,&#39;?6745,&#39;?6746,&#39;?6747&gt; -&gt; dto:Dto -&gt; &#39;?6747<br />
-                          <strong>Type parameters:</strong> '?6743, '?6744, '?6745, '?6746, '?6747          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L580-580" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Create a variable from <code>Variable.Dto.Dto</code>.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '17', 17)" onmouseover="showTip(event, '17', 17)">
-            fromDtoOpt 
-          </code>
-          <div class="tip" id="17">
-            <strong>Signature:</strong> Dto -&gt; Variable option<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L596-596" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L58-58" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -178,15 +166,33 @@ a set of possible <code>Values</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '18', 18)" onmouseover="showTip(event, '18', 18)">
-            toDto v
+          <code onmouseout="hideTip(event, '2', 2)" onmouseover="showTip(event, '2', 2)">
+            solveProductMinMax x1 x2 y
           </code>
-          <div class="tip" id="18">
-            <strong>Signature:</strong> v:Variable -&gt; Dto<br />
+          <div class="tip" id="2">
+            <strong>Signature:</strong> x1:ValueRange -&gt; x2:ValueRange -&gt; y:ValueRange -&gt; ValueRange list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L637-637" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L61-61" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3', 3)" onmouseover="showTip(event, '3', 3)">
+            solveSumMinMax vars sum
+          </code>
+          <div class="tip" id="3">
+            <strong>Signature:</strong> vars:ValueRange list -&gt; sum:ValueRange -&gt; ValueRange list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L104-104" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
