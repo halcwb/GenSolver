@@ -207,11 +207,10 @@ module Testing =
                 let create vs = 
                     let ff = fun _ -> failwith "Cannot create"
                     ValueRange.create id ff vs None None None
-                let vals = Set.empty
-                let vr = 
+                let vals = 
                     Set.empty
                     |> Set.add (1N |> createVal)
-                    |> create
+                let vr = vals |> create
 
                 [<Test>]
                 member x.``Counting values returns one`` () =
@@ -479,12 +478,6 @@ module Testing =
 
         [<TestFixture>]
         type ``There and back again`` () =
-
-            let fromDto dto =
-                match dto |> Variable.fromDtoOpt with
-                | Some vr -> vr
-                | None -> failwith "Could not fromdto"
-    
             let theraAndBackAgainProp n vs min incr max =
                 
                 let toStr(n: BigRational) = n.ToString()
@@ -500,9 +493,14 @@ module Testing =
                         let dto = dto |> Variable.Dto.setMax (max |> toStr)
                         dto
      
-                    (dto |> fromDto |> Variable.toDto |> fromDto) = (dto |> fromDto)
+                    match dto |> Variable.fromDtoOpt with
+                    | Some vr -> 
+                        let dto' = vr |> Variable.toDto |> Variable.fromDtoOpt |> Option.get |> Variable.toDto
+                        let dto'' = dto' |> Variable.fromDtoOpt |> Option.get |> Variable.toDto
+                        //printfn "new:\n%A\noriginal:\n%A" dto'' dto'
+                        dto' = dto''
+                    | None -> true
                 
             [<Test>]
             member x.``Creating from dto has same result as creating from dto, back to dto and again from dto`` () =
-
                 Check.Quick theraAndBackAgainProp 

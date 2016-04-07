@@ -180,6 +180,8 @@ module Variable =
 
             // #region CREATORS 
 
+            let all = { Min = None; Incr = None; Max = None }
+
             /// Create a range with eihter a 
             /// minimum 'min`, an increment `'incr'
             /// or a maximimum `max`.
@@ -303,11 +305,15 @@ module Variable =
             let fr = RangeSet
             apply fv fr vr
 
+        let getSetMin s = if s |> Set.isEmpty then None else s.MinimumElement |> Some
+
+        let getSetMax s = if s |> Set.isEmpty then None else s.MaximumElement |> Some
+
         // #endregion
 
         // #region ----- CREATORS ----
 
-        let empty = Set.empty |> ValueSet
+        let empty = Range.all |> RangeSet
 
         let createValueSet fs ff vals min incr max =
             let get v = 
@@ -362,7 +368,7 @@ module Variable =
         /// but there is an increment, then
         /// the increment is the minimum*
         let getMin =
-            let fv (vs: Value.Value Set) = vs.MinimumElement |> Some
+            let fv (vs: Value.Value Set) = vs |> getSetMin
             let fr = Range.getMin
 
             apply fv fr
@@ -379,7 +385,7 @@ module Variable =
         /// Get the maximum from
         /// values if there is one
         let getMax =
-            let fv (vs: Value.Value Set) = vs.MaximumElement |> Some
+            let fv (vs: Value.Value Set) = vs |> getSetMax
             let fr = Range.getMax
 
             apply fv fr
@@ -598,7 +604,7 @@ module Variable =
                 |> BigRational.Parse 
                 |> Some
             with
-            | _ -> None 
+            | _ -> None
 
             |> Option.bind (ValueRange.Value.create fs ff)
 
@@ -629,7 +635,6 @@ module Variable =
         
 
     let toDto (v: Variable) =
-
         let someValueToBigR = function
             | Some v' -> let (ValueRange.Value.Value v) = v' in v.ToString()
             | None    -> ""
