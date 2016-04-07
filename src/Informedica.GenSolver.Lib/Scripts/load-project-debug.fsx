@@ -3,5 +3,6 @@
 #load "load-references-debug.fsx"
 #load "../Utils.fs"
       "../Variable.fs"
+      "../Equation.fs"
       "../Solver.fs"
       "../AssemblyInfo.fs"

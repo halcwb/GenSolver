@@ -59,7 +59,7 @@
     <Content Include="InstallationDummyFile.txt">
       <Paket>True</Paket>
     </Content>
-    <Compile Include="Variable.fs" />
+    <Compile Include="VariableTests.fs" />
     <None Include="Script.fsx" />
     <None Include="Scripts\load-references.fsx" />
     <None Include="Scripts\load-project.fsx" />

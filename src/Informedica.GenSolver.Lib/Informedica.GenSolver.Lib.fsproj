@@ -54,12 +54,14 @@
     </Content>
     <Compile Include="Utils.fs" />
     <Compile Include="Variable.fs" />
+    <Compile Include="Equation.fs" />
     <Compile Include="Solver.fs" />
     <None Include="Scripts\load-references.fsx" />
     <None Include="Scripts\load-project.fsx" />
     <None Include="Scripts\Variable.fsx" />
     <None Include="Scripts\load-references-debug.fsx" />
     <None Include="Scripts\load-project-debug.fsx" />
+    <None Include="Scripts\Api.fsx" />
     <Compile Include="AssemblyInfo.fs" />
     <Content Include="App.config" />
   </ItemGroup>
