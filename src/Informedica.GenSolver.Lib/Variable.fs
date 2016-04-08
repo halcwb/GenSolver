@@ -99,7 +99,7 @@ module Variable =
             /// Zero value, used for
             /// checking purposes. Is
             /// actually not a valid value.
-            let zero = 0N |> Value
+//            let zero = 0N |> Value
 
             /// One value
             let one = 1N |> Value
@@ -125,7 +125,7 @@ module Variable =
 
             /// Check whether a value `v` is 
             /// an increment of `incr`.
-            let isIncr (Value incr) (Value v) = 
+            let isMultiple (Value incr) (Value v) = 
                 (v.Numerator * incr.Denominator) % (incr.Numerator * v.Denominator) = 0I
 
             type Value with
@@ -180,8 +180,6 @@ module Variable =
 
             // #region CREATORS 
 
-            let all = { Min = None; Incr = None; Max = None }
-
             /// Create a range with eihter a 
             /// minimum 'min`, an increment `'incr'
             /// or a maximimum `max`.
@@ -204,7 +202,7 @@ module Variable =
 
 
                 match min, incr, max with
-                | None, None, None
+                | None, None, None -> failwith "Cannot create range without either min incr or max"
                 | Some _, None, None
                 | None, Some _, None
                 | None, None, Some _ ->
@@ -228,7 +226,10 @@ module Variable =
 
             // #region GETTERS
 
-            let getMin r = (r |> get).Min
+            let getMin r = 
+                match (r |> get).Min with 
+                | None -> r.Incr
+                | _    -> r.Min
 
             let getIncr r = (r |> get).Incr
 
@@ -244,19 +245,31 @@ module Variable =
                 | _ -> { r with Min = Some v } |> fs 
 
             let setIncr fs ff v r =
-                let isMultipleOf (Value.Value d) (Value.Value n) =
-                    n.Denominator = 0I
-
-                let isNotMultipleOf d n =  n |> isMultipleOf  d |> not
+                let isNotMultipleOf i = Value.isMultiple i >> not
 
                 match (r |> getIncr) with
                 | Some i when v |> isNotMultipleOf i -> ff i v
-                | _ -> { r with Incr = Some v }
+                | _ -> { r with Incr = Some v } |> fs
 
             let setMax fs ff v r =
                 match (r |> getMax) with
                 | Some m when m < v -> ff m v
                 | _ -> { r with Max = Some v } |> fs 
+
+            // #endregion
+
+            // #region PREDICATES
+
+            let contains v { Min = min; Incr = incr; Max = max } =
+                match min, incr, max with
+                | Some min', None,       None      -> v >= min'
+                | None,      Some incr', None      -> v |> Value.isMultiple incr'
+                | None,      None,       Some max' -> v <= max'
+                | Some min', Some incr', None      -> v >= min' && v |> Value.isMultiple incr'
+                | Some min', None,       Some max' -> v >= min' && v <= max'
+                | None,      Some _,     Some _
+                | Some _,    Some _,     Some _
+                | None,      None,       None      -> failwith "Range is not valid"
 
             // #endregion
 
@@ -269,13 +282,14 @@ module Variable =
         /// it is infinite and then it 
         /// is a range.
         type ValueRange =
-            | ValueSet of Value.Value Set
+            | Unrestricted
         /// A `Range` is an infinite set of
         /// rational numbers, when a set has
         /// both a minimum, maximum and an 
         /// increment then it is not a range
         /// anymore but a finite set of values
-            | RangeSet of Range.Range
+            | Restricted of Range.Range
+            | ValueSet of Value.Value Set
 
         // #endregion
         
@@ -284,26 +298,29 @@ module Variable =
         /// Aply the give functions to `Values`
         /// where fv is used for `Value Set` and
         /// fr is used for `Range`
-        let apply fv fr vs : 'a =
+        let apply ur fr fv vs : 'a =
             match vs with
+            | Unrestricted -> ur
+            | Restricted x -> x |> fr
             | ValueSet x -> x |> fv
-            | RangeSet x    -> x |> fr
 
         /// Filter a set of values according
         /// to increment, min and max constraints
         let filter min incr max vr = 
             let fTrue = fun _ -> true
             let fMin  = function | None -> fTrue | Some min ->  (<=) min
-            let fIncr = function | None -> fTrue | Some incr -> Value.isIncr incr
+            let fIncr = function | None -> fTrue | Some incr -> Value.isMultiple incr
             let fMax  = function | None -> fTrue | Some max ->  (>=) max
 
             let fv = Set.filter (fun v -> v |> fMin min &&
-                                            v |> fIncr incr &&
-                                            v |> fMax max)
-                        >> ValueSet
+                                          v |> fIncr incr &&
+                                          v |> fMax max)
+                     >> ValueSet
 
-            let fr = RangeSet
-            apply fv fr vr
+            let ur = Unrestricted
+            let fr = Restricted
+
+            apply ur fr fv vr
 
         let getSetMin s = if s |> Set.isEmpty then None else s.MinimumElement |> Some
 
@@ -313,20 +330,15 @@ module Variable =
 
         // #region ----- CREATORS ----
 
-        let empty = Range.all |> RangeSet
+        let unrestricted = Unrestricted
 
         let createValueSet fs ff vals min incr max =
-            let get v = 
-                if v |> Option.isSome then v |> Option.get 
-                else Value.zero
+            let get = Option.get
 
-            let min', incr', max' = 
-                min |> get,
-                incr |> get,
-                max |> get
+            let test v1 v2 = v1 |> Option.isSome && v2 |> Option.isSome && v1 > v2
 
-            if min' > max' then (min', max')     |> ff
-            elif incr' > max' then (incr', max') |> ff
+            if test min max    then (min |> get,  max |> get) |> ff
+            elif test incr max then (incr |> get, max |> get) |> ff
             else
                 vals
                 |> ValueSet 
@@ -345,7 +357,9 @@ module Variable =
                 |> ValueSet
                 |> fs
 
-            Range.create (RangeSet >> fs) ff fv min incr max
+            match min, incr, max with
+            | None, None, None -> unrestricted |> fs
+            | _ -> Range.create (Restricted >> fs) ff fv min incr max
 
         let create fs ff (vals: Value.Value Set) min incr max =
             match vals with
@@ -360,7 +374,7 @@ module Variable =
         /// Get the values set, returns 
         /// empty set when values is a 
         /// range.
-        let getValueSet = apply id (fun  _ -> Set.empty)
+        let getValueSet = apply Set.empty (fun  _ -> Set.empty) id 
 
         /// Get the minimum from
         /// values if there is one
@@ -371,7 +385,7 @@ module Variable =
             let fv (vs: Value.Value Set) = vs |> getSetMin
             let fr = Range.getMin
 
-            apply fv fr
+            apply None fr fv
 
         /// Get the increment from
         /// values if there is one</br>
@@ -380,7 +394,7 @@ module Variable =
             let fv = fun _ -> None
             let fr = Range.getIncr
 
-            apply fv fr
+            apply None fr fv
 
         /// Get the maximum from
         /// values if there is one
@@ -388,7 +402,7 @@ module Variable =
             let fv (vs: Value.Value Set) = vs |> getSetMax
             let fr = Range.getMax
 
-            apply fv fr
+            apply None fr fv
 
         /// Get all `Value`'s.
         let getAll vr =  (vr |> getValueSet), vr |> getMin, vr |> getIncr, vr |> getMax
@@ -405,36 +419,37 @@ module Variable =
                 create fs ff vals min (Some incr) max
 
         let setMin fs ff min vs =
+            let create = create fs ff
             let vals, min', incr, max = vs |> getAll
 
             match min' with
             | Some min'' -> 
-                if min > min'' then create fs ff vals (Some min) incr max 
+                if min > min'' then create vals (Some min) incr max 
                 else vs |> fs
-            | None       -> create fs ff vals (Some min) incr max
+            | None -> create vals (Some min) incr max
 
         let setMax fs ff max vs =
+            let create = create fs ff
             let vals, min, incr, max' = vs |> getAll
 
             match max' with
             | Some max'' -> 
-                if max < max'' then create fs ff vals min incr (Some max) 
+                if max < max'' then create vals min incr (Some max) 
                 else vs |> fs
-            | None       -> create fs ff vals min incr (Some max)
+            | None -> create vals min incr (Some max)
 
         let setValues vs vr =
             let fs = id
-            let ff = fun _ -> empty
+            let ff = fun _ -> vr
 
             let vs1, min, incr, max = vr |> getAll
 
             let intersect vs1 vs2 =
                 match vs1, vs2 with
-                |_ when vs1 |> Set.isEmpty -> vs2
-                |_ when vs2 |> Set.isEmpty -> vs1
+                | _ when vs1 |> Set.isEmpty -> vs2
+                | _ when vs2 |> Set.isEmpty -> vs1
                 | _ -> vs1 |> Set.intersect vs2
                     
-
             let vs2 = 
                 vs
                 |> ValueSet
@@ -442,6 +457,19 @@ module Variable =
                 |> getValueSet
             
             create fs ff (intersect vs1 vs2) min incr max
+
+        // #endregion
+
+        // #region PREDICATES
+
+        let isUnrestricted = function 
+            | Unrestricted -> true
+            | _ -> false
+
+        let contains v = function
+            | Unrestricted  -> true
+            | Restricted(r) -> r |> Range.contains v
+            | ValueSet(vs)  -> vs |> Set.contains v
 
         // #endregion
         
@@ -471,7 +499,7 @@ module Variable =
                 |> ValueSet
             // Do not perform any calcuation when one of the args is not
             // a list of values
-            | _ -> empty            
+            | _ -> unrestricted            
 
         // Extend type with basic arrhythmic operations.
         type ValueRange with

@@ -4,7 +4,7 @@ open Informedica.GenSolver.Lib
 open Swensen.Unquote
 open NUnit.Framework
 open FsCheck
-
+open FsCheck.NUnit
 
 /// Create the necessary test generators
 module Generators =
@@ -39,9 +39,7 @@ type Config () =
 
         Arb.register<Generators.MyGenerators>() |> ignore
         
-
 module Testing =
-
 
     module Variable =
 
@@ -49,57 +47,48 @@ module Testing =
 
             open Variable
 
+            type valueExc = ValueRange.Value.NonZeroOrPositiveValueException
+
+            let raiseValueExc v = v |> ValueRange.Value.NonZeroOrPositiveValueException |>  raise
+
             let fs = id
-            let ff = fun v -> v |> ValueRange.Value.NonZeroOrPositiveValueException |> raise
+            let ff = fun v -> v |> raiseValueExc
 
             let create = ValueRange.Value.create fs ff
             let calc = ValueRange.Value.calc fs ff
-            let toValue = ValueRange.Value.Value
+            let get = ValueRange.Value.get
+            let zero = 0N
 
             [<TestFixture>]
             type ``The create function`` () =
-                [<Test>]
+
+                [<Property>]
                 member x.``Will not create negative values`` () =
                     let nonZeroOrNegative x =
                         try
-                            x 
+                            (x 
                             |> BigRational.FromInt
-                            |> create > Variable.ValueRange.Value.zero 
+                            |> create
+                            |> get) > zero 
                         with 
-                        | Variable.ValueRange.Value.NonZeroOrPositiveValueException _ -> true
-
-                    Check.Quick nonZeroOrNegative
+                        | _ -> true
+                    
+                    nonZeroOrNegative
                     
             [<TestFixture>]
             type ``Given a zero or negative number`` () =
+
                 [<Test>]
-                member x.``With 0 an exception is raised`` () =
-                    raises<Variable.ValueRange.Value.NonZeroOrPositiveValueException> <@ 0N |> create <> (0N |> toValue) @>
-                [<Test>]
-                member x.``With -1N an exception is raised`` () =
-                    raises<Variable.ValueRange.Value.NonZeroOrPositiveValueException> <@ 0N |> create <> (-1N |> toValue) @>
+                member x.``the value is passed to the failure function`` () =
+                    raises<valueExc> <@ 0N  |> create @>
+                    raises<valueExc> <@ -1N |> create @>
 
             [<TestFixture>]
             type ``Given a non zero positive value`` () =
                 [<Test>]
                 member x.``A value can be created`` () =
-                    test<@ create 1N = (1N |> toValue) @>
+                    test<@ create 1N |> get = 1N @>
         
-            [<TestFixture>]
-            type ``Given a get function`` () =
-                [<Test>]
-                member x.``The same value is returned as created`` () =
-                    let canGetValue v =
-                        if v > 0 then
-                            v
-                            |> BigRational.FromInt
-                            |> create
-                            |> Variable.ValueRange.Value.get
-                            |> BigRational.ToInt32 = v
-                        else true
-
-                    Check.Quick canGetValue
-            
             [<TestFixture>]
             type ``Given an infix operand`` () =
             
@@ -107,53 +96,39 @@ module Testing =
                 member x.``The operand gives the same result as applied to BigRationals`` () =
                     let v1 = 1N |> create
                     let v2 = 1N |> create
-                    test <@ calc (+) v1 v2 |> Variable.ValueRange.Value.get = 2N @>
-                    test <@ (v1 + v2) |> Variable.ValueRange.Value.get = 2N @>
+                    test <@ calc (+) v1 v2 |> get = 2N @>
+                    test <@ (v1 + v2) |> get = 2N @>
 
             [<TestFixture>]
             type ``Is overloaded with`` () =
-                [<Test>]
+                let create = BigRational.FromInt >> create
+                let get    = get >> BigRational.ToInt32
+
+                let check op1 op2 x1 x2 =
+                    if x1 > 0 && x2 > 0 then
+                        let x1' = x1 |> create
+                        let x2' = x2 |> create
+                        (x1' |> op1 <| x2') |> get = (x1 |> op2 <| x2)
+                    else true
+                
+
+                [<Property>]
                 member x.``Basic arrhythmic functions`` () =
-                    let checkMult x1 x2 =
-                        let create = BigRational.FromInt >> create
-                        let get = Variable.ValueRange.Value.get >> BigRational.ToInt32
-                        if x1 > 0 && x2 > 0 then
-                            let x1' = x1 |> create
-                            let x2' = x2 |> create
-                            (x1' + x2') |> get = (x1 + x2)
-                        else true
+                    let checkMult = check (*) (*)
 
-                    let checkDiv x1 x2 =
-                        let create = BigRational.FromInt >> create
-                        let get = Variable.ValueRange.Value.get >> BigRational.ToInt32
-                        if x1 > 0 && x2 > 0 then
-                            let x1' = x1 |> create
-                            let x2' = x2 |> create
-                            (x1' + x2') |> get = (x1 + x2)
-                        else true
+                    let checkDiv = check (/) (/)
 
-                    let checkAdd x1 x2 =
-                        let create = BigRational.FromInt >> create
-                        let get = Variable.ValueRange.Value.get >> BigRational.ToInt32
-                        if x1 > 0 && x2 > 0 then
-                            let x1' = x1 |> create
-                            let x2' = x2 |> create
-                            (x1' + x2') |> get = (x1 + x2)
-                        else true
+                    let checkAdd = check (+) (+)
 
                     let checkSubtr x1 x2 =
-                        let create = BigRational.FromInt >> create
-                        let get = Variable.ValueRange.Value.get >> BigRational.ToInt32
-                        if x1 > 0 && x2 > 0 then
-                            let x1' = x1 |> create
-                            let x2' = x2 |> create
-                            (x1' + x2') |> get = (x1 + x2)
+                        if x1 > x2 then check (-) (-) x1 x2
                         else true
 
-                    Check.Quick checkMult
-                    Check.Quick checkDiv
-                    Check.Quick checkAdd
-                    Check.Quick checkSubtr
+                    fun (m1, m2, d1, d2, a1, a2, s1, s2) ->
+                        checkMult m1 m2 &&
+                        checkDiv d1 d2 &&
+                        checkAdd a1 a2 &&
+                        checkSubtr s1 s2
         
             [<TestFixture>]
             type ``Given a negative subtraction result`` () =
@@ -162,9 +137,9 @@ module Testing =
                 member x.``A NonZeroOrPositive error is thrown`` () =
                     let v1 = create 1N
                     let v2 = create 2N
-                    raises<Variable.ValueRange.Value.NonZeroOrPositiveValueException> <@ v1 - v2 @> 
+                    raises<valueExc> <@ v1 - v2 @> 
 
-        module Values =
+        module ValueRange =
 
             open  Variable
 
@@ -174,29 +149,39 @@ module Testing =
                 |> ValueRange.Range.MinLargerThanMaxException 
                 |> raise
 
-            let createSomeVal = ValueRange.Value.create Some (fun _ -> None)
-            let createVals incr min max vs = Variable.ValueRange.create fs ff vs min incr max
-            let createVal = Variable.ValueRange.Value.create id (fun _ -> failwith "Cannot create")
+            let createVal = ValueRange.Value.create id (fun _ -> failwith "Cannot create")
+            let createValOpt = ValueRange.Value.create Some (fun _ -> None)
+            let create incr min max vs = Variable.ValueRange.create fs ff vs min incr max
 
-            let getIncr = Variable.ValueRange.getIncr
-            let getMin  = Variable.ValueRange.getMin
-            let getMax  = Variable.ValueRange.getMax
+            let getIncr = ValueRange.getIncr
+            let getMin  = ValueRange.getMin
+            let getMax  = ValueRange.getMax
 
+            let containsProp pred vr v =
+                if v > 0N && v |> pred then 
+                    printfn "Testing: %A" v
+                    vr  |> ValueRange.contains (v |> createVal)
+                else true
+        
             [<TestFixture>]
             type ``Given list = empty incr = None min = None max = None`` () =
                 let incr = None
                 let min = None
                 let max = None
 
-                let vals = ValueRange.empty 
-        
+                let empty = create incr min max Set.empty
+
                 [<Test>]
-                member x.``Creating values returns range All`` () =
-                    test <@ createVals incr min max Set.empty = vals @>
+                member x.``Creating values returns an unrestricted valueset`` () =
+                    test <@ empty |> ValueRange.isUnrestricted @>
         
                 [<Test>]
                 member x.``Counting values returns zero`` () =
-                    test <@ createVals incr min max Set.empty |> Variable.ValueRange.count = 0 @>
+                    test <@ empty |> ValueRange.count = 0 @>
+
+                [<Property>]
+                member x.``The set contains any Value`` () =
+                    containsProp (fun _ -> true) empty
 
             [<TestFixture>]
             type ``Given list with one value incr = None min = None max = None`` () =
@@ -204,121 +189,138 @@ module Testing =
                 let min = None
                 let max = None
                 // List with one value
-                let create vs = 
-                    let ff = fun _ -> failwith "Cannot create"
-                    ValueRange.create id ff vs None None None
-                let vals = 
+                let v = 1N |> createVal
+                let vs = 
                     Set.empty
-                    |> Set.add (1N |> createVal)
-                let vr = vals |> create
+                    |> Set.add v
+                let vr = vs |> create min incr max
 
                 [<Test>]
                 member x.``Counting values returns one`` () =
-                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 1 @>
+                    test <@ vr |> ValueRange.count = 1 @>
         
                 [<Test>]
-                member x.``Creating values returns list with one value`` () =
-                    test <@ createVals incr min max vals = vr @>
+                member x.``The result contains that value`` () =
+                    test <@ vr |> ValueRange.contains v @>
 
             [<TestFixture>]
             type ``Given empty list incr = Some 1N min = None max = None`` () =
-                let incr = 1N |> createSomeVal
+                let incr = 1N |> createValOpt
                 let min = None
                 let max = None
                 // List with one value
-                let vals = Set.empty 
+                let vs = Set.empty
+                let vr = create incr min max vs
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
+                    test <@ vr |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Increment is one`` () =
-                    test <@ createVals incr min max vals |> getIncr = incr @>
+                    test <@ vr |> getIncr = incr @>
+
+                [<Test>]
+                member x.``Minimum is one`` () =
+                    test <@ vr |> getMin = incr @>
+
+                [<Property>]
+                member x.``The result can contain any multiple of one`` () =
+                    containsProp (fun v -> v.Denominator = 1I) vr
 
             [<TestFixture>]
             type ``Given empty list incr = None min = Some 1N max = None`` () =
                 let incr = None
-                let min = 1N |> createSomeVal
+                let min = 1N |> createValOpt
                 let max = None
                 // List with one value
-                let vals = Set.empty
+                let vs = Set.empty
+                let vr = create incr min max vs
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
+                    test <@ vr |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Minimum is one`` () =
-                    test <@ createVals incr min max vals |> getMin = min @>
+                    test <@ vr |> getMin = min @>
+
+                [<Property>]
+                member x.``The result can contain any value greater or equal to one`` () =
+                    containsProp ((<=) 1N) vr
 
             [<TestFixture>]
             type ``Given empty list incr = None min = None max = Some 1`` () =
                 let incr = None
                 let min = None
-                let max = 1N |> createSomeVal
+                let max = 1N |> createValOpt
                 // List with one value
-                let vals = Set.empty
+                let vs = Set.empty
+                let vr = create incr min max vs
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
+                    test <@ vr |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Maximum is one`` () =
-                    test <@ createVals incr min max vals |> getMax = max @>
+                    test <@ vr |> getMax = max @>
+
+                [<Property>]
+                member x.``The result can contain any value less or equal to one`` () =
+                    containsProp ((>=) 1N) vr
 
             [<TestFixture>]
             type ``Given empty list incr = Some 1N min = Some 2N max = None`` () =
-                let incr = 1N |> createSomeVal
-                let min = 2N |> createSomeVal
+                let incr = 1N |> createValOpt
+                let min = 2N |> createValOpt
                 let max = None
                 // List with one value
                 let vals = Set.empty
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
+                    test <@ create incr min max vals |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Increment is one and minimum is two`` () =
-                    test <@ createVals incr min max vals |> getIncr = incr @>
-                    test <@ createVals incr min max vals |> getMin = min @>
+                    test <@ create incr min max vals |> getIncr = incr @>
+                    test <@ create incr min max vals |> getMin = min @>
 
             [<TestFixture>]
             type ``Given empty list incr = None min = Some 2N max = Some 4N`` () =
                 let incr = None
-                let min = 2N |> createSomeVal
-                let max = 4N |> createSomeVal
+                let min = 2N |> createValOpt
+                let max = 4N |> createValOpt
                 // List with one value
                 let vals = Set.empty
 
                 [<Test>]
                 member x.``Values contain no values`` () =
-                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 0 @>
+                    test <@ create incr min max vals |> Variable.ValueRange.count = 0 @>
 
                 [<Test>]
                 member x.``Increment is one and minimum is two`` () =
-                    test <@ createVals incr min max vals |> getMin = min @>
-                    test <@ createVals incr min max vals |> getMax = max @>
+                    test <@ create incr min max vals |> getMin = min @>
+                    test <@ create incr min max vals |> getMax = max @>
 
             [<TestFixture>]
             type ``Given empty list incr = 2N min = None max = Some 4N`` () =
-                let incr = 2N |> createSomeVal
+                let incr = 2N |> createValOpt
                 let min = None
-                let max = 4N |> createSomeVal
+                let max = 4N |> createValOpt
                 // List with one value
                 let vals = Set.empty
 
                 [<Test>]
                 member x.``Values now contains two values`` () =
-                    test <@ createVals incr min max vals |> Variable.ValueRange.count = 2 @>
+                    test <@ create incr min max vals |> Variable.ValueRange.count = 2 @>
 
                 [<Test>]
                 member x.``Increment is none minimum is 2 and maximum is 4`` () =
-                    test <@ createVals incr min max vals |> getIncr = None @>
-                    test <@ createVals incr min max vals |> getMin = incr @>
-                    test <@ createVals incr min max vals |> getMax = max @>
+                    test <@ create incr min max vals |> getIncr = None @>
+                    test <@ create incr min max vals |> getMin = incr @>
+                    test <@ create incr min max vals |> getMax = max @>
 
             [<TestFixture>]
             type ``Given a list of Value`` () =
@@ -333,7 +335,7 @@ module Testing =
                     |> Set.ofList
                     |> create
     
-                [<Test>]
+                [<Property>]
                 member x.``The resulting ValueSet contains an equal amount`` () =
                     let equalCount c =
                         if c >= 1 then
@@ -344,7 +346,7 @@ module Testing =
                             |> Set.count = c
                         else true
 
-                    Check.Quick equalCount
+                    equalCount
 
                 [<Test>]
                 member x.``Can filter by incr, min and max`` () =
@@ -474,7 +476,6 @@ module Testing =
                         (l1' + l2') |> ValueRange.count = subtr.Length
 
                     Check.Quick checkSubtr
-
 
         [<TestFixture>]
         type ``There and back again`` () =

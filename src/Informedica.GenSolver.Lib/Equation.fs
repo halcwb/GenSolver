@@ -102,6 +102,8 @@ module Equation =
         [y;x1;x2]
 
     let solveSumMinMax vars sum =
+
+        let zero = 0N |> Variable.ValueRange.Value.Value
         
         // ToDo Temp hack
         let fs = id
@@ -117,7 +119,7 @@ module Equation =
             |> List.map getf 
             |> List.filter Option.isSome
             |> List.map Option.get
-            |> List.fold (+) Variable.ValueRange.Value.zero
+            |> List.fold (+) zero
 
         let set cmp getf setf v var =
             match v, var |> getf with
@@ -125,7 +127,7 @@ module Equation =
                 if cmp v' x then var |> setf v' |> Some
                 else None
             | Some v', None   -> 
-                if v' > Variable.ValueRange.Value.zero then var |> setf v' |> Some
+                if v' > zero then var |> setf v' |> Some
                 else None
             | _ -> None
         
@@ -147,7 +149,7 @@ module Equation =
                                             |> List.map getMin 
                                             |> List.filter Option.isSome 
                                             |> List.map Option.get
-                                            |> List.fold (+) Variable.ValueRange.Value.zero) 
+                                            |> List.fold (+) zero) 
                                     |> Some
                 let var' = var |> setMin min |> optChoose var
                 vars |> List.replace ((=) var) var'
@@ -155,14 +157,14 @@ module Equation =
 
         // Rule 3: sum.min = Sum(var.min) if Sum(var.min) > sum.min
         let sum =
-            setMin (match sumVar getMin vars with | v when v > Variable.ValueRange.Value.zero -> v |> Some | _ -> None) sum
+            setMin (match sumVar getMin vars with | v when v > zero -> v |> Some | _ -> None) sum
             |> optChoose sum
             
         // Rule 4: sum.max = Sum(var.max) if all var.max = set
         let sum =
             if vars |> List.map getMax |> List.exists Option.isNone then sum
             else
-                setMax (match sumVar getMax vars with | v when v > Variable.ValueRange.Value.zero -> v |> Some | _ -> None) sum |> optChoose sum
+                setMax (match sumVar getMax vars with | v when v > zero -> v |> Some | _ -> None) sum |> optChoose sum
         
         sum::vars
 

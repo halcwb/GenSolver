@@ -15,8 +15,9 @@ nuget FSPowerPack.Community
 
 // group test
 
-nuget Unquote
-nuget FsCheck
 nuget FsUnit
 nuget NUnit ~> 2
 nuget NUnit.Runners ~> 2
+nuget Unquote
+nuget FsCheck
+nuget FsCheck.NUnit
