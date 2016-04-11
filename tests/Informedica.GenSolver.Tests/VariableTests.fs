@@ -47,9 +47,9 @@ module Testing =
 
             open Variable
 
-            type valueExc = ValueRange.Value.NonZeroOrPositiveValueException
+            type valueExc = ValueRange.Value.ZeroOrNegativeValueException
 
-            let raiseValueExc v = v |> ValueRange.Value.NonZeroOrPositiveValueException |>  raise
+            let raiseValueExc v = v |> ValueRange.Value.ZeroOrNegativeValueException |>  raise
 
             let fs = id
             let ff = fun v -> v |> raiseValueExc

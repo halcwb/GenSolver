@@ -2,6 +2,13 @@
 
 open System
 
+module Option = 
+    
+    let apply f x = 
+        match f, x with     
+        | Some f', Some x' -> Some(f' x')
+        | _ -> None
+
 /// Contains functions to handle 
 /// the `Variable` type and the types
 /// `Variable` depends on:
@@ -34,19 +41,19 @@ module Variable =
 
         /// Create with `succ` function when success
         /// and `fail` function when failure
-        let createCont succ fail n =
+        let create succ fail n =
             if n |> String.IsNullOrWhiteSpace then n |> fail
             else n |> Name |> succ
 
         /// Returns a `Name` option when creation
         /// succeeds
-        let createSome = createCont Some (fun _ -> None)
+        let createOpt = create Some (fun _ -> None)
 
         /// Create a Name that
         /// is a non empty string
         /// Note: this function will fail
         /// when string is null or white space
-        let create = createCont id (fun _ -> raise NullOrWhiteSpaceException)
+        let createExc = create id (fun _ -> raise NullOrWhiteSpaceException)
 
         // #endregion
 
@@ -67,7 +74,7 @@ module Variable =
         
             // #region ---- EXCEPTIONS ----
 
-            exception NonZeroOrPositiveValueException of BigRational
+            exception ZeroOrNegativeValueException of BigRational
 
             // #endregion
 
@@ -83,7 +90,7 @@ module Variable =
             /// Apply a function `f` to value `x`.
             let apply f (Value x): 'a = f x
 
-            let raiseExc = fun v -> raise (v |> NonZeroOrPositiveValueException)
+            let raiseExc = fun v -> raise (v |> ZeroOrNegativeValueException)
 
             // #endregion
 
@@ -95,6 +102,12 @@ module Variable =
             let create succ fail n =
                 if n <= 0N then n |> fail
                 else n |> Value |> succ
+
+            let createOption = create Some (fun _ -> None)
+
+            /// Create function that will raise
+            /// a `ZeroOrNegativeValueException`
+            let createExc = create id raiseExc
 
             /// Zero value, used for
             /// checking purposes. Is
@@ -146,6 +159,8 @@ module Variable =
             // #region EXCEPTIONS
 
             exception MinLargerThanMaxException of Value.Value * Value.Value
+
+            let raiseMinMaxExc minmax = minmax |> MinLargerThanMaxException |> raise
 
             // #endregion
 
@@ -222,6 +237,10 @@ module Variable =
                     else (min', incr', max') |> fv
 
                     
+            let createOpt = create Some (fun _ -> None)
+
+            let createExc = create id raiseMinMaxExc
+
             // #endregion
 
             // #region GETTERS
@@ -366,6 +385,10 @@ module Variable =
             | _ when vals.IsEmpty ->
                 createRange fs ff min incr max
             | _ -> createValueSet fs ff vals min incr max
+
+        let createOpt = create Some (fun _ -> None)
+
+        let createExc = create id (fun _ -> failwith "Cannot create ValueRange")
 
         // #endregion
 
@@ -595,68 +618,69 @@ module Variable =
     /// Create a variable
     let create n vs = { Name = n; Values = vs; Min = None; Max = None }
 
-    type DtoStrat<'Name, 'Value, 'ValueRange, 'Variable> = 
-        {
-            CreateName: string -> 'Name
-            CreateValue: string -> 'Value
-            CreateValueRange: 'Value seq -> 'Value -> 'Value -> 'Value -> 'ValueRange
-            CreateVariable: 'Name -> 'ValueRange -> 'Variable
-       }
 
     ///  Create a variable from `Variable.Dto.Dto`.
-    let fromDto (strat: DtoStrat<_, _, _, _>) (dto: Dto.Dto) =
-        let createVr min incr max vs = strat.CreateValueRange vs min incr max
-        
-        let createValue = strat.CreateValue
+    let fromDto fName fValue fValueRange fVariable (dto: Dto.Dto) =
+        let parse s =
+            if   s |> String.IsNullOrWhiteSpace then None
+            else s |> fValue |> Some
 
-        let name = dto.Name |> strat.CreateName
-        let min  = dto.Min  |> createValue
-        let incr = dto.Incr |> createValue
-        let max  = dto.Max  |> createValue
+        let name = dto.Name |> fName
+        let min  = dto.Min  |> parse
+        let incr = dto.Incr |> parse
+        let max  = dto.Max  |> parse
         
-        dto.Vals 
-        |> Seq.map strat.CreateValue
-        |> createVr min incr max
-        |> strat.CreateVariable name
+        let vr = fValueRange (dto.Vals |> Set.ofSeq) min incr max
 
+        fVariable name vr
+
+    let fromDtoExc =
+        let fName = Name.createExc
+        
+        let fValue = BigRational.Parse >> ValueRange.Value.createExc
+
+        let fValueRange vals min incr max =
+            let vals' =
+                vals
+                |> Set.map fValue
+
+            ValueRange.createExc vals' min incr max
+
+        let fVariable = create 
+
+        fromDto fName fValue fValueRange fVariable
 
     let fromDtoOpt =
-        let createName = Name.create 
+        let fName = Name.createOpt
 
-        let createValue v =
-            let ff = fun _ -> None
-            let fs = Some
+        let fValue v =
             try
                 v 
                 |> BigRational.Parse 
                 |> Some
             with
             | _ -> None
+            |> Option.bind (ValueRange.Value.createOption)
 
-            |> Option.bind (ValueRange.Value.create fs ff)
+        let fValueRange vals min incr max = 
+            match min, incr, max with
+            | Some min', Some incr', Some max' ->   
+                try
+                    let vals' =
+                        vals 
+                        |> Set.map fValue
+                        |> Set.map Option.get
+                    ValueRange.createOpt vals' min' incr' max'
+                with 
+                | _ -> None
+            | _ -> None
 
-        let createValueRange vs = 
-            let fs = Some
-            let ff = fun _ -> None
+        let fVariable n vr = 
+            match n, vr with 
+            | Some n', Some vr' -> create n' vr' |> Some
+            | _ -> None
 
-            vs
-            |> Seq.filter Option.isSome
-            |> Seq.map Option.get
-            |> Set.ofSeq
-            |> ValueRange.create fs ff
-
-        let createVar n = Option.bind (create n >> Some)
-
-        let strat = 
-            {   
-                CreateName = createName
-                CreateValue  = createValue
-                CreateValueRange = createValueRange
-                CreateVariable = createVar
-            }
-
-        fromDto strat
-        
+        fromDto fName fValue fValueRange fVariable
 
     let toDto (v: Variable) =
         let someValueToBigR = function

@@ -6,7 +6,7 @@
 # How to use this library
 First open up the name space
 *)
-
+Option.
 open Informedica.GenSolver.Lib
 
 (**
@@ -14,8 +14,11 @@ open Informedica.GenSolver.Lib
 Then create a value
 *)
 
-let value = Variable.Value.create 1N
+let value = 
+    let strat = Variable.DtoStrat
 
+    let createName = Variable.Name.createExc
+    let createValue = Variable.ValueRange.Value.cr
 (** 
 Or a list of `BigRational` can be used to create values
 *)
