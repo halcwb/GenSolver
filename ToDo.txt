@@ -2,16 +2,20 @@ GenSolver
 A Generic Solver that solves a set of product and/or sum equations with variables that are sets of values.
 
 Minimum Marketing Features:
+- Enter a set of equations, run it through the solver and print out the results
 - Solves a product or sum euqation with value sets as variables
 - Solves a set of product and / or sum equations and solve the set
 
 User Stories:
-- Can create a product equation
+- Can create a variable
+- Can change a variable
+- Can create a product equation with variables
 - Can solve a product equation
-- Can create a sum equation
+- Can create a sum equation with variables
 - Can solve a sum equation
 - Can create an equation set
 - Can solve an equation set
+- Can change a variable in an equation set
 
 Engineering tasks:
 - Add testing libs to main project and test project
