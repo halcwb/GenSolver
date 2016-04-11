@@ -595,17 +595,16 @@ module Variable =
     /// Create a variable
     let create n vs = { Name = n; Values = vs; Min = None; Max = None }
 
-    type DtoStrat<'Name, 'Value, 'ValueSet, 'ValueRange, 'Variable> = 
+    type DtoStrat<'Name, 'Value, 'ValueRange, 'Variable> = 
         {
             CreateName: string -> 'Name
             CreateValue: string -> 'Value
-            CreateValueSet: string[] -> 'ValueSet
-            CreateValueRange: 'ValueSet -> 'Value -> 'Value -> 'Value -> 'ValueRange
+            CreateValueRange: 'Value seq -> 'Value -> 'Value -> 'Value -> 'ValueRange
             CreateVariable: 'Name -> 'ValueRange -> 'Variable
        }
 
     ///  Create a variable from `Variable.Dto.Dto`.
-    let fromDto (strat: DtoStrat<_, _, _, _, _>) (dto: Dto.Dto) =
+    let fromDto (strat: DtoStrat<_, _, _, _>) (dto: Dto.Dto) =
         let createVr min incr max vs = strat.CreateValueRange vs min incr max
         
         let createValue = strat.CreateValue
@@ -616,7 +615,7 @@ module Variable =
         let max  = dto.Max  |> createValue
         
         dto.Vals 
-        |> strat.CreateValueSet
+        |> Seq.map strat.CreateValue
         |> createVr min incr max
         |> strat.CreateVariable name
 
@@ -636,17 +635,15 @@ module Variable =
 
             |> Option.bind (ValueRange.Value.create fs ff)
 
-        let createValueSet vs =
-            vs
-            |> Array.map createValue
-            |> Array.filter Option.isSome
-            |> Array.map Option.get
-            |> Set.ofSeq
-
-        let createValueRange = 
+        let createValueRange vs = 
             let fs = Some
             let ff = fun _ -> None
-            ValueRange.create fs ff
+
+            vs
+            |> Seq.filter Option.isSome
+            |> Seq.map Option.get
+            |> Set.ofSeq
+            |> ValueRange.create fs ff
 
         let createVar n = Option.bind (create n >> Some)
 
@@ -654,7 +651,6 @@ module Variable =
             {   
                 CreateName = createName
                 CreateValue  = createValue
-                CreateValueSet = createValueSet
                 CreateValueRange = createValueRange
                 CreateVariable = createVar
             }
