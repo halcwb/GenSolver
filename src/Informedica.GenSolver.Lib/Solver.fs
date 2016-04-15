@@ -26,10 +26,10 @@ module Solver =
     /// have a minimum of at least 3.
     let solveProductMinMax setMin setMax x1 x2 y =
 
-        let getMin = Variable.ValueRange.getMin
+        let getMin = Variable.ValueRange.getMin >> Option.bind (Variable.ValueRange.minToValue >> Some)
 //        let setMin = Variable.ValueRange.setMin fs ff
 
-        let getMax = Variable.ValueRange.getMax
+        let getMax = Variable.ValueRange.getMax >> Option.bind (Variable.ValueRange.maxToValue >> Some)
 //        let setMax = Variable.ValueRange.setMax fs ff
 
         // Helper function to determine whether 
@@ -83,8 +83,8 @@ module Solver =
 
         let zero = 0N |> Variable.ValueRange.Value.Value
         
-        let getMin = Variable.ValueRange.getMin
-        let getMax = Variable.ValueRange.getMax
+        let getMin = Variable.ValueRange.getMin >> Option.bind (Variable.ValueRange.minToValue >> Some)
+        let getMax = Variable.ValueRange.getMax >> Option.bind (Variable.ValueRange.maxToValue >> Some)
 
         let sumVar getf vars  =
             vars 
