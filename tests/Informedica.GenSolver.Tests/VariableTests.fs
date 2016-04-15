@@ -42,102 +42,99 @@ type Config () =
 module Testing =
 
     module Variable =
-
-        module Value =
-
-            open Variable
-
-            type valueExc = ValueRange.Value.ValueException
-
-            let raiseValueExc v = v |> ValueRange.Value.ValueException |>  raise
-
-            let fs = id
-            let ff = fun v -> v |> raiseValueExc
-
-            let create = ValueRange.Value.create fs ff
-            let calc = ValueRange.Value.calc fs ff
-            let get = ValueRange.Value.get
-            let zero = 0N
+        
+        module Name =
+            
+            module N = Variable.Name
+            
+            let create = N.create
 
             [<TestFixture>]
             type ``The create function`` () =
 
                 [<Property>]
-                member x.``Will not create negative values`` () =
+                member x.``returns non null names without trailing spaces no longer than 30 chars`` () =
+                    let prop s =
+                        let succ (N.Name n) = n = (s |> String.trim) && n  |> String.length <= 30
+                        let fail = function 
+                            | N.NullOrWhiteSpaceException -> true
+                            | N.LongerThan30 x -> x > 30
+                        create succ fail s
+                    prop
+
+        module Value =
+
+            module V = Variable.ValueRange.Value
+
+            type valueExc = V.ValueException
+
+            let raiseValueExc v = v |> V.ValueException |>  raise
+
+            let zero = 0N
+
+            let printCalc op x1 x2 = printfn "Testing %A, %A = %A" x1 x2 (x1 |> op <| x2)
+
+            [<TestFixture>]
+            type ``The create function`` () =
+
+                [<Property>]
+                member x.``Will not create values equal or smaller than zero`` () =
                     let nonZeroOrNegative x =
-                        try
-                            (x 
-                            |> BigRational.FromInt
-                            |> create
-                            |> get) > zero 
-                        with 
-                        | _ -> true
+                        let succ (V.Value v) = v > zero && v = x
+                        let fail = function 
+                            | V.ZeroOrNegativeValue v -> v <= zero 
+                        
+                        V.create succ fail x
                     
                     nonZeroOrNegative
                     
-            [<TestFixture>]
-            type ``Given a zero or negative number`` () =
-
-                [<Test>]
-                member x.``the value is passed to the failure function`` () =
-                    raises<valueExc> <@ 0N  |> create @>
-                    raises<valueExc> <@ -1N |> create @>
-
-            [<TestFixture>]
-            type ``Given a non zero positive value`` () =
-                [<Test>]
-                member x.``A value can be created`` () =
-                    test<@ create 1N |> get = 1N @>
         
             [<TestFixture>]
             type ``Given an infix operand`` () =
-            
-                [<Test>]
-                member x.``The operand gives the same result as applied to BigRationals`` () =
-                    let v1 = 1N |> create
-                    let v2 = 1N |> create
-                    test <@ calc (+) v1 v2 |> get = 2N @>
-                    test <@ (v1 + v2) |> get = 2N @>
-
-            [<TestFixture>]
-            type ``Is overloaded with`` () =
-                let create = BigRational.FromInt >> create
-                let get    = get >> BigRational.ToInt32
-
-                let check op1 op2 x1 x2 =
-                    if x1 > 0 && x2 > 0 then
-                        let x1' = x1 |> create
-                        let x2' = x2 |> create
-                        (x1' |> op1 <| x2') |> get = (x1 |> op2 <| x2)
-                    else true
-                
-
+                        
                 [<Property>]
-                member x.``Basic arrhythmic functions`` () =
-                    let checkMult = check (*) (*)
+                member x.``The operand gives the same result as applied to BigRationals`` () =
+                    let prop op x1 x2 =
+                        if x1 > 0N && x2 > 0N then
+                            printCalc op x1 x2
+                            let v1 = x1 |> V.createExc
+                            let v2 = x2 |> V.createExc
 
-                    let checkDiv = check (/) (/)
-
-                    let checkAdd = check (+) (+)
-
-                    let checkSubtr x1 x2 =
-                        if x1 > x2 then check (-) (-) x1 x2
+                            let succ (V.Value v) = v = (x1 |> op <| x2)
+                            let fail _ = true
+                            V.calc succ fail op v1 v2
                         else true
 
-                    fun (m1, m2, d1, d2, a1, a2, s1, s2) ->
-                        checkMult m1 m2 &&
-                        checkDiv d1 d2 &&
-                        checkAdd a1 a2 &&
-                        checkSubtr s1 s2
+                    prop
+
         
             [<TestFixture>]
             type ``Given a negative subtraction result`` () =
                 
-                [<Test>]
-                member x.``A NonZeroOrPositive error is thrown`` () =
-                    let v1 = create 1N
-                    let v2 = create 2N
-                    raises<valueExc> <@ v1 - v2 @> 
+                [<Property>]
+                member x.``The result is going to the failure function`` () =
+                    let prop x1 x2 =
+                        if x1 > 0N && x2 > 0N then
+                            let v1 = V.createExc x1
+                            let v2 = V.createExc x2
+                            
+                            printCalc (-) x1 x2
+
+                            if x1 <= x2 then
+                                let succ _ = false
+                                let fail = function
+                                    | V.ZeroOrNegativeValue v -> v <= 0N
+                            
+                                V.calc succ fail (-) v1 v2
+                            else 
+                                let succ _ = true
+                                let fail _ = false
+
+                                V.calc succ fail (-) v1 v2
+                        else true    
+
+                    prop
+
 
         module ValueRange =
 

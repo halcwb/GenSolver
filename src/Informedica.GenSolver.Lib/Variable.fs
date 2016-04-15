@@ -2,6 +2,16 @@
 
 open System
 
+module String = 
+    
+    let apply f (s: string) = f s
+
+    let get = apply id
+
+    let trim s = (s |> get).Trim()
+
+    let length s = (s |> get).Length
+
 module Option = 
 
     let none _ = None
@@ -24,7 +34,9 @@ module Variable =
 
         // #region ---- Exceptions ----
 
-        type Message = | NullOrWhiteSpaceException
+        type Message = 
+            | NullOrWhiteSpaceException
+            | LongerThan30 of int
 
         exception NameException of Message
 
@@ -45,7 +57,10 @@ module Variable =
         /// and `fail` function when failure
         let create succ fail n =
             if n |> String.IsNullOrWhiteSpace then NullOrWhiteSpaceException |> fail
-            else n |> Name |> succ
+            else 
+                match n |> String.trim with
+                | n' when n' |> String.length <= 30 -> n' |> Name |> succ
+                | n' -> n' |> String.length |> LongerThan30 |> fail
 
         /// Returns a `Name` option when creation
         /// succeeds
