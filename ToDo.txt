@@ -20,6 +20,7 @@ User Stories:
 Engineering tasks:
 - Add testing libs to main project and test project
 - Write tests in script file of main project and then move tests to test project
+- Added messages and pass exception<messages> to failure functions
 
 To Do on current task:
 - Create tests for current functionality

@@ -6,7 +6,7 @@
 # How to use this library
 First open up the name space
 *)
-Option.
+
 open Informedica.GenSolver.Lib
 
 (**
@@ -14,12 +14,23 @@ open Informedica.GenSolver.Lib
 Then create a value
 *)
 
-let value = 
-    let strat = Variable.DtoStrat
+let dto = 
+    Variable.Dto.createNew "Test"
+    |> Variable.Dto.setMin "2"
+    |> Variable.Dto.setMax "10"
 
-    let createName = Variable.Name.createExc
-    let createValue = Variable.ValueRange.Value.cr
-(** 
-Or a list of `BigRational` can be used to create values
-*)
-let vals = Variable.Values.create [1N..2N..10N] None None None
+let value = dto |> Variable.Dto.fromDtoExc
+
+Variable.Dto.toString dto
+
+let eqs = [|
+    "total = frequency * quantity"
+    "quantity = rate * duration"
+|]
+
+// let api = Solver.Api (fun r m -> printfn "%A" m; r) (fun r m -> printfn "%A"; r)
+// eqs |> api.init
+//     |> api.setProp "frequency" "incr" "1"
+//     |> api.setProp "frequency" "max" "24"
+//     |> api.setProp "total" "max" "12"
+//     |> api.setProp "quantity" "incr" "1"

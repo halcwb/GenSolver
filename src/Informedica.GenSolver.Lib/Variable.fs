@@ -3,11 +3,9 @@
 open System
 
 module Option = 
-    
-    let apply f x = 
-        match f, x with     
-        | Some f', Some x' -> Some(f' x')
-        | _ -> None
+
+    let none _ = None
+
 
 /// Contains functions to handle 
 /// the `Variable` type and the types
@@ -26,7 +24,11 @@ module Variable =
 
         // #region ---- Exceptions ----
 
-        exception NullOrWhiteSpaceException
+        type Message = | NullOrWhiteSpaceException
+
+        exception NameException of Message
+
+        let raiseExc msg = msg |> NameException |> raise
 
         // #endregion
 
@@ -42,18 +44,18 @@ module Variable =
         /// Create with `succ` function when success
         /// and `fail` function when failure
         let create succ fail n =
-            if n |> String.IsNullOrWhiteSpace then n |> fail
+            if n |> String.IsNullOrWhiteSpace then NullOrWhiteSpaceException |> fail
             else n |> Name |> succ
 
         /// Returns a `Name` option when creation
         /// succeeds
-        let createOpt = create Some (fun _ -> None)
+        let createOpt = create Some Option.none
 
         /// Create a Name that
         /// is a non empty string
         /// Note: this function will fail
         /// when string is null or white space
-        let createExc = create id (fun _ -> raise NullOrWhiteSpaceException)
+        let createExc = create id raiseExc
 
         // #endregion
 
@@ -74,7 +76,11 @@ module Variable =
         
             // #region ---- EXCEPTIONS ----
 
-            exception ZeroOrNegativeValueException of BigRational
+            type Message = | ZeroOrNegativeValue of BigRational
+            
+            exception ValueException of Message
+
+            let raiseExc msg = msg |> ValueException |> raise
 
             // #endregion
 
@@ -90,8 +96,6 @@ module Variable =
             /// Apply a function `f` to value `x`.
             let apply f (Value x): 'a = f x
 
-            let raiseExc = fun v -> raise (v |> ZeroOrNegativeValueException)
-
             // #endregion
 
             // #region ----- CREATORS ----
@@ -100,10 +104,10 @@ module Variable =
             /// `succ` when success and `fail` when
             /// failure.
             let create succ fail n =
-                if n <= 0N then n |> fail
+                if n <= 0N then n |> ZeroOrNegativeValue |> fail
                 else n |> Value |> succ
 
-            let createOption = create Some (fun _ -> None)
+            let createOption = create Some Option.none
 
             /// Create function that will raise
             /// a `ZeroOrNegativeValueException`
@@ -153,146 +157,18 @@ module Variable =
 
             // #endregion
 
-        [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-        module Range =
-            
-            // #region EXCEPTIONS
-
-            exception MinLargerThanMaxException of Value.Value * Value.Value
-
-            let raiseMinMaxExc minmax = minmax |> MinLargerThanMaxException |> raise
-
-            // #endregion
-
-            // #region TYPES
-
-            type Range = 
-                { 
-                    Min: Value.Value option
-                    Incr: Value.Value option
-                    Max: Value.Value option
-                }
-
-            /// Create a range using `min` as 
-            /// the minimal value option, 
-            /// `incr` as the increment value option
-            /// and `max` as the maximum value option.
-            /// If creation succeeds send it to `fs`,
-            /// if it fails send it to `ff`, i.e. when
-            /// `min` is larger than `max` and 
-            /// if a value set can be made send it to 
-            /// fv.
-
-            // #endregion
-
-            // #region UTILS
-
-            let apply f (r: Range) = f r
-
-            let get = apply id
-
-            // #endregion
-
-            // #region CREATORS 
-
-            /// Create a range with eihter a 
-            /// minimum 'min`, an increment `'incr'
-            /// or a maximimum `max`.
-            /// If creation succeeds pass it to
-            /// `fs`. If it fails pass it to `ff` 
-            /// and if the range is finite, i.e.
-            /// can be converted to a finite set 
-            /// of values pass it to `fv`.
-            let create fs ff fv min incr max =
-
-                let minincr n d  =
-                    // ToDo Temp hack
-                    let fs = id
-                    let ff = fun _ -> failwith "Cannot create"
-
-                    let n, d = n |> Value.get, d |> Value.get
-                    let m = (n / d) |> BigRational.ToInt32 |> BigRational.FromInt
-                    if m * d < n then (m + 1N) * d else m * d
-                    |> Value.create fs ff
-
-
-                match min, incr, max with
-                | None, None, None -> failwith "Cannot create range without either min incr or max"
-                | Some _, None, None
-                | None, Some _, None
-                | None, None, Some _ ->
-                    { Min = min; Incr = incr; Max = max } |> fs
-                | Some min', Some incr', None ->
-                    let min' = minincr min' incr'
-                    { Min = min' |> Some; Incr = incr; Max = None } |> fs
-                | Some min', None, Some max' ->
-                    if min' > max' then (min', max') |> ff
-                    else { Min = min; Incr = incr; Max = max } |> fs
-                | None, Some incr', Some max' ->
-                    if incr' > max' then (incr', max') |> ff
-                    else (incr', incr', max') |> fv
-                | Some min', Some incr', Some max' ->
-                    if min' > max' then (min', max')     |> ff
-                    elif incr' > max' then (incr', max') |> ff
-                    else (min', incr', max') |> fv
-
-                    
-            let createOpt = create Some (fun _ -> None)
-
-            let createExc = create id raiseMinMaxExc
-
-            // #endregion
-
-            // #region GETTERS
-
-            let getMin r = 
-                match (r |> get).Min with 
-                | None -> r.Incr
-                | _    -> r.Min
-
-            let getIncr r = (r |> get).Incr
-
-            let getMax r = (r |> get).Max
-
-            // #endregion
-
-            // #region SETTERS
-
-            let setMin fs ff v r =
-                match (r |> getMin) with
-                | Some m when m > v -> ff m v
-                | _ -> { r with Min = Some v } |> fs 
-
-            let setIncr fs ff v r =
-                let isNotMultipleOf i = Value.isMultiple i >> not
-
-                match (r |> getIncr) with
-                | Some i when v |> isNotMultipleOf i -> ff i v
-                | _ -> { r with Incr = Some v } |> fs
-
-            let setMax fs ff v r =
-                match (r |> getMax) with
-                | Some m when m < v -> ff m v
-                | _ -> { r with Max = Some v } |> fs 
-
-            // #endregion
-
-            // #region PREDICATES
-
-            let contains v { Min = min; Incr = incr; Max = max } =
-                match min, incr, max with
-                | Some min', None,       None      -> v >= min'
-                | None,      Some incr', None      -> v |> Value.isMultiple incr'
-                | None,      None,       Some max' -> v <= max'
-                | Some min', Some incr', None      -> v >= min' && v |> Value.isMultiple incr'
-                | Some min', None,       Some max' -> v >= min' && v <= max'
-                | None,      Some _,     Some _
-                | Some _,    Some _,     Some _
-                | None,      None,       None      -> failwith "Range is not valid"
-
-            // #endregion
-
         // #region ---- TYPES ----
+           
+        type Minimum =
+            | MinIncl of Value.Value
+            | MinExcl of Value.Value
+
+        type Maximum =
+            | MaxIncl of Value.Value
+            | MaxExcl of Value.Value
+
+        type Increment = 
+            | Incr of Value.Value
 
         /// `ValueRange` represents a discrete set of 
         /// non-zero positive rational numbers,
@@ -301,14 +177,11 @@ module Variable =
         /// it is infinite and then it 
         /// is a range.
         type ValueRange =
-            | Unrestricted
-        /// A `Range` is an infinite set of
-        /// rational numbers, when a set has
-        /// both a minimum, maximum and an 
-        /// increment then it is not a range
-        /// anymore but a finite set of values
-            | Restricted of Range.Range
             | ValueSet of Value.Value Set
+            | Min of Minimum
+            | Max of Maximum
+            | MinIncr of Minimum * Increment
+            | MinMax  of Minimum * Maximum
 
         // #endregion
         
@@ -317,122 +190,94 @@ module Variable =
         /// Aply the give functions to `Values`
         /// where fv is used for `Value Set` and
         /// fr is used for `Range`
-        let apply ur fr fv vs : 'a =
-            match vs with
-            | Unrestricted -> ur
-            | Restricted x -> x |> fr
-            | ValueSet x -> x |> fv
+        let apply fvs fm fmi fmm fmim = function
+            | ValueSet vs                 -> vs |> fvs
+            | Min m                       -> m  |> fm
+            | MinIncr (min, incr)         -> (min, incr) |> fmi
+            | MinMax (min, max)           -> (min, max)  |> fmm
+            | MinIncrMax (min, incr, max) -> (min, incr, max) |> fmim
+
+        let count = 
+            let zero _ = 0
+            apply (fun s -> s |> Set.count) zero zero zero zero
+
+        let isEmpty = count >> ((=) 0)
+
+        let contains min incr max v =
+            let fTrue = fun _ -> true
+            let fMin  = function | None -> fTrue  | Some(MinIncl m) -> (<=) m | Some(MinExcl m) -> (<) m
+            let fMax  = function | None -> fTrue  | Some(MaxIncl m) -> (>=) m | Some(MaxExcl m) -> (>) m
+            let fIncr = function | None -> fTrue  | Some(Incr i)    -> Value.isMultiple i
+
+            v |> fMin min &&
+            v |> fIncr incr &&
+            v |> fMax max
 
         /// Filter a set of values according
         /// to increment, min and max constraints
-        let filter min incr max vr = 
-            let fTrue = fun _ -> true
-            let fMin  = function | None -> fTrue | Some min ->  (<=) min
-            let fIncr = function | None -> fTrue | Some incr -> Value.isMultiple incr
-            let fMax  = function | None -> fTrue | Some max ->  (>=) max
+        let filter min incr max = Set.filter (fun v -> v |> contains min incr max)
 
-            let fv = Set.filter (fun v -> v |> fMin min &&
-                                          v |> fIncr incr &&
-                                          v |> fMax max)
-                     >> ValueSet
+        let getSetMin s = if s |> Set.isEmpty then None else s.MinimumElement |> MinIncl |> Some
 
-            let ur = Unrestricted
-            let fr = Restricted
-
-            apply ur fr fv vr
-
-        let getSetMin s = if s |> Set.isEmpty then None else s.MinimumElement |> Some
-
-        let getSetMax s = if s |> Set.isEmpty then None else s.MaximumElement |> Some
+        let getSetMax s = if s |> Set.isEmpty then None else s.MaximumElement |> MaxIncl |> Some
 
         // #endregion
 
         // #region ----- CREATORS ----
 
-        let unrestricted = Unrestricted
+        let createMinIncl = MinIncl
+        let createMinExcl = MinExcl
 
-        let createValueSet fs ff vals min incr max =
-            let get = Option.get
+        let createIncr = Incr
 
-            let test v1 v2 = v1 |> Option.isSome && v2 |> Option.isSome && v1 > v2
-
-            if test min max    then (min |> get,  max |> get) |> ff
-            elif test incr max then (incr |> get, max |> get) |> ff
-            else
-                vals
-                |> ValueSet 
-                |> filter min incr max
-                |> fs
-
-        let createRange fs ff min incr max =
-            let createVal = Value.create (id >> Some) (fun _ -> None)
-
-            let fv = fun (min, incr, max) -> 
-                [(min |> Value.get)..(incr |> Value.get)..(max |> Value.get)]
-                |> List.map createVal
-                |> List.filter Option.isSome
-                |> List.map Option.get
-                |> Set.ofList 
-                |> ValueSet
-                |> fs
-
-            match min, incr, max with
-            | None, None, None -> unrestricted |> fs
-            | _ -> Range.create (Restricted >> fs) ff fv min incr max
-
-        let create fs ff (vals: Value.Value Set) min incr max =
-            match vals with
-            | _ when vals.IsEmpty ->
-                createRange fs ff min incr max
-            | _ -> createValueSet fs ff vals min incr max
-
-        let createOpt = create Some (fun _ -> None)
-
-        let createExc = create id (fun _ -> failwith "Cannot create ValueRange")
+        let createMaxIncl = MaxIncl
+        let createMaxExcl = MaxExcl
+            
+        let empty = Set.empty |> ValueSet
 
         // #endregion
 
         // #region ---- GETTERS ----
-
-        /// Get the values set, returns 
-        /// empty set when values is a 
-        /// range.
-        let getValueSet = apply Set.empty (fun  _ -> Set.empty) id 
 
         /// Get the minimum from
         /// values if there is one
         /// *Note when no minimum is specified 
         /// but there is an increment, then
         /// the increment is the minimum*
-        let getMin =
-            let fv (vs: Value.Value Set) = vs |> getSetMin
-            let fr = Range.getMin
-
-            apply None fr fv
+        let getMin = apply getSetMin Some (fst >> Some) (fst >> Some) (fun (m, _, _) -> m |> Some)
 
         /// Get the increment from
         /// values if there is one</br>
         /// *Note: a set of values has no increment* 
-        let getIncr =
-            let fv = fun _ -> None
-            let fr = Range.getIncr
-
-            apply None fr fv
+        let getIncr = apply Option.none Option.none (snd >> Some) Option.none (fun (_, i, _) -> i |> Some)
 
         /// Get the maximum from
         /// values if there is one
-        let getMax =
-            let fv (vs: Value.Value Set) = vs |> getSetMax
-            let fr = Range.getMax
-
-            apply None fr fv
-
-        /// Get all `Value`'s.
-        let getAll vr =  (vr |> getValueSet), vr |> getMin, vr |> getIncr, vr |> getMax
+        let getMax = apply getSetMax Option.none Option.none (snd >> Some) (fun (_, _, m) -> m |> Some)
 
         // #endregion
 
         // #region ---- SETTERS ----
+
+        let setMin min vr =
+
+            let lt m1 m2 = 
+                match m1, m2 with
+                | MinIncl m1', MinIncl m2' 
+                | MinIncl m1', MinExcl m2' 
+                | MinExcl m1', MinExcl m2' -> m1' > m2'
+                | MinExcl m1', MinIncl m2' -> m1' >= m2'
+
+            let fvs = 
+                let incr, max = vr |> getIncr, vr |> getMax
+                filter (Some min) incr max >> ValueSet
+
+            let fm min' = if min |> lt min' then min |> Min else vr 
+            let fmi (min', i) = if min |> lt min' then (min, i) |> MinIncr else vr 
+            let fmm (min', max) = if min |> lt min' then (min, max) |> MinMax else vr 
+            let fmim (min', incr, max) = if min |> lt min' then (min, incr, max) |> MinIncrMax else vr
+
+            apply fvs fm fmi fmm fmim
 
         let setIncr fs ff incr vr =
             let vals, min, incr', max = vr |> getAll
@@ -491,14 +336,12 @@ module Variable =
 
         let contains v = function
             | Unrestricted  -> true
-            | Restricted(r) -> r |> Range.contains v
+            | Restricted(r) -> r |> Range.rangeContains v
             | ValueSet(vs)  -> vs |> Set.contains v
 
         // #endregion
         
         // #region ---- CALCULATION -----
-
-        let count = getValueSet >> Set.count
 
         /// Applies an infix operator
         /// to two `Values`. Only add values
@@ -537,6 +380,59 @@ module Variable =
 
         // #endregion
 
+    // #region ---- TYPES ----
+
+    /// Represents a variable in an
+    /// `Equation`. The variable is 
+    /// identified by `Name` and has
+    /// a set of possible `Values`.
+    type Variable =
+        {
+            Name: Name.Name
+            ValueRange: ValueRange.ValueRange
+        }
+
+    // #endregion
+
+    // #region ---- CREATORS -----
+
+    /// Create a variable
+
+    let create fs n vs = { Name = n; ValueRange = vs } |> fs
+
+    let createId = create id
+
+    let apply f (var: Variable) = var |> f
+
+    let get = apply id
+
+    // #endregion
+
+    // #region GETTERS
+
+    let getMin var = (var |> get).ValueRange |> ValueRange.getMin
+
+    let getIncr var = (var |> get).ValueRange |> ValueRange.getIncr
+
+    let getMax var = (var |> get).ValueRange |> ValueRange.getMax
+
+    // #endregion
+
+    // #region SETTERS
+
+    let set setf fs ff v var =
+        let fs' vr = { var with ValueRange = vr } |> fs
+        let ff' minmax = var |> ff minmax
+        (var |> get).ValueRange |> setf fs' ff' v
+
+    let setMin fs ff v var = set ValueRange.setMin fs ff v var
+
+    let setIncr fs ff v var = set ValueRange.setIncr fs ff v var
+
+    let setMax fs ff v var = set ValueRange.setMax fs ff v var
+
+     // #endregion
+
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Dto =
 
@@ -545,31 +441,31 @@ module Variable =
         [<CLIMutable>]
         type Dto = { Name: string; Vals: string[]; Min: string; Incr: string; Max: string }
 
-        let create n vals min max incr =  { Name = n; Vals = vals; Min = min; Incr = incr; Max = max}
+        let createDto n vals min incr max =  { Name = n; Vals = vals; Min = min; Incr = incr; Max = max}
 
-        let createNew n = create n [||] "" "" ""
+        let createNew n = createDto n [||] "" "" ""
 
         let apply f (d: Dto) = f d
 
         let setVals vals dto = { dto with Vals = vals }
-        let setMin  min  dto = { dto with Min = min }
-        let setMax  max  dto = { dto with Max = max }
-        let setIncr incr dto = { dto with Incr = incr }
+        let setMin  min  (dto: Dto) = { dto with Min = min }
+        let setIncr incr (dto: Dto) = { dto with Incr = incr }
+        let setMax  max  (dto: Dto) = { dto with Max = max } 
 
-        let (|Vals|Min|Max|Incr|NoProp|) p =  
+        let (|Vals|Min|Incr|Max|NoProp|) p =  
             match p |> String.toLower with
             | "vals" -> Vals
             | "min"  -> Min
-            | "max"  -> Max
             | "incr" -> Incr
+            | "max"  -> Max
             | _      -> NoProp
 
         let setProp p v var =
             match p with 
             | Vals -> var |> setVals (v |> String.splitAt ',')
             | Min  -> var |> setMin v
-            | Max  -> var |> setMax v
             | Incr -> var |> setIncr v
+            | Max  -> var |> setMax v
             | NoProp -> var
 
         let toString { Name = name; Vals = vals; Min = min; Incr = incr; Max = max } = 
@@ -590,117 +486,94 @@ module Variable =
             let vals = 
                 if vals |> Array.isEmpty then
                     let min = if min = "" then None else Some min
-                    let max = if max = "" then None else Some max
                     let incr = if incr = "" then None else Some incr
-                    printRange min max incr
+                    let max = if max = "" then None else Some max
+                    printRange min incr max
                 else vals |> printVals
 
             sprintf "%s%s" name vals
     
-    // #region ---- TYPES ----
 
-    /// Represents a variable in an
-    /// `Equation`. The variable is 
-    /// identified by `Name` and has
-    /// a set of possible `Values`.
-    type Variable =
-        {
-            Name: Name.Name
-            Values: ValueRange.ValueRange
-            Min: ValueRange.Value.Value option
-            Max: ValueRange.Value.Value option
-        }
+        ///  Create a variable from `Variable.Dto.Dto`.
+        let fromDto fName fValue fValueRange fVariable (dto: Dto) =
+            let parse s =
+                if   s |> String.IsNullOrWhiteSpace then None
+                else s |> fValue |> Some
 
-    // #endregion
-
-    // #region ---- CREATE -----
-
-    /// Create a variable
-    let create n vs = { Name = n; Values = vs; Min = None; Max = None }
-
-
-    ///  Create a variable from `Variable.Dto.Dto`.
-    let fromDto fName fValue fValueRange fVariable (dto: Dto.Dto) =
-        let parse s =
-            if   s |> String.IsNullOrWhiteSpace then None
-            else s |> fValue |> Some
-
-        let name = dto.Name |> fName
-        let min  = dto.Min  |> parse
-        let incr = dto.Incr |> parse
-        let max  = dto.Max  |> parse
+            let name = dto.Name |> fName
+            let min  = dto.Min  |> parse
+            let incr = dto.Incr |> parse
+            let max  = dto.Max  |> parse
         
-        let vr = fValueRange (dto.Vals |> Set.ofSeq) min incr max
+            let vr = fValueRange (dto.Vals |> Set.ofSeq) min incr max
 
-        fVariable name vr
+            fVariable name vr
 
-    let fromDtoExc =
-        let fName = Name.createExc
+        let fromDtoExc =
+            let fName = Name.createExc
         
-        let fValue = BigRational.Parse >> ValueRange.Value.createExc
+            let fValue = BigRational.Parse >> ValueRange.Value.createExc
 
-        let fValueRange vals min incr max =
-            let vals' =
-                vals
-                |> Set.map fValue
+            let fValueRange vals min incr max =
+                let vals' =
+                    vals
+                    |> Set.map fValue
 
-            ValueRange.createExc vals' min incr max
+                ValueRange.createExc vals' min incr max
 
-        let fVariable = create 
+            let fVariable = create id
 
-        fromDto fName fValue fValueRange fVariable
+            fromDto fName fValue fValueRange fVariable
 
-    let fromDtoOpt =
-        let fName = Name.createOpt
+        let fromDtoOpt =
+            let fName = Name.createOpt
 
-        let fValue v =
-            try
-                v 
-                |> BigRational.Parse 
-                |> Some
-            with
-            | _ -> None
-            |> Option.bind (ValueRange.Value.createOption)
-
-        let fValueRange vals min incr max = 
-            match min, incr, max with
-            | Some min', Some incr', Some max' ->   
+            let fValue v =
                 try
-                    let vals' =
-                        vals 
-                        |> Set.map fValue
-                        |> Set.map Option.get
-                    ValueRange.createOpt vals' min' incr' max'
-                with 
+                    v 
+                    |> BigRational.Parse 
+                    |> Some
+                with
                 | _ -> None
-            | _ -> None
+                |> Option.bind (ValueRange.Value.createOption)
 
-        let fVariable n vr = 
-            match n, vr with 
-            | Some n', Some vr' -> create n' vr' |> Some
-            | _ -> None
+            let fValueRange vals min incr max = 
+                match min, incr, max with
+                | Some min', Some incr', Some max' ->   
+                    try
+                        let vals' =
+                            vals 
+                            |> Set.map fValue
+                            |> Set.map Option.get
+                        ValueRange.createOpt vals' min' incr' max'
+                    with 
+                    | _ -> None
+                | _ -> None
 
-        fromDto fName fValue fValueRange fVariable
+            let fVariable n vr = 
+                match n, vr with 
+                | Some n', Some vr' -> create Some n' vr'
+                | _ -> None
 
-    let toDto (v: Variable) =
-        let someValueToBigR = function
-            | Some v' -> let (ValueRange.Value.Value v) = v' in v.ToString()
-            | None    -> ""
+            fromDto fName fValue fValueRange fVariable
 
-        let dto = Dto.createNew (let (Name.Name n) = v.Name in n)
+        let toDto (v: Variable) =
+            let someValueToBigR = function
+                | Some v' -> let (ValueRange.Value.Value v) = v' in v.ToString()
+                | None    -> ""
 
-        let min  = v.Values |> ValueRange.getMin  |> someValueToBigR
-        let incr = v.Values |> ValueRange.getIncr |> someValueToBigR
-        let max  = v.Values |> ValueRange.getMax  |> someValueToBigR
+            let dto = createNew (let (Name.Name n) = v.Name in n)
 
-        let vals = 
-            v.Values 
-            |> ValueRange.getValueSet 
-            |> Set.map ValueRange.Value.get
-            |> Set.map (fun n -> n.ToString()) 
-            |> Set.toArray
+            let min  = v.ValueRange |> ValueRange.getMin  |> someValueToBigR
+            let incr = v.ValueRange |> ValueRange.getIncr |> someValueToBigR
+            let max  = v.ValueRange |> ValueRange.getMax  |> someValueToBigR
 
-        { dto with Vals = vals; Min = min; Incr = incr; Max = max }
+            let vals = 
+                v.ValueRange 
+                |> ValueRange.getValueSet 
+                |> Set.map ValueRange.Value.get
+                |> Set.map (fun n -> n.ToString()) 
+                |> Set.toArray
 
-    // #endregion
+            { dto with Vals = vals; Min = min; Incr = incr; Max = max }
 

@@ -146,7 +146,7 @@ module Testing =
             let fs = id
             let ff = fun minmax -> 
                 minmax 
-                |> ValueRange.Range.MinLargerThanMaxException 
+                |> ValueRange.Range.RangeException 
                 |> raise
 
             let createVal = ValueRange.Value.create id (fun _ -> failwith "Cannot create")
@@ -481,6 +481,9 @@ module Testing =
         type ``There and back again`` () =
             let theraAndBackAgainProp n vs min incr max =
                 
+                let fromDto = Variable.Dto.fromDtoOpt
+                let toDto   = Variable.Dto.toDto
+                
                 let toStr(n: BigRational) = n.ToString()
 
                 if n |> System.String.IsNullOrWhiteSpace then true
@@ -494,10 +497,10 @@ module Testing =
                         let dto = dto |> Variable.Dto.setMax (max |> toStr)
                         dto
      
-                    match dto |> Variable.fromDtoOpt with
+                    match dto |> Variable.Dto.fromDtoOpt with
                     | Some vr -> 
-                        let dto' = vr |> Variable.toDto |> Variable.fromDtoOpt |> Option.get |> Variable.toDto
-                        let dto'' = dto' |> Variable.fromDtoOpt |> Option.get |> Variable.toDto
+                        let dto' = vr |> toDto |> fromDto |> Option.get |> toDto
+                        let dto'' = dto' |> fromDto |> Option.get |> toDto
                         //printfn "new:\n%A\noriginal:\n%A" dto'' dto'
                         dto' = dto''
                     | None -> true
