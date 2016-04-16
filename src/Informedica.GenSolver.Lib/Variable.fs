@@ -232,32 +232,37 @@ module Variable =
             v |> fMin min &&
             v |> fMax max
 
-        let minLt m1 m2 = 
+        let minLTmin m1 m2 = 
             match m2, m1 with
             | MinIncl m2', MinIncl m1' 
             | MinExcl m2', MinExcl m1' 
             | MinIncl m2', MinExcl m1' -> m2' > m1' 
             | MinExcl m2', MinIncl m1' -> m2' >= m1'
 
-        let minSt m1 m2 = m2 |> minLt m1 |> not
+        let minSTEmin m1 m2 = m2 |> minLTmin m1 |> not
 
-        let maxLt m1 m2 = 
+        let maxLTmax m1 m2 = 
             match m2, m1 with
             | MaxIncl m2', MaxIncl m1' 
             | MaxExcl m2', MaxExcl m1' 
             | MaxExcl m2', MaxIncl m1' -> m2' > m1'
             | MaxIncl m2', MaxExcl m1' -> m2' >= m1' 
 
-        let maxSt m1 m2 = m2 |> maxLt m1 |> not
+        let maxSTEmax m1 m2 = m2 |> maxLTmax m1 |> not
 
-        let minLtMax max min =
+        let minLTmax max min =
             match min, max with
             | MinIncl min', MaxIncl max' -> min' > max'
             | MinExcl min', MaxIncl max' 
             | MinExcl min', MaxExcl max' 
             | MinIncl min', MaxExcl max' -> min' >= max' 
 
-        let minStMax max min = min |> minLtMax max |> not
+        let minSTEmax max min = min |> minLTmax max |> not
+
+        let minEQmax max min = 
+            match min, max with
+            | MinIncl min', MaxIncl max' -> min' = max'
+            | _ -> false
 
         /// Filter a set of values according
         /// to increment, min and max constraints
@@ -292,7 +297,12 @@ module Variable =
         let createMax = Max
             
         let createMinMax succ fail min max = 
-            if min |> minLtMax max then (min, max) |> MinLargetThanMax |> fail
+            if min |> minLTmax max then (min, max) |> MinLargetThanMax |> fail
+            elif min |> minEQmax max then 
+                [min |> minToValue ]
+                |> Set.ofList
+                |> ValueSet 
+                |> succ
             else (min, max) |> MinMax |> succ
 
         let create succ fail vs min max =
@@ -346,10 +356,10 @@ module Variable =
                 let max = vr |> getMax
                 filter (Some min) max >> ValueSet
 
-            let fMin min' = if min |> minLt min' then min |> Min else vr 
-            let fMax max' = if min |> minLtMax max' then vr else (min, max') |> MinMax 
+            let fMin min' = if min |> minLTmin min' then min |> Min else vr 
+            let fMax max' = if min |> minLTmax max' then vr else (min, max') |> MinMax 
             let fMinMax (min', max) = 
-                if min |> minLt min' && min |> minLtMax max |> not then (min, max) |> MinMax else vr 
+                if min |> minLTmin min' && min |> minSTEmax max then (min, max) |> MinMax else vr 
 
             vr |> apply fValueSet fMin fMax fMinMax
 
@@ -359,10 +369,10 @@ module Variable =
                 let min = vr |> getMin
                 filter min (Some max) >> ValueSet
 
-            let fMin min' = if min' |> minLtMax max then vr else (min', max) |> MinMax 
-            let fMax max' = if max' |> maxSt max then vr else max |> Max 
+            let fMin min' = if min' |> minLTmax max  then vr else (min', max) |> MinMax 
+            let fMax max' = if max' |> maxSTEmax max then vr else max |> Max 
             let fMinMax (min, max') = 
-                if max |> maxSt max' && min |> minLtMax max |> not then (min, max) |> MinMax else vr 
+                if max |> maxSTEmax max' && min |> minSTEmax max then createMinMax id (fun _ -> vr) min max else vr 
 
             vr |> apply fValueSet fMin fMax fMinMax
 

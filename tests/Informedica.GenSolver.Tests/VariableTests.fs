@@ -252,12 +252,12 @@ module Testing =
                 member x.``Min is ST min excl 1 and ST max incl 2 but LT max excl 1`` () =
                     let minExcl = 1N |> createMinExcl
                     let maxExcl = 2N |> createMaxExcl
-                    test <@ min |> Option.get |> VR.minSt minExcl @>                  // min incl 1 < min excl 1
-                    test <@ min |> Option.get |> VR.minStMax maxExcl  @>              // min incl 1 < max excl 2
-                    test <@ min |> Option.get |> VR.minLtMax (1N |> createMaxExcl) @> // min incl 1 > max excl 1
+                    test <@ min |> Option.get |> VR.minSTEmin minExcl @>                  // min incl 1 < min excl 1
+                    test <@ min |> Option.get |> VR.minSTEmax maxExcl  @>              // min incl 1 < max excl 2
+                    test <@ min |> Option.get |> VR.minLTmax (1N |> createMaxExcl) @> // min incl 1 > max excl 1
 
-                    test <@ min |> Option.get |> VR.minLtMax (1N |> createMaxIncl) |> not @> // min incl 1 > max incl 1 is false
-                    test <@ min |> Option.get |> VR.minLt (1N |> createMinIncl) |> not @>    // min incl 1 > min incl 1 is false
+                    test <@ min |> Option.get |> VR.minLTmax (1N |> createMaxIncl) |> not @> // min incl 1 > max incl 1 is false
+                    test <@ min |> Option.get |> VR.minLTmin (1N |> createMinIncl) |> not @>    // min incl 1 > min incl 1 is false
 
                 [<Test>]
                 member x.``The count is zero`` () =
