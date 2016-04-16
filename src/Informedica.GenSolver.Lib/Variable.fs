@@ -232,22 +232,32 @@ module Variable =
             v |> fMin min &&
             v |> fMax max
 
-        let maxToMin = function | MaxIncl m -> m |> MinIncl | MaxExcl m -> m |> MinExcl
-
         let minLt m1 m2 = 
-            match m1, m2 with
-            | MinIncl m1', MinIncl m2' 
-            | MinExcl m1', MinIncl m2'
-            | MinExcl m1', MinExcl m2' -> m2' > m1'
-            | MinIncl m1', MinExcl m2' -> m2' >= m1' 
+            match m2, m1 with
+            | MinIncl m2', MinIncl m1' 
+            | MinExcl m2', MinExcl m1' 
+            | MinIncl m2', MinExcl m1' -> m2' > m1' 
+            | MinExcl m2', MinIncl m1' -> m2' >= m1'
 
-        let maxSt m1 m2 = 
-            let m1', m2' = m1 |> maxToMin, m2 |> maxToMin
-            m1' |> minLt m2' |> not
+        let minSt m1 m2 = m2 |> minLt m1 |> not
+
+        let maxLt m1 m2 = 
+            match m2, m1 with
+            | MaxIncl m2', MaxIncl m1' 
+            | MaxExcl m2', MaxExcl m1' 
+            | MaxExcl m2', MaxIncl m1' -> m2' > m1'
+            | MaxIncl m2', MaxExcl m1' -> m2' >= m1' 
+
+        let maxSt m1 m2 = m2 |> maxLt m1 |> not
 
         let minLtMax max min =
-            let min' = max |> maxToMin
-            min |> minLt min'
+            match min, max with
+            | MinIncl min', MaxIncl max' -> min' > max'
+            | MinExcl min', MaxIncl max' 
+            | MinExcl min', MaxExcl max' 
+            | MinIncl min', MaxExcl max' -> min' >= max' 
+
+        let minStMax max min = min |> minLtMax max |> not
 
         /// Filter a set of values according
         /// to increment, min and max constraints

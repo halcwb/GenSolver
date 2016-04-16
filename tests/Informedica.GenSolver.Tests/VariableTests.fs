@@ -143,6 +143,11 @@ module Testing =
             let getMin  = VR.getMin >> Option.bind (VR.minToValue >> Some)
             let getMax  = VR.getMax >> Option.bind (VR.maxToValue >> Some)
 
+            let createMinIncl = V.createExc >> VR.createMinIncl
+            let createMinExcl = V.createExc >> VR.createMinExcl
+            let createMaxIncl = V.createExc >> VR.createMaxIncl
+            let createMaxExcl = V.createExc >> VR.createMaxExcl
+
             let contains v vr = vr |> VR.contains v
 
             let testProp prop x =
@@ -231,7 +236,7 @@ module Testing =
 
             [<TestFixture>]
             type ``Given a ValueRange with min inclusive = Some 1N max = None`` () =
-                let min = 1N |> V.createExc |> VR.createMinIncl |> Some
+                let min = 1N |> createMinIncl |> Some
                 let max = None
                 let vs = Set.empty
 
@@ -242,6 +247,17 @@ module Testing =
                         if x >= 1N then v |> VR.isBetween min max
                         else v |> VR.isBetween min max |> not
                     testProp prop
+
+                [<Test>]
+                member x.``Min is ST min excl 1 and ST max incl 2 but LT max excl 1`` () =
+                    let minExcl = 1N |> createMinExcl
+                    let maxExcl = 2N |> createMaxExcl
+                    test <@ min |> Option.get |> VR.minSt minExcl @>                  // min incl 1 < min excl 1
+                    test <@ min |> Option.get |> VR.minStMax maxExcl  @>              // min incl 1 < max excl 2
+                    test <@ min |> Option.get |> VR.minLtMax (1N |> createMaxExcl) @> // min incl 1 > max excl 1
+
+                    test <@ min |> Option.get |> VR.minLtMax (1N |> createMaxIncl) |> not @> // min incl 1 > max incl 1 is false
+                    test <@ min |> Option.get |> VR.minLt (1N |> createMinIncl) |> not @>    // min incl 1 > min incl 1 is false
 
                 [<Test>]
                 member x.``The count is zero`` () =
