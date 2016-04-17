@@ -39,3 +39,9 @@ Check.Quick(fun  (a:BigRational) -> printfn "%A" (BigRational.ToDouble(a)); true
 
 
 printfn "%A" (1N/2N)
+
+type Test = { Name: string; mutable Value: int }
+let test1 = { Name = "test1"; Test.Value = 1 }
+let l1 = [test1]
+let l2 = [test1]
+test1.Value <- 2

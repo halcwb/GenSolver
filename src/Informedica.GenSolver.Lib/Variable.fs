@@ -172,15 +172,17 @@ module Variable =
 
             // #endregion
 
+        module V = Value
+
         // #region ---- TYPES ----
            
         type Minimum =
-            | MinIncl of Value.Value
-            | MinExcl of Value.Value
+            | MinIncl of V.Value
+            | MinExcl of V.Value
 
         type Maximum =
-            | MaxIncl of Value.Value
-            | MaxExcl of Value.Value
+            | MaxIncl of V.Value
+            | MaxExcl of V.Value
 
         /// `ValueRange` represents a discrete set of 
         /// non-zero positive rational numbers,
@@ -189,9 +191,10 @@ module Variable =
         /// it is infinite and then it 
         /// is a range.
         type ValueRange =
-            | ValueSet of Value.Value Set
+            | ValueSet of V.Value Set
             | Min of Minimum
             | Max of Maximum
+            | MinIncr of Minimum * V.Value
             | MinMax  of Minimum * Maximum
 
         // #endregion
@@ -212,23 +215,28 @@ module Variable =
         /// Aply the give functions to `Values`
         /// where fv is used for `Value Set` and
         /// fr is used for `Range`
-        let apply fValueSet fMin fMax fMinMax = function
-            | ValueSet vs                 -> vs |> fValueSet
-            | Min m                       -> m  |> fMin
-            | Max m                       -> m  |> fMax
-            | MinMax (min, max)           -> (min, max) |> fMinMax
+        let apply fValueSet fMin fMax fMinIncr fMinMax = function
+            | ValueSet vs         -> vs |> fValueSet
+            | Min m               -> m  |> fMin
+            | Max m               -> m  |> fMax
+            | MinIncr (min, incr) -> (min, incr) |> fMinIncr
+            | MinMax (min, max)   -> (min, max) |> fMinMax
 
         let count = 
             let zero _ = 0
-            apply (fun s -> s |> Set.count) zero zero zero
+            apply (fun s -> s |> Set.count) zero zero zero zero
 
         let isEmpty = count >> ((=) 0)
 
-        let isBetween min max v =
+        let isBetween min incr max v =
             let fTrue = fun _ -> true
+
             let fMin  = function | None -> fTrue  | Some(MinIncl m) -> (<=) m | Some(MinExcl m) -> (<) m
             let fMax  = function | None -> fTrue  | Some(MaxIncl m) -> (>=) m | Some(MaxExcl m) -> (>) m
 
+            let fIncr = function | None -> fTrue  | Some(incr) -> V.isMultiple incr 
+
+            v |> fIncr incr &&
             v |> fMin min &&
             v |> fMax max
 
@@ -266,7 +274,7 @@ module Variable =
 
         /// Filter a set of values according
         /// to increment, min and max constraints
-        let filter min max = Set.filter (fun v -> v |> isBetween min max)
+        let filter min incr max = Set.filter (fun v -> v |> isBetween min incr max)
 
         let getSetMin s = if s |> Set.isEmpty then None else s.MinimumElement |> MinIncl |> Some
 
@@ -274,7 +282,37 @@ module Variable =
 
         let minToValue = function | MinIncl v | MinExcl v -> v
         
-        let maxToValue = function | MaxIncl v | MaxExcl v -> v            
+        let maxToValue = function | MaxIncl v | MaxExcl v -> v    
+
+        let toMultipleOf d n  =
+            let m = (n / d) |> BigRational.ToInt32 |> BigRational.FromInt
+            if m * d < n then (m + 1N) * d else m * d
+
+        let isMinExcl = function | MinIncl _ -> false | MinExcl _ -> true
+
+        let isMaxExcl = function | MaxIncl _ -> false | MaxExcl _ -> true
+        
+        // Calculate minimum as a multiple of incr
+        let calcMin min incr =
+            let n = match min with | MinIncl m | MinExcl m -> m |> V.get
+            let (V.Value(d)) = incr
+            let n' = n |> toMultipleOf d
+            if min |> isMinExcl && n' <= n then n' + d else n'
+
+        let minIncrMaxToVs min incr max =
+            let min' = calcMin min incr
+            let incr' = incr |> V.get
+            let max' = match max with | MaxIncl m | MaxExcl m -> m |> V.get
+
+            let vs = [min'..incr'..max'] |> Set.ofList
+            // Take of the maximimum value if it equals to maximum when maximum is exclusive
+            if vs |> Set.isEmpty |> not && 
+               max |> isMaxExcl &&
+               max' <= vs.MaximumElement then vs.Remove(vs.MaximumElement)
+            else vs
+            |> Set.map V.createExc
+            |> ValueSet
+            
 
         // #endregion
 
@@ -295,6 +333,10 @@ module Variable =
         let createMin = Min
 
         let createMax = Max
+
+        let createMinIncr min incr =
+            let min' = calcMin min incr |> V.createExc |> MinIncl
+            (min', incr) |> MinIncr
             
         let createMinMax succ fail min max = 
             if min |> minLTmax max then (min, max) |> MinLargetThanMax |> fail
@@ -305,15 +347,19 @@ module Variable =
                 |> succ
             else (min, max) |> MinMax |> succ
 
-        let create succ fail vs min max =
-            let vs' = vs |> filter min max
+        let create succ fail vs min incr max =
+            let vs' = vs |> filter min incr max
 
             if vs' |> Set.isEmpty then 
-                match min, max with
-                | None,      None -> empty |> succ
-                | Some min', None -> min' |> createMin |> succ
-                | None,      Some max' -> createMax max' |> succ 
-                | Some min', Some max' -> createMinMax succ fail min' max'
+                match min, incr, max with
+                | None,      None,       None      -> empty |> succ
+                | Some min', None,       None      -> min' |> createMin |> succ
+                | None,      None,       Some max' -> createMax max' |> succ 
+                | Some min', None,       Some max' -> createMinMax succ fail min' max'
+                | Some min', Some incr', None      -> createMinIncr min' incr' |> succ
+                | None,      Some incr', Some max' -> minIncrMaxToVs (incr' |> MinIncl) incr' max' |> succ
+                | None,      Some incr', None      -> createMinIncr (incr' |> MinIncl) incr' |> succ
+                | Some min', Some incr', Some max' -> minIncrMaxToVs min' incr' max' |> succ
             else
                 vs
                 |> ValueSet 
@@ -327,18 +373,20 @@ module Variable =
 
         // #region ---- GETTERS ----
 
-        let getValueSet = apply id (fun _ -> Set.empty) (fun _ -> Set.empty) (fun _ -> Set.empty)
+        let getValueSet = apply id (fun _ -> Set.empty) (fun _ -> Set.empty) (fun _ -> Set.empty) (fun _ -> Set.empty)
 
         /// Get the minimum from
         /// values if there is one
         /// *Note when no minimum is specified 
         /// but there is an increment, then
         /// the increment is the minimum*
-        let getMin = apply getSetMin Some Option.none (fst >> Some)  
+        let getMin = apply getSetMin Some Option.none (fst >> Some) (fst >> Some) 
+
+        let getIncr = apply Option.none Option.none Option.none (snd >> Some) Option.none 
 
         /// Get the maximum from
         /// values if there is one
-        let getMax = apply getSetMax Option.none Some (snd >> Some)
+        let getMax = apply getSetMax Option.none Some Option.none (snd >> Some)
 
         // #endregion
 
@@ -346,41 +394,75 @@ module Variable =
         let contains v vr = 
             let min = vr |> getMin
             let max = vr |> getMax
-            v |> isBetween min max
+
+            let incr = vr |> getIncr
+            v |> isBetween min incr max
 
         // #region ---- SETTERS ----
 
         let setMin min vr =
+            let succ = id
+            let fail _ = vr
+            // Check whether the new min is more restrictive than the old min
+            let checkMin f min' = if min |> minLTmin min' then min |> f else vr
 
             let fValueSet = 
                 let max = vr |> getMax
-                filter (Some min) max >> ValueSet
+                let incr = vr |> getIncr
+                filter (Some min) incr max >> ValueSet
 
-            let fMin min' = if min |> minLTmin min' then min |> Min else vr 
-            let fMax max' = if min |> minLTmax max' then vr else (min, max') |> MinMax 
-            let fMinMax (min', max) = 
-                if min |> minLTmin min' && min |> minSTEmax max then (min, max) |> MinMax else vr 
+            let fMax max = createMinMax (id) (fun _ -> vr) min max
 
-            vr |> apply fValueSet fMin fMax fMinMax
+            let fMin min' =             min' |> checkMin createMin
+            let fMinIncr (min', incr) = min' |> checkMin (fun m -> createMinIncr m incr)
+            let fMinMax (min', max) =   min' |> checkMin (fun min -> createMinMax succ fail min max) 
+
+            vr |> apply fValueSet fMin fMax fMinIncr fMinMax
 
         let setMax max vr =
+            let succ = id
+            let fail _ = vr
+            // Check whether the new max is more restrictive than the old max
+            let checkMax f max' = if max' |> maxLTmax max then max |> f else vr
 
             let fValueSet = 
                 let min = vr |> getMin
-                filter min (Some max) >> ValueSet
+                let incr = vr |> getIncr
+                filter min incr (Some max) >> ValueSet
 
-            let fMin min' = if min' |> minLTmax max  then vr else (min', max) |> MinMax 
-            let fMax max' = if max' |> maxSTEmax max then vr else max |> Max 
-            let fMinMax (min, max') = 
-                if max |> maxSTEmax max' && min |> minSTEmax max then createMinMax id (fun _ -> vr) min max else vr 
+            let fMin min = createMinMax (id) (fun _ -> vr) min max 
 
-            vr |> apply fValueSet fMin fMax fMinMax
+            let fMax max' =             max' |> checkMax createMax
+            let fMinMax (min, max') =   max' |> checkMax (fun max -> createMinMax id (fun _ -> vr) min max) 
+
+            let fMinIncr (min, incr) = create succ fail Set.empty (Some min) (Some incr) (Some max)
+
+            vr |> apply fValueSet fMin fMax fMinIncr fMinMax
+
+        let setIncr incr vr =
+            let succ = id
+            let fail _ = vr
+            // Check whether the new incr is more restrictive than the old incr
+            let checkIncr f incr' = if incr |> V.isMultiple incr' then incr |> f else vr
+
+            let fValueSet = 
+                let min = vr |> getMin
+                let max = vr |> getMax
+                filter min (Some incr) max >> ValueSet
+
+            let fMin min = createMinIncr min incr
+            let fMax max = create succ fail Set.empty None (Some incr) (Some max)
+            let fMinMax (min, max) = create succ fail Set.empty (Some min) (Some incr) (Some max)
+
+            let fMinIncr (min, incr') = incr' |> checkIncr (fun i -> createMinIncr min i) 
+
+            vr |> apply fValueSet fMin fMax fMinIncr fMinMax
 
         let setValues vs vr =
             let succ = id
             let fail _ = vr
             
-            let vs1, min, max = vr |> getValueSet, vr |> getMin, vr |> getMax
+            let vs1, min, incr, max = vr |> getValueSet, vr |> getMin, vr |> getIncr, vr |> getMax
 
             let intersect vs1 vs2 =
                 match vs1, vs2 with
@@ -388,9 +470,9 @@ module Variable =
                 | _ when vs2 |> Set.isEmpty -> vs1
                 | _ -> vs1 |> Set.intersect vs2
                     
-            let vs2 = vs |> filter min max
+            let vs2 = vs |> filter min incr max
             
-            create succ fail (intersect vs1 vs2) min max
+            create succ fail (intersect vs1 vs2) min incr max
 
         // #endregion
         
@@ -405,7 +487,7 @@ module Variable =
                 let s2 = new ResizeArray<_>(s2)
                 let s3 = new ResizeArray<_>()
                 // Check whether the operand is subtraction
-                let opIsSubtr = (Value.two |> op <| Value.one) = Value.one
+                let opIsSubtr = (V.two |> op <| V.one) = V.one
 
                 for x1 in s1 do
                     for x2 in s2 do
@@ -442,7 +524,7 @@ module Variable =
     type Variable =
         {
             Name: Name.Name
-            ValueRange: ValueRange.ValueRange
+            mutable ValueRange: ValueRange.ValueRange
         }
 
     // #endregion
@@ -471,11 +553,11 @@ module Variable =
 
     // #region SETTERS
 
-    let setMin v var = { var with ValueRange = var.ValueRange |> ValueRange.setMin v }
+    let setMin v var = var.ValueRange <- var.ValueRange |> ValueRange.setMin v; var
 
-    let setMax v var = { var with ValueRange = var.ValueRange |> ValueRange.setMax v }
+    let setMax v var = var.ValueRange <- var.ValueRange |> ValueRange.setMax v; var
 
-    let setValueSet vs var = { var with ValueRange = var.ValueRange |> ValueRange.setValues vs }
+    let setValueSet vs var = var.ValueRange <- var.ValueRange |> ValueRange.setValues vs; var
 
      // #endregion
 
@@ -551,6 +633,9 @@ module Variable =
             let fValue = BigRational.Parse >> ValueRange.Value.createExc
 
             let fValueRange vals min max =
+                // ToDo temp hack
+                let incr = None
+
                 let min, max = 
                     min |> Option.bind (ValueRange.MinIncl >> Some), 
                     max |> Option.bind (ValueRange.MaxIncl >> Some) 
@@ -558,7 +643,7 @@ module Variable =
                     vals
                     |> Set.map fValue
 
-                ValueRange.createExc vals' min max
+                ValueRange.createExc vals' min incr max
 
             let fVariable = create id
 
@@ -580,6 +665,9 @@ module Variable =
                 let min' = match min with | Some min' -> min' | None -> None
                 let max' = match max with | Some max' ->max' | None -> None
                 try
+                    // ToDo temp hack
+                    let incr = None
+
                     let min'', max'' = 
                         min' |> Option.bind (ValueRange.MinIncl >> Some), 
                         max' |> Option.bind (ValueRange.MaxIncl >> Some) 
@@ -587,8 +675,8 @@ module Variable =
                         vals 
                         |> Set.map fValue
                         |> Set.map Option.get
-                    ValueRange.createOpt vals' min'' max''
-                with 
+                    ValueRange.createOpt vals' min'' incr max''
+                with
                 | _ -> None
 
             let fVariable n vr = 

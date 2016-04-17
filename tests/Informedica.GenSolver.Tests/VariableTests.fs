@@ -150,6 +150,11 @@ module Testing =
 
             let contains v vr = vr |> VR.contains v
 
+            let isBetweenMinMax min max  = VR.isBetween min None max 
+
+            let createExcMinMax vs min max = VR.createExc vs min None max
+            let createMinMax succ fail vs min max = VR.create succ fail vs min None max
+
             let testProp prop x =
                 if x > 0N then
                     prop x
@@ -168,32 +173,32 @@ module Testing =
                     let prop x =
                         x 
                         |> V.createExc
-                        |> VR.isBetween min max
+                        |> isBetweenMinMax min max
                     testProp prop
 
                 [<Test>]
                 member x.``The minimum and maximum are None`` () =
                     let succ vr = test <@ vr |> VR.getMin = None && vr |> VR.getMax = None @>
                     let fail _  = test <@ false @>
-                    VR.create succ fail vs min max
+                    createMinMax succ fail vs min max
 
                 [<Test>]
                 member x.``Creating a ValueRange returns an unrestricted valueset`` () =
                     let succ vr = test <@vr = unrestricted@>
                     let fail _  = test <@false@>
                     
-                    VR.create succ fail vs min max
+                    createMinMax succ fail vs min max
         
                 [<Test>]
                 member x.``Counting values returns zero`` () =
                     let succ vr = test <@vr |> VR.count = 0@>
                     let fail _  = test <@false@>
 
-                    VR.create succ fail vs min max
+                    createMinMax succ fail vs min max
 
                 [<Property>]
                 member x.``The set can contain any Value`` () =
-                    let vr = VR.createExc Set.empty None None
+                    let vr = createExcMinMax Set.empty None None
                     let prop x = 
                         let v = V.createExc x
                         vr |> contains v //|> not
@@ -215,13 +220,13 @@ module Testing =
                     let min', max' = v |> VR.createMinIncl, v |> VR.createMaxIncl
                     let succ vr = test <@ vr |> VR.getMin = Some min' && vr |> VR.getMax = Some max' @>
                     let fail _  = test <@ false @>
-                    VR.create succ fail vs min max 
+                    createMinMax succ fail vs min max 
 
                 [<Test>]
                 member x.``Counting values returns one`` () =
                     let succ vr = test <@ vr |> VR.count = 1@>
                     let fail _  = test <@false@>
-                    VR.create succ fail vs min max
+                    createMinMax succ fail vs min max
                             
                 [<Property>]
                 member x.``The result contains that value`` () =
@@ -231,7 +236,7 @@ module Testing =
                             
                         let succ vr = vr |> contains v
                         let fail _ = false
-                        VR.create succ fail vs min max
+                        createMinMax succ fail vs min max
                     testProp test
 
             [<TestFixture>]
@@ -244,8 +249,8 @@ module Testing =
                 member x.``The is between function returns true for values larger or equal to one`` () =
                     let prop x =    
                         let v = x |> V.createExc
-                        if x >= 1N then v |> VR.isBetween min max
-                        else v |> VR.isBetween min max |> not
+                        if x >= 1N then v |> isBetweenMinMax min max
+                        else v |> isBetweenMinMax min max |> not
                     testProp prop
 
                 [<Test>]
@@ -263,13 +268,13 @@ module Testing =
                 member x.``The count is zero`` () =
                     let succ vr = test <@ vr |> VR.count = 0 @>
                     let fail _  = test <@false@>
-                    VR.create succ fail vs min max
+                    createMinMax succ fail vs min max
 
                 [<Test>]
                 member x.``Minimum is one`` () =
                     let succ vr = test <@vr |> VR.getMin = min@>
                     let fail _  = test <@false@>
-                    VR.create succ fail vs min max
+                    createMinMax succ fail vs min max
 
                 [<Property>]
                 member x.``The result can contain any value greater or equal to one`` () =
@@ -283,7 +288,7 @@ module Testing =
                             else vr |> VR.contains v |> not
                         let fail _ = printfn "fail"; false
                         
-                        VR.create succ fail vs min max
+                        createMinMax succ fail vs min max
 
                     testProp test
 
@@ -298,21 +303,21 @@ module Testing =
                 member x.``The isBetween function returns true for values less or equal to 1`` () =
                     let prop x =
                         let v = x |> V.createExc
-                        if x <= 1N then v |> VR.isBetween min max
-                        else v |> VR.isBetween min max |> not
+                        if x <= 1N then v |> isBetweenMinMax min max
+                        else v |> isBetweenMinMax min max |> not
                     testProp prop
 
                 [<Test>]
                 member x.``Values contain no values`` () =
                     let succ vr = test <@ vr |> VR.count = 0 @>
                     let fail _  = test <@ false @>
-                    VR.create succ fail vs min max
+                    createMinMax succ fail vs min max
 
                 [<Test>]
                 member x.``Maximum is one`` () =
                     let succ vr = test <@vr |> VR.getMax = max@>
                     let fail _  = ()
-                    VR.create succ fail vs min max
+                    createMinMax succ fail vs min max
 
                 [<Property>]
                 member x.``The result can contain any value less or equal to one`` () =
@@ -325,7 +330,7 @@ module Testing =
                             else vr |> VR.contains v |> not
                         let fail _  = false
                                                 
-                        VR.create succ fail vs min max
+                        createMinMax succ fail vs min max
 
                     testProp test
 
@@ -341,15 +346,15 @@ module Testing =
                 member x.``The isBetween function returns true for values LTE 2 and STE 4`` () =
                     let prop x =
                         let v = x |> V.createExc
-                        if x >= 2N && x <= 4N then v |> VR.isBetween min max
-                        else v |> VR.isBetween min max |> not
+                        if x >= 2N && x <= 4N then v |> isBetweenMinMax min max
+                        else v |> isBetweenMinMax min max |> not
                     testProp prop
 
                 [<Test>]
                 member x.``Values contain no values`` () =
                     let succ vr = test <@ vr |> VR.count = 0 @>
                     let fail _  = test <@ false @>
-                    VR.create succ fail vs min max
+                    createMinMax succ fail vs min max
 
                 [<Property>]
                 member x.``The ValueRange can only contain values between 2 and 4`` () =
@@ -362,7 +367,7 @@ module Testing =
                             else vr |> VR.contains v |> not
                         let fail _  = false
                                                 
-                        VR.create succ fail vs min max
+                        createMinMax succ fail vs min max
 
                     testProp test
 
@@ -384,7 +389,7 @@ module Testing =
                         let succ vr = vr |> VR.count = c
                         let fail _ = false
 
-                        VR.create succ fail vs min max
+                        createMinMax succ fail vs min max
 
                     testProp test
                     
@@ -469,7 +474,7 @@ module Testing =
                 let ff = fun _ -> failwith "Cannot create"
 
                 let createVals ns =
-                    let create vs = VR.create id ff vs None None
+                    let create vs = createMinMax id ff vs None None
 
                     ns
                     |> List.map BigRational.FromInt
