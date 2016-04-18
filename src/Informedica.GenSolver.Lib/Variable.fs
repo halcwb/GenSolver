@@ -517,13 +517,13 @@ module Variable =
         // Extend type with basic arrhythmic operations.
         type ValueRange with
 
-            static member (*) (vs1, vs2) = calc (*) (vs1, vs2)
+            static member (*) (vr1, vr2) = calc (*) (vr1, vr2)
 
-            static member (/) (vs1, vs2) = calc (/) (vs1, vs2)
+            static member (/) (vr1, vr2) = calc (/) (vr1, vr2)
 
-            static member (+) (vs1, vs2) = calc (+) (vs1, vs2)
+            static member (+) (vr1, vr2) = calc (+) (vr1, vr2)
 
-            static member (-) (vs1, vs2) = calc (-) (vs1, vs2)
+            static member (-) (vr1, vr2) = calc (-) (vr1, vr2)
 
         // #endregion
 
