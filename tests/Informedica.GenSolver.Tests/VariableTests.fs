@@ -509,22 +509,25 @@ module Testing =
 
         [<TestFixture>]
         type ``There and back again`` () =
-            let theraAndBackAgainProp vs min max =
+            let theraAndBackAgainProp vs min minincl incr max maxincl =
                 
                 let fromDto = DTO.fromDtoOpt
                 let toDto   = DTO.toDto
 
-                let setMin m = DTO.setMin m true
-                let setMax m = DTO.setMax m true 
+                let setMin m = DTO.setMin m minincl
+                let setMax m = DTO.setMax m maxincl
+                let setIncr i = DTO.setIncr i
                 
-                let toStr(n: BigRational) = n.ToString()
+                let toStr(n: BigRational) =
+                    if n <= 0N then "" else n.ToString()
 
                 let dto = 
                     let dto = DTO.createNew "test"
-                    let vals = vs |> Array.map toStr
+                    let vals = vs |> Array.map toStr |> Array.filter (System.String.IsNullOrWhiteSpace >> not)
                     let dto = dto |> DTO.setVals vals
                     let dto = dto |> setMin (min |> toStr)
                     let dto = dto |> setMax (max |> toStr)
+                    let dto = dto |> setIncr (incr |> toStr)
                     dto
      
                 match dto |> Variable.Dto.fromDtoOpt with
@@ -532,11 +535,12 @@ module Testing =
                     try
                         let dto'  = vr |> toDto |> fromDto |> Option.get |> toDto
                         let dto'' = dto' |> fromDto |> Option.get |> toDto
-                        printfn "new:%Aoriginal:%A" dto'' dto'
-                        if dto' = dto'' then printfn "passed"; true else printfn "failed"; false  
+                        dto' = dto''   
                     with
                     | _ -> printfn "dto: %A vr: %A toDto:%A" dto vr (vr |> toDto); false
-                | None -> true
+                | None -> 
+                    printfn "Dto: %A %s cannot be parsed" dto (dto |> DTO.toString)
+                    true
                 
             [<Property>]
             member x.``Creating from dto has same result as creating from dto, back to dto and again from dto`` () =

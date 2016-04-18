@@ -729,6 +729,13 @@ module Variable =
 
             let dto = createNew (let (N.Name n) = v.Name in n)
 
+            let minincl = 
+                match v.ValueRange |> VR.getMin with
+                | Some m -> m |> VR.isMinExcl |> not | None -> false
+            let maxincl = 
+                match v.ValueRange |> VR.getMax with
+                | Some m -> m |> VR.isMaxExcl |> not | None -> false
+
             let min  = 
                 v.ValueRange 
                 |> VR.getMin 
@@ -741,6 +748,11 @@ module Variable =
                 |> Option.bind (VR.maxToValue >> Some) 
                 |> someValueToBigR
 
+            let incr = 
+                v.ValueRange
+                |> VR.getIncr
+                |> someValueToBigR
+
             let vals = 
                 v.ValueRange 
                 |> VR.getValueSet 
@@ -748,5 +760,5 @@ module Variable =
                 |> Set.map (fun n -> n.ToString()) 
                 |> Set.toArray
 
-            { dto with Vals = vals; Min = min; Max = max }
+            { dto with Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl }
 
