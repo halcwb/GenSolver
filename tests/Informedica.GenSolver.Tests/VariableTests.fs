@@ -42,6 +42,9 @@ type Config () =
 module Testing =
 
     module Variable =
+
+        module VAR = Variable
+        module DTO = VAR.Dto
         
         module Name =
             
@@ -508,26 +511,31 @@ module Testing =
         type ``There and back again`` () =
             let theraAndBackAgainProp vs min max =
                 
-                let fromDto = Variable.Dto.fromDtoOpt
-                let toDto   = Variable.Dto.toDto
+                let fromDto = DTO.fromDtoOpt
+                let toDto   = DTO.toDto
+
+                let setMin m = DTO.setMin m true
+                let setMax m = DTO.setMax m true 
                 
                 let toStr(n: BigRational) = n.ToString()
 
                 let dto = 
-                    let dto = Variable.Dto.createNew "test"
+                    let dto = DTO.createNew "test"
                     let vals = vs |> Array.map toStr
-                    let dto = dto |> Variable.Dto.setVals vals
-                    let dto = dto |> Variable.Dto.setMin (min |> toStr)
-                    let dto = dto |> Variable.Dto.setMax (max |> toStr)
+                    let dto = dto |> DTO.setVals vals
+                    let dto = dto |> setMin (min |> toStr)
+                    let dto = dto |> setMax (max |> toStr)
                     dto
      
                 match dto |> Variable.Dto.fromDtoOpt with
                 | Some vr -> 
-                    printfn "%A %A %A" dto vr (vr |> toDto)
-                    let dto'  = vr |> toDto |> fromDto |> Option.get |> toDto
-                    let dto'' = dto' |> fromDto |> Option.get |> toDto
-                    //printfn "new:\n%A\noriginal:\n%A" dto'' dto'
-                    if dto' = dto'' then printfn "passed"; true else printfn "failed"; false  
+                    try
+                        let dto'  = vr |> toDto |> fromDto |> Option.get |> toDto
+                        let dto'' = dto' |> fromDto |> Option.get |> toDto
+                        printfn "new:%Aoriginal:%A" dto'' dto'
+                        if dto' = dto'' then printfn "passed"; true else printfn "failed"; false  
+                    with
+                    | _ -> printfn "dto: %A vr: %A toDto:%A" dto vr (vr |> toDto); false
                 | None -> true
                 
             [<Property>]

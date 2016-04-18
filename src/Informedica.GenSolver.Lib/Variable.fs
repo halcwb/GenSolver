@@ -2,6 +2,18 @@
 
 open System
 
+module BigRational = 
+    
+    let apply f (x: BigRational) = f x
+
+    let parse = BigRational.Parse
+
+    let tryParse s = 
+        try 
+            s |> parse |> Some 
+        with 
+        | _ -> None
+
 module String = 
     
     let apply f (s: string) = f s
@@ -565,150 +577,174 @@ module Variable =
     module Dto =
 
         open Informedica.GenSolver.Utils
+
+        module N = Name
+        module VR = ValueRange
+        module V = VR.Value
         
         [<CLIMutable>]
-        type Dto = { Name: string; Vals: string[]; Min: string; Max: string }
+        type Dto = 
+            { 
+                Name: string
+                Vals: string[]
+                Min: string
+                MinIncl: bool
+                Incr: string
+                Max: string
+                MaxIncl: bool 
+            }
 
-        let createDto n vals min max =  { Name = n; Vals = vals; Min = min; Max = max}
+        type Message = 
+            | ParseFailure of Dto
+            | NameMessage of N.Message
+            | ValueMessage of V.Message
+            | ValueRangeMessage of VR.Message
 
-        let createNew n = createDto n [||] "" ""
+        exception DtoException of Message
+
+        let raiseExc m = m |> DtoException |> raise
+
+        let createDto n vals min minincl incr max maxincl =  { Name = n; Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl }
+
+        let createNew n = createDto n [||] "" false "" "" false
 
         let apply f (d: Dto) = f d
 
         let setVals vals dto = { dto with Vals = vals }
-        let setMin  min  (dto: Dto) = { dto with Min = min }
-        let setMax  max  (dto: Dto) = { dto with Max = max } 
 
-        let (|Vals|Min|Max|NoProp|) p =  
+        let setMin  min incl dto = { dto with Min = min; MinIncl = incl }
+        let setMax  max incl dto = { dto with Max = max; MaxIncl = incl } 
+
+        let setIncr incr dto = { dto with Incr = incr }
+
+        let (|Vals|MinIncl|MinExcl|Incr|MaxIncl|MaxExcl|NoProp|) p =  
             match p |> String.toLower with
-            | "vals" -> Vals
-            | "min"  -> Min
-            | "max"  -> Max
-            | _      -> NoProp
+            | "vals"     -> Vals
+            | "minincl"  -> MinIncl
+            | "minexcl"  -> MinExcl
+            | "incr"     -> Incr
+            | "maxincl"  -> MaxIncl
+            | "maxexcl"  -> MaxExcl
+            | _          -> NoProp
 
         let setProp p v var =
             match p with 
             | Vals -> var |> setVals (v |> String.splitAt ',')
-            | Min  -> var |> setMin v
-            | Max  -> var |> setMax v
+            | MinIncl  -> var |> setMin v true
+            | MinExcl  -> var |> setMin v false
+            | Incr -> var |> setIncr v 
+            | MaxIncl  -> var |> setMax v true
+            | MaxExcl  -> var |> setMax v false
             | NoProp -> var
 
-        let toString { Name = name; Vals = vals; Min = min; Max = max } = 
-            let printRange min max =
-                match min, max with
-                | Some min, None     -> sprintf "[%s..]" min
-                | Some min, Some max -> sprintf "[%s..%s]" min max
-                | None,     Some max -> sprintf "[..%s]" max
-                | None,     None     -> "[]"
+        let toString { Name = name; Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl } = 
+
+            let printRange min incr max =
+                let left  = if minincl then "[" else "<"
+                let right = if maxincl then "]" else ">"
+
+                match min, incr, max with
+                | Some min, None, None      -> sprintf "%s%s..>" left min
+                | Some min, None, Some max  -> sprintf "%s%s..%s%s" left min max right
+                | None,     None, Some max  -> sprintf "<..%s%s" max right
+                | Some min, Some incr, None -> sprintf "%s%s..%s..>" left min incr 
+                | None,     None, None -> "<..>"
+                | _ -> "[Not a valid range]"
 
             let printVals vals =
                 "[" + (vals |> Array.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
 
             let vals = 
                 if vals |> Array.isEmpty then
-                    let min = if min = "" then None else Some min
-                    let max = if max = "" then None else Some max
-                    printRange min max
+                    let min  = if min = ""  then None else Some min
+                    let incr = if incr = "" then None else Some incr
+                    let max  = if max = ""  then None else Some max
+                    printRange min incr max
                 else vals |> printVals
 
             sprintf "%s%s" name vals
     
         ///  Create a variable from `Variable.Dto.Dto`.
-        let fromDto fName fValue fValueRange fVariable (dto: Dto) =
-            let parse s =
-                if   s |> String.IsNullOrWhiteSpace then None
-                else s |> fValue |> Some
+        let fromDto fail fName fValueRange fVariable (dto: Dto) =
+            let parseOpt s = 
+                if s |> String.IsNullOrWhiteSpace then None
+                else s |> BigRational.parse |> Some
 
-            let name = dto.Name |> fName
-            let min  = dto.Min |> parse 
-            let max  = dto.Max |> parse
-        
-            let vr = fValueRange (dto.Vals |> Set.ofSeq) min max
+            try
+                let min, incr, max = dto.Min |> parseOpt, dto.Incr |> parseOpt, dto.Max |> parseOpt
+                let vals = dto.Vals |> Seq.map BigRational.parse
 
-            fVariable name vr
+                let name = fName dto.Name
+                
+                let vr = fValueRange vals min dto.MinIncl incr max dto.MaxIncl
+                
+                fVariable name vr
+            with 
+            | _ -> dto |> ParseFailure |> fail
+            
 
         let fromDtoExc =
-            let fName = Name.createExc
+            let succ = id
+            let fail = raiseExc
+
+            let fName = N.create succ (fun m -> m |> NameMessage |> fail)
         
-            let fValue = BigRational.Parse >> ValueRange.Value.createExc
+            let fValueRange vals min minincl incr max maxincl =
+                let vs = vals |> Seq.map V.createExc |> Set.ofSeq
+                let min' = min |> Option.bind (fun m -> if minincl then m |> V.createExc |> VR.createMinIncl |> Some else m |> V.createExc |> VR.createMinExcl |> Some)
+                let max' = max |> Option.bind (fun m -> if maxincl then m |> V.createExc |> VR.createMaxIncl |> Some else m |> V.createExc |> VR.createMaxExcl |> Some)
+                let incr' = incr |> Option.bind (fun i ->  i |> V.createExc |> Some)
 
-            let fValueRange vals min max =
-                // ToDo temp hack
-                let incr = None
+                VR.create succ (fun m -> m |> ValueRangeMessage |> fail) vs min' incr' max'
 
-                let min, max = 
-                    min |> Option.bind (ValueRange.MinIncl >> Some), 
-                    max |> Option.bind (ValueRange.MaxIncl >> Some) 
-                let vals' =
-                    vals
-                    |> Set.map fValue
+            let fVariable n vr = create succ n vr
 
-                ValueRange.createExc vals' min incr max
-
-            let fVariable = create id
-
-            fromDto fName fValue fValueRange fVariable
+            fromDto fail fName fValueRange fVariable
 
         let fromDtoOpt =
-            let fName = Name.createOpt
+            let succ = Some
+            let fail = Option.none
 
-            let fValue v =
-                try
-                    v 
-                    |> BigRational.Parse 
-                    |> Some
-                with
-                | _ -> None
-                |> Option.bind (ValueRange.Value.createOption)
+            let fName = N.create succ fail
+        
+            let fValueRange vals min minincl incr max maxincl =
+                let vs = vals |> Seq.map V.createExc |> Set.ofSeq
+                let min' = min |> Option.bind (fun m -> if minincl then m |> V.createExc |> VR.createMinIncl |> Some else m |> V.createExc |> VR.createMinExcl |> Some)
+                let max' = max |> Option.bind (fun m -> if maxincl then m |> V.createExc |> VR.createMaxIncl |> Some else m |> V.createExc |> VR.createMaxExcl |> Some)
+                let incr' = incr |> Option.bind (fun i ->  i |> V.createExc |> Some)
 
-            let fValueRange vals min max = 
-                let min' = match min with | Some min' -> min' | None -> None
-                let max' = match max with | Some max' ->max' | None -> None
-                try
-                    // ToDo temp hack
-                    let incr = None
-
-                    let min'', max'' = 
-                        min' |> Option.bind (ValueRange.MinIncl >> Some), 
-                        max' |> Option.bind (ValueRange.MaxIncl >> Some) 
-                    let vals' =
-                        vals 
-                        |> Set.map fValue
-                        |> Set.map Option.get
-                    ValueRange.createOpt vals' min'' incr max''
-                with
-                | _ -> None
+                VR.create succ fail vs min' incr' max'
 
             let fVariable n vr = 
-                match n, vr with 
-                | Some n', Some vr' -> create Some n' vr'
+                match n, vr with
+                | Some n', Some vr' -> create succ n' vr'
                 | _ -> None
 
-            fromDto fName fValue fValueRange fVariable
+            fromDto fail fName fValueRange fVariable
 
         let toDto (v: Variable) =
             let someValueToBigR = function
-                | Some v' -> let (ValueRange.Value.Value v) = v' in v.ToString()
+                | Some v' -> let (V.Value v) = v' in v.ToString()
                 | None    -> ""
 
-            let dto = createNew (let (Name.Name n) = v.Name in n)
+            let dto = createNew (let (N.Name n) = v.Name in n)
 
             let min  = 
                 v.ValueRange 
-                |> ValueRange.getMin 
-                |> Option.bind (ValueRange.minToValue >> Some) 
+                |> VR.getMin 
+                |> Option.bind (VR.minToValue >> Some) 
                 |> someValueToBigR
 
             let max  = 
                 v.ValueRange 
-                |> ValueRange.getMax 
-                |> Option.bind (ValueRange.maxToValue >> Some) 
+                |> VR.getMax 
+                |> Option.bind (VR.maxToValue >> Some) 
                 |> someValueToBigR
 
             let vals = 
                 v.ValueRange 
-                |> ValueRange.getValueSet 
-                |> Set.map ValueRange.Value.get
+                |> VR.getValueSet 
+                |> Set.map V.get
                 |> Set.map (fun n -> n.ToString()) 
                 |> Set.toArray
 
