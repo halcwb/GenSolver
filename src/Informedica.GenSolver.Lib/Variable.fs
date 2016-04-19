@@ -151,6 +151,7 @@ module Variable =
             /// Two value
             let two = 2N |> Value
 
+
             // #endregion
 
             // #region ---- GETTERS ----
@@ -181,6 +182,19 @@ module Variable =
                 static member (+) (v1, v2) = calc id raiseExc (+) v1 v2
 
                 static member (-) (v1, v2) = calc id raiseExc (-) v1 v2
+
+            let opIsSubtr op = (two |> op <| one) = two - one // 1
+            let opIsAdd op = (one |> op <| two) = one + two   // 3
+            let opIsMult op = (two |> op <| one) = two * one  // 2
+            let opIsDiv op = (one |> op <| two) = one / two   // 1/2
+
+            let (|Mult|Div|Add|Subtr|NoOp|) op =
+                match op with
+                | _ when op |> opIsMult  -> Mult
+                | _ when op |> opIsDiv   -> Div
+                | _ when op |> opIsAdd   -> Add
+                | _ when op |> opIsSubtr -> Subtr
+                | _ -> NoOp
 
             // #endregion
 
@@ -329,22 +343,14 @@ module Variable =
         // #endregion
 
         // #region ----- CREATORS ----
-
-        let createMinIncl = MinIncl
-
-        let createMinExcl = MinExcl
-
-        let createMaxIncl = MaxIncl
-
-        let createMaxExcl = MaxExcl
             
         let empty = Set.empty |> ValueSet
 
         let createValueSet = ValueSet
 
-        let createMin = Min
+        let createMin isExcl m = if isExcl then m |> MinExcl else m |> MinIncl 
 
-        let createMax = Max
+        let createMax isExcl m = if isExcl then m |> MaxExcl else m |> MaxIncl 
 
         let createMinIncr min incr =
             let min' = calcMin min incr |> V.createExc |> MinIncl
@@ -365,8 +371,8 @@ module Variable =
             if vs' |> Set.isEmpty then 
                 match min, incr, max with
                 | None,      None,       None      -> empty |> succ
-                | Some min', None,       None      -> min' |> createMin |> succ
-                | None,      None,       Some max' -> createMax max' |> succ 
+                | Some min', None,       None      -> min' |> Min |> succ
+                | None,      None,       Some max' -> max' |> Max |> succ 
                 | Some min', None,       Some max' -> createMinMax succ fail min' max'
                 | Some min', Some incr', None      -> createMinIncr min' incr' |> succ
                 | None,      Some incr', Some max' -> minIncrMaxToVs (incr' |> MinIncl) incr' max' |> succ
@@ -425,7 +431,7 @@ module Variable =
 
             let fMax max = createMinMax (id) (fun _ -> vr) min max
 
-            let fMin min' =             min' |> checkMin createMin
+            let fMin min' =             min' |> checkMin Min
             let fMinIncr (min', incr) = min' |> checkMin (fun m -> createMinIncr m incr)
             let fMinMax (min', max) =   min' |> checkMin (fun min -> createMinMax succ fail min max) 
 
@@ -444,7 +450,7 @@ module Variable =
 
             let fMin min = createMinMax (id) (fun _ -> vr) min max 
 
-            let fMax max' =             max' |> checkMax createMax
+            let fMax max' =             max' |> checkMax Max
             let fMinMax (min, max') =   max' |> checkMax (fun max -> createMinMax id (fun _ -> vr) min max) 
 
             let fMinIncr (min, incr) = create succ fail Set.empty (Some min) (Some incr) (Some max)
@@ -512,7 +518,13 @@ module Variable =
                 |> ValueSet
             // Do not perform any calcuation when one of the args is not
             // a list of values
-            | _ -> empty            
+            | Min m1, Min m2 ->
+                match op with
+                | V.Add -> 
+                    let m1', m2' = m1 |> minToValue, m2 |> minToValue
+                    let isExcl = m1 |> isMinExcl || m2 |> isMinExcl
+                    (m1' + m2') |> createMin isExcl |> Min
+            | _ -> empty      
 
         // Extend type with basic arrhythmic operations.
         type ValueRange with
@@ -680,8 +692,7 @@ module Variable =
                 
                 fVariable name vr
             with 
-            | _ -> dto |> ParseFailure |> fail
-            
+            | _ -> dto |> ParseFailure |> fail            
 
         let fromDtoExc =
             let succ = id
@@ -690,9 +701,12 @@ module Variable =
             let fName = N.create succ (fun m -> m |> NameMessage |> fail)
         
             let fValueRange vals min minincl incr max maxincl =
+                let createMin = V.createExc >> VR.createMin (minincl |> not) >> Some
+                let createMax = V.createExc >> VR.createMax (maxincl |> not) >> Some
+
                 let vs = vals |> Seq.map V.createExc |> Set.ofSeq
-                let min' = min |> Option.bind (fun m -> if minincl then m |> V.createExc |> VR.createMinIncl |> Some else m |> V.createExc |> VR.createMinExcl |> Some)
-                let max' = max |> Option.bind (fun m -> if maxincl then m |> V.createExc |> VR.createMaxIncl |> Some else m |> V.createExc |> VR.createMaxExcl |> Some)
+                let min' = min |> Option.bind createMin
+                let max' = max |> Option.bind createMax
                 let incr' = incr |> Option.bind (fun i ->  i |> V.createExc |> Some)
 
                 VR.create succ (fun m -> m |> ValueRangeMessage |> fail) vs min' incr' max'
@@ -708,9 +722,12 @@ module Variable =
             let fName = N.create succ fail
         
             let fValueRange vals min minincl incr max maxincl =
+                let createMin = V.createExc >> VR.createMin (minincl |> not) >> Some
+                let createMax = V.createExc >> VR.createMax (maxincl |> not) >> Some
+
                 let vs = vals |> Seq.map V.createExc |> Set.ofSeq
-                let min' = min |> Option.bind (fun m -> if minincl then m |> V.createExc |> VR.createMinIncl |> Some else m |> V.createExc |> VR.createMinExcl |> Some)
-                let max' = max |> Option.bind (fun m -> if maxincl then m |> V.createExc |> VR.createMaxIncl |> Some else m |> V.createExc |> VR.createMaxExcl |> Some)
+                let min' = min |> Option.bind createMin
+                let max' = max |> Option.bind createMax
                 let incr' = incr |> Option.bind (fun i ->  i |> V.createExc |> Some)
 
                 VR.create succ fail vs min' incr' max'
@@ -732,6 +749,7 @@ module Variable =
             let minincl = 
                 match v.ValueRange |> VR.getMin with
                 | Some m -> m |> VR.isMinExcl |> not | None -> false
+            
             let maxincl = 
                 match v.ValueRange |> VR.getMax with
                 | Some m -> m |> VR.isMaxExcl |> not | None -> false

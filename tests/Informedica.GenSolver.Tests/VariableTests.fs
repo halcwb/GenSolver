@@ -146,10 +146,10 @@ module Testing =
             let getMin  = VR.getMin >> Option.bind (VR.minToValue >> Some)
             let getMax  = VR.getMax >> Option.bind (VR.maxToValue >> Some)
 
-            let createMinIncl = V.createExc >> VR.createMinIncl
-            let createMinExcl = V.createExc >> VR.createMinExcl
-            let createMaxIncl = V.createExc >> VR.createMaxIncl
-            let createMaxExcl = V.createExc >> VR.createMaxExcl
+            let createMinIncl = V.createExc >> (VR.createMin false)
+            let createMinExcl = V.createExc >> (VR.createMin true)
+            let createMaxIncl = V.createExc >> (VR.createMax false)
+            let createMaxExcl = V.createExc >> (VR.createMax true)
 
             let contains v vr = vr |> VR.contains v
 
@@ -220,7 +220,7 @@ module Testing =
 
                 [<Test>]
                 member x.``Both min incl and max incl are that value`` () =
-                    let min', max' = v |> VR.createMinIncl, v |> VR.createMaxIncl
+                    let min', max' = v |> VR.createMin false, v |> VR.createMax false
                     let succ vr = test <@ vr |> VR.getMin = Some min' && vr |> VR.getMax = Some max' @>
                     let fail _  = test <@ false @>
                     createMinMax succ fail vs min max 
@@ -298,7 +298,7 @@ module Testing =
             [<TestFixture>]
             type ``Given empty list min = None and max inclusive = 1`` () =
                 let min = None
-                let max = 1N |> V.createExc |> VR.createMaxIncl |> Some
+                let max = 1N |> V.createExc |> VR.createMax false |> Some
                 let vs = Set.empty
 
 
@@ -340,8 +340,8 @@ module Testing =
 
             [<TestFixture>]
             type ``Given empty list min = Some 2N max = Some 4N`` () =
-                let min = 2N |> V.createExc |> VR.createMinIncl |> Some
-                let max = 4N |> V.createExc |> VR.createMaxIncl |> Some
+                let min = 2N |> V.createExc |> VR.createMin false |> Some
+                let max = 4N |> V.createExc |> VR.createMax false |> Some
                 let vs = Set.empty
 
 
