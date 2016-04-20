@@ -194,7 +194,7 @@ module Variable =
             let opIsSubtr op = (three |> op <| two) = three - two // = 1
             let opIsAdd op   = (three |> op <| two) = three + two // = 5
             let opIsMult op  = (three |> op <| two) = three * two // = 6
-            let opIsDiv op   = (three |> op <| two) = three / one // = 3/2
+            let opIsDiv op   = (three |> op <| two) = three / two // = 3/2
 
             let (|Mult|Div|Add|Subtr|NoOp|) op =
                 match op with
