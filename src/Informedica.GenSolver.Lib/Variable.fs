@@ -601,8 +601,6 @@ module Variable =
                     | _ -> None
 
                 createExc Set.empty min None max
-                 
-
 
 
         // Extend type with basic arrhythmic operations.
