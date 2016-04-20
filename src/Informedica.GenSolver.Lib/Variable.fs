@@ -14,6 +14,11 @@ module BigRational =
         with 
         | _ -> None
 
+    let rec gcd a b =
+        match b with
+        | _  when b = 0N -> abs a
+        | _ -> gcd b ((a.Numerator % b.Numerator) |> BigRational.FromBigInt)
+
 module String = 
     
     let apply f (s: string) = f s
@@ -151,6 +156,7 @@ module Variable =
             /// Two value
             let two = 2N |> Value
 
+            let three = 3N |> Value
 
             // #endregion
 
@@ -173,6 +179,8 @@ module Variable =
             let isMultiple (Value incr) (Value v) = 
                 (v.Numerator * incr.Denominator) % (incr.Numerator * v.Denominator) = 0I
 
+            let gcd (Value v1) (Value v2) = BigRational.gcd v1 v2 |> Value
+
             type Value with
                 
                 static member (*) (v1, v2) = calc id raiseExc (*) v1 v2
@@ -183,10 +191,10 @@ module Variable =
 
                 static member (-) (v1, v2) = calc id raiseExc (-) v1 v2
 
-            let opIsSubtr op = (two |> op <| one) = two - one // 1
-            let opIsAdd op = (one |> op <| two) = one + two   // 3
-            let opIsMult op = (two |> op <| one) = two * one  // 2
-            let opIsDiv op = (one |> op <| two) = one / two   // 1/2
+            let opIsSubtr op = (three |> op <| two) = three - two // = 1
+            let opIsAdd op   = (three |> op <| two) = three + two // = 5
+            let opIsMult op  = (three |> op <| two) = three * two // = 6
+            let opIsDiv op   = (three |> op <| two) = three / one // = 3/2
 
             let (|Mult|Div|Add|Subtr|NoOp|) op =
                 match op with
@@ -535,7 +543,8 @@ module Variable =
                             let excl = m1 |> isMinExcl || m2 |> isMinExcl
                             let cmin = createMin excl
                             calcOpt cmin v1 v2 
-                        | _ -> None    
+                        | _ -> None
+
                     | V.Div ->
                         match min1, max2 with
                         | Some m1, Some m2 ->
@@ -544,6 +553,7 @@ module Variable =
                             let cmin = createMin excl
                             calcOpt cmin v1 v2
                         | _ -> None
+
                     | V.Add -> 
                         match min1, min2 with
                         | Some m1, Some m2 ->
@@ -551,8 +561,10 @@ module Variable =
                             let minExcl = m1 |> isMinExcl || m2 |> isMinExcl
                             let cmin = createMin minExcl
                             calcOpt cmin v1 v2 
-                        | Some m, None | None, Some m -> m |> minToValue |> createMin true |> Some
+                        | Some m, None 
+                        | None, Some m -> m |> minToValue |> createMin true |> Some
                         | None, None -> None
+
                     | V.Subtr -> 
                         match min1, max2 with
                         | Some m1, Some m2 ->
@@ -561,6 +573,7 @@ module Variable =
                             let cmin = createMin excl
                             calcOpt cmin v1 v2 
                         | _ -> None
+
                     | V.NoOp -> None
                        
                 let max = 
@@ -573,6 +586,7 @@ module Variable =
                             let cmax = createMax excl
                             calcOpt cmax v1 v2 
                         | _ -> None    
+
                     | V.Div ->
                         match max1, min2 with
                         | Some m1, Some m2 ->
@@ -581,6 +595,7 @@ module Variable =
                             let cmax = createMax excl
                             calcOpt cmax v1 v2
                         | _ -> None
+
                     | V.Subtr -> 
                         match max1, min2 with
                         | Some m1, Some m2 ->
@@ -590,6 +605,7 @@ module Variable =
                             calcOpt cmax v1 v2 
                         | Some m1, None -> m1 |> maxToValue |> createMax true |> Some
                         | _ -> None
+
                     | V.NoOp -> None
 
                 let incr = 
@@ -597,10 +613,11 @@ module Variable =
                     | Some i1, Some i2 ->
                         match op with
                         | V.Mult -> i1 * i2 |> Some
+                        | V.Add | V.Subtr -> V.gcd i1 i2 |> Some
                         |  _ -> None
                     | _ -> None
 
-                createExc Set.empty min None max
+                createExc Set.empty min incr max
 
 
         // Extend type with basic arrhythmic operations.
