@@ -6,6 +6,8 @@ module BigRational =
     
     let apply f (x: BigRational) = f x
 
+    let get = apply id
+
     let parse = BigRational.Parse
 
     let tryParse s = 
@@ -18,6 +20,8 @@ module BigRational =
         match b with
         | _  when b = 0N -> abs a
         | _ -> gcd b ((a.Numerator % b.Numerator) |> BigRational.FromBigInt)
+
+    let toString v = (v |> get).ToString()
 
 module String = 
     
@@ -127,6 +131,12 @@ module Variable =
 
             /// Apply a function `f` to value `x`.
             let apply f (Value x): 'a = f x
+
+            let toString (Value v) = v |> BigRational.toString
+
+            let valueOptToString = function
+                | Some v' -> v' |> toString
+                | None    -> ""
 
             // #endregion
 
@@ -347,6 +357,32 @@ module Variable =
             |> Set.map V.createExc
             |> ValueSet
             
+        let print vals min minincl incr max maxincl = 
+            let printRange min incr max =
+                let left  = if minincl then "[" else "<"
+                let right = if maxincl then "]" else ">"
+
+                match min, incr, max with
+                | Some min, None, None      -> sprintf "%s%s..>" left min
+                | Some min, None, Some max  -> sprintf "%s%s..%s%s" left min max right
+                | None,     None, Some max  -> sprintf "<..%s%s" max right
+                | Some min, Some incr, None -> sprintf "%s%s..%s..>" left min incr 
+                | None,     None, None -> "<..>"
+                | _ -> "[Not a valid range]"
+
+            let printVals vals =
+                "[" + (vals |> Array.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
+
+            let vals = 
+                if vals |> Array.isEmpty then
+                    let min  = if min = ""  then None else Some min
+                    let incr = if incr = "" then None else Some incr
+                    let max  = if max = ""  then None else Some max
+                    printRange min incr max
+                else vals |> printVals
+
+            sprintf "%s" vals
+
 
         // #endregion
 
@@ -508,6 +544,7 @@ module Variable =
         /// to two `Values`. Only add values
         /// to the result set if > 0.
         let calc op (x1, x2) =
+            let notEmpty s1 s2 = (s1 |> Set.isEmpty && s1 |> Set.isEmpty) |> not
             let calcOpt c v1 v2 =
                 match op with
                 | V.Mult  
@@ -518,7 +555,7 @@ module Variable =
                 | V.NoOp  -> None
              
             match x1, x2 with
-            | ValueSet s1, ValueSet s2 ->
+            | ValueSet s1, ValueSet s2 when notEmpty s1 s2 ->
                 let s1 = new ResizeArray<_>(s1)
                 let s2 = new ResizeArray<_>(s2)
                 let s3 = new ResizeArray<_>()
@@ -632,6 +669,60 @@ module Variable =
             static member (-) (vr1, vr2) = calc (-) (vr1, vr2)
 
         // #endregion
+
+        let toString vr =
+            let fVs  vs = 
+                let vs = vs |> Seq.map V.toString |> Seq.toArray
+                (vs, "", false, "", "", false)
+
+            let fMin min =
+                let min, minincl = 
+                    match min with
+                    | MinIncl v -> v |> V.toString, true
+                    | MinExcl v -> v |> V.toString ,false  
+                ([||], min, minincl, "", "", false)
+
+            let fMax max =
+                let max, maxincl = 
+                    match max with
+                    | MaxIncl v -> v |> V.toString, true
+                    | MaxExcl v -> v |> V.toString ,false  
+
+                ([||], "", false, "", max, maxincl)
+
+            let fMinIncr (min, incr)  = 
+                let min, minincl = 
+                    match min with
+                    | MinIncl v -> v |> V.toString, true
+                    | MinExcl v -> v |> V.toString ,false  
+
+                let incr = incr |> V.toString
+                
+                ([||], min, minincl, incr, "", false)
+
+            let fMinMax (min, max) =
+                let min, minincl = 
+                    match min with
+                    | MinIncl v -> v |> V.toString, true
+                    | MinExcl v -> v |> V.toString ,false  
+
+                let max, maxincl = 
+                    match max with
+                    | MaxIncl v -> v |> V.toString, true
+                    | MaxExcl v -> v |> V.toString ,false  
+
+                ([||], min, minincl, "", max, maxincl)
+
+            let (vs, min, minincl, incr, max, maxinl) =  
+                match vr with
+                | ValueSet vs         -> vs |> fVs
+                | Min min             -> min  |> fMin
+                | Max max             -> max  |> fMax
+                | MinIncr (min, incr) -> (min, incr) |> fMinIncr
+                | MinMax (min, max)   -> (min, max) |> fMinMax
+                            
+            print vs min minincl incr max maxinl
+
 
     // #region ---- TYPES ----
 
@@ -834,9 +925,7 @@ module Variable =
             fromDto fail fName fValueRange fVariable
 
         let toDto (v: Variable) =
-            let someValueToBigR = function
-                | Some v' -> let (V.Value v) = v' in v.ToString()
-                | None    -> ""
+            let valueOptToString = V.valueOptToString
 
             let dto = createNew (let (N.Name n) = v.Name in n)
 
@@ -852,18 +941,18 @@ module Variable =
                 v.ValueRange 
                 |> VR.getMin 
                 |> Option.bind (VR.minToValue >> Some) 
-                |> someValueToBigR
+                |> valueOptToString
 
             let max  = 
                 v.ValueRange 
                 |> VR.getMax 
                 |> Option.bind (VR.maxToValue >> Some) 
-                |> someValueToBigR
+                |> valueOptToString
 
             let incr = 
                 v.ValueRange
                 |> VR.getIncr
-                |> someValueToBigR
+                |> valueOptToString
 
             let vals = 
                 v.ValueRange 
