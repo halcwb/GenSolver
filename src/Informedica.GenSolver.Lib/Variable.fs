@@ -499,32 +499,111 @@ module Variable =
         /// Applies an infix operator
         /// to two `Values`. Only add values
         /// to the result set if > 0.
-        let calc op = function
+        let calc op (x1, x2) =
+            let calcOpt c v1 v2 =
+                match op with
+                | V.Mult  
+                | V.Div   
+                | V.Add   -> v1 |> op <| v2 |> c |> Some
+                // prevent subtraction resulting in a zero or negative result
+                | V.Subtr -> if v1 > v2 then (v1 - v2) |> c |> Some else None
+                | V.NoOp  -> None
+             
+            match x1, x2 with
             | ValueSet s1, ValueSet s2 ->
                 let s1 = new ResizeArray<_>(s1)
                 let s2 = new ResizeArray<_>(s2)
                 let s3 = new ResizeArray<_>()
-                // Check whether the operand is subtraction
-                let opIsSubtr = (V.two |> op <| V.one) = V.one
-
                 for x1 in s1 do
                     for x2 in s2 do
-                        // prevent subtraction resulting in a zero or negative result
-                        if opIsSubtr && x1 > x2 || (not opIsSubtr) then 
-                            // perform the arrhythmic operation and to the result set
-                            s3.Add(x1 |> op <| x2) 
+                        match calcOpt id x1 x2 with
+                        | Some v -> s3.Add(v)
+                        | None -> () 
                 new HashSet<_>(s3, HashIdentity.Structural) 
                 |> Set.ofSeq
-                |> ValueSet
-            // Do not perform any calcuation when one of the args is not
-            // a list of values
-            | Min m1, Min m2 ->
-                match op with
-                | V.Add -> 
-                    let m1', m2' = m1 |> minToValue, m2 |> minToValue
-                    let isExcl = m1 |> isMinExcl || m2 |> isMinExcl
-                    (m1' + m2') |> createMin isExcl |> Min
-            | _ -> empty      
+                |> ValueSet                
+            | _ -> 
+                let min1, incr1, max1 = x1 |> getMin, x1 |> getIncr, x1 |> getMax
+                let min2, incr2, max2 = x2 |> getMin, x2 |> getIncr, x2 |> getMax
+                
+                let min = 
+                    match op with
+                    | V.Mult ->
+                        match min1, min2 with
+                        | Some m1, Some m2 -> 
+                            let v1, v2  = m1 |> minToValue, m2 |> minToValue
+                            let excl = m1 |> isMinExcl || m2 |> isMinExcl
+                            let cmin = createMin excl
+                            calcOpt cmin v1 v2 
+                        | _ -> None    
+                    | V.Div ->
+                        match min1, max2 with
+                        | Some m1, Some m2 ->
+                            let v1, v2 = m1 |> minToValue, m2 |> maxToValue
+                            let excl = m1 |> isMinExcl || m2 |> isMaxExcl
+                            let cmin = createMin excl
+                            calcOpt cmin v1 v2
+                        | _ -> None
+                    | V.Add -> 
+                        match min1, min2 with
+                        | Some m1, Some m2 ->
+                            let v1, v2  = m1 |> minToValue, m2 |> minToValue
+                            let minExcl = m1 |> isMinExcl || m2 |> isMinExcl
+                            let cmin = createMin minExcl
+                            calcOpt cmin v1 v2 
+                        | Some m, None | None, Some m -> m |> minToValue |> createMin true |> Some
+                        | None, None -> None
+                    | V.Subtr -> 
+                        match min1, max2 with
+                        | Some m1, Some m2 ->
+                            let v1, v2 = m1 |> minToValue, m2 |> maxToValue
+                            let excl = m1 |> isMinExcl || m2 |> isMaxExcl
+                            let cmin = createMin excl
+                            calcOpt cmin v1 v2 
+                        | _ -> None
+                    | V.NoOp -> None
+                       
+                let max = 
+                    match op with
+                    | V.Mult | V.Add ->
+                        match max1, max2 with
+                        | Some m1, Some m2 -> 
+                            let v1, v2  = m1 |> maxToValue, m2 |> maxToValue
+                            let excl = m1 |> isMaxExcl || m2 |> isMaxExcl
+                            let cmax = createMax excl
+                            calcOpt cmax v1 v2 
+                        | _ -> None    
+                    | V.Div ->
+                        match max1, min2 with
+                        | Some m1, Some m2 ->
+                            let v1, v2 = m1 |> maxToValue, m2 |> minToValue
+                            let excl = m1 |> isMaxExcl || m2 |> isMinExcl
+                            let cmax = createMax excl
+                            calcOpt cmax v1 v2
+                        | _ -> None
+                    | V.Subtr -> 
+                        match max1, min2 with
+                        | Some m1, Some m2 ->
+                            let v1, v2  = m1 |> maxToValue, m2 |> minToValue
+                            let excl = m1 |> isMaxExcl || m2 |> isMinExcl
+                            let cmax = createMax excl
+                            calcOpt cmax v1 v2 
+                        | Some m1, None -> m1 |> maxToValue |> createMax true |> Some
+                        | _ -> None
+                    | V.NoOp -> None
+
+                let incr = 
+                    match incr1, incr2 with
+                    | Some i1, Some i2 ->
+                        match op with
+                        | V.Mult -> i1 * i2 |> Some
+                        |  _ -> None
+                    | _ -> None
+
+                createExc Set.empty min None max
+                 
+
+
 
         // Extend type with basic arrhythmic operations.
         type ValueRange with
