@@ -344,7 +344,11 @@ module Variable =
 
         let isMinExcl = function | MinIncl _ -> false | MinExcl _ -> true
 
+        let isMinIncl = isMinExcl >> not
+
         let isMaxExcl = function | MaxIncl _ -> false | MaxExcl _ -> true
+
+        let isMaxIncl = isMaxExcl >> not
         
         // Calculate minimum as a multiple of incr
         let calcMin min incr =
@@ -589,8 +593,11 @@ module Variable =
                 new HashSet<_>(s3, HashIdentity.Structural) 
                 |> Set.ofSeq
                 |> ValueSet   
+            // When one of the sets does not contain any value then the result of 
+            // of the calculation cannot contain any value either
             | ValueSet s, _ | _, ValueSet s  when s |> Set.isEmpty -> 
                 createExc Set.empty None None None
+            // In any other case calculate min, incr and max
             | _ -> 
                 let min1, incr1, max1 = x1 |> getMin, x1 |> getIncr, x1 |> getMax
                 let min2, incr2, max2 = x2 |> getMin, x2 |> getIncr, x2 |> getMax
@@ -599,6 +606,7 @@ module Variable =
                     match op with
                     | V.Mult ->
                         match min1, min2 with
+                        // y.min = x1.min * x2.min
                         | Some m1, Some m2 -> 
                             let v1, v2  = m1 |> minToValue, m2 |> minToValue
                             let excl = m1 |> isMinExcl || m2 |> isMinExcl
@@ -608,6 +616,7 @@ module Variable =
 
                     | V.Div ->
                         match min1, max2 with
+                        // y.min = x1.min / x2.max
                         | Some m1, Some m2 ->
                             let v1, v2 = m1 |> minToValue, m2 |> maxToValue
                             let excl = m1 |> isMinExcl || m2 |> isMaxExcl
@@ -617,17 +626,20 @@ module Variable =
 
                     | V.Add -> 
                         match min1, min2 with
+                        // y.min = x1.min + x2.min
                         | Some m1, Some m2 ->
                             let v1, v2  = m1 |> minToValue, m2 |> minToValue
                             let minExcl = m1 |> isMinExcl || m2 |> isMinExcl
                             let cmin = createMin minExcl
                             calcOpt cmin v1 v2 
+                        // y.min = x1.min || x2.min
                         | Some m, None 
                         | None, Some m -> m |> minToValue |> createMin true |> Some
                         | None, None -> None
 
                     | V.Subtr -> 
                         match min1, max2 with
+                        // y.min = x1.min - x2.min
                         | Some m1, Some m2 ->
                             let v1, v2 = m1 |> minToValue, m2 |> maxToValue
                             let excl = m1 |> isMinExcl || m2 |> isMaxExcl
@@ -637,9 +649,10 @@ module Variable =
 
                     | V.NoOp -> None
                        
-                let unr, max = 
+                let trueMax, max = 
                     match op with
-                    | V.Mult | V.Add ->
+                    | V.Mult | V.Add -> 
+                        // y.max = x1.max * x2.max
                         match max1, max2 with
                         | Some m1, Some m2 -> 
                             let v1, v2  = m1 |> maxToValue, m2 |> maxToValue
@@ -648,8 +661,9 @@ module Variable =
                             true, calcOpt cmax v1 v2 
                         | _ -> true, None    
 
-                    | V.Div ->
+                    | V.Div -> 
                         match max1, min2 with
+                        // y.max = x1.max / x2.min
                         | Some m1, Some m2 ->
                             let v1, v2 = m1 |> maxToValue, m2 |> minToValue
                             let excl = m1 |> isMaxExcl || m2 |> isMinExcl
@@ -659,13 +673,15 @@ module Variable =
 
                     | V.Subtr -> 
                         match max1, min2 with
-                        | Some m1, Some m2 ->
+                        // y.max = x1.max - x2.min
+                        | Some m1, Some m2 -> 
                             let v1, v2  = m1 |> maxToValue, m2 |> minToValue
                             let excl = m1 |> isMaxExcl || m2 |> isMinExcl
                             let cmax = createMax excl
                             match calcOpt cmax v1 v2 with
                             | Some m -> true, m |> Some
-                            | None   -> false, None
+                            | None   -> false, None // if x1.max < x2.max then max is not really None
+                        // y.max = x1.max - (None, i.e. x2.min ~ 0) 
                         | Some m1, None -> true, m1 |> maxToValue |> createMax true |> Some
                         | _ -> true, None
 
@@ -675,14 +691,18 @@ module Variable =
                     match incr1, incr2 with
                     | Some i1, Some i2 ->
                         match op with
+                        // y.incr = x1.incr * x2.incr
                         | V.Mult -> i1 * i2 |> Some
+                        // when y = x1 + x2 then y.incr = gcd of x1.incr and x2.incr
                         | V.Add | V.Subtr -> V.gcd i1 i2 |> Some
                         |  _ -> None
                     | _ -> None
 
-                match min, incr, max with
-                | None, None, None when unr -> unrestricted
-                | _ -> createExc Set.empty min incr max
+                if not trueMax then empty // if not trueMax then there is no valid possible value for y
+                else
+                    match min, incr, max with
+                    | None, None, None -> unrestricted
+                    | _ -> createExc Set.empty min incr max
 
 
         // Extend type with basic arrhythmic operations.
