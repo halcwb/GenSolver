@@ -62,6 +62,7 @@
     <None Include="Scripts\load-references-debug.fsx" />
     <None Include="Scripts\load-project-debug.fsx" />
     <None Include="Scripts\Api.fsx" />
+    <None Include="Scripts\ValueRangeCalculationExamples.fsx" />
     <Compile Include="AssemblyInfo.fs" />
     <Content Include="App.config" />
   </ItemGroup>

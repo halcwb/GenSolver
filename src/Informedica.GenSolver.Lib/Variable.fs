@@ -765,6 +765,7 @@ module Variable =
                             
             print unr vs min minincl incr max maxinl
 
+    module N = Name
 
     // #region ---- TYPES ----
 
@@ -788,6 +789,8 @@ module Variable =
 
     let createId = create id
 
+    let createRes = createId ("Result" |> N.createExc)
+
     let apply f (var: Variable) = var |> f
 
     let get = apply id
@@ -796,21 +799,36 @@ module Variable =
 
     // #region GETTERS
 
-    let getMin var = (var |> get).ValueRange |> ValueRange.getMin
+    let getName v = (v |> get).Name
 
-    let getMax var = (var |> get).ValueRange |> ValueRange.getMax
+    let getValueRange v = (v |> get).ValueRange
 
     // #endregion
 
     // #region SETTERS
 
-    let setMin v var = var.ValueRange <- var.ValueRange |> ValueRange.setMin v; var
+    let setName n v = { v with Name = n }
 
-    let setMax v var = var.ValueRange <- var.ValueRange |> ValueRange.setMax v; var
+    let setValueRange vr v = (v |> get).ValueRange <- vr; v
 
-    let setValueSet vs var = var.ValueRange <- var.ValueRange |> ValueRange.setValues vs; var
+    // #endregion
 
-     // #endregion
+    let calc op (v1, v2) =
+        (v1 |> getValueRange) |> op <| (v2 |> getValueRange) |> createRes
+
+    // Extend type with basic arrhythmic operations.
+    type Variable with
+
+        static member (*) (v1, v2) = calc (*) (v1, v2)
+
+        static member (/) (v1, v2) = calc (/) (v1, v2)
+
+        static member (+) (v1, v2) = calc (+) (v1, v2)
+
+        static member (-) (v1, v2) = calc (-) (v1, v2)
+
+        static member (!=) (y, expr) = y |> setValueRange (expr |> getValueRange)
+
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Dto =
