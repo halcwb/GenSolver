@@ -465,11 +465,14 @@ module Variable =
         // #endregion
 
         let contains v vr = 
-            let min = vr |> getMin
-            let max = vr |> getMax
+            match vr with
+            | ValueSet vs when vs |> Set.isEmpty -> false
+            | _ ->
+                let min = vr |> getMin
+                let max = vr |> getMax
 
-            let incr = vr |> getIncr
-            v |> isBetween min incr max
+                let incr = vr |> getIncr
+                v |> isBetween min incr max
 
         // #region ---- SETTERS ----
 

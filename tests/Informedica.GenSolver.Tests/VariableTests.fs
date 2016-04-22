@@ -196,7 +196,6 @@ module Testing =
 
                     testProp test
 
-
                 [<Test>]
                 member x.``The Min and Max are None`` () =
                     let succ vr = test <@ vr |> VR.getMin = None && vr |> VR.getMax = None @>
@@ -218,11 +217,11 @@ module Testing =
                     createMinMax succ fail vs min max
 
                 [<Property>]
-                member x.``The ValueRange can contain any Value`` () =
+                member x.``The ValueRange cannot contain any Value`` () =
                     let vr = createExcMinMax Set.empty None None
                     let prop x = 
                         let v = V.createExc x
-                        vr |> contains v 
+                        vr |> contains v |> not
 
                     testProp prop
 
@@ -300,14 +299,18 @@ module Testing =
                     createMinMax succ fail vs min max
 
                 [<Property>]
-                member x.``The result can contain any Value LTE one`` () =
+                member x.``The result can contain any Value GTE one`` () =
                     let test x = 
                         let v = V.createExc x
                         let vs = vs |> Set.add v
                         
                         let succ vr = 
-                            if x >= 1N then vr |> VR.contains v
-                            else vr |> VR.contains v |> not
+                            if x >= 1N then 
+                                printfn "%s contains %s" (vr |> VR.toString) (v |> V.toString)
+                                vr |> VR.contains v
+                            else 
+                                printfn "%s does not contain %s" (vr |> VR.toString) (v |> V.toString)
+                                vr |> VR.contains v |> not
                         let fail _ = printfn "fail"; false
                         
                         createMinMax succ fail vs min max

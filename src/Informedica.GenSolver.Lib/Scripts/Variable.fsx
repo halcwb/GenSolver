@@ -103,3 +103,7 @@ denoted by the ->
         printfn "___________ Test %i ______________" (!i)
         printfn ""
         printfn "%s" r
+
+
+let vr = VR.createExc ([] |> List.map V.createExc |> Set.ofList) None None None 
+vr |> VR.contains (1N |> V.createExc)
