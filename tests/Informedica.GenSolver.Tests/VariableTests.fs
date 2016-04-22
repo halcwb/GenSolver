@@ -724,9 +724,10 @@ module Testing =
                     try
                         let dto'  = vr |> toDto |> fromDto |> Option.get |> toDto
                         let dto'' = dto' |> fromDto |> Option.get |> toDto
+                        printfn "Passed: dto: %s vr: _" (dto'' |> DTO.toString) 
                         dto' = dto''   
                     with
-                    | _ -> printfn "dto: %A vr: %A toDto:%A" dto vr (vr |> toDto); false
+                    | _ -> printfn "Failed dto: %A vr: %A toDto:%A" dto vr (vr |> toDto); false
                 | None -> 
                     printfn "Dto: %A %s cannot be parsed" dto (dto |> DTO.toString)
                     true

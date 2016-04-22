@@ -813,6 +813,8 @@ module Variable =
 
     // #endregion
 
+    let hasChanged vr v = (v |> get).ValueRange = vr
+
     let calc op (v1, v2) =
         (v1 |> getValueRange) |> op <| (v2 |> getValueRange) |> createRes
 
