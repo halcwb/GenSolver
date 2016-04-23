@@ -829,9 +829,12 @@ module Variable =
 
     let setName n v = { v with Name = n }
 
-    let setValueRange vr v = (v |> get).ValueRange <- vr; v
+    let setValueRange v vr = (v |> get).ValueRange <- vr
 
     // #endregion
+
+    let equals v1 v2 = (v1 |> getName) = (v2 |> getName)
+    let notEqual v1 v2 = v1 |> equals v2 |> not
 
     let hasChanged vr v = (v |> get).ValueRange = vr
 
@@ -849,7 +852,7 @@ module Variable =
 
         static member (-) (v1, v2) = calc (-) (v1, v2)
 
-        static member (!=) (y, expr) = y |> setValueRange (expr |> getValueRange)
+        static member (!=) (y, expr) = expr |> getValueRange |> setValueRange y
 
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]

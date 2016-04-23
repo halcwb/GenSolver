@@ -6,6 +6,8 @@ module Equation =
 
     open Informedica.GenSolver.Utils
 
+    module VR = Variable
+    
     /// An equation is either a product equation
     /// or a sumequation, the first variable is the
     /// dependent variable, i.e. the result of the 
@@ -67,7 +69,35 @@ module Equation =
 
 
 //    let setMin v vr eqs =
-        
+
+    let solve e =
+        let rec calc changed op1 op2 y xs rest =
+            if changed then changed
+            else
+                match rest with 
+                | []  -> changed
+                | [x] -> 
+                    let vr = x |> VR.getValueRange
+                    x != y
+                    (vr = (x |> VR.getValueRange))
+                | x::tail ->
+                    let vr = x |> VR.getValueRange
+                    let xs' = xs |> List.filter (VR.notEqual x)
+                    x != (y |> op2 <| (xs' |> List.reduce op1))
+                    tail |> calc (vr = (x |> VR.getValueRange)) op1 op2 y xs
+
+        let y, xs, op1, op2 =
+            match e with
+            | ProductEquation (y, xs) -> y, xs, (*), (/)
+            | SumEquation     (y, xs) -> y, xs, (+), (-)
+
+        match xs with 
+        | [] -> false
+        | _  -> 
+            let x   = xs |> List.head
+            let xs' = xs |> List.filter (VR.notEqual x)
+            if calc false op1 op1 x xs' [y] then true
+            else calc false op1 op2 y xs []    
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Dto =
