@@ -807,9 +807,9 @@ module Variable =
 
     let create succ n vs = { Name = n; ValueRange = vs } |> succ
 
-    let createId = create id
+    let createSucc = create id
 
-    let createRes = createId ("Result" |> N.createExc)
+    let createRes = createSucc ("Result" |> N.createExc)
 
     let apply f (var: Variable) = var |> f
 
@@ -829,14 +829,16 @@ module Variable =
 
     let setName n v = { v with Name = n }
 
-    let setValueRange v vr = (v |> get).ValueRange <- vr
+    let setValueRange v vr = 
+        let vr' = (v |> get).ValueRange != vr
+        v.ValueRange <- vr'
 
     // #endregion
 
     let equals v1 v2 = (v1 |> getName) = (v2 |> getName)
     let notEqual v1 v2 = v1 |> equals v2 |> not
 
-    let hasChanged vr v = (v |> get).ValueRange = vr
+    let hasChanged vr v = (v |> get).ValueRange = vr |> not
 
     let calc op (v1, v2) =
         (v1 |> getValueRange) |> op <| (v2 |> getValueRange) |> createRes

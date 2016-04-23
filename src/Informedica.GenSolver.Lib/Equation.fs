@@ -55,9 +55,9 @@ module Equation =
 
     let createSumEq = create SumEquation
 
-    let createProductEqId = createProductEq id 
+    let createProductEqSucc = createProductEq id 
 
-    let createSumEqId = createSumEq id
+    let createSumEqSucc = createSumEq id
 
     let apply fp fs = function
         | ProductEquation (y,xs) -> fp y xs
@@ -72,19 +72,15 @@ module Equation =
 
     let solve e =
         let rec calc changed op1 op2 y xs rest =
-            if changed then changed
-            else
-                match rest with 
-                | []  -> changed
-                | [x] -> 
-                    let vr = x |> VR.getValueRange
-                    x != y
-                    (vr = (x |> VR.getValueRange))
-                | x::tail ->
-                    let vr = x |> VR.getValueRange
-                    let xs' = xs |> List.filter (VR.notEqual x)
-                    x != (y |> op2 <| (xs' |> List.reduce op1))
-                    tail |> calc (vr = (x |> VR.getValueRange)) op1 op2 y xs
+            match rest with 
+            | []  -> changed
+            | x::tail ->
+                let vr = x |> VR.getValueRange
+                let xs' = xs |> List.filter (VR.notEqual x)
+                match xs' with
+                | [] -> x != y
+                | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
+                tail |> calc (x |> VR.hasChanged vr) op1 op2 y xs
 
         let y, xs, op1, op2 =
             match e with
@@ -96,8 +92,13 @@ module Equation =
         | _  -> 
             let x   = xs |> List.head
             let xs' = xs |> List.filter (VR.notEqual x)
-            if calc false op1 op1 x xs' [y] then true
-            else calc false op1 op2 y xs []    
+            // op1 = (*) or (+) and op2 = (/) or (-)
+            // Calculate y = x1 op1 x2 op1 .. op1 xn
+            let changed =  calc false op1 op1 x xs' [y]
+            // Calculate x1 = y op2 (x2 op1 x3 .. op1 xn)
+            //       and x2 = y op2 (x1 op1 x3 .. op1 xn)
+            //       etc..
+            calc changed op1 op2 y xs xs   
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Dto =
