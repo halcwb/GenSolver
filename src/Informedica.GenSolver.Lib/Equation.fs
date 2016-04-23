@@ -6,7 +6,7 @@ module Equation =
 
     open Informedica.GenSolver.Utils
 
-    module VR = Variable
+    module VAR = Variable
     
     /// An equation is either a product equation
     /// or a sumequation, the first variable is the
@@ -16,38 +16,6 @@ module Equation =
     type Equation = 
         | ProductEquation of Variable.Variable * Variable.Variable list
         | SumEquation     of Variable.Variable * Variable.Variable list
-
-
-    /// The solve function takes in a list of 
-    /// equations in which a variable can participate
-    /// in one or more equations, the solve function 
-    /// calculates for each variable the possible values
-    /// or the possible range, given the other variables 
-    /// in the equation and other equations
-    type Solve = Equation list -> Equation list
-
-
-    /// An equation is solved, i.e. if all the variables
-    /// in the equation have only one sinlge value, i.e. 
-    /// the variables can no further be restricted
-    type IsSolved = Equation -> bool
-
-    /// whether the any variable is changed, 
-    /// i.e. the range of possible values has
-    /// narrowed down.
-    type HasChanged = Yes | No
-
-    /// Solving an equation returns the
-    /// resulting equation and whether this
-    /// has changed from the original equation
-    type SolveEquation = Equation -> (HasChanged * Equation)
-
-    /// Solve a product equation
-    type SolveProductEquation = SolveProductEquation of SolveEquation
-
-    /// Solve a sum equation
-    type SolveSumEquation = SolveSumEquation of SolveEquation
-
 
     let create c fs y xs = (y, xs) |> c |> fs
         
@@ -63,24 +31,34 @@ module Equation =
         | ProductEquation (y,xs) -> fp y xs
         | SumEquation (y, xs)    -> fs y xs
 
-//    let setMin fs ff v var eq = 
-//        let set v y xs =
-//            v |> Variable.s
+    // Check whether an equation is solved
+    let isSolved = function
+        | ProductEquation (y, xs) 
+        | SumEquation (y, xs) ->
+            [y] @ xs |> List.forall VAR.isSolved
 
+    // Check whether an equation will change by calc
+    // This is not the same as `isSolved`!! If all 
+    // the variables are unrestricted than the equation
+    // is not solvable but is also not solved.
+    let isSolvable = function 
+        | ProductEquation (y, xs)
+        | SumEquation (y, xs) ->
+            ([y] @ xs |> List.exists VAR.isSolvable) &&
+            ([y] @ xs |> List.forall VAR.isUnrestricted |> not)
 
-//    let setMin v vr eqs =
 
     let solve e =
         let rec calc changed op1 op2 y xs rest =
             match rest with 
             | []  -> changed
             | x::tail ->
-                let vr = x |> VR.getValueRange
-                let xs' = xs |> List.filter (VR.notEqual x)
+                let vr = x |> VAR.getValueRange
+                let xs' = xs |> List.filter (VAR.notEqual x)
                 match xs' with
                 | [] -> x != y
                 | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
-                tail |> calc (x |> VR.hasChanged vr) op1 op2 y xs
+                tail |> calc (x |> VAR.hasChanged vr) op1 op2 y xs
 
         let y, xs, op1, op2 =
             match e with
@@ -89,7 +67,7 @@ module Equation =
 
         let rec loop op1 op2 y xs changed =
             let x   = xs |> List.head
-            let xs' = xs |> List.filter (VR.notEqual x)
+            let xs' = xs |> List.filter (VAR.notEqual x)
             // op1 = (*) or (+) and op2 = (/) or (-)
             // Calculate y = x1 op1 x2 op1 .. op1 xn
             let ychanged = calc false op1 op1 x xs' [y]

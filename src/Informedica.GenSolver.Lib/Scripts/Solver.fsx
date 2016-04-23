@@ -10,18 +10,7 @@ module N = VAR.Name
 module VR = VAR.ValueRange
 module V = VR.Value
 module E = Equation
-
-let varCount v = VAR.count
-
-let varIsSolved v = VAR.isSolved
-
-let varIsSolvable =  VAR.isSolvable
-
-let solve e = e |> E.solve, e
-
-let isSolved = E.isSolved
-
-let isSolvable = E.isSolvable
+module S = Solver
 
 let createVar n vs min incr max = 
     let min' = min |> Option.bind (V.createExc >> (VR.createMin false) >> Some)
@@ -40,12 +29,18 @@ let createVar n vs min incr max =
 
     VAR.createSucc (n |> N.createExc) vr
 
-let y = createVar "y" [] None None (Some 4N)
+let y1 = createVar "y1" [] None None (Some 4N)
 let x1 = createVar "x1" [] None (Some 1N) None
 let x2 = createVar "x2" [] None (Some 1N) None
 
-E.createProductEqSucc y [] |> solve |> snd |> isSolvable
-E.createSumEqSucc y []     |> solve
+let e1 = [x1;x2] |> E.createProductEqSucc y1
 
-E.createProductEqSucc y [x1;x2] |> solve //|> snd |> isSolvable
-E.createSumEqSucc y [x1;x2]     |> solve //|> snd |> isSolvable
+let y2 = createVar "y2" [] None None (Some 4N)
+let x3 = createVar "x3" [] (Some 1N) None None
+
+let e2 = [x1;x3] |> E.createProductEqSucc y2
+
+
+y1 |> VAR.isSolved
+e2 |> E.isSolvable
+[e1;e2] |> S.solver

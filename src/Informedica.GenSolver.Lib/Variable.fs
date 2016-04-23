@@ -786,6 +786,7 @@ module Variable =
             print unr vs min minincl incr max maxinl
 
     module N = Name
+    module VR = ValueRange
 
     // #region ---- TYPES ----
 
@@ -836,9 +837,20 @@ module Variable =
     // #endregion
 
     let equals v1 v2 = (v1 |> getName) = (v2 |> getName)
+
     let notEqual v1 v2 = v1 |> equals v2 |> not
 
     let hasChanged vr v = (v |> get).ValueRange = vr |> not
+
+    let count v = v |> getValueRange |> VR.count
+
+    let isSolved v = 
+        (v |> count <= 1) &&
+        (v |> getValueRange |> VR.isValueSet)
+
+    let isSolvable = isSolved >> not
+
+    let isUnrestricted = getValueRange >> VR.isUnrestricted
 
     let calc op (v1, v2) =
         (v1 |> getValueRange) |> op <| (v2 |> getValueRange) |> createRes
