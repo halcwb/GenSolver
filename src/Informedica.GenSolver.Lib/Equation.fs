@@ -87,18 +87,21 @@ module Equation =
             | ProductEquation (y, xs) -> y, xs, (*), (/)
             | SumEquation     (y, xs) -> y, xs, (+), (-)
 
-        match xs with 
-        | [] -> false
-        | _  -> 
+        let rec loop op1 op2 y xs changed =
             let x   = xs |> List.head
             let xs' = xs |> List.filter (VR.notEqual x)
             // op1 = (*) or (+) and op2 = (/) or (-)
             // Calculate y = x1 op1 x2 op1 .. op1 xn
-            let changed =  calc false op1 op1 x xs' [y]
+            let ychanged = calc false op1 op1 x xs' [y]
             // Calculate x1 = y op2 (x2 op1 x3 .. op1 xn)
             //       and x2 = y op2 (x1 op1 x3 .. op1 xn)
             //       etc..
-            calc changed op1 op2 y xs xs   
+            if calc false op1 op2 y xs xs || ychanged then loop op1 op2 y xs true
+            else changed
+            
+        match xs with 
+        | [] -> false
+        | _  -> loop op1 op2 y xs false
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Dto =

@@ -64,6 +64,7 @@
     <None Include="Scripts\Api.fsx" />
     <None Include="Scripts\ValueRangeCalculationExamples.fsx" />
     <None Include="Scripts\VariableGenerator.fsx" />
+    <None Include="Scripts\Equation.fsx" />
     <Compile Include="AssemblyInfo.fs" />
     <Content Include="App.config" />
   </ItemGroup>
