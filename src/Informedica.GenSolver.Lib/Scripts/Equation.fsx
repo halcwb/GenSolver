@@ -44,8 +44,11 @@ let y = createVar "y" [] None None (Some 4N)
 let x1 = createVar "x1" [] None (Some 1N) None
 let x2 = createVar "x2" [] None (Some 1N) None
 
-E.createProductEqSucc y [] |> solve |> snd |> isSolvable
-E.createSumEqSucc y []     |> solve
+E.createProductEqExc y [] |> solve |> snd |> isSolvable
+E.createSumEqExc y []     |> solve
 
-E.createProductEqSucc y [x1;x2] |> solve //|> snd |> isSolvable
-E.createSumEqSucc y [x1;x2]     |> solve //|> snd |> isSolvable
+E.createProductEqExc y [x1;x2] |> solve //|> snd |> isSolvable
+E.createSumEqExc y [x1;x2]     |> solve //|> snd |> isSolvable
+
+E.createProductEqExc y [x1;x2]
+

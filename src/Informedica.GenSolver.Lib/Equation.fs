@@ -17,16 +17,49 @@ module Equation =
         | ProductEquation of Variable.Variable * Variable.Variable list
         | SumEquation     of Variable.Variable * Variable.Variable list
 
-    let create c fs y xs = (y, xs) |> c |> fs
-        
+    /// Error messages
+    type Message = 
+        | DuplicateVariables of VAR.Variable list
+
+    /// Equation exception
+    exception EquationException of Message
+
+    /// Raise exception with message `m`.
+    let raiseExc m = m |> EquationException |> raise
+
+    /// Create an `Equation` with an `y` and
+    /// `xs`. Fails if a variable is added more
+    /// than one time using the `fail` function.
+    /// The type of Equation product or addition
+    /// is determined by `c`.
+    let create c succ fail y xs = 
+        let vars = y::xs
+        match vars |> List.filter (fun v -> vars |> List.filter (VAR.equals v) |> List.length > 1) with
+        | [] -> (y, xs) |> c |> succ
+        | duplicates -> duplicates |> DuplicateVariables |> fail
+
+    /// Create an `ProductEquation` with an `y` and
+    /// `xs`. Fails if a variable is added more
+    /// than one time using the `fail` function.
     let createProductEq = create ProductEquation
 
+    /// Create an `SumEquation` with an `y` and
+    /// `xs`. Fails if a variable is added more
+    /// than one time using the `fail` function.
     let createSumEq = create SumEquation
 
-    let createProductEqSucc = createProductEq id 
+    /// Create an `ProductEquation` with an `y` and
+    /// `xs`. Fails if a variable is added more
+    /// than one time raising an exception.
+    let createProductEqExc = createProductEq id raiseExc 
 
-    let createSumEqSucc = createSumEq id
+    /// Create an `SumEquation` with an `y` and
+    /// `xs`. Fails if a variable is added more
+    /// than one time raising an exception.
+    let createSumEqExc = createSumEq id raiseExc
 
+    /// Apply `fp` to a `ProductEquation` and
+    /// `fs` to a `SumEquation`.
     let apply fp fs = function
         | ProductEquation (y,xs) -> fp y xs
         | SumEquation (y, xs)    -> fs y xs
@@ -48,6 +81,8 @@ module Equation =
             ([y] @ xs |> List.forall VAR.isUnrestricted |> not)
 
 
+    /// Solve an equation `e`, return true when
+    /// the equation has changed.
     let solve e =
         let rec calc changed op1 op2 y xs rest =
             match rest with 
@@ -80,50 +115,4 @@ module Equation =
         match xs with 
         | [] -> false
         | _  -> loop op1 op2 y xs false
-
-    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-    module Dto =
-
-        open Informedica.GenSolver.Utils
-        
-        [<CLIMutable>]
-        type Dto = { Vars: Variable.Dto.Dto[]; IsProdEq: bool }
-
-        let create isProd vars  = { Vars = vars; IsProdEq = isProd }
-
-        let createProd = create true
-        let createSum  = create false
-
-        let apply f (dto: Dto) = f dto
-        let get = apply id
-
-        /// If equation `eq` contains a variable 
-        /// with name `n` then the property `p` of
-        /// that variable is updated with value `v`. 
-        let setVar n p v eq = 
-            let var = 
-                match (eq |> get).Vars |> Array.tryFind (fun v -> n = v.Name) with
-                | Some var' -> var' |> Variable.Dto.setProp p v |> Some
-                | None -> None
-            { eq with 
-                Vars = 
-                    match var with
-                    | Some var' -> 
-                        eq.Vars 
-                        |> Array.replace (fun v -> v.Name = n) var'
-                    | None -> eq.Vars }
-
-        let toString e = 
-            let op = if (e |> get).IsProdEq then "*" else "+"
-            let varToString = Variable.Dto.toString
-
-            match e.Vars |> Array.toList with
-            | [] -> ""
-            | _::[] -> ""
-            | y::xs -> 
-                let s = 
-                    sprintf "%s = " (y |> varToString) + 
-                    (xs |> List.fold (fun s v -> s + (v |> varToString) + " " + op + " ") "")
-                s.Substring(0, s.Length - 2)
-
 

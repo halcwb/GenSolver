@@ -56,24 +56,4 @@ module Solver =
 
     let solve = createSolve solveEquation E.isSolvable
 
-    /// Initialize the solver returning a set of equations
-    let init eqs = 
-        let prodEqs, sumEqs = eqs |> List.partition (String.contains "*")
-        let createProdEqs = List.map E.Dto.createProd
-        let createSumEqs  = List.map E.Dto.createSum
-
-        let parse eqs op = 
-            eqs 
-            |> List.map (String.splitAt '=')
-            |> List.map (Array.collect (String.splitAt op))
-            |> List.map (Array.map String.trim)
-            |> List.map (Array.map VAR.Dto.createNew)
-            
-        (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
-
-
-    /// Print a set of equations to the stdout.
-    let printEqs eqs = 
-        for e in eqs do printfn "%s" (e |> E.Dto.toString)
-
 

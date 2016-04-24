@@ -5,4 +5,5 @@
       "../Variable.fs"
       "../Equation.fs"
       "../Solver.fs"
+      "../Dtos.fs"
       "../AssemblyInfo.fs"

@@ -33,12 +33,12 @@ let y1 = createVar "y1" [] None None (Some 4N)
 let x1 = createVar "x1" [] None (Some 1N) None
 let x2 = createVar "x2" [] None (Some 1N) None
 
-let e1 = [x1;x2] |> E.createProductEqSucc y1
+let e1 = [x1;x2] |> E.createProductEqExc y1
 
 let y2 = createVar "y2" [] None None (Some 4N)
 let x3 = createVar "x3" [] (Some 1N) None None
 
-let e2 = [x1;x3] |> E.createProductEqSucc y2
+let e2 = [x1;x3] |> E.createProductEqExc y2
 
 
 y1 |> VAR.isSolved

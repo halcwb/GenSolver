@@ -47,7 +47,7 @@ module Testing =
     module Variable =
 
         module VAR = Variable
-        module DTO = VAR.Dto
+        module DTO = Dtos.Variable
         
         module Name =
             
@@ -722,7 +722,7 @@ module Testing =
                     let dto = dto |> setIncr (incr |> toStr)
                     dto
      
-                match dto |> Variable.Dto.fromDtoOpt with
+                match dto |> DTO.fromDtoOpt with
                 | Some vr -> 
                     try
                         let dto'  = vr |> toDto |> fromDto |> Option.get |> toDto
