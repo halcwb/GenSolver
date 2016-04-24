@@ -1,10 +1,13 @@
 ﻿namespace Informedica.GenSolver.Tests
 
-open Informedica.GenSolver.Lib
 open Swensen.Unquote
 open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
+
+open Informedica.GenSolver.Utils
+open Informedica.GenSolver.Lib
+
 
 /// Create the necessary test generators
 module Generators =
@@ -155,8 +158,8 @@ module Testing =
 
             let isBetweenMinMax min max  = VR.isBetween min None max 
 
-            let createExcMinMax vs min max = VR.createExc vs min None max
-            let createMinMax succ fail vs min max = VR.create succ fail vs min None max
+            let createExcMinMax vs min max = VR.createExc false vs min None max
+            let createMinMax succ fail vs min max = VR.create succ fail false vs min None max
 
             let testProp prop x =
                 if x > 0N then
@@ -397,7 +400,7 @@ module Testing =
 
             [<TestFixture>]
             type ``Given a ValueRange with a Min and a ValueRange with a Min`` () =
-                let createVrMin excl v = VR.createExc Set.empty (v |> VR.createMin excl |> Some) None None
+                let createVrMin excl v = VR.createExc false Set.empty (v |> VR.createMin excl |> Some) None None
 
                 let test op pred x1 excl1 x2 excl2 =
                     match x1 |> V.createOption, x2 |> V.createOption with
@@ -441,7 +444,7 @@ module Testing =
                             
             [<TestFixture>]
             type ``Given a ValueRange with a Max and a ValueRange with a Max`` () =
-                let createVrMax excl v = VR.createExc Set.empty None None (v |> VR.createMax excl |> Some)
+                let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
 
                 let test op pred x1 excl1 x2 excl2 =
                     match x1 |> V.createOption, x2 |> V.createOption with
@@ -485,8 +488,8 @@ module Testing =
                             
             [<TestFixture>]
             type ``Given a ValueRange with a Min and a ValueRange with a Max`` () =
-                let createVrMin excl v = VR.createExc Set.empty (v |> VR.createMin excl |> Some) None None
-                let createVrMax excl v = VR.createExc Set.empty None None (v |> VR.createMax excl |> Some)
+                let createVrMin excl v = VR.createExc false Set.empty (v |> VR.createMin excl |> Some) None None
+                let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
 
                 let test op predMin predMax x1 excl1 x2 excl2 =
                     match x1 |> V.createOption, x2 |> V.createOption with
@@ -536,8 +539,8 @@ module Testing =
                     
             [<TestFixture>]
             type ``Given a ValueRange with a Max and a ValueRange with a Min`` () =
-                let createVrMin excl v = VR.createExc Set.empty (v |> VR.createMin excl |> Some) None None
-                let createVrMax excl v = VR.createExc Set.empty None None (v |> VR.createMax excl |> Some)
+                let createVrMin excl v = VR.createExc false Set.empty (v |> VR.createMin excl |> Some) None None
+                let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
 
                 let test op predMin predMax x1 excl1 x2 excl2 =
                     match x1 |> V.createOption, x2 |> V.createOption with

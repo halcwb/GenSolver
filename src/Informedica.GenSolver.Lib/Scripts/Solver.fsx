@@ -43,4 +43,4 @@ let e2 = [x1;x3] |> E.createProductEqSucc y2
 
 y1 |> VAR.isSolved
 e2 |> E.isSolvable
-[e1;e2] |> S.solver
+[e1;e2] |> S.solve

@@ -35,7 +35,7 @@ module Generators =
     let valueRange vs v1 minexcl incr v2 maxexcl =
         let v1, v2 = if v1 > v2 then v2, v1 else v1, v2
 
-        let  min = v1 |> Option.bind ((VR.createMin minexcl) >> Some) 
+        let  min = v1 |> Option.bind ((VR.minRange minexcl) >> Some) 
         let  max = v2 |> Option.bind ((VR.createMax maxexcl) >> Some) 
              
         match min, incr, max with

@@ -8,6 +8,7 @@ module Solver =
     
     open Informedica.GenSolver.Utils
     
+    module VAR = Variable
     module E = Equation
  
     type Result =
@@ -22,7 +23,7 @@ module Solver =
     /// product equation and a sum equation solver
     /// and function to determine whether an 
     /// equation is solved
-    let createSolver solve isSolvable =
+    let createSolve solve isSolvable =
         fun eqs ->
 
             let rec solveEqs restEqs accEqs  =
@@ -53,26 +54,26 @@ module Solver =
 
             solveEqs eqs []
 
-    let solver = createSolver solveEquation E.isSolvable
+    let solve = createSolve solveEquation E.isSolvable
 
     /// Initialize the solver returning a set of equations
     let init eqs = 
         let prodEqs, sumEqs = eqs |> List.partition (String.contains "*")
-        let createProdEqs = List.map Equation.Dto.createProd
-        let createSumEqs  = List.map Equation.Dto.createSum
+        let createProdEqs = List.map E.Dto.createProd
+        let createSumEqs  = List.map E.Dto.createSum
 
         let parse eqs op = 
             eqs 
             |> List.map (String.splitAt '=')
             |> List.map (Array.collect (String.splitAt op))
             |> List.map (Array.map String.trim)
-            |> List.map (Array.map Variable.Dto.createNew)
+            |> List.map (Array.map VAR.Dto.createNew)
             
         (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
 
 
     /// Print a set of equations to the stdout.
     let printEqs eqs = 
-        for e in eqs do printfn "%s" (e |> Equation.Dto.toString)
+        for e in eqs do printfn "%s" (e |> E.Dto.toString)
 
 

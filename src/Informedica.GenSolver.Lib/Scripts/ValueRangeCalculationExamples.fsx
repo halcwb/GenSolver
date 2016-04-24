@@ -24,15 +24,15 @@ let genList unr1 unr2 unr3 vs1 vs2 vs3 min1 min1excl incr1 max1 max1excl min2 mi
     let vs2' = vs2 |> toVs
     let vs3' = vs3 |> toVs
 
-    let min1'  = min1 |> toValue (VR.createMin min1excl)
+    let min1'  = min1 |> toValue (VR.minRange min1excl)
     let max1'  = max1 |> toValue (VR.createMax max1excl) 
     let incr1' = incr1 |> toValue id
 
-    let min2'  = min2 |> toValue (VR.createMin min2excl)
+    let min2'  = min2 |> toValue (VR.minRange min2excl)
     let max2'  = max2 |> toValue (VR.createMax max2excl) 
     let incr2' = incr2 |> toValue id
 
-    let min3'  = min3 |> toValue (VR.createMin min3excl)
+    let min3'  = min3 |> toValue (VR.minRange min3excl)
     let max3'  = max3 |> toValue (VR.createMax max3excl) 
     let incr3' = incr3 |> toValue id
 
