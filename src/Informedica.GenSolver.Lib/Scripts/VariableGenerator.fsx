@@ -35,7 +35,7 @@ module Generators =
     let valueRange vs v1 minexcl incr v2 maxexcl =
         let v1, v2 = if v1 > v2 then v2, v1 else v1, v2
 
-        let  min = v1 |> Option.bind ((VR.minRange minexcl) >> Some) 
+        let  min = v1 |> Option.bind ((VR.createMin minexcl) >> Some) 
         let  max = v2 |> Option.bind ((VR.createMax maxexcl) >> Some) 
              
         match min, incr, max with
@@ -43,14 +43,14 @@ module Generators =
         | None, None, Some _
         | Some _, Some _, None
         | Some _, None, Some _ ->
-            match VR.createOpt Set.empty min incr max with
+            match VR.createOpt false Set.empty min incr max with
             | Some vr -> vr
             | None -> VR.unrestricted
         | _ ->            
-            match VR.createOpt vs min incr max with
+            match VR.createOpt false vs min incr max with
             | Some vr -> 
                 if vr |> VR.isEmpty then 
-                    match VR.createOpt Set.empty min incr max with
+                    match VR.createOpt false Set.empty min incr max with
                     | Some vr -> if vr |> VR.isEmpty then VR.unrestricted else vr 
                     | None -> VR.unrestricted
                 else vr
@@ -136,6 +136,8 @@ module TestCases =
             if test |> fst |> not then
                 printfn "Failed test with: %s" (test |> snd |> toString)
                 failed := true
+
+TestCases.generate()
 
 TestCases.run (fun rl ->
     let rs = (rl.[0] != rl.[1] * rl.[2]) 

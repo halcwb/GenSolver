@@ -394,7 +394,7 @@ module Variable =
         let isMaxIncl = isMaxExcl >> not
         
         // Calculate minimum as a multiple of incr
-        let calcMin min incr =
+        let minMultipleOf incr min =
             let n = match min with | MinIncl m | MinExcl m -> m |> V.get
             let (V.Value(d)) = incr
             let n' = n |> BigRational.toMultipleOf d
@@ -402,7 +402,7 @@ module Variable =
 
         /// Create a set of values using `min`, `incr` and a `max`.
         let minIncrMaxToValueSet min incr max =
-            let min' = calcMin min incr
+            let min' = min |> minMultipleOf incr
             let incr' = incr |> V.get
             let max' = match max with | MaxIncl m | MaxExcl m -> m |> V.get
 
@@ -446,60 +446,56 @@ module Variable =
 
         /// Convert a `ValueRang` to a `string`.
         let toString vr =
-            let fVs  vs = 
+            let fVs vs = 
                 let vs = vs |> Seq.map V.toString |> Seq.toArray
-                (false, vs, "", false, "", "", false)
+                print false vs "" false "" "" false
+            
+            let fRange =
+                let print min minincl incr max maxincl = print false [||] min minincl incr max maxincl
 
-            let fMin min =
-                let min, minincl = 
-                    match min with
-                    | MinIncl v -> v |> V.toString, true
-                    | MinExcl v -> v |> V.toString ,false  
-                (false, [||], min, minincl, "", "", false)
+                let fMin min =
+                    let min, minincl = 
+                        match min with
+                        | MinIncl v -> v |> V.toString, true
+                        | MinExcl v -> v |> V.toString ,false  
+                    print min minincl "" "" false
 
-            let fMax max =
-                let max, maxincl = 
-                    match max with
-                    | MaxIncl v -> v |> V.toString, true
-                    | MaxExcl v -> v |> V.toString ,false  
+                let fMax max =
+                    let max, maxincl = 
+                        match max with
+                        | MaxIncl v -> v |> V.toString, true
+                        | MaxExcl v -> v |> V.toString ,false  
 
-                (false, [||], "", false, "", max, maxincl)
+                    print "" false "" max maxincl
 
-            let fMinIncr (min, incr)  = 
-                let min, minincl = 
-                    match min with
-                    | MinIncl v -> v |> V.toString, true
-                    | MinExcl v -> v |> V.toString ,false  
+                let fMinIncr (min, incr)  = 
+                    let min, minincl = 
+                        match min with
+                        | MinIncl v -> v |> V.toString, true
+                        | MinExcl v -> v |> V.toString ,false  
 
-                let incr = incr |> V.toString
+                    let incr = incr |> V.toString
                 
-                (false, [||], min, minincl, incr, "", false)
+                    print min minincl incr "" false
 
-            let fMinMax (min, max) =
-                let min, minincl = 
-                    match min with
-                    | MinIncl v -> v |> V.toString, true
-                    | MinExcl v -> v |> V.toString ,false  
+                let fMinMax (min, max) =
+                    let min, minincl = 
+                        match min with
+                        | MinIncl v -> v |> V.toString, true
+                        | MinExcl v -> v |> V.toString ,false  
 
-                let max, maxincl = 
-                    match max with
-                    | MaxIncl v -> v |> V.toString, true
-                    | MaxExcl v -> v |> V.toString ,false  
+                    let max, maxincl = 
+                        match max with
+                        | MaxIncl v -> v |> V.toString, true
+                        | MaxExcl v -> v |> V.toString ,false  
 
-                (false, [||], min, minincl, "", max, maxincl)
+                    print min minincl "" max maxincl
 
-            let (unr, vs, min, minincl, incr, max, maxinl) =  
-                match vr with
-                | Unrestricted        -> (true, [||], "", false, "", "", false)
-                | ValueSet vs         -> vs |> fVs
-                | Range r ->
-                    match r with
-                    | Min min             -> min  |> fMin
-                    | Max max             -> max  |> fMax
-                    | MinIncr (min, incr) -> (min, incr) |> fMinIncr
-                    | MinMax (min, max)   -> (min, max) |> fMinMax
-                            
-            print unr vs min minincl incr max maxinl
+                applyRange fMin fMax fMinIncr fMinMax
+
+            let unr = print true [||] "" false "" "" false
+            
+            vr |> apply unr fVs fRange 
 
         // #endregion
 
@@ -532,7 +528,7 @@ module Variable =
 
         /// Create a `MinIncr` `ValueRange`.
         let minIncrValueRange min incr =
-            let min' = calcMin min incr |> V.createExc |> MinIncl
+            let min' = min |> minMultipleOf incr |> V.createExc |> MinIncl
             (min', incr) |> MinIncr |> Range
             
         /// Create a `MinMax` `ValueRang`, if min > max
@@ -547,6 +543,7 @@ module Variable =
                 |> succ
             else (min, max) |> MinMax |> Range |> succ
 
+        // ToDo improve doc
         /// Create a `ValueRange` using a `ValueSet` `vs`
         /// an optional `min`, `incr` and `max`. If the `vs`
         /// is an empty set then create a `Range`. If `vs`
@@ -556,10 +553,9 @@ module Variable =
         /// by `min`, `incr` and `max`. If `unr` then an
         /// unrestricted `ValueRange` will be returned to `succ`.
         let create succ fail unr vs min incr max =
-            if unr then unrestricted |> succ
-            elif vs |> Set.isEmpty then 
+            if vs |> Set.isEmpty then 
                 match min, incr, max with
-                | None,      None,       None      -> empty |> succ
+                | None,      None,       None      -> (if unr then unrestricted else empty) |> succ
                 | Some min', None,       None      -> min' |> Min |> Range |> succ
                 | None,      None,       Some max' -> max' |> Max |> Range |> succ 
                 | Some min', None,       Some max' -> minMaxValueRange succ fail min' max'
@@ -730,21 +726,122 @@ module Variable =
         
         // #region ---- CALCULATION -----
 
+        let calcOpt op c v1 v2 =
+            match op with
+            | V.Mult  
+            | V.Div   
+            | V.Add   -> v1 |> op <| v2 |> c |> Some
+            // prevent subtraction resulting in a zero or negative result
+            | V.Subtr -> if v1 > v2 then (v1 - v2) |> c |> Some else None
+            | V.NoOp  -> None
+             
+
+        let calcMin op min1 min2 max2 = 
+            let calcOpt = calcOpt op
+            match op with
+            | V.Mult ->
+                match min1, min2 with
+                // y.min = x1.min * x2.min
+                | Some m1, Some m2 -> 
+                    let v1, v2  = m1 |> minToValue, m2 |> minToValue
+                    let excl = m1 |> isMinExcl || m2 |> isMinExcl
+                    let cmin = createMin excl
+                    calcOpt cmin v1 v2 
+                | _ -> None
+
+            | V.Div ->
+                match min1, max2 with
+                // y.min = x1.min / x2.max
+                | Some m1, Some m2 ->
+                    let v1, v2 = m1 |> minToValue, m2 |> maxToValue
+                    let excl = m1 |> isMinExcl || m2 |> isMaxExcl
+                    let cmin = createMin excl
+                    calcOpt cmin v1 v2
+                | _ -> None
+
+            | V.Add -> 
+                match min1, min2 with
+                // y.min = x1.min + x2.min
+                | Some m1, Some m2 ->
+                    let v1, v2  = m1 |> minToValue, m2 |> minToValue
+                    let minExcl = m1 |> isMinExcl || m2 |> isMinExcl
+                    let cmin = createMin minExcl
+                    calcOpt cmin v1 v2 
+                // y.min = x1.min || x2.min
+                | Some m, None 
+                | None, Some m -> m |> minToValue |> createMin true |> Some
+                | None, None -> None
+
+            | V.Subtr -> 
+                match min1, max2 with
+                // y.min = x1.min - x2.min
+                | Some m1, Some m2 ->
+                    let v1, v2 = m1 |> minToValue, m2 |> maxToValue
+                    let excl = m1 |> isMinExcl || m2 |> isMaxExcl
+                    let cmin = createMin excl
+                    calcOpt cmin v1 v2 
+                | _ -> None
+
+            | V.NoOp -> None
+                       
+        let calcMax op max1 max2 min2 = 
+            let calcOpt = calcOpt op
+            match op with
+            | V.Mult | V.Add -> 
+                // y.max = x1.max * x2.max
+                match max1, max2 with
+                | Some m1, Some m2 -> 
+                    let v1, v2  = m1 |> maxToValue, m2 |> maxToValue
+                    let excl = m1 |> isMaxExcl || m2 |> isMaxExcl
+                    let cmax = createMax excl
+                    true, calcOpt cmax v1 v2 
+                | _ -> true, None    
+
+            | V.Div -> 
+                match max1, min2 with
+                // y.max = x1.max / x2.min
+                | Some m1, Some m2 ->
+                    let v1, v2 = m1 |> maxToValue, m2 |> minToValue
+                    let excl = m1 |> isMaxExcl || m2 |> isMinExcl
+                    let cmax = createMax excl
+                    true, calcOpt cmax v1 v2
+                | _ -> true, None
+
+            | V.Subtr -> 
+                match max1, min2 with
+                // y.max = x1.max - x2.min
+                | Some m1, Some m2 -> 
+                    let v1, v2  = m1 |> maxToValue, m2 |> minToValue
+                    let excl = m1 |> isMaxExcl || m2 |> isMinExcl
+                    let cmax = createMax excl
+                    match calcOpt cmax v1 v2 with
+                    | Some m -> true, m |> Some
+                    | None   -> false, None // if x1.max < x2.max then max is not really None
+                // y.max = x1.max - (None, i.e. x2.min ~ 0) 
+                | Some m1, None -> true, m1 |> maxToValue |> createMax true |> Some
+                | _ -> true, None
+
+            | V.NoOp -> true, None
+
+        let calcIncr op incr1 incr2 = 
+            match incr1, incr2 with
+            | Some i1, Some i2 ->
+                match op with
+                // y.incr = x1.incr * x2.incr
+                | V.Mult -> i1 * i2 |> Some
+                // when y = x1 + x2 then y.incr = gcd of x1.incr and x2.incr
+                | V.Add | V.Subtr -> V.gcd i1 i2 |> Some
+                |  _ -> None
+            | _ -> None
+
         /// Applies an infix operator
         /// to `ValueRange` `x1` and `x2`. 
         /// Only add values to the result set if > 0. 
         /// Calculates minimum, increment or maximum
         /// if either `x1` or `x2` is not a `ValueSet`.
         let calc op (x1, x2) =
-            let calcOpt c v1 v2 =
-                match op with
-                | V.Mult  
-                | V.Div   
-                | V.Add   -> v1 |> op <| v2 |> c |> Some
-                // prevent subtraction resulting in a zero or negative result
-                | V.Subtr -> if v1 > v2 then (v1 - v2) |> c |> Some else None
-                | V.NoOp  -> None
-             
+            let calcOpt = calcOpt op
+
             match x1, x2 with
             | Unrestricted, Unrestricted -> unrestricted         
             | ValueSet s1, ValueSet s2 ->
@@ -768,101 +865,10 @@ module Variable =
                 let min1, incr1, max1 = x1 |> getMin, x1 |> getIncr, x1 |> getMax
                 let min2, incr2, max2 = x2 |> getMin, x2 |> getIncr, x2 |> getMax
                 
-                let min = 
-                    match op with
-                    | V.Mult ->
-                        match min1, min2 with
-                        // y.min = x1.min * x2.min
-                        | Some m1, Some m2 -> 
-                            let v1, v2  = m1 |> minToValue, m2 |> minToValue
-                            let excl = m1 |> isMinExcl || m2 |> isMinExcl
-                            let cmin = createMin excl
-                            calcOpt cmin v1 v2 
-                        | _ -> None
+                let min = calcMin op min1 min2 max2                       
+                let trueMax, max = calcMax op max1 max2 min2
 
-                    | V.Div ->
-                        match min1, max2 with
-                        // y.min = x1.min / x2.max
-                        | Some m1, Some m2 ->
-                            let v1, v2 = m1 |> minToValue, m2 |> maxToValue
-                            let excl = m1 |> isMinExcl || m2 |> isMaxExcl
-                            let cmin = createMin excl
-                            calcOpt cmin v1 v2
-                        | _ -> None
-
-                    | V.Add -> 
-                        match min1, min2 with
-                        // y.min = x1.min + x2.min
-                        | Some m1, Some m2 ->
-                            let v1, v2  = m1 |> minToValue, m2 |> minToValue
-                            let minExcl = m1 |> isMinExcl || m2 |> isMinExcl
-                            let cmin = createMin minExcl
-                            calcOpt cmin v1 v2 
-                        // y.min = x1.min || x2.min
-                        | Some m, None 
-                        | None, Some m -> m |> minToValue |> createMin true |> Some
-                        | None, None -> None
-
-                    | V.Subtr -> 
-                        match min1, max2 with
-                        // y.min = x1.min - x2.min
-                        | Some m1, Some m2 ->
-                            let v1, v2 = m1 |> minToValue, m2 |> maxToValue
-                            let excl = m1 |> isMinExcl || m2 |> isMaxExcl
-                            let cmin = createMin excl
-                            calcOpt cmin v1 v2 
-                        | _ -> None
-
-                    | V.NoOp -> None
-                       
-                let trueMax, max = 
-                    match op with
-                    | V.Mult | V.Add -> 
-                        // y.max = x1.max * x2.max
-                        match max1, max2 with
-                        | Some m1, Some m2 -> 
-                            let v1, v2  = m1 |> maxToValue, m2 |> maxToValue
-                            let excl = m1 |> isMaxExcl || m2 |> isMaxExcl
-                            let cmax = createMax excl
-                            true, calcOpt cmax v1 v2 
-                        | _ -> true, None    
-
-                    | V.Div -> 
-                        match max1, min2 with
-                        // y.max = x1.max / x2.min
-                        | Some m1, Some m2 ->
-                            let v1, v2 = m1 |> maxToValue, m2 |> minToValue
-                            let excl = m1 |> isMaxExcl || m2 |> isMinExcl
-                            let cmax = createMax excl
-                            true, calcOpt cmax v1 v2
-                        | _ -> true, None
-
-                    | V.Subtr -> 
-                        match max1, min2 with
-                        // y.max = x1.max - x2.min
-                        | Some m1, Some m2 -> 
-                            let v1, v2  = m1 |> maxToValue, m2 |> minToValue
-                            let excl = m1 |> isMaxExcl || m2 |> isMinExcl
-                            let cmax = createMax excl
-                            match calcOpt cmax v1 v2 with
-                            | Some m -> true, m |> Some
-                            | None   -> false, None // if x1.max < x2.max then max is not really None
-                        // y.max = x1.max - (None, i.e. x2.min ~ 0) 
-                        | Some m1, None -> true, m1 |> maxToValue |> createMax true |> Some
-                        | _ -> true, None
-
-                    | V.NoOp -> true, None
-
-                let incr = 
-                    match incr1, incr2 with
-                    | Some i1, Some i2 ->
-                        match op with
-                        // y.incr = x1.incr * x2.incr
-                        | V.Mult -> i1 * i2 |> Some
-                        // when y = x1 + x2 then y.incr = gcd of x1.incr and x2.incr
-                        | V.Add | V.Subtr -> V.gcd i1 i2 |> Some
-                        |  _ -> None
-                    | _ -> None
+                let incr = calcIncr op incr1 incr2
 
                 if not trueMax then empty // if not trueMax then there is no valid possible value for y
                 else

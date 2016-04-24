@@ -36,7 +36,7 @@ let createVar n vs min incr max =
     let vr =
         match min, incr, max with
         | None, None, None when vs |> List.isEmpty -> VR.unrestricted
-        | _ ->  VR.createExc vs' min' incr' max'
+        | _ ->  VR.createExc false vs' min' incr' max'
 
     VAR.createSucc (n |> N.createExc) vr
 
