@@ -12,12 +12,12 @@ module Solver =
     module E = Equation
  
     type Result =
-        | UnChanged of E.Equation
-        | Changed   of E.Equation
+        | UnChanged
+        | Changed   of E.Equation list
 
-    let solveEquation e = 
-        if e |> E.solve then e |> Changed
-        else e |> UnChanged
+    let solveEquation e es = 
+        let changed, es' = e |> E.solve es
+        if changed then es' |> Changed else UnChanged
         
     /// Create the equation solver using a 
     /// product equation and a sum equation solver
@@ -30,8 +30,8 @@ module Solver =
                 match restEqs with
                 | [] -> accEqs
                 | eq::rest ->
-                    // If the equation is already solved, just put it to 
-                    // the accumulated equations and go on with the rest
+                    // If the equation is already solved, or not solvable 
+                    // just put it to  the accumulated equations and go on with the rest
                     if eq |> isSolvable |> not then
                         [eq] 
                         |> List.append accEqs
@@ -39,16 +39,15 @@ module Solver =
 
                     // Else go solve the equation
                     else
-                        match eq |> solve with
+                        match accEqs @ restEqs |> solve eq with
                         // Equation is changed, so every other equation can 
                         // be changed as well (if changed vars are in the other
                         // equations, so start new
-                        | Changed(eq') -> 
-                            solveEqs (accEqs @ [eq'] @ rest)  []
+                        | Changed(eqs') -> solveEqs eqs' []
                         // Equation did not in fact change, so put it to
                         // the accumulated equations and go on with the rest
-                        | UnChanged(eq') ->
-                            [eq'] 
+                        | UnChanged ->
+                            [eq] 
                             |> List.append accEqs
                             |> solveEqs rest
 

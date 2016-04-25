@@ -1,6 +1,8 @@
 ﻿#load "load-references.fsx"
 #load "load-project.fsx"
 
+#time
+
 open FsCheck
 
 open Informedica.GenSolver.Lib
@@ -17,7 +19,7 @@ let varIsSolved v = VAR.isSolved
 
 let varIsSolvable =  VAR.isSolvable
 
-let solve e = e |> E.solve, e
+let solve e = e |> E.solve [e]
 
 let isSolved = E.isSolved
 
@@ -40,15 +42,15 @@ let createVar n vs min incr max =
 
     VAR.createSucc (n |> N.createExc) vr
 
-let y = createVar "y" [] None None (Some 4N)
-let x1 = createVar "x1" [] None (Some 1N) None
-let x2 = createVar "x2" [] None (Some 1N) None
+let y = createVar "y" [2N; 4N] None None None
+let x1 = createVar "x1" [] None None None
+let x2 = createVar "x2" [1N] None None None
 
-E.createProductEqExc y [] |> solve |> snd |> isSolvable
-E.createSumEqExc y []     |> solve
+E.createProductEqExc (y, []) |> solve
+E.createSumEqExc (y, [])     |> solve
 
-E.createProductEqExc y [x1;x2] |> solve //|> snd |> isSolvable
-E.createSumEqExc y [x1;x2]     |> solve //|> snd |> isSolvable
+E.createProductEqExc (y, [x1;x2]) |> solve //|> snd |> isSolvable
+E.createSumEqExc (y, [x1;x2])     |> solve //|> snd |> isSolvable
 
-E.createProductEqExc y [x1;x2]
+E.createProductEqExc (y, [x1;x2])
 

@@ -62,9 +62,11 @@ module List =
     /// Replace an element in a list
     /// when the `pred` function returns `true`.
     let replace pred x xs =
-        let ind = xs |> List.findIndex pred
-        (xs |> Seq.take ind |> Seq.toList) @ [x] @ 
-        (xs |> Seq.skip (ind + 1) |> Seq.toList)
+        match xs |> List.tryFindIndex pred with
+        | Some(ind) ->
+            (xs |> Seq.take ind |> Seq.toList) @ [x] @ 
+            (xs |> Seq.skip (ind + 1) |> Seq.toList)
+        | None -> xs
 
 module Array = 
     

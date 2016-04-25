@@ -64,6 +64,8 @@ module Variable =
         /// when string is null or white space
         let createExc = create id raiseExc
 
+        let toString (Name s) = s
+
         // #endregion
 
     /// Functions to handle `ValueRange`.
@@ -326,7 +328,7 @@ module Variable =
             v |> fMin min &&
             v |> fMax max
 
-        /// Checks whether minimum `m1` > `m2`
+        /// Checks whether minimum `m2` > `m1`
         let minLTmin m1 m2 = 
             match m2, m1 with
             | MinIncl m2', MinIncl m1' 
@@ -917,7 +919,7 @@ module Variable =
     type Variable =
         {
             Name: Name.Name
-            mutable ValueRange: ValueRange.ValueRange
+            ValueRange: ValueRange.ValueRange
         }
 
     // #endregion
@@ -952,17 +954,13 @@ module Variable =
 
     let setValueRange v vr = 
         let vr' = (v |> get).ValueRange != vr
-        v.ValueRange <- vr'
+        { v with ValueRange = vr'}
 
     // #endregion
 
-    let equals v1 v2 = (v1 |> getName) = (v2 |> getName)
-
-    let notEqual v1 v2 = v1 |> equals v2 |> not
-
-    let hasChanged vr v = (v |> get).ValueRange = vr |> not
-
     let count v = v |> getValueRange |> VR.count
+
+    let eqName v1 v2 = v1 |> getName = (v2).Name
 
     let isSolved v = 
         (v |> count <= 1) &&
