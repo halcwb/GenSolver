@@ -47,7 +47,7 @@ module Testing =
     module Variable =
 
         module VAR = Variable
-        module DTO = Dtos.Variable
+        module DTO = Informedica.GenSolver.Dtos.Variable
         
         module Name =
             
@@ -149,10 +149,10 @@ module Testing =
             let getMin  = VR.getMin >> Option.bind (VR.minToValue >> Some)
             let getMax  = VR.getMax >> Option.bind (VR.maxToValue >> Some)
 
-            let createMinIncl = V.createExc >> (VR.createMin false)
-            let createMinExcl = V.createExc >> (VR.createMin true)
-            let createMaxIncl = V.createExc >> (VR.createMax false)
-            let createMaxExcl = V.createExc >> (VR.createMax true)
+            let createMinIncl = V.createExc >> (VR.createMin true)
+            let createMinExcl = V.createExc >> (VR.createMin false)
+            let createMaxIncl = V.createExc >> (VR.createMax true)
+            let createMaxExcl = V.createExc >> (VR.createMax false)
 
             let contains v vr = vr |> VR.contains v
 
@@ -240,7 +240,7 @@ module Testing =
 
                 [<Test>]
                 member x.``Both Min and Max are the Inclusive and that Value`` () =
-                    let min', max' = v |> VR.createMin false, v |> VR.createMax false
+                    let min', max' = v |> V.get |> createMinIncl, v |> V.get |> createMaxIncl
                     let succ vr = test <@ vr |> VR.getMin = Some min' && vr |> VR.getMax = Some max' @>
                     let fail _  = test <@ false @>
                     createMinMax succ fail vs min max 
@@ -323,7 +323,7 @@ module Testing =
             [<TestFixture>]
             type ``Given Min is None Incr is None Max Incl is 1`` () =
                 let min = None
-                let max = 1N |> V.createExc |> VR.createMax false |> Some
+                let max = 1N |> createMaxIncl |> Some
                 let vs = Set.empty
 
                 [<Property>]
@@ -364,8 +364,8 @@ module Testing =
 
             [<TestFixture>]
             type ``Given Min Incl is 2 and Max Incl is 4`` () =
-                let min = 2N |> V.createExc |> VR.createMin false |> Some
-                let max = 4N |> V.createExc |> VR.createMax false |> Some
+                let min = 2N |> createMinIncl |> Some
+                let max = 4N |> createMaxIncl |> Some
                 let vs = Set.empty
 
 
@@ -414,7 +414,7 @@ module Testing =
                 [<Property>]
                 member x.``When multiplied the result has min that is the multiple`` () =
                     let prop =
-                        let pred v1 v2 excl1 excl2 m = m |> Option.get = ((v1 * v2) |> VR.createMin (excl1 || excl2))
+                        let pred v1 v2 incl1 incl2 m = m |> Option.get = ((v1 * v2) |> VR.createMin (incl1 && incl2))
                         test (*) pred
 
                     prop
@@ -429,7 +429,7 @@ module Testing =
                 [<Property>]
                 member x.``When added the result has min that is the addition`` () =
                     let prop =
-                        let pred v1 v2 excl1 excl2 m = m |> Option.get = ((v1 + v2) |> VR.createMin (excl1 || excl2))
+                        let pred v1 v2 incl1 incl2 m = m |> Option.get = ((v1 + v2) |> VR.createMin (incl1 && incl2))
                         test (+) pred
 
                     prop
@@ -446,19 +446,19 @@ module Testing =
             type ``Given a ValueRange with a Max and a ValueRange with a Max`` () =
                 let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
 
-                let test op pred x1 excl1 x2 excl2 =
+                let test op pred x1 incl1 x2 incl2 =
                     match x1 |> V.createOption, x2 |> V.createOption with
                     | Some v1, Some v2 -> 
-                        let vr1 = v1 |> createVrMax excl1 
-                        let vr2 = v2 |> createVrMax excl2
-                        (vr1 |> op <| vr2) |> VR.getMax |> pred v1 v2 excl1 excl2
+                        let vr1 = v1 |> createVrMax incl1 
+                        let vr2 = v2 |> createVrMax incl2
+                        (vr1 |> op <| vr2) |> VR.getMax |> pred v1 v2 incl1 incl2
                     | _ -> true
                 
                 
                 [<Property>]
                 member x.``When multiplied the result has max that is the multiple`` () =
                     let prop =
-                        let pred v1 v2 excl1 excl2 m = m |> Option.get = ((v1 * v2) |> VR.createMax (excl1 || excl2))
+                        let pred v1 v2 incl1 incl2 m = m |> Option.get = ((v1 * v2) |> VR.createMax (incl1 && incl2))
                         test (*) pred
 
                     prop
@@ -473,7 +473,7 @@ module Testing =
                 [<Property>]
                 member x.``When added the result has max that is the addition`` () =
                     let prop =
-                        let pred v1 v2 excl1 excl2 m = m |> Option.get = ((v1 + v2) |> VR.createMax (excl1 || excl2))
+                        let pred v1 v2 incl1 incl2 m = m |> Option.get = ((v1 + v2) |> VR.createMax (incl1 && incl2))
                         test (+) pred
 
                     prop
@@ -481,7 +481,7 @@ module Testing =
                 [<Property>]
                 member x.``When subtracting the result has max is the first max`` () =
                     let prop =
-                        let pred v1 _ _ _ m = m = (v1 |> VR.createMax true |> Some)
+                        let pred v1 _ _ _ m = m = (v1 |> VR.createMax false |> Some)
                         test (-) pred
 
                     prop
@@ -511,8 +511,8 @@ module Testing =
                 [<Property>]
                 member x.``When divided the result has Min division of Min/Max and Max None`` () =
                     let prop =
-                        let predMin v1 v2 excl1 excl2 m =
-                            m = ((v1 / v2) |> VR.createMin (excl1 || excl2) |> Some)
+                        let predMin v1 v2 incl1 incl2 m =
+                            m = ((v1 / v2) |> VR.createMin (incl1 && incl2) |> Some)
                         let predMax _ _ _ _ m = m = None
                         test (/) predMin predMax
                     prop
@@ -521,7 +521,7 @@ module Testing =
                 member x.``When added the result has Min is Min Excl and Max None`` () =
                     let prop =
                         let predMin v1 _ _ _ m =
-                            m = (v1 |> VR.createMin true |> Some)
+                            m = (v1 |> VR.createMin false |> Some)
                         let predMax _ _ _ _ m = m = None
                         test (+) predMin predMax
                     prop
@@ -529,9 +529,9 @@ module Testing =
                 [<Property>]
                 member x.``When subtracting the result has Min Min - Max and Max None`` () =
                     let prop =
-                        let predMin v1 v2 excl1 excl2 m =
+                        let predMin v1 v2 incl1 incl2 m =
                             if v1 > v2 then
-                                m = (v1 - v2 |> VR.createMin (excl1 || excl2) |> Some) 
+                                m = (v1 - v2 |> VR.createMin (incl1 && incl2) |> Some) 
                             else m = None 
                         let predMax _ _ _ _ m = m = None
                         test (-) predMin predMax
@@ -572,7 +572,7 @@ module Testing =
                 member x.``When added the result has Min is Min Excl and Max None`` () =
                     let prop =
                         let predMin _ v2 _ _ m =
-                            m = (v2 |> VR.createMin true |> Some)
+                            m = (v2 |> VR.createMin false |> Some)
                         let predMax _ _ _ _ m = m = None
                         test (+) predMin predMax
                     prop

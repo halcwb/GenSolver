@@ -2,14 +2,35 @@
 
 open Swensen.Unquote
 
+open Informedica.GenSolver.Utils
+open Informedica.GenSolver.Lib
 
-open Informedica.GenSolver.Lib.Dtos
+module VAR = Informedica.GenSolver.Dtos.Variable
+module E = Informedica.GenSolver.Dtos.Equation
+
+/// Initialize the solver returning a set of equations
+let init eqs = 
+    let prodEqs, sumEqs = eqs |> List.partition (String.contains "*")
+    let createProdEqs = List.map E.createProd
+    let createSumEqs  = List.map E.createSum
+
+    let parse eqs op = 
+        eqs 
+        |> List.map (String.splitAt '=')
+        |> List.map (Array.collect (String.splitAt op))
+        |> List.map (Array.map String.trim)
+        |> List.map (Array.map VAR.createNew)
+            
+    (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
 
 
-let printEqs = Solver.printEqs
+/// Print a set of equations to the stdout.
+let printEqs eqs = 
+    for e in eqs do printfn "%s" (e |> E.toString)
+
 
 let eqs = 
-    Solver.init 
+    init 
         [
             "total = freq * quant"
             "quant = time * rate"

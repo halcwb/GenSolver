@@ -1,4 +1,4 @@
-﻿namespace Informedica.GenSolver.Lib.Dtos
+﻿namespace Informedica.GenSolver.Dtos
 
 open System
 
@@ -29,7 +29,7 @@ module Variable =
         }
 
     type Message = 
-        | ParseFailure of Dto
+        | ParseFailure of string
         | NameMessage of N.Message
         | ValueMessage of V.Message
         | ValueRangeMessage of VR.Message
@@ -76,73 +76,79 @@ module Variable =
         let vals = VR.print unr vals min minincl incr max maxincl 
 
         sprintf "%s%s" name vals
-    
-    ///  Create a variable from `Variable.Dto.Dto`.
-    let fromDto fail fName fValueRange fVariable (dto: Dto) =
-        let parseOpt s = 
-            if s |> String.IsNullOrWhiteSpace then None
-            else s |> BigRational.parse |> Some
 
+    let parseOpt succ fail s = 
+        if s |> String.IsNullOrWhiteSpace then None |> succ
+        else 
+            match s |> BigRational.tryParse with
+            | Some v -> v |> Some |> succ
+            | None   -> s |> ParseFailure |> fail
+        
+    let toValue succ fail = V.create succ (fun m -> m |> ValueMessage |> fail)
+
+    let toValueSet succ fail toValue vals =
         try
-            let min, incr, max = dto.Min |> parseOpt, dto.Incr |> parseOpt, dto.Max |> parseOpt
-            let vals = dto.Vals |> Seq.map BigRational.parse
-
-            let name = fName dto.Name
-                
-            let vr = fValueRange dto.Unr vals min dto.MinIncl incr max dto.MaxIncl
-                
-            fVariable name vr
+            vals 
+            |> Seq.map BigRational.parse
+            |> Seq.map toValue
+            |> Set.ofSeq
+            |> succ
         with 
-        | _ -> dto |> ParseFailure |> fail            
+        | _ -> vals.ToString() |> ParseFailure |> fail
 
-    let fromDtoExc =
+    let fromDtoExc (dto: Dto) =
         let succ = id
         let fail = raiseExc
-
-        let fName = N.create succ (fun m -> m |> NameMessage |> fail)
         
-        let fValueRange unr vals min minincl incr max maxincl =
-            if unr then VR.unrestricted
-            else
-                let minRange = V.createExc >> VR.createMin (minincl |> not) >> Some
-                let maxRange = V.createExc >> VR.createMax (maxincl |> not) >> Some
+        let n = dto.Name |> N.create succ (fun m -> m |> NameMessage |> fail)
+        
+        let toValue = toValue succ fail
 
-                let vs = vals |> Seq.map V.createExc |> Set.ofSeq
-                let min' = min |> Option.bind minRange
-                let max' = max |> Option.bind maxRange
-                let incr' = incr |> Option.bind (fun i ->  i |> V.createExc |> Some)
+        let vs = dto.Vals |> toValueSet succ fail toValue
 
-                VR.create succ (fun m -> m |> ValueRangeMessage |> fail) false vs min' incr' max'
+        let minMax c i s = 
+            let cr = Option.bind (toValue >> (c i) >> Some)
+            s |> parseOpt cr fail
 
-        let fVariable n vr = VAR.create succ n vr
+        let min = dto.Min |> minMax VR.createMin dto.MinIncl
 
-        fromDto fail fName fValueRange fVariable
+        let max = dto.Max |> minMax VR.createMax dto.MaxIncl
 
-    let fromDtoOpt =
+        let incr = dto.Incr |> minMax (fun _ v -> v) false
+
+        let vr = VR.create succ (fun m -> m |> ValueRangeMessage |> fail) dto.Unr vs min incr max
+
+        VAR.create succ n vr
+
+    let fromDtoOpt (dto: Dto) =
         let succ = Some
         let fail = Option.none
 
-        let fName = N.create succ fail
+        let n = dto.Name |> N.create succ (fun m -> m |> NameMessage |> fail)
         
-        let fValueRange unr vals min minincl incr max maxincl =
-            if unr then VR.unrestricted |> Some
-            else
-                let minRange = V.createExc >> VR.createMin (minincl |> not) >> Some
-                let maxRange = V.createExc >> VR.createMax (maxincl |> not) >> Some
+        let toValue = toValue succ fail
 
-                let vs = vals |> Seq.map V.createExc |> Set.ofSeq
-                let min' = min |> Option.bind minRange
-                let max' = max |> Option.bind maxRange
-                let incr' = incr |> Option.bind (fun i ->  i |> V.createExc |> Some)
+        let vs = 
+            match dto.Vals |> toValueSet succ fail toValue with
+            | Some vs' -> vs' |> Set.filter Option.isSome |> Set.map Option.get
+            | None -> Set.empty
 
-                VR.create succ fail false vs min' incr' max'
+        let minMax c i s = 
+            let cr = Option.bind (toValue >> (Option.bind(fun v -> v |> c i |> Some)))
+            s |> parseOpt cr fail
 
-        let fVariable n vr = 
-            match n, vr with
-            | Some n', Some vr' -> VAR.create succ n' vr'
-            | _ -> None
+        let min = dto.Min |> minMax VR.createMin dto.MinIncl
 
-        fromDto fail fName fValueRange fVariable
+        let max = dto.Max |> minMax VR.createMax dto.MaxIncl
+
+        let incr = dto.Incr |> minMax (fun _ v -> v) false
+
+        let vr = VR.create succ (fun m -> m |> ValueRangeMessage |> fail) dto.Unr vs min incr max
+
+        match n, vr with
+        | Some n', Some vr' -> VAR.create succ n' vr'
+        | _ -> None
+
 
     let toDto (v: VAR.Variable) =
         let optToString = V.optToString
@@ -241,25 +247,5 @@ module Equation =
 //        match (dto |> get).Vars with
 //        | [] -> 
 
-module Solver =
 
-    /// Initialize the solver returning a set of equations
-    let init eqs = 
-        let prodEqs, sumEqs = eqs |> List.partition (String.contains "*")
-        let createProdEqs = List.map Equation.createProd
-        let createSumEqs  = List.map Equation.createSum
-
-        let parse eqs op = 
-            eqs 
-            |> List.map (String.splitAt '=')
-            |> List.map (Array.collect (String.splitAt op))
-            |> List.map (Array.map String.trim)
-            |> List.map (Array.map Variable.createNew)
-            
-        (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
-
-
-    /// Print a set of equations to the stdout.
-    let printEqs eqs = 
-        for e in eqs do printfn "%s" (e |> Equation.toString)
 

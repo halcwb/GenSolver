@@ -512,19 +512,19 @@ module Variable =
 
         /// Create a `Minimum` that is 
         /// either inclusive or exclusive.
-        let createMin isExcl m = if isExcl then m |> MinExcl else m |> MinIncl
+        let createMin isIncl m = if isIncl then m |> MinIncl else m |> MinExcl
 
         /// Create a `Maximum` that is 
         /// either inclusive or exclusive.
-        let createMax isExcl m = if isExcl then m |> MaxExcl else m |> MaxIncl
+        let createMax isIncl m = if isIncl then m |> MaxIncl else m |> MaxExcl
 
         /// Create a `Minimum` `Range` that is 
         /// either inclusive or exclusive.
-        let minRange isExcl m = m |> createMin isExcl |> Min 
+        let minRange isIncl m = m |> createMin isIncl |> Min 
 
         /// Create a `Maximum` `Range` that is 
         /// either inclusive or exclusive.
-        let maxRange isExcl m = m |> createMax isExcl |> Max
+        let maxRange isIncl m = m |> createMax isIncl |> Max
 
         /// Create a `MinIncr` `ValueRange`.
         let minIncrValueRange min incr =
@@ -744,8 +744,8 @@ module Variable =
                 // y.min = x1.min * x2.min
                 | Some m1, Some m2 -> 
                     let v1, v2  = m1 |> minToValue, m2 |> minToValue
-                    let excl = m1 |> isMinExcl || m2 |> isMinExcl
-                    let cmin = createMin excl
+                    let incl = m1 |> isMinIncl && m2 |> isMinIncl
+                    let cmin = createMin incl
                     calcOpt cmin v1 v2 
                 | _ -> None
 
@@ -754,8 +754,8 @@ module Variable =
                 // y.min = x1.min / x2.max
                 | Some m1, Some m2 ->
                     let v1, v2 = m1 |> minToValue, m2 |> maxToValue
-                    let excl = m1 |> isMinExcl || m2 |> isMaxExcl
-                    let cmin = createMin excl
+                    let incl = m1 |> isMinIncl && m2 |> isMaxIncl
+                    let cmin = createMin incl
                     calcOpt cmin v1 v2
                 | _ -> None
 
@@ -764,12 +764,12 @@ module Variable =
                 // y.min = x1.min + x2.min
                 | Some m1, Some m2 ->
                     let v1, v2  = m1 |> minToValue, m2 |> minToValue
-                    let minExcl = m1 |> isMinExcl || m2 |> isMinExcl
-                    let cmin = createMin minExcl
+                    let incl = m1 |> isMinIncl && m2 |> isMinIncl
+                    let cmin = createMin incl
                     calcOpt cmin v1 v2 
                 // y.min = x1.min || x2.min
                 | Some m, None 
-                | None, Some m -> m |> minToValue |> createMin true |> Some
+                | None, Some m -> m |> minToValue |> createMin false |> Some
                 | None, None -> None
 
             | V.Subtr -> 
@@ -777,8 +777,8 @@ module Variable =
                 // y.min = x1.min - x2.min
                 | Some m1, Some m2 ->
                     let v1, v2 = m1 |> minToValue, m2 |> maxToValue
-                    let excl = m1 |> isMinExcl || m2 |> isMaxExcl
-                    let cmin = createMin excl
+                    let incl = m1 |> isMinIncl && m2 |> isMaxIncl
+                    let cmin = createMin incl
                     calcOpt cmin v1 v2 
                 | _ -> None
 
@@ -792,8 +792,8 @@ module Variable =
                 match max1, max2 with
                 | Some m1, Some m2 -> 
                     let v1, v2  = m1 |> maxToValue, m2 |> maxToValue
-                    let excl = m1 |> isMaxExcl || m2 |> isMaxExcl
-                    let cmax = createMax excl
+                    let incl = m1 |> isMaxIncl && m2 |> isMaxIncl
+                    let cmax = createMax incl
                     true, calcOpt cmax v1 v2 
                 | _ -> true, None    
 
@@ -802,8 +802,8 @@ module Variable =
                 // y.max = x1.max / x2.min
                 | Some m1, Some m2 ->
                     let v1, v2 = m1 |> maxToValue, m2 |> minToValue
-                    let excl = m1 |> isMaxExcl || m2 |> isMinExcl
-                    let cmax = createMax excl
+                    let incl = m1 |> isMaxIncl || m2 |> isMinIncl
+                    let cmax = createMax incl
                     true, calcOpt cmax v1 v2
                 | _ -> true, None
 
@@ -812,13 +812,13 @@ module Variable =
                 // y.max = x1.max - x2.min
                 | Some m1, Some m2 -> 
                     let v1, v2  = m1 |> maxToValue, m2 |> minToValue
-                    let excl = m1 |> isMaxExcl || m2 |> isMinExcl
-                    let cmax = createMax excl
+                    let incl = m1 |> isMaxIncl || m2 |> isMinIncl
+                    let cmax = createMax incl
                     match calcOpt cmax v1 v2 with
                     | Some m -> true, m |> Some
                     | None   -> false, None // if x1.max < x2.max then max is not really None
                 // y.max = x1.max - (None, i.e. x2.min ~ 0) 
-                | Some m1, None -> true, m1 |> maxToValue |> createMax true |> Some
+                | Some m1, None -> true, m1 |> maxToValue |> createMax false |> Some
                 | _ -> true, None
 
             | V.NoOp -> true, None
