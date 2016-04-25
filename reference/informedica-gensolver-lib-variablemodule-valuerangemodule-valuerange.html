@@ -42,11 +42,9 @@
 </p>
 <div class="xmldoc">
 <p><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> represents a discrete set of
-non-zero positive rational numbers,
-the set is either finite
-and then it is a set or
-it is infinite and then it
-is a range.</p>
+non-zero positive rational numbers.
+A <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> is either unrestricted,
+a finite set of values or a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>.</p>
 
 </div>
   <h3>Union Cases</h3>
@@ -58,39 +56,51 @@ is a range.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '102', 102)" onmouseover="showTip(event, '102', 102)">
-            RangeSet(Range)
+          <code onmouseout="hideTip(event, '202', 202)" onmouseover="showTip(event, '202', 202)">
+            Range(Range)
           </code>
-          <div class="tip" id="102">
+          <div class="tip" id="202">
             <strong>Signature:</strong> Range<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L278-278" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L241-241" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>A <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-rangemodule-range.html" title="Range"><code>Range</code></a> is an infinite set of
-rational numbers, when a set has
-both a minimum, maximum and an
-increment then it is not a range
-anymore but a finite set of values</p>
-
-
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '103', 103)" onmouseover="showTip(event, '103', 103)">
+          <code onmouseout="hideTip(event, '203', 203)" onmouseover="showTip(event, '203', 203)">
+            Unrestricted
+          </code>
+          <div class="tip" id="203">
+            <strong>Signature:</strong> <br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L239-239" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '204', 204)" onmouseover="showTip(event, '204', 204)">
             ValueSet(Set&lt;Value&gt;)
           </code>
-          <div class="tip" id="103">
+          <div class="tip" id="204">
             <strong>Signature:</strong> Set&lt;Value&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L272-272" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L240-240" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -108,15 +118,15 @@ anymore but a finite set of values</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '104', 104)" onmouseover="showTip(event, '104', 104)">
-            ( - )(vs1, vs2)
+          <code onmouseout="hideTip(event, '205', 205)" onmouseover="showTip(event, '205', 205)">
+            ( - )(vr1, vr2)
           </code>
-          <div class="tip" id="104">
-            <strong>Signature:</strong> (vs1:ValueRange * vs2:ValueRange) -&gt; ValueRange<br />
+          <div class="tip" id="205">
+            <strong>Signature:</strong> (vr1:ValueRange * vr2:ValueRange) -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L485-485" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L891-891" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -127,15 +137,36 @@ anymore but a finite set of values</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '105', 105)" onmouseover="showTip(event, '105', 105)">
-            ( * )(vs1, vs2)
+          <code onmouseout="hideTip(event, '206', 206)" onmouseover="showTip(event, '206', 206)">
+            ( != )(y, expr)
           </code>
-          <div class="tip" id="105">
-            <strong>Signature:</strong> (vs1:ValueRange * vs2:ValueRange) -&gt; ValueRange<br />
+          <div class="tip" id="206">
+            <strong>Signature:</strong> (y:ValueRange * expr:ValueRange) -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L479-479" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L894-894" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Apply the expression <code>expr</code> to a <code>ValueRang</code> <code>y</code>.</p>
+
+
+              <p>CompiledName: <code>op_BangEquals</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '207', 207)" onmouseover="showTip(event, '207', 207)">
+            ( * )(vr1, vr2)
+          </code>
+          <div class="tip" id="207">
+            <strong>Signature:</strong> (vr1:ValueRange * vr2:ValueRange) -&gt; ValueRange<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L885-885" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -146,15 +177,15 @@ anymore but a finite set of values</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '106', 106)" onmouseover="showTip(event, '106', 106)">
-            ( / )(vs1, vs2)
+          <code onmouseout="hideTip(event, '208', 208)" onmouseover="showTip(event, '208', 208)">
+            ( / )(vr1, vr2)
           </code>
-          <div class="tip" id="106">
-            <strong>Signature:</strong> (vs1:ValueRange * vs2:ValueRange) -&gt; ValueRange<br />
+          <div class="tip" id="208">
+            <strong>Signature:</strong> (vr1:ValueRange * vr2:ValueRange) -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L481-481" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L887-887" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -165,15 +196,15 @@ anymore but a finite set of values</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '107', 107)" onmouseover="showTip(event, '107', 107)">
-            ( + )(vs1, vs2)
+          <code onmouseout="hideTip(event, '209', 209)" onmouseover="showTip(event, '209', 209)">
+            ( + )(vr1, vr2)
           </code>
-          <div class="tip" id="107">
-            <strong>Signature:</strong> (vs1:ValueRange * vs2:ValueRange) -&gt; ValueRange<br />
+          <div class="tip" id="209">
+            <strong>Signature:</strong> (vr1:ValueRange * vr2:ValueRange) -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L483-483" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L889-889" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
