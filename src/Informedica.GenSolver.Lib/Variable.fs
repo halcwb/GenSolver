@@ -421,23 +421,24 @@ module Variable =
         /// Create a string (to print).
         let print unr vals min minincl incr max maxincl = 
             let printRange min incr max =
-                let left  = if minincl then "[" else "<"
-                let right = if maxincl then "]" else ">"
-
-                match min, incr, max with
-                | Some min, None, None      -> sprintf "%s%s..>" left min
-                | Some min, None, Some max  -> sprintf "%s%s..%s%s" left min max right
-                | None,     None, Some max  -> sprintf "<0..%s%s" max right
-                | Some min, Some incr, None -> sprintf "%s%s..%s..>" left min incr 
-                | _ -> "[Not a valid range]"
-
-            let printVals vals =
                 if unr then "<0..>"
                 else
-                    "[" + (vals |> Array.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
+                    let left  = if minincl then "[" else "<"
+                    let right = if maxincl then "]" else ">"
+
+                    match min, incr, max with
+                    | Some min, None, None      -> sprintf "%s%s..>" left min
+                    | Some min, None, Some max  -> sprintf "%s%s..%s%s" left min max right
+                    | None,     None, Some max  -> sprintf "<0..%s%s" max right
+                    | Some min, Some incr, None -> sprintf "%s%s..%s..>" left min incr 
+                    | _ -> "[]"
+
+            let printVals vals =
+                let vals = vals |> Array.map BigRational.parse |> Array.sort |> Array.map BigRational.toString
+                "[" + (vals |> Array.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
 
             let vals = 
-                if min = "" && incr = "" && max = "" then vals |> printVals
+                if vals |> Array.isEmpty |> not then vals |> printVals
                 else
                     let min  = if min = ""  then None else Some min
                     let incr = if incr = "" then None else Some incr

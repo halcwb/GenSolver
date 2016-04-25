@@ -46,22 +46,6 @@ let solve n p v eqs =
     |> printEqs
 
 
-//    |> add [ compQty;       compConc;      drugTotal   ] ProductEquation
-//    |> add [ compDose;      compConc;      prescrQty   ] ProductEquation
-//    |> add [ compDoseTotal; compConc;      prescrTotal ] ProductEquation
-//    |> add [ compDoseRate;  compConc;      prescrRate  ] ProductEquation
-//    |> add [ compDose;      compDoseRate;  time        ] ProductEquation
-//    |> add [ compDoseTotal; compDose;      freq        ] ProductEquation
-
-
-//    |> add [ substDrugQty; substDrugConc; drugTotal   ] ProductEquation
-//    |> add [ substDrugQty; substCompConc; compQty     ] ProductEquation
-//    |> add [ substCompQty; substCompConc; compTotal   ] ProductEquation
-//    |> add [ doseTotal;    freq;          doseQty     ] ProductEquation
-//    |> add [ doseQty;      time;          doseRate    ] ProductEquation
-//    |> add [ doseRate;     substDrugConc; prescrRate  ] ProductEquation
-//    |> add [ doseQty;      substDrugConc; prescrQty   ] ProductEquation
-//    |> add [ doseTotal;    substDrugConc; prescrTotal ] ProductEquation
 
 let oneCompDrug = 
     init [
@@ -73,23 +57,50 @@ let oneCompDrug =
         "drug.total     = comp.qty +"
     ]
 
-let res =
-    oneCompDrug 
-    |> solve "sub.comp.conc" "vals" "60, 120, 240, 500, 1000" 
-    |> solve "comp.total" "vals" "1"
-    |> solve "comp.qty" "vals" "1"
-    |> solve "sub.dose.total" "maxincl" "2000"
-    |> solve "sub.dose.total" "minincl" "500"
-    |> solve "pres.freq" "vals" "2,3,4"
-    |> solve "pres.qty" "maxincl" "1"
-    |> solve "pres.qty" "incr" "1/2"
+oneCompDrug 
+|> solve "sub.comp.conc" "vals" "60, 120, 240, 500, 1000" 
+|> solve "comp.total" "vals" "1"
+|> solve "comp.qty" "vals" "1"
+|> solve "sub.dose.total" "maxincl" "2000"
+|> solve "sub.dose.total" "minincl" "500"
+|> solve "pres.freq" "vals" "2,3,4"
+|> solve "pres.qty" "maxincl" "1"
+|> solve "pres.qty" "incr" "1/2"
+|> ignore
 
-// [res.[1]] |> Solver.solve 
-//    eqs |> Solver.solve
+let cardioversion = 
+    init [
+        "joules = weight * joules.perkg"
+    ]
 
-//Solver.solve eqs "total" "vals" "1,2,4" |> fst |> printEqs
-//Solver.solve eqs "total" "min" "1" |> fst |> printEqs
-//Solver.solve eqs "total" "max" "1" |> fst |> printEqs
-//Solver.solve eqs "total" "incr" "1" |> fst |> printEqs
-//Solver.solve eqs "total" "x" "1" |> fst |> printEqs
+cardioversion 
+|> solve "joules" "vals" "1,2,3,5,7,10,20,30,50,70,100,150,200,300,360"
+|> solve "weight" "minincl" "3"
+|> solve "weight" "maxincl" "150"
+|> solve "joules.perkg" "maxincl" "4"
+|> solve "weight" "vals" "4"
+|> solve "joules" "vals" "10"
+|> ignore
 
+let gentconc =
+    init [
+        "gent.sub.comp.qty = gent.sub.comp.conc * gent.comp.total"
+        "gent.sub.drug.qty = gent.sub.comp.conc * gent.comp.qty"
+        "gent.sub.drug.qty = gent.sub.drug.conc * drug.total"
+        "gent.comp.qty     = gent.ampuls        * gent.comp.total"
+        "drug.total        = gent.comp.qty      + sal.comp.qty"
+        "gent.sub.drug.qty = gent.dose.kg       * weight"
+    ]
+
+gentconc 
+|> solve "gent.sub.comp.qty" "vals" "20,80,400"
+|> solve "gent.sub.comp.conc" "vals" "10,40"
+|> solve "gent.comp.total" "vals" "2,10"
+|> solve "gent.comp.qty" "incr" "1"
+|> solve "gent.ampuls" "minincl" "1/2"
+|> solve "gent.ampuls" "maxincl" "2"
+|> solve "drug.total" "vals" "5,10,20,50,100"
+|> solve "gent.sub.drug.conc" "maxincl" "2"
+|> solve "gent.dose.kg" "maxincl" "7"
+|> solve "gent.dose.kg" "minincl" "5"
+|> ignore
