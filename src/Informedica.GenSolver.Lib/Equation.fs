@@ -32,7 +32,7 @@ module Equation =
     /// than one time using the `fail` function.
     /// The type of Equation product or addition
     /// is determined by `c`.
-    let create c succ fail y xs = 
+    let create c succ fail (y, xs) = 
         let vars = y::xs
         match vars |> List.filter (fun v -> vars |> List.filter (VAR.equals v) |> List.length > 1) with
         | [] -> (y, xs) |> c |> succ

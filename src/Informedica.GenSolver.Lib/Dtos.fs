@@ -8,9 +8,8 @@ open Informedica.GenSolver.Utils
 module Variable =
     
     open Informedica.GenSolver.Utils
-    open Informedica.GenSolver.Lib
 
-    module VAR = Variable
+    module VAR = Informedica.GenSolver.Lib.Variable
     module N = VAR.Name
     module VR = VAR.ValueRange
     module V = VR.Value
@@ -194,17 +193,20 @@ module Variable =
 module Equation =
 
     open Informedica.GenSolver.Utils
-    open Informedica.GenSolver.Lib
 
-    module E = Equation
-    module VAR = Variable
+    module E = Informedica.GenSolver.Lib.Equation
         
     [<CLIMutable>]
     type Dto = { Vars: Variable.Dto[]; IsProdEq: bool }
 
     type Message =
         | NoVarsInEquation 
-        | DuplicateVariables of Equation.Message
+        | EquationMessage of E.Message
+        | VariableMessage of Variable.Message
+
+    exception DtoException of Message
+
+    let raiseExc m = m |> DtoException |> raise
 
     let create isProd vars  = { Vars = vars; IsProdEq = isProd }
 
@@ -243,9 +245,24 @@ module Equation =
                 (xs |> List.fold (fun s v -> s + (v |> varToString) + " " + op + " ") "")
             s.Substring(0, s.Length - 2)
 
-//    let fromDto succ fail dto =
-//        match (dto |> get).Vars with
-//        | [] -> 
+    let fromVarDtoExc dto = try dto |> Variable.fromDtoExc with | Variable.DtoException(m) -> m |> VariableMessage |> raiseExc
 
+    let fromDtoExc dto =
+        let succ = id
+        let fail = raiseExc
 
+        match (dto |> get).Vars |> Array.toList with
+        | [] -> NoVarsInEquation |> fail
+        | y::xs ->
+            let y = y |> fromVarDtoExc
+            let e = (y, xs |> List.map fromVarDtoExc)
+            if dto.IsProdEq then e |> E.createProductEq succ (fun m -> m |> EquationMessage |> fail)
+            else e |> E.createSumEq succ (fun m -> m |> EquationMessage |> fail)
 
+    let toDto e =
+        let c isProd y xs =
+            { Vars = y::xs |> List.map Variable.toDto |> List.toArray; IsProdEq = isProd }
+        let fp = c true 
+        let fs = c false 
+
+        e |> E.apply fp fs
