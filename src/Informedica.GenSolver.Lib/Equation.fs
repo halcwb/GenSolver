@@ -64,6 +64,15 @@ module Equation =
         | ProductEquation (y,xs) -> fp y xs
         | SumEquation (y, xs)    -> fs y xs
 
+    let nonZeroOrNegative e =
+        let set c y xs =
+            let y' = y |> VAR.setNonZeroOrNegative
+            let xs' = xs |> List.map VAR.setNonZeroOrNegative
+            (y', xs') |> c 
+        let fp = set ProductEquation
+        let fs = set SumEquation
+        e |> apply fp fs
+
     let replace v e =
         let r c v vs =
             let vs = vs |> List.replace ((VAR.eqName) v) v

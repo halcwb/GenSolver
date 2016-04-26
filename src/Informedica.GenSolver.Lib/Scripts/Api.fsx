@@ -6,6 +6,7 @@ open System
 open Swensen.Unquote
 
 open Informedica.GenSolver.Utils
+open Informedica.GenSolver.Lib
 
 module VAR = Informedica.GenSolver.Dtos.Variable
 module E = Informedica.GenSolver.Dtos.Equation
@@ -34,8 +35,7 @@ let printEqs eqs =
     for e in eqs |> List.map E.toDto do 
         printfn "%s" (e |> E.toString)
     printfn "-----"
-    eqs
-
+    eqs    
 
 let solve n p v eqs =
     printfn "Setting variable %s %s with %s" n p v
@@ -46,7 +46,10 @@ let solve n p v eqs =
     |> Solver.solve
     |> printEqs
 
-
+let nonZeroNegative eqs =
+    eqs 
+    |> List.map Equation.nonZeroOrNegative
+    
 
 let oneCompDrug = 
     init [
@@ -56,7 +59,7 @@ let oneCompDrug =
         "sub.dose.qty   = sub.drug.conc * pres.qty"
         "sub.dose.total = sub.dose.qty  * pres.freq" 
         "drug.total     = comp.qty +"
-    ]
+    ] |> nonZeroNegative
 
 oneCompDrug 
 |> solve "sub.comp.conc" "vals" "60, 120, 240, 500, 1000" 
@@ -91,7 +94,7 @@ let gentconc =
         "gent.comp.qty     = gent.ampuls        * gent.comp.total"
         "drug.total        = gent.comp.qty      + sal.comp.qty"
         "gent.sub.drug.qty = gent.dose.kg       * weight"
-    ]
+    ] |> nonZeroNegative
 
 gentconc 
 |> solve "gent.sub.comp.qty" "vals" "20,80,400"
@@ -115,7 +118,7 @@ let fahrtocels =
 fahrtocels
 |> solve "const32" "vals" "32"
 |> solve "const5/9" "vals" "5/9"
-|> solve "fahr" "vals" "80"
+|> solve "fahr" "vals" "0"
 |> ignore
 
 let map =
@@ -123,7 +126,7 @@ let map =
         "map = x1 + x2"
         "x1 = c1/3 * sbp"
         "x2 = c2/3 * dbp"
-    ]
+    ] |> nonZeroNegative
 
 map
 |> solve "c1/3" "vals" "1/3"

@@ -67,6 +67,8 @@ module BigRational =
     let isMultiple (incr: BigRational) (v: BigRational) = 
         (v.Numerator * incr.Denominator) % (incr.Numerator * v.Denominator) = 0I
 
+    let zero = 0N
+
     let one = 1N
 
     let two = 2N
@@ -104,6 +106,8 @@ module List =
             (xs |> Seq.take ind |> Seq.toList) @ [x] @ 
             (xs |> Seq.skip (ind + 1) |> Seq.toList)
         | None -> xs
+
+    let distinct xs = xs |> Seq.ofList |> Seq.distinct |> Seq.toList
 
 module Array = 
     

@@ -10,7 +10,6 @@ open Informedica.GenSolver.Lib
 module VAR = Variable
 module N = VAR.Name
 module VR = VAR.ValueRange
-module V = VR.Value
 module E = Equation
 
 let varCount v = VAR.count
@@ -26,19 +25,17 @@ let isSolved = E.isSolved
 let isSolvable = E.isSolvable
 
 let createVar n vs min incr max = 
-    let min' = min |> Option.bind (V.createExc >> (VR.createMin false) >> Some)
-    let max' = max |> Option.bind (V.createExc >> (VR.createMax false) >> Some)
-    let incr' = incr |> Option.bind (V.createExc >> Some)
+    let min' = min |> Option.bind ((VR.createMin false) >> Some)
+    let max' = max |> Option.bind ((VR.createMax false) >> Some)
 
     let vs' =
         vs 
-        |> List.map V.createExc
         |> Set.ofList
 
     let vr =
         match min, incr, max with
         | None, None, None when vs |> List.isEmpty -> VR.unrestricted
-        | _ ->  VR.createExc false vs' min' incr' max'
+        | _ ->  VR.createExc false vs' min' incr max'
 
     VAR.createSucc (n |> N.createExc) vr
 
