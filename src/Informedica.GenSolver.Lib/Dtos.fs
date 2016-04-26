@@ -9,10 +9,10 @@ module Variable =
     
     open Informedica.GenSolver.Utils
 
+    module BR = BigRational
     module VAR = Informedica.GenSolver.Lib.Variable
     module N = VAR.Name
     module VR = VAR.ValueRange
-    module V = VR.Value
         
     [<CLIMutable>]
     type Dto = 
@@ -30,7 +30,6 @@ module Variable =
     type Message = 
         | ParseFailure of string
         | NameMessage of N.Message
-        | ValueMessage of V.Message
         | ValueRangeMessage of VR.Message
 
     exception DtoException of Message
@@ -83,13 +82,10 @@ module Variable =
             | Some v -> v |> Some |> succ
             | None   -> s |> ParseFailure |> fail
         
-    let toValue succ fail = V.create succ (fun m -> m |> ValueMessage |> fail)
-
-    let toValueSet succ fail toValue vals =
+    let toValueSet succ fail vals =
         try
             vals 
             |> Seq.map BigRational.parse
-            |> Seq.map toValue
             |> Set.ofSeq
             |> succ
         with 
@@ -101,12 +97,10 @@ module Variable =
         
         let n = dto.Name |> N.create succ (fun m -> m |> NameMessage |> fail)
         
-        let toValue = toValue succ fail
-
-        let vs = dto.Vals |> toValueSet succ fail toValue
+        let vs = dto.Vals |> toValueSet succ fail
 
         let minMax c i s = 
-            let cr = Option.bind (toValue >> (c i) >> Some)
+            let cr = Option.bind ((c i) >> Some)
             s |> parseOpt cr fail
 
         let min = dto.Min |> minMax VR.createMin dto.MinIncl
@@ -125,15 +119,13 @@ module Variable =
 
         let n = dto.Name |> N.create succ (fun m -> m |> NameMessage |> fail)
         
-        let toValue = toValue succ fail
-
         let vs = 
-            match dto.Vals |> toValueSet succ fail toValue with
-            | Some vs' -> vs' |> Set.filter Option.isSome |> Set.map Option.get
+            match dto.Vals |> toValueSet succ fail with
+            | Some vs' -> vs' 
             | None -> Set.empty
 
         let minMax c i s = 
-            let cr = Option.bind (toValue >> (Option.bind(fun v -> v |> c i |> Some)))
+            let cr = Option.bind ((c i) >> Some)
             s |> parseOpt cr fail
 
         let min = dto.Min |> minMax VR.createMin dto.MinIncl
@@ -150,7 +142,7 @@ module Variable =
 
 
     let toDto (v: VAR.Variable) =
-        let optToString = V.optToString
+        let optToString = BR.optToString
 
         let dto = createNew (let (N.Name n) = v.Name in n)
 
@@ -184,7 +176,6 @@ module Variable =
         let vals = 
             v.ValueRange 
             |> VR.getValueSet 
-            |> Set.map V.get
             |> Set.map (fun n -> n.ToString()) 
             |> Set.toArray
 

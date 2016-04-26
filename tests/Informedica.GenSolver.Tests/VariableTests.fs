@@ -68,91 +68,18 @@ module Testing =
                         create succ fail s
                     prop
 
-        module Value =
-
-            module V = Variable.ValueRange.Value
-
-            type valueExc = V.ValueException
-
-            let raiseValueExc v = v |> V.ValueException |>  raise
-
-            let zero = 0N
-
-            let printCalc op x1 x2 = printfn "Testing %A, %A = %A" x1 x2 (x1 |> op <| x2)
-
-            [<TestFixture>]
-            type ``The create function`` () =
-
-                [<Property>]
-                member x.``Will not create values equal or smaller than zero`` () =
-                    let nonZeroOrNegative x =
-                        let succ (V.Value v) = v > zero && v = x
-                        let fail = function 
-                            | V.ZeroOrNegativeValue v -> v <= zero 
-                        
-                        V.create succ fail x
-                    
-                    nonZeroOrNegative
-                    
-        
-            [<TestFixture>]
-            type ``Given an infix operand`` () =
-                        
-                [<Property>]
-                member x.``The operand gives the same result as applied to BigRationals`` () =
-                    let prop op x1 x2 =
-                        if x1 > 0N && x2 > 0N then
-                            printCalc op x1 x2
-                            let v1 = x1 |> V.createExc
-                            let v2 = x2 |> V.createExc
-
-                            let succ (V.Value v) = v = (x1 |> op <| x2)
-                            let fail _ = true
-                            V.calc succ fail op v1 v2
-                        else true
-
-                    prop
-
-        
-            [<TestFixture>]
-            type ``Given a negative subtraction result`` () =
-                
-                [<Property>]
-                member x.``The result is going to the failure function`` () =
-                    let prop x1 x2 =
-                        if x1 > 0N && x2 > 0N then
-                            let v1 = V.createExc x1
-                            let v2 = V.createExc x2
-                            
-                            printCalc (-) x1 x2
-
-                            if x1 <= x2 then
-                                let succ _ = false
-                                let fail = function
-                                    | V.ZeroOrNegativeValue v -> v <= 0N
-                            
-                                V.calc succ fail (-) v1 v2
-                            else 
-                                let succ _ = true
-                                let fail _ = false
-
-                                V.calc succ fail (-) v1 v2
-                        else true    
-
-                    prop
-
         module ValueRange =
 
-            module V = Variable.ValueRange.Value
+            module BR = BigRational
             module VR = Variable.ValueRange
 
             let getMin  = VR.getMin >> Option.bind (VR.minToValue >> Some)
             let getMax  = VR.getMax >> Option.bind (VR.maxToValue >> Some)
 
-            let createMinIncl = V.createExc >> (VR.createMin true)
-            let createMinExcl = V.createExc >> (VR.createMin false)
-            let createMaxIncl = V.createExc >> (VR.createMax true)
-            let createMaxExcl = V.createExc >> (VR.createMax false)
+            let createMinIncl = VR.createMin true
+            let createMinExcl = VR.createMin false
+            let createMaxIncl = VR.createMax true
+            let createMaxExcl = VR.createMax false
 
             let contains v vr = vr |> VR.contains v
 
@@ -178,7 +105,6 @@ module Testing =
                 member x.``The isBetween function always returns true`` () =
                     let prop x =
                         x 
-                        |> V.createExc
                         |> isBetweenMinMax min max
                     testProp prop
 
@@ -189,7 +115,7 @@ module Testing =
                         let c = x |> BigRational.ToInt32
                         let vs = 
                             [1..c] 
-                            |> List.map (BigRational.FromInt >> V.createExc)
+                            |> List.map BR.fromInt
                             |> Set.ofList
 
                         let succ vr = vr |> VR.count = c
@@ -223,8 +149,7 @@ module Testing =
                 member x.``The ValueRange cannot contain any Value`` () =
                     let vr = createExcMinMax Set.empty None None
                     let prop x = 
-                        let v = V.createExc x
-                        vr |> contains v |> not
+                        vr |> contains x |> not
 
                     testProp prop
 
@@ -233,14 +158,14 @@ module Testing =
                 let min = None
                 let max = None
                 // List with one value
-                let v = 1N |> V.createExc
+                let v = 1N 
                 let vs = 
                     Set.empty
                     |> Set.add v
 
                 [<Test>]
                 member x.``Both Min and Max are the Inclusive and that Value`` () =
-                    let min', max' = v |> V.get |> createMinIncl, v |> V.get |> createMaxIncl
+                    let min', max' = v |> BR.get |> createMinIncl, v |> BR.get |> createMaxIncl
                     let succ vr = test <@ vr |> VR.getMin = Some min' && vr |> VR.getMax = Some max' @>
                     let fail _  = test <@ false @>
                     createMinMax succ fail vs min max 
@@ -254,12 +179,11 @@ module Testing =
                 [<Property>]
                 member x.``The result can only contain that Value`` () =
                     let test x =
-                        let v = V.createExc x
-                        let vs = Set.empty |> Set.add v
+                        let vs = Set.empty |> Set.add x
                             
                         let succ vr = 
                             vr |> contains v && 
-                            vr |> contains (v + V.three) |> not
+                            vr |> contains (v + BR.three) |> not
                         let fail _ = false
                         createMinMax succ fail vs min max
                     testProp test
@@ -272,10 +196,8 @@ module Testing =
 
                 [<Property>]
                 member x.``The isBetween function returns true for any Value LTE to one`` () =
-                    let prop x =    
-                        let v = x |> V.createExc
-                        if x >= 1N then v |> isBetweenMinMax min max
-                        else v |> isBetweenMinMax min max |> not
+                    let prop v =    
+                        v |> isBetweenMinMax min max
                     testProp prop
 
                 [<Test>]
@@ -303,17 +225,10 @@ module Testing =
 
                 [<Property>]
                 member x.``The result can contain any Value GTE one`` () =
-                    let test x = 
-                        let v = V.createExc x
+                    let test v = 
                         let vs = vs |> Set.add v
                         
-                        let succ vr = 
-                            if x >= 1N then 
-                                printfn "%s contains %s" (vr |> VR.toString) (v |> V.toString)
-                                vr |> VR.contains v
-                            else 
-                                printfn "%s does not contain %s" (vr |> VR.toString) (v |> V.toString)
-                                vr |> VR.contains v |> not
+                        let succ vr = vr |> VR.contains v
                         let fail _ = printfn "fail"; false
                         
                         createMinMax succ fail vs min max
@@ -328,10 +243,8 @@ module Testing =
 
                 [<Property>]
                 member x.``The isBetween function returns true for any Value LTE to 1`` () =
-                    let prop x =
-                        let v = x |> V.createExc
-                        if x <= 1N then v |> isBetweenMinMax min max
-                        else v |> isBetweenMinMax min max |> not
+                    let prop v =
+                        v |> isBetweenMinMax min max |> not
                     testProp prop
 
                 [<Test>]
@@ -348,13 +261,10 @@ module Testing =
 
                 [<Property>]
                 member x.``The result can contain any Value LTE to one`` () =
-                    let test x = 
-                        let v = V.createExc x
+                    let test v = 
                         let vs = vs |> Set.add v
                         
-                        let succ vr = 
-                            if x <= 1N then vr |> VR.contains v
-                            else vr |> VR.contains v |> not
+                        let succ vr = vr |> VR.contains v
                         let fail _  = false
                                                 
                         createMinMax succ fail vs min max
@@ -371,9 +281,8 @@ module Testing =
 
                 [<Property>]
                 member x.``The isBetween function returns true any Value LTE 2 and STE 4`` () =
-                    let prop x =
-                        let v = x |> V.createExc
-                        if x >= 2N && x <= 4N then v |> isBetweenMinMax min max
+                    let prop v =
+                        if v >= 2N && v <= 4N then v |> isBetweenMinMax min max
                         else v |> isBetweenMinMax min max |> not
                     testProp prop
 
@@ -385,12 +294,11 @@ module Testing =
 
                 [<Property>]
                 member x.``The ValueRange can only any Value equal to or between 2 and 4`` () =
-                    let test x = 
-                        let v = V.createExc x
+                    let test v = 
                         let vs = vs |> Set.add v
                         
                         let succ vr = 
-                            if x >= 2N && x <= 4N then vr |> VR.contains v
+                            if v >= 2N && v <= 4N then vr |> VR.contains v
                             else vr |> VR.contains v |> not
                         let fail _  = false
                                                 
@@ -402,14 +310,10 @@ module Testing =
             type ``Given a ValueRange with a Min and a ValueRange with a Min`` () =
                 let createVrMin excl v = VR.createExc false Set.empty (v |> VR.createMin excl |> Some) None None
 
-                let test op pred x1 excl1 x2 excl2 =
-                    match x1 |> V.createOption, x2 |> V.createOption with
-                    | Some v1, Some v2 -> 
-                        let vr1 = v1 |> createVrMin excl1 
-                        let vr2 = v2 |> createVrMin excl2
-                        (vr1 |> op <| vr2) |> VR.getMin |> pred v1 v2 excl1 excl2
-                    | _ -> true
-                
+                let test op pred v1 excl1 v2 excl2 =
+                    let vr1 = v1 |> createVrMin excl1 
+                    let vr2 = v2 |> createVrMin excl2
+                    (vr1 |> op <| vr2) |> VR.getMin |> pred v1 v2 excl1 excl2                
                 
                 [<Property>]
                 member x.``When multiplied the result has min that is the multiple`` () =
@@ -446,13 +350,10 @@ module Testing =
             type ``Given a ValueRange with a Max and a ValueRange with a Max`` () =
                 let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
 
-                let test op pred x1 incl1 x2 incl2 =
-                    match x1 |> V.createOption, x2 |> V.createOption with
-                    | Some v1, Some v2 -> 
-                        let vr1 = v1 |> createVrMax incl1 
-                        let vr2 = v2 |> createVrMax incl2
-                        (vr1 |> op <| vr2) |> VR.getMax |> pred v1 v2 incl1 incl2
-                    | _ -> true
+                let test op pred v1 incl1 v2 incl2 =
+                    let vr1 = v1 |> createVrMax incl1 
+                    let vr2 = v2 |> createVrMax incl2
+                    (vr1 |> op <| vr2) |> VR.getMax |> pred v1 v2 incl1 incl2
                 
                 
                 [<Property>]
@@ -491,14 +392,11 @@ module Testing =
                 let createVrMin excl v = VR.createExc false Set.empty (v |> VR.createMin excl |> Some) None None
                 let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
 
-                let test op predMin predMax x1 excl1 x2 excl2 =
-                    match x1 |> V.createOption, x2 |> V.createOption with
-                    | Some v1, Some v2 -> 
-                        let vr1 = v1 |> createVrMin excl1 
-                        let vr2 = v2 |> createVrMax excl2
-                        (vr1 |> op <| vr2) |> VR.getMin |> predMin v1 v2 excl1 excl2 &&
-                        (vr1 |> op <| vr2) |> VR.getMax |> predMax v1 v2 excl1 excl2
-                    | _ -> true
+                let test op predMin predMax v1 excl1 v2 excl2 =
+                    let vr1 = v1 |> createVrMin excl1 
+                    let vr2 = v2 |> createVrMax excl2
+                    (vr1 |> op <| vr2) |> VR.getMin |> predMin v1 v2 excl1 excl2 &&
+                    (vr1 |> op <| vr2) |> VR.getMax |> predMax v1 v2 excl1 excl2
                 
                 
                 [<Property>]
@@ -542,14 +440,11 @@ module Testing =
                 let createVrMin excl v = VR.createExc false Set.empty (v |> VR.createMin excl |> Some) None None
                 let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
 
-                let test op predMin predMax x1 excl1 x2 excl2 =
-                    match x1 |> V.createOption, x2 |> V.createOption with
-                    | Some v1, Some v2 -> 
-                        let vr1 = v1 |> createVrMax excl1 
-                        let vr2 = v2 |> createVrMin excl2
-                        (vr1 |> op <| vr2) |> VR.getMin |> predMin v1 v2 excl1 excl2 &&
-                        (vr1 |> op <| vr2) |> VR.getMax |> predMax v1 v2 excl1 excl2
-                    | _ -> true
+                let test op predMin predMax v1 excl1 v2 excl2 =
+                    let vr1 = v1 |> createVrMax excl1 
+                    let vr2 = v2 |> createVrMin excl2
+                    (vr1 |> op <| vr2) |> VR.getMin |> predMin v1 v2 excl1 excl2 &&
+                    (vr1 |> op <| vr2) |> VR.getMax |> predMax v1 v2 excl1 excl2
                 
                 
                 [<Property>]
@@ -593,7 +488,7 @@ module Testing =
                     
                 let createVals ns =
                     ns
-                    |> List.map (BigRational.FromInt >> (VR.Value.createExc))
+                    |> List.map BR.fromInt
                     |> Set.ofList
     
 
@@ -641,10 +536,7 @@ module Testing =
                         let l1 = l1 |> List.filter ((<) 0) |> List.map BigRational.FromInt
                         let l2 = l2 |> List.filter ((<) 0) |> List.map BigRational.FromInt
 
-                        let create =
-                            List.map (VR.Value.create id (fun _ -> failwith "Could not create"))
-                            >> Set.ofList
-                            >> VR.ValueSet
+                        let create = Set.ofList >> VR.ValueSet
 
                         let div =
                             [ for x1 in l1 do
@@ -672,8 +564,7 @@ module Testing =
                     let create vs = createMinMax id ff vs None None
 
                     ns
-                    |> List.map BigRational.FromInt
-                    |> List.map (VR.Value.create id ff)
+                    |> List.map BR.fromInt
                     |> Set.ofList
                     |> create
 

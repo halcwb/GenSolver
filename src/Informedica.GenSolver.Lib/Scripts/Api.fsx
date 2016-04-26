@@ -38,6 +38,7 @@ let printEqs eqs =
 
 
 let solve n p v eqs =
+    printfn "Setting variable %s %s with %s" n p v
     eqs 
     |> List.map E.toDto
     |> List.map (E.setVar n p v)
@@ -103,4 +104,31 @@ gentconc
 |> solve "gent.sub.drug.conc" "maxincl" "2"
 |> solve "gent.dose.kg" "maxincl" "7"
 |> solve "gent.dose.kg" "minincl" "5"
+|> ignore
+
+let fahrtocels =
+    init [
+        "fahr = x + const32"
+        "cels = x * const5/9"
+    ]
+
+fahrtocels
+|> solve "const32" "vals" "32"
+|> solve "const5/9" "vals" "5/9"
+|> solve "fahr" "vals" "80"
+|> ignore
+
+let map =
+    init [
+        "map = x1 + x2"
+        "x1 = c1/3 * sbp"
+        "x2 = c2/3 * dbp"
+    ]
+
+map
+|> solve "c1/3" "vals" "1/3"
+|> solve "c2/3" "vals" "2/3"
+// Ready to use
+|> solve "map" "vals" "80"
+|> solve "dbp" "vals" "50"
 |> ignore

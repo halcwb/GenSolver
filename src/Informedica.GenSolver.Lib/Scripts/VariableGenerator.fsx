@@ -59,12 +59,12 @@ module Generators =
 
     let valueRangeGenerator =
         gen {
-            let! vs = Arb.generate<V.Value Set>
-            let! v1 = Arb.generate<V.Value Option>
-            let! v2 = Arb.generate<V.Value Option>
+            let! vs = Arb.generate<BigRational Set>
+            let! v1 = Arb.generate<BigRational Option>
+            let! v2 = Arb.generate<BigRational Option>
             let! minexcl = Arb.generate<bool>
             let! maxexcl = Arb.generate<bool>
-            let! incr = Arb.generate<V.Value Option>
+            let! incr = Arb.generate<BigRational Option>
 
             return valueRange vs v1 minexcl incr v2 maxexcl
         }
@@ -75,7 +75,7 @@ module Generators =
                 override x.Generator = bigRGenerator }
 
         static member Value () =
-            { new Arbitrary<V.Value>() with
+            { new Arbitrary<BigRational>() with
                 override x.Generator = valueGenerator }
 
         static member ValueRange () =

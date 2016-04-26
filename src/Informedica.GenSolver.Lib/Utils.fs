@@ -39,6 +39,8 @@ module BigRational =
 
     let parse = BigRational.Parse
 
+    let fromInt = BigRational.FromInt
+
     let tryParse s = 
         try 
             s |> parse |> Some 
@@ -52,9 +54,44 @@ module BigRational =
 
     let toString v = (v |> get).ToString()
 
+    /// Convert an optional `Value` to a `string`.
+    /// If `None` then return empty `string`.
+    let optToString = function
+        | Some v' -> v' |> toString
+        | None    -> ""
+
     let toMultipleOf d n  =
         let m = (n / d) |> BigRational.ToInt32 |> BigRational.FromInt
         if m * d < n then (m + 1N) * d else m * d
+
+    let isMultiple (incr: BigRational) (v: BigRational) = 
+        (v.Numerator * incr.Denominator) % (incr.Numerator * v.Denominator) = 0I
+
+    let one = 1N
+
+    let two = 2N
+
+    let three = 3N
+
+    /// Check whether the operator is subtraction
+    let opIsSubtr op = (three |> op <| two) = three - two // = 1
+
+    /// Check whether the operator is addition
+    let opIsAdd op   = (three |> op <| two) = three + two // = 5
+
+    /// Check whether the operator is multiplication
+    let opIsMult op  = (three |> op <| two) = three * two // = 6
+
+    /// Check whether the operator is divsion
+    let opIsDiv op   = (three |> op <| two) = three / two // = 3/2
+
+    let (|Mult|Div|Add|Subtr|NoOp|) op =
+        match op with
+        | _ when op |> opIsMult  -> Mult
+        | _ when op |> opIsDiv   -> Div
+        | _ when op |> opIsAdd   -> Add
+        | _ when op |> opIsSubtr -> Subtr
+        | _ -> NoOp
 
 
 module List =

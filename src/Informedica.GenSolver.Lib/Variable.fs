@@ -75,145 +75,146 @@ module Variable =
         open System.Collections.Generic
         open Informedica.GenSolver.Utils
 
+        module BR = BigRational
+
         /// Functions to handle `Value`
         /// A `Value` is a non zero 
         /// positive value implemented as a BigRational.
         /// Basic arrhythmic operations
         /// can be performed with this type.
-        [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-        module Value =
-        
-            // #region ---- TYPES ----
+//        [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+//        module Value =
+//        
+//            // #region ---- TYPES ----
+//
+//            /// Represents a non zero positive rational number.
+//            type Value = Value of BigRational
+//
+//            // #endregion
+//
+//            // #region ---- EXCEPTIONS ----
+//
+//            /// Error messages for `Value`.
+//            type Message = 
+//                | ZeroOrNegativeValue of BigRational
+//                | StringCannotBeParsedToValue of string
+//                | InvalidOperatorForValue
+//
+//            /// 'Value` exception.
+//            exception ValueException of Message
+//
+//            /// Raise an exception with message `m`.
+//            let raiseExc msg = msg |> ValueException |> raise
+//
+//            // #endregion
+//
+//            // #region ----- CREATORS ----
+//
+//            /// Creates a `Value` and calls 
+//            /// `succ` when success and `fail` when
+//            /// failure.
+//            let create succ fail n =
+//                if n <= 0N then n |> ZeroOrNegativeValue |> fail
+//                else n |> Value |> succ
+//
+//            let createOption = create Some Option.none
+//
+//            /// Create function that will raise
+//            /// a `ZeroOrNegativeValueException`
+//            let createExc = create id raiseExc
+//
+//            /// One value
+//            let one = 1N |> Value
+//
+//            /// Two value
+//            let two = 2N |> Value
+//
+//            /// Three value
+//            let three = 3N |> Value
+//
+//            // #endregion
+//
+//            // #region ---- UTILS -----
+//
+//            /// Apply a function `f` to value `x`.
+//            let apply f (Value x): 'a = f x
+//
+//            /// Convert a `Value` to a string
+//            let toString (Value v) = v |> BigRational.toString
+//
+//            /// Convert a `string` to a `Value`.
+//            /// If this fails use the `fail` function, 
+//            /// else use the success function.
+//            let fromString succ fail s = 
+//                match s |> BigRational.tryParse with
+//                | Some br -> br |> create succ fail
+//                | None -> s |> StringCannotBeParsedToValue |> fail                    
+//
+//            /// Convert an optional `Value` to a `string`.
+//            /// If `None` then return empty `string`.
+//            let optToString = function
+//                | Some v' -> v' |> toString
+//                | None    -> ""
+//
+//            // #endregion
+//
+//            // #region ---- GETTERS ----
+//
+//            /// Get the `BigRational` from `value`
+//            
+//            let get = apply id
+//
+//            // #endregion
+//
+//            // #region ---- CALCULATION ---- 
+//
+//            /// Apply an infix operation `op` to
+//            /// two values `v1` and `v2` using a 
+//            /// `succ` and `fail` functions.
+//            let calc succ fail op (Value v1) (Value v2) =
+//                v1 |> op <| v2 |> create succ fail
+//
+//            /// Check whether a value `v` is 
+//            /// an increment of `incr`.
+//            let isMultiple (Value incr) (Value v) = 
+//                (BigRational.Numerator * incr.Denominator) % (incr.Numerator * BigRational.Denominator) = 0I
+//
+//            /// Determine the greatest common divisor 
+//            /// of two values.
+//            let gcd (Value v1) (Value v2) = BigRational.gcd v1 v2 |> Value
+//
+//            type Value with
+//                
+//                static member (*) (v1, v2) = calc id raiseExc (*) v1 v2
+//
+//                static member (/) (v1, v2) = calc id raiseExc (/) v1 v2
+//
+//                static member (+) (v1, v2) = calc id raiseExc (+) v1 v2
+//
+//                static member (-) (v1, v2) = calc id raiseExc (-) v1 v2
+//
+//            /// Check whether the operator is subtraction
+//            let opIsSubtr op = (three |> op <| two) = three - two // = 1
+//
+//            /// Check whether the operator is addition
+//            let opIsAdd op   = (three |> op <| two) = three + two // = 5
+//
+//            /// Check whether the operator is multiplication
+//            let opIsMult op  = (three |> op <| two) = three * two // = 6
+//
+//            /// Check whether the operator is divsion
+//            let opIsDiv op   = (three |> op <| two) = three / two // = 3/2
+//
+//            let (|Mult|Div|Add|Subtr|NoOp|) op =
+//                match op with
+//                | _ when op |> opIsMult  -> Mult
+//                | _ when op |> opIsDiv   -> Div
+//                | _ when op |> opIsAdd   -> Add
+//                | _ when op |> opIsSubtr -> Subtr
+//                | _ -> NoOp
+//
+//            // #endregion
 
-            /// Represents a non zero positive rational number.
-            type Value = Value of BigRational
-
-            // #endregion
-
-            // #region ---- EXCEPTIONS ----
-
-            /// Error messages for `Value`.
-            type Message = 
-                | ZeroOrNegativeValue of BigRational
-                | StringCannotBeParsedToValue of string
-                | InvalidOperatorForValue
-
-            /// 'Value` exception.
-            exception ValueException of Message
-
-            /// Raise an exception with message `m`.
-            let raiseExc msg = msg |> ValueException |> raise
-
-            // #endregion
-
-            // #region ----- CREATORS ----
-
-            /// Creates a `Value` and calls 
-            /// `succ` when success and `fail` when
-            /// failure.
-            let create succ fail n =
-                if n <= 0N then n |> ZeroOrNegativeValue |> fail
-                else n |> Value |> succ
-
-            let createOption = create Some Option.none
-
-            /// Create function that will raise
-            /// a `ZeroOrNegativeValueException`
-            let createExc = create id raiseExc
-
-            /// One value
-            let one = 1N |> Value
-
-            /// Two value
-            let two = 2N |> Value
-
-            /// Three value
-            let three = 3N |> Value
-
-            // #endregion
-
-            // #region ---- UTILS -----
-
-            /// Apply a function `f` to value `x`.
-            let apply f (Value x): 'a = f x
-
-            /// Convert a `Value` to a string
-            let toString (Value v) = v |> BigRational.toString
-
-            /// Convert a `string` to a `Value`.
-            /// If this fails use the `fail` function, 
-            /// else use the success function.
-            let fromString succ fail s = 
-                match s |> BigRational.tryParse with
-                | Some br -> br |> create succ fail
-                | None -> s |> StringCannotBeParsedToValue |> fail                    
-
-            /// Convert an optional `Value` to a `string`.
-            /// If `None` then return empty `string`.
-            let optToString = function
-                | Some v' -> v' |> toString
-                | None    -> ""
-
-            // #endregion
-
-            // #region ---- GETTERS ----
-
-            /// Get the `BigRational` from `value`
-            
-            let get = apply id
-
-            // #endregion
-
-            // #region ---- CALCULATION ---- 
-
-            /// Apply an infix operation `op` to
-            /// two values `v1` and `v2` using a 
-            /// `succ` and `fail` functions.
-            let calc succ fail op (Value v1) (Value v2) =
-                v1 |> op <| v2 |> create succ fail
-
-            /// Check whether a value `v` is 
-            /// an increment of `incr`.
-            let isMultiple (Value incr) (Value v) = 
-                (v.Numerator * incr.Denominator) % (incr.Numerator * v.Denominator) = 0I
-
-            /// Determine the greatest common divisor 
-            /// of two values.
-            let gcd (Value v1) (Value v2) = BigRational.gcd v1 v2 |> Value
-
-            type Value with
-                
-                static member (*) (v1, v2) = calc id raiseExc (*) v1 v2
-
-                static member (/) (v1, v2) = calc id raiseExc (/) v1 v2
-
-                static member (+) (v1, v2) = calc id raiseExc (+) v1 v2
-
-                static member (-) (v1, v2) = calc id raiseExc (-) v1 v2
-
-            /// Check whether the operator is subtraction
-            let opIsSubtr op = (three |> op <| two) = three - two // = 1
-
-            /// Check whether the operator is addition
-            let opIsAdd op   = (three |> op <| two) = three + two // = 5
-
-            /// Check whether the operator is multiplication
-            let opIsMult op  = (three |> op <| two) = three * two // = 6
-
-            /// Check whether the operator is divsion
-            let opIsDiv op   = (three |> op <| two) = three / two // = 3/2
-
-            let (|Mult|Div|Add|Subtr|NoOp|) op =
-                match op with
-                | _ when op |> opIsMult  -> Mult
-                | _ when op |> opIsDiv   -> Div
-                | _ when op |> opIsAdd   -> Add
-                | _ when op |> opIsSubtr -> Subtr
-                | _ -> NoOp
-
-            // #endregion
-
-        module V = Value
 
         // #region ---- TYPES ----
            
@@ -221,15 +222,15 @@ module Variable =
         /// a `Range`. Can be inclusive
         /// or exclusive.
         type Minimum =
-            | MinIncl of V.Value
-            | MinExcl of V.Value
+            | MinIncl of BigRational
+            | MinExcl of BigRational
 
         /// The maximum `Value` in 
         /// a `Range`. Can be inclusive
         /// or exclusive.
         type Maximum =
-            | MaxIncl of V.Value
-            | MaxExcl of V.Value
+            | MaxIncl of BigRational
+            | MaxExcl of BigRational
 
         /// `ValueRange` represents a discrete set of 
         /// non-zero positive rational numbers.
@@ -237,7 +238,7 @@ module Variable =
         /// a finite set of values or a `Range`.
         type ValueRange =
             | Unrestricted
-            | ValueSet of V.Value Set
+            | ValueSet of BigRational Set
             | Range of Range
         /// A range is restricted by either a 
         /// `Minimum`, a `Maximum`, a `Minimum` 
@@ -246,7 +247,7 @@ module Variable =
         and Range =
             | Min of Minimum
             | Max of Maximum
-            | MinIncr of Minimum * V.Value
+            | MinIncr of Minimum * BigRational
             | MinMax  of Minimum * Maximum
 
         // #endregion
@@ -256,7 +257,7 @@ module Variable =
         /// Failure messages.
         type Message =
             | MinLargerThanMax of Minimum * Maximum
-            | IncrementLargerThanMax of V.Value * Maximum
+            | IncrementLargerThanMax of BigRational * Maximum
              
         /// `ValueRange` exception type
         exception ValueRangeException of Message
@@ -322,7 +323,7 @@ module Variable =
             let fMin  = function | None -> fTrue  | Some(MinIncl m) -> (<=) m | Some(MinExcl m) -> (<) m
             let fMax  = function | None -> fTrue  | Some(MaxIncl m) -> (>=) m | Some(MaxExcl m) -> (>) m
 
-            let fIncr = function | None -> fTrue  | Some(incr) -> V.isMultiple incr 
+            let fIncr = function | None -> fTrue  | Some(incr) -> BR.isMultiple incr 
 
             v |> fIncr incr &&
             v |> fMin min &&
@@ -397,25 +398,23 @@ module Variable =
         
         // Calculate minimum as a multiple of incr
         let minMultipleOf incr min =
-            let n = match min with | MinIncl m | MinExcl m -> m |> V.get
-            let (V.Value(d)) = incr
-            let n' = n |> BigRational.toMultipleOf d
+            let n = match min with | MinIncl m | MinExcl m -> m 
+            let d = incr
+            let n' = n |> BR.toMultipleOf d
             if min |> isMinExcl && n' <= n then n' + d else n'
 
         /// Create a set of values using `min`, `incr` and a `max`.
         let minIncrMaxToValueSet min incr max =
             let min' = min |> minMultipleOf incr
-            let incr' = incr |> V.get
-            let max' = match max with | MaxIncl m | MaxExcl m -> m |> V.get
+            let max' = match max with | MaxIncl m | MaxExcl m -> m 
 
-            let vs = [min'..incr'..max'] |> Set.ofList
+            let vs = [min'..incr..max'] |> Set.ofList
             // Take of the maximimum value if it equals to maximum when maximum is exclusive
             if vs |> Set.isEmpty |> not && 
                max |> isMaxExcl &&
                max' <= vs.MaximumElement then vs.Remove(vs.MaximumElement)
             else 
                 vs
-            |> Set.map V.createExc
             |> ValueSet
             
         /// Create a string (to print).
@@ -434,7 +433,7 @@ module Variable =
                     | _ -> "[]"
 
             let printVals vals =
-                let vals = vals |> Array.map BigRational.parse |> Array.sort |> Array.map BigRational.toString
+                let vals = vals |> Array.map BR.parse |> Array.sort |> Array.map BR.toString
                 "[" + (vals |> Array.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
 
             let vals = 
@@ -450,7 +449,7 @@ module Variable =
         /// Convert a `ValueRang` to a `string`.
         let toString vr =
             let fVs vs = 
-                let vs = vs |> Seq.map V.toString |> Seq.toArray
+                let vs = vs |> Seq.map BR.toString |> Seq.toArray
                 print false vs "" false "" "" false
             
             let fRange =
@@ -459,38 +458,38 @@ module Variable =
                 let fMin min =
                     let min, minincl = 
                         match min with
-                        | MinIncl v -> v |> V.toString, true
-                        | MinExcl v -> v |> V.toString ,false  
+                        | MinIncl v -> v |> BR.toString, true
+                        | MinExcl v -> v |> BR.toString ,false  
                     print min minincl "" "" false
 
                 let fMax max =
                     let max, maxincl = 
                         match max with
-                        | MaxIncl v -> v |> V.toString, true
-                        | MaxExcl v -> v |> V.toString ,false  
+                        | MaxIncl v -> v |> BR.toString, true
+                        | MaxExcl v -> v |> BR.toString ,false  
 
                     print "" false "" max maxincl
 
                 let fMinIncr (min, incr)  = 
                     let min, minincl = 
                         match min with
-                        | MinIncl v -> v |> V.toString, true
-                        | MinExcl v -> v |> V.toString ,false  
+                        | MinIncl v -> v |> BR.toString, true
+                        | MinExcl v -> v |> BR.toString ,false  
 
-                    let incr = incr |> V.toString
+                    let incr = incr |> BR.toString
                 
                     print min minincl incr "" false
 
                 let fMinMax (min, max) =
                     let min, minincl = 
                         match min with
-                        | MinIncl v -> v |> V.toString, true
-                        | MinExcl v -> v |> V.toString ,false  
+                        | MinIncl v -> v |> BR.toString, true
+                        | MinExcl v -> v |> BR.toString ,false  
 
                     let max, maxincl = 
                         match max with
-                        | MaxIncl v -> v |> V.toString, true
-                        | MaxExcl v -> v |> V.toString ,false  
+                        | MaxIncl v -> v |> BR.toString, true
+                        | MaxExcl v -> v |> BR.toString ,false  
 
                     print min minincl "" max maxincl
 
@@ -531,7 +530,7 @@ module Variable =
 
         /// Create a `MinIncr` `ValueRange`.
         let minIncrValueRange min incr =
-            let min' = min |> minMultipleOf incr |> V.createExc |> MinIncl
+            let min' = min |> minMultipleOf incr |> MinIncl
             (min', incr) |> MinIncr |> Range
             
         /// Create a `MinMax` `ValueRang`, if min > max
@@ -683,7 +682,7 @@ module Variable =
             let fail _ = vr
             let cr = create succ fail false Set.empty
             // Check whether the new incr is more restrictive than the old incr
-            let checkIncr f incr' = if incr |> V.isMultiple incr' then incr |> f else vr
+            let checkIncr f incr' = if incr |> BigRational.isMultiple incr' then incr |> f else vr
 
             let unr = minIncrValueRange (createMin true incr) incr
 
@@ -731,18 +730,18 @@ module Variable =
 
         let calcOpt op c v1 v2 =
             match op with
-            | V.Mult  
-            | V.Div   
-            | V.Add   -> v1 |> op <| v2 |> c |> Some
+            | BR.Mult  
+            | BR.Div   
+            | BR.Add   -> v1 |> op <| v2 |> c |> Some
             // prevent subtraction resulting in a zero or negative result
-            | V.Subtr -> if v1 > v2 then (v1 - v2) |> c |> Some else None
-            | V.NoOp  -> None
+            | BR.Subtr -> if v1 > v2 then (v1 - v2) |> c |> Some else None
+            | BR.NoOp  -> None
              
 
         let calcMin op min1 min2 max2 = 
             let calcOpt = calcOpt op
             match op with
-            | V.Mult ->
+            | BR.Mult ->
                 match min1, min2 with
                 // y.min = x1.min * x2.min
                 | Some m1, Some m2 -> 
@@ -752,7 +751,7 @@ module Variable =
                     calcOpt cmin v1 v2 
                 | _ -> None
 
-            | V.Div ->
+            | BR.Div ->
                 match min1, max2 with
                 // y.min = x1.min / x2.max
                 | Some m1, Some m2 ->
@@ -762,7 +761,7 @@ module Variable =
                     calcOpt cmin v1 v2
                 | _ -> None
 
-            | V.Add -> 
+            | BR.Add -> 
                 match min1, min2 with
                 // y.min = x1.min + x2.min
                 | Some m1, Some m2 ->
@@ -775,7 +774,7 @@ module Variable =
                 | None, Some m -> m |> minToValue |> createMin false |> Some
                 | None, None -> None
 
-            | V.Subtr -> 
+            | BR.Subtr -> 
                 match min1, max2 with
                 // y.min = x1.min - x2.min
                 | Some m1, Some m2 ->
@@ -785,12 +784,12 @@ module Variable =
                     calcOpt cmin v1 v2 
                 | _ -> None
 
-            | V.NoOp -> None
+            | BR.NoOp -> None
                        
         let calcMax op max1 max2 min2 = 
             let calcOpt = calcOpt op
             match op with
-            | V.Mult | V.Add -> 
+            | BR.Mult | BR.Add -> 
                 // y.max = x1.max * x2.max
                 match max1, max2 with
                 | Some m1, Some m2 -> 
@@ -800,7 +799,7 @@ module Variable =
                     true, calcOpt cmax v1 v2 
                 | _ -> true, None    
 
-            | V.Div -> 
+            | BR.Div -> 
                 match max1, min2 with
                 // y.max = x1.max / x2.min
                 | Some m1, Some m2 ->
@@ -810,7 +809,7 @@ module Variable =
                     true, calcOpt cmax v1 v2
                 | _ -> true, None
 
-            | V.Subtr -> 
+            | BR.Subtr -> 
                 match max1, min2 with
                 // y.max = x1.max - x2.min
                 | Some m1, Some m2 -> 
@@ -824,16 +823,16 @@ module Variable =
                 | Some m1, None -> true, m1 |> maxToValue |> createMax false |> Some
                 | _ -> true, None
 
-            | V.NoOp -> true, None
+            | BR.NoOp -> true, None
 
         let calcIncr op incr1 incr2 = 
             match incr1, incr2 with
             | Some i1, Some i2 ->
                 match op with
                 // y.incr = x1.incr * x2.incr
-                | V.Mult -> i1 * i2 |> Some
+                | BR.Mult -> i1 * i2 |> Some
                 // when y = x1 + x2 then y.incr = gcd of x1.incr and x2.incr
-                | V.Add | V.Subtr -> V.gcd i1 i2 |> Some
+                | BR.Add | BR.Subtr -> BR.gcd i1 i2 |> Some
                 |  _ -> None
             | _ -> None
 
