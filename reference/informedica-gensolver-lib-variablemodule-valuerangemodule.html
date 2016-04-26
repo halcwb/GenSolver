@@ -57,7 +57,7 @@
           <td class="type-name">
             <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html">Maximum</a>
           </td>
-          <td class="xmldoc"><p>The maximum <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a> in
+          <td class="xmldoc"><p>The maximum <code>Value</code> in
 a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>. Can be inclusive
 or exclusive.</p>
 
@@ -75,7 +75,7 @@ or exclusive.</p>
           <td class="type-name">
             <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html">Minimum</a>
           </td>
-          <td class="xmldoc"><p>The minimal <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a> in
+          <td class="xmldoc"><p>The minimal <code>Value</code> in
 a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>. Can be inclusive
 or exclusive.</p>
 
@@ -113,25 +113,6 @@ a finite set of values or a <a href="informedica-gensolver-lib-variablemodule-va
         </tr>
     </tbody>
   </table>
-  <table class="table table-bordered module-list">
-    <thead>
-      <tr><td>Module</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td class="module-name">
-            <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule.html">Value</a>
-          </td>
-          <td class="xmldoc"><p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a>
-A <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a> is a non zero
-positive value implemented as a BigRational.
-Basic arrhythmic operations
-can be performed with this type.</p>
-
-</td>
-        </tr>
-    </tbody>
-  </table>
 
   </div>
 
@@ -144,15 +125,15 @@ can be performed with this type.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '63', 63)" onmouseover="showTip(event, '63', 63)">
+          <code onmouseout="hideTip(event, '64', 64)" onmouseover="showTip(event, '64', 64)">
             apply unr fValueSet fRange _arg1
           </code>
-          <div class="tip" id="63">
-            <strong>Signature:</strong> unr:&#39;?6871 -&gt; fValueSet:(Set&lt;Value&gt; -&gt; &#39;?6871) -&gt; fRange:(Range -&gt; &#39;?6871) -&gt; _arg1:ValueRange -&gt; &#39;?6871<br />
-                          <strong>Type parameters:</strong> '?6871          </div>
+          <div class="tip" id="64">
+            <strong>Signature:</strong> unr:&#39;?6886 -&gt; fValueSet:(Set&lt;BigRational&gt; -&gt; &#39;?6886) -&gt; fRange:(Range -&gt; &#39;?6886) -&gt; _arg1:ValueRange -&gt; &#39;?6886<br />
+                          <strong>Type parameters:</strong> '?6886          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L275-275" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L138-138" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -167,15 +148,15 @@ fr is used for <a href="informedica-gensolver-lib-variablemodule-valuerangemodul
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '64', 64)" onmouseover="showTip(event, '64', 64)">
+          <code onmouseout="hideTip(event, '65', 65)" onmouseover="showTip(event, '65', 65)">
             applyRange (...)
           </code>
-          <div class="tip" id="64">
-            <strong>Signature:</strong> fMin:(Minimum -&gt; &#39;?6873) -&gt; fMax:(Maximum -&gt; &#39;?6873) -&gt; fMinIncr:(Minimum * Value -&gt; &#39;?6873) -&gt; fMinMax:(Minimum * Maximum -&gt; &#39;?6873) -&gt; _arg1:Range -&gt; &#39;?6873<br />
-                          <strong>Type parameters:</strong> '?6873          </div>
+          <div class="tip" id="65">
+            <strong>Signature:</strong> fMin:(Minimum -&gt; &#39;?6888) -&gt; fMax:(Maximum -&gt; &#39;?6888) -&gt; fMinIncr:(Minimum * BigRational -&gt; &#39;?6888) -&gt; fIncrMax:(BigRational * Maximum -&gt; &#39;?6888) -&gt; fMinMax:(Minimum * Maximum -&gt; &#39;?6888) -&gt; _arg1:Range -&gt; &#39;?6888<br />
+                          <strong>Type parameters:</strong> '?6888          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L284-284" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L147-147" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -190,15 +171,15 @@ is used for <code>MinIncr</code> and <code>fMinMax</code> for <code>MinMax</code
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '65', 65)" onmouseover="showTip(event, '65', 65)">
+          <code onmouseout="hideTip(event, '66', 66)" onmouseover="showTip(event, '66', 66)">
             calc op (x1, x2)
           </code>
-          <div class="tip" id="65">
-            <strong>Signature:</strong> op:(Value -&gt; Value -&gt; Value) -&gt; (x1:ValueRange * x2:ValueRange) -&gt; ValueRange<br />
+          <div class="tip" id="66">
+            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; (x1:ValueRange * x2:ValueRange) -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L844-844" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L728-728" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -214,33 +195,15 @@ if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '66', 66)" onmouseover="showTip(event, '66', 66)">
+          <code onmouseout="hideTip(event, '67', 67)" onmouseover="showTip(event, '67', 67)">
             calcIncr op incr1 incr2
           </code>
-          <div class="tip" id="66">
-            <strong>Signature:</strong> op:(Value -&gt; Value -&gt; Value) -&gt; incr1:Value option -&gt; incr2:Value option -&gt; Value option<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L828-828" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '67', 67)" onmouseover="showTip(event, '67', 67)">
-            calcMax op max1 max2 min2
-          </code>
           <div class="tip" id="67">
-            <strong>Signature:</strong> op:(Value -&gt; Value -&gt; Value) -&gt; max1:Maximum option -&gt; max2:Maximum option -&gt; min2:Minimum option -&gt; bool * Maximum option<br />
+            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; incr1:BigRational option -&gt; incr2:BigRational option -&gt; BigRational option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L789-789" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L712-712" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -251,14 +214,14 @@ if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '68', 68)" onmouseover="showTip(event, '68', 68)">
-            calcMin op min1 min2 max2
+            calcMax op max1 max2 min2
           </code>
           <div class="tip" id="68">
-            <strong>Signature:</strong> op:(Value -&gt; Value -&gt; Value) -&gt; min1:Minimum option -&gt; min2:Minimum option -&gt; max2:Maximum option -&gt; Minimum option<br />
+            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; max1:Maximum option -&gt; max2:Maximum option -&gt; min2:Minimum option -&gt; bool * Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L741-741" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L673-673" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -269,14 +232,14 @@ if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '69', 69)" onmouseover="showTip(event, '69', 69)">
-            calcOpt op c v1 v2
+            calcMin op min1 min2 max2
           </code>
           <div class="tip" id="69">
-            <strong>Signature:</strong> op:(Value -&gt; Value -&gt; Value) -&gt; c:(Value -&gt; &#39;?6924) -&gt; v1:Value -&gt; v2:Value -&gt; &#39;?6924 option<br />
-                          <strong>Type parameters:</strong> '?6924          </div>
+            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; min1:Minimum option -&gt; min2:Minimum option -&gt; max2:Maximum option -&gt; Minimum option<br />
+                      </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L731-731" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L628-628" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -287,19 +250,37 @@ if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '70', 70)" onmouseover="showTip(event, '70', 70)">
-            contains v vr
+            calcOpt op c v1 v2
           </code>
           <div class="tip" id="70">
-            <strong>Signature:</strong> v:Value -&gt; vr:ValueRange -&gt; bool<br />
+            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; c:(BigRational -&gt; &#39;?6941) -&gt; v1:BigRational -&gt; v2:BigRational -&gt; &#39;?6941 option<br />
+                          <strong>Type parameters:</strong> '?6941          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L619-619" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '71', 71)" onmouseover="showTip(event, '71', 71)">
+            contains v vr
+          </code>
+          <div class="tip" id="71">
+            <strong>Signature:</strong> v:BigRational -&gt; vr:ValueRange -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L615-615" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L501-501" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Check whether a <code>ValueRang</code> <code>vr</code> contains
-a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a> <code>v</code>.</p>
+a <code>Value</code> <code>v</code>.</p>
 
 
         </td>
@@ -307,15 +288,15 @@ a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '71', 71)" onmouseover="showTip(event, '71', 71)">
+          <code onmouseout="hideTip(event, '72', 72)" onmouseover="showTip(event, '72', 72)">
             count 
           </code>
-          <div class="tip" id="71">
+          <div class="tip" id="72">
             <strong>Signature:</strong> ValueRange -&gt; int<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L292-292" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L156-156" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -328,15 +309,15 @@ Returns 0 if not a <code>ValueSet</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '72', 72)" onmouseover="showTip(event, '72', 72)">
+          <code onmouseout="hideTip(event, '73', 73)" onmouseover="showTip(event, '73', 73)">
             create succ fail unr vs min incr max
           </code>
-          <div class="tip" id="72">
-            <strong>Signature:</strong> succ:(ValueRange -&gt; &#39;?6911) -&gt; fail:(Message -&gt; &#39;?6911) -&gt; unr:bool -&gt; vs:Set&lt;Value&gt; -&gt; min:Minimum option -&gt; incr:Value option -&gt; max:Maximum option -&gt; &#39;?6911<br />
-                          <strong>Type parameters:</strong> '?6911          </div>
+          <div class="tip" id="73">
+            <strong>Signature:</strong> succ:(ValueRange -&gt; &#39;?6928) -&gt; fail:(Message -&gt; &#39;?6928) -&gt; unr:bool -&gt; vs:Set&lt;BigRational&gt; -&gt; min:Minimum option -&gt; incr:BigRational option -&gt; max:Maximum option -&gt; &#39;?6928<br />
+                          <strong>Type parameters:</strong> '?6928          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L557-557" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L443-443" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -355,15 +336,15 @@ unrestricted <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '73', 73)" onmouseover="showTip(event, '73', 73)">
+          <code onmouseout="hideTip(event, '74', 74)" onmouseover="showTip(event, '74', 74)">
             createExc 
           </code>
-          <div class="tip" id="73">
-            <strong>Signature:</strong> bool -&gt; Set&lt;Value&gt; -&gt; Minimum option -&gt; Value option -&gt; Maximum option -&gt; ValueRange<br />
+          <div class="tip" id="74">
+            <strong>Signature:</strong> bool -&gt; Set&lt;BigRational&gt; -&gt; Minimum option -&gt; BigRational option -&gt; Maximum option -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L576-576" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L462-462" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -376,15 +357,15 @@ an exception if it fails.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '74', 74)" onmouseover="showTip(event, '74', 74)">
+          <code onmouseout="hideTip(event, '75', 75)" onmouseover="showTip(event, '75', 75)">
             createMax isIncl m
           </code>
-          <div class="tip" id="74">
-            <strong>Signature:</strong> isIncl:bool -&gt; m:Value -&gt; Maximum<br />
+          <div class="tip" id="75">
+            <strong>Signature:</strong> isIncl:bool -&gt; m:BigRational -&gt; Maximum<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L521-521" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L402-402" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -397,15 +378,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '75', 75)" onmouseover="showTip(event, '75', 75)">
+          <code onmouseout="hideTip(event, '76', 76)" onmouseover="showTip(event, '76', 76)">
             createMin isIncl m
           </code>
-          <div class="tip" id="75">
-            <strong>Signature:</strong> isIncl:bool -&gt; m:Value -&gt; Minimum<br />
+          <div class="tip" id="76">
+            <strong>Signature:</strong> isIncl:bool -&gt; m:BigRational -&gt; Minimum<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L517-517" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L398-398" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -418,15 +399,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '76', 76)" onmouseover="showTip(event, '76', 76)">
+          <code onmouseout="hideTip(event, '77', 77)" onmouseover="showTip(event, '77', 77)">
             createOpt 
           </code>
-          <div class="tip" id="76">
-            <strong>Signature:</strong> bool -&gt; Set&lt;Value&gt; -&gt; Minimum option -&gt; Value option -&gt; Maximum option -&gt; ValueRange option<br />
+          <div class="tip" id="77">
+            <strong>Signature:</strong> bool -&gt; Set&lt;BigRational&gt; -&gt; Minimum option -&gt; BigRational option -&gt; Maximum option -&gt; ValueRange option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L579-579" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L465-465" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -438,15 +419,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '77', 77)" onmouseover="showTip(event, '77', 77)">
+          <code onmouseout="hideTip(event, '78', 78)" onmouseover="showTip(event, '78', 78)">
             createValueSet arg0
           </code>
-          <div class="tip" id="77">
-            <strong>Signature:</strong> arg0:Set&lt;Value&gt; -&gt; ValueRange<br />
+          <div class="tip" id="78">
+            <strong>Signature:</strong> arg0:Set&lt;BigRational&gt; -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L513-513" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L394-394" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -458,15 +439,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '78', 78)" onmouseover="showTip(event, '78', 78)">
+          <code onmouseout="hideTip(event, '79', 79)" onmouseover="showTip(event, '79', 79)">
             empty 
           </code>
-          <div class="tip" id="78">
+          <div class="tip" id="79">
             <strong>Signature:</strong> ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L510-510" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L391-391" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -478,15 +459,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '79', 79)" onmouseover="showTip(event, '79', 79)">
+          <code onmouseout="hideTip(event, '80', 80)" onmouseover="showTip(event, '80', 80)">
             filter min incr max
           </code>
-          <div class="tip" id="79">
-            <strong>Signature:</strong> min:Minimum option -&gt; incr:Value option -&gt; max:Maximum option -&gt; Set&lt;Value&gt; -&gt; Set&lt;Value&gt;<br />
+          <div class="tip" id="80">
+            <strong>Signature:</strong> min:Minimum option -&gt; incr:BigRational option -&gt; max:Maximum option -&gt; Set&lt;BigRational&gt; -&gt; Set&lt;BigRational&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L372-372" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L236-236" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -499,15 +480,15 @@ to increment, min and max constraints</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '80', 80)" onmouseover="showTip(event, '80', 80)">
+          <code onmouseout="hideTip(event, '81', 81)" onmouseover="showTip(event, '81', 81)">
             getIncr 
           </code>
-          <div class="tip" id="80">
-            <strong>Signature:</strong> ValueRange -&gt; Value option<br />
+          <div class="tip" id="81">
+            <strong>Signature:</strong> ValueRange -&gt; BigRational option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L599-599" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L485-485" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -517,15 +498,15 @@ to increment, min and max constraints</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '81', 81)" onmouseover="showTip(event, '81', 81)">
+          <code onmouseout="hideTip(event, '82', 82)" onmouseover="showTip(event, '82', 82)">
             getMax 
           </code>
-          <div class="tip" id="81">
+          <div class="tip" id="82">
             <strong>Signature:</strong> ValueRange -&gt; Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L605-605" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L491-491" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -538,15 +519,15 @@ values if there is one</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '82', 82)" onmouseover="showTip(event, '82', 82)">
+          <code onmouseout="hideTip(event, '83', 83)" onmouseover="showTip(event, '83', 83)">
             getMin 
           </code>
-          <div class="tip" id="82">
+          <div class="tip" id="83">
             <strong>Signature:</strong> ValueRange -&gt; Minimum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L594-594" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L480-480" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -562,39 +543,19 @@ the increment is the minimum</em></p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '83', 83)" onmouseover="showTip(event, '83', 83)">
+          <code onmouseout="hideTip(event, '84', 84)" onmouseover="showTip(event, '84', 84)">
             getSetMax s
           </code>
-          <div class="tip" id="83">
-            <strong>Signature:</strong> s:Set&lt;Value&gt; -&gt; Maximum option<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L378-378" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Get the maximum <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a> in a <code>Value Set</code>. Returns <code>None</code> if an empty set.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '84', 84)" onmouseover="showTip(event, '84', 84)">
-            getSetMin s
-          </code>
           <div class="tip" id="84">
-            <strong>Signature:</strong> s:Set&lt;Value&gt; -&gt; Minimum option<br />
+            <strong>Signature:</strong> s:Set&lt;BigRational&gt; -&gt; Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L375-375" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L242-242" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get the minimal <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a> in a <code>Value Set</code>. Returns <code>None</code> if an empty set.</p>
+          <p>Get the maximum <code>Value</code> in a <code>Value Set</code>. Returns <code>None</code> if an empty set.</p>
 
 
         </td>
@@ -603,14 +564,34 @@ the increment is the minimum</em></p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '85', 85)" onmouseover="showTip(event, '85', 85)">
-            getValueSet 
+            getSetMin s
           </code>
           <div class="tip" id="85">
-            <strong>Signature:</strong> ValueRange -&gt; Set&lt;Value&gt;<br />
+            <strong>Signature:</strong> s:Set&lt;BigRational&gt; -&gt; Minimum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L587-587" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L239-239" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Get the minimal <code>Value</code> in a <code>Value Set</code>. Returns <code>None</code> if an empty set.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '86', 86)" onmouseover="showTip(event, '86', 86)">
+            getValueSet 
+          </code>
+          <div class="tip" id="86">
+            <strong>Signature:</strong> ValueRange -&gt; Set&lt;BigRational&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L473-473" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -623,43 +604,19 @@ when <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valueran
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '86', 86)" onmouseover="showTip(event, '86', 86)">
-            isBetween min incr max v
-          </code>
-          <div class="tip" id="86">
-            <strong>Signature:</strong> min:Minimum option -&gt; incr:Value option -&gt; max:Maximum option -&gt; v:Value -&gt; bool<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L319-319" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Checks whether a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a> is between a 'min'
-a <code>max</code> and a multiple of <code>incr</code>. When min,
-incr and max are <code>None</code> then this will return
-<code>true</code> for any <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a>.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
           <code onmouseout="hideTip(event, '87', 87)" onmouseover="showTip(event, '87', 87)">
-            isEmpty vr
+            incrMaxValueRange incr max
           </code>
           <div class="tip" id="87">
-            <strong>Signature:</strong> vr:ValueRange -&gt; bool<br />
+            <strong>Signature:</strong> incr:BigRational -&gt; max:Maximum -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L313-313" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L418-418" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> is <code>ValueSet</code>
-and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a>.</p>
+          <p>Create a <code>MinIncr</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
 
 
         </td>
@@ -668,14 +625,58 @@ and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuer
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '88', 88)" onmouseover="showTip(event, '88', 88)">
-            isMaxExcl _arg1
+            isBetween min incr max v
           </code>
           <div class="tip" id="88">
+            <strong>Signature:</strong> min:Minimum option -&gt; incr:BigRational option -&gt; max:Maximum option -&gt; v:BigRational -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L183-183" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Checks whether a <code>Value</code> is between a 'min'
+a <code>max</code> and a multiple of <code>incr</code>. When min,
+incr and max are <code>None</code> then this will return
+<code>true</code> for any <code>Value</code>.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '89', 89)" onmouseover="showTip(event, '89', 89)">
+            isEmpty vr
+          </code>
+          <div class="tip" id="89">
+            <strong>Signature:</strong> vr:ValueRange -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L177-177" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Checks whether a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> is <code>ValueSet</code>
+and doesn't contain any <code>Value</code>.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '90', 90)" onmouseover="showTip(event, '90', 90)">
+            isMaxExcl _arg1
+          </code>
+          <div class="tip" id="90">
             <strong>Signature:</strong> _arg1:Maximum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L393-393" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L257-257" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -687,15 +688,15 @@ and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuer
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '89', 89)" onmouseover="showTip(event, '89', 89)">
+          <code onmouseout="hideTip(event, '91', 91)" onmouseover="showTip(event, '91', 91)">
             isMaxIncl 
           </code>
-          <div class="tip" id="89">
+          <div class="tip" id="91">
             <strong>Signature:</strong> Maximum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L396-396" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L260-260" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -707,15 +708,15 @@ and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuer
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '90', 90)" onmouseover="showTip(event, '90', 90)">
+          <code onmouseout="hideTip(event, '92', 92)" onmouseover="showTip(event, '92', 92)">
             isMinExcl _arg1
           </code>
-          <div class="tip" id="90">
+          <div class="tip" id="92">
             <strong>Signature:</strong> _arg1:Minimum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L387-387" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L251-251" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -727,15 +728,15 @@ and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuer
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '91', 91)" onmouseover="showTip(event, '91', 91)">
+          <code onmouseout="hideTip(event, '93', 93)" onmouseover="showTip(event, '93', 93)">
             isMinIncl 
           </code>
-          <div class="tip" id="91">
+          <div class="tip" id="93">
             <strong>Signature:</strong> Minimum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L390-390" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L254-254" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -747,15 +748,15 @@ and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuer
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '92', 92)" onmouseover="showTip(event, '92', 92)">
+          <code onmouseout="hideTip(event, '94', 94)" onmouseover="showTip(event, '94', 94)">
             isRange 
           </code>
-          <div class="tip" id="92">
+          <div class="tip" id="94">
             <strong>Signature:</strong> ValueRange -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L307-307" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L171-171" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -767,15 +768,15 @@ and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuer
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '93', 93)" onmouseover="showTip(event, '93', 93)">
+          <code onmouseout="hideTip(event, '95', 95)" onmouseover="showTip(event, '95', 95)">
             isUnrestricted 
           </code>
-          <div class="tip" id="93">
+          <div class="tip" id="95">
             <strong>Signature:</strong> ValueRange -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L297-297" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L161-161" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -787,15 +788,15 @@ and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuer
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '94', 94)" onmouseover="showTip(event, '94', 94)">
+          <code onmouseout="hideTip(event, '96', 96)" onmouseover="showTip(event, '96', 96)">
             isValueSet 
           </code>
-          <div class="tip" id="94">
+          <div class="tip" id="96">
             <strong>Signature:</strong> ValueRange -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L302-302" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L166-166" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -807,15 +808,15 @@ and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuer
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '95', 95)" onmouseover="showTip(event, '95', 95)">
+          <code onmouseout="hideTip(event, '97', 97)" onmouseover="showTip(event, '97', 97)">
             maxLTmax m1 m2
           </code>
-          <div class="tip" id="95">
+          <div class="tip" id="97">
             <strong>Signature:</strong> m1:Maximum -&gt; m2:Maximum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L343-343" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L207-207" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -827,15 +828,33 @@ and doesn't contain any <a href="informedica-gensolver-lib-variablemodule-valuer
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '96', 96)" onmouseover="showTip(event, '96', 96)">
-            maxRange isIncl m
+          <code onmouseout="hideTip(event, '98', 98)" onmouseover="showTip(event, '98', 98)">
+            maxMultipleOf incr max
           </code>
-          <div class="tip" id="96">
-            <strong>Signature:</strong> isIncl:bool -&gt; m:Value -&gt; Range<br />
+          <div class="tip" id="98">
+            <strong>Signature:</strong> incr:BigRational -&gt; max:Maximum -&gt; BigRational<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L529-529" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L270-270" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '99', 99)" onmouseover="showTip(event, '99', 99)">
+            maxRange isIncl m
+          </code>
+          <div class="tip" id="99">
+            <strong>Signature:</strong> isIncl:bool -&gt; m:BigRational -&gt; Range<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L410-410" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -848,15 +867,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '97', 97)" onmouseover="showTip(event, '97', 97)">
+          <code onmouseout="hideTip(event, '100', 100)" onmouseover="showTip(event, '100', 100)">
             maxSTEmax m1 m2
           </code>
-          <div class="tip" id="97">
+          <div class="tip" id="100">
             <strong>Signature:</strong> m1:Maximum -&gt; m2:Maximum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L351-351" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L215-215" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -868,19 +887,19 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '98', 98)" onmouseover="showTip(event, '98', 98)">
+          <code onmouseout="hideTip(event, '101', 101)" onmouseover="showTip(event, '101', 101)">
             maxToValue _arg1
           </code>
-          <div class="tip" id="98">
-            <strong>Signature:</strong> _arg1:Maximum -&gt; Value<br />
+          <div class="tip" id="101">
+            <strong>Signature:</strong> _arg1:Maximum -&gt; BigRational<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L384-384" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L248-248" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a>.</p>
+          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> to a <code>Value</code>.</p>
 
 
         </td>
@@ -888,15 +907,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '99', 99)" onmouseover="showTip(event, '99', 99)">
+          <code onmouseout="hideTip(event, '102', 102)" onmouseover="showTip(event, '102', 102)">
             minEQmax max min
           </code>
-          <div class="tip" id="99">
+          <div class="tip" id="102">
             <strong>Signature:</strong> max:Maximum -&gt; min:Minimum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L365-365" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L229-229" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -908,15 +927,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '100', 100)" onmouseover="showTip(event, '100', 100)">
+          <code onmouseout="hideTip(event, '103', 103)" onmouseover="showTip(event, '103', 103)">
             minIncrMaxToValueSet min incr max
           </code>
-          <div class="tip" id="100">
-            <strong>Signature:</strong> min:Minimum -&gt; incr:Value -&gt; max:Maximum -&gt; ValueRange<br />
+          <div class="tip" id="103">
+            <strong>Signature:</strong> min:Minimum -&gt; incr:BigRational -&gt; max:Maximum -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L406-406" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L277-277" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -928,15 +947,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '101', 101)" onmouseover="showTip(event, '101', 101)">
+          <code onmouseout="hideTip(event, '104', 104)" onmouseover="showTip(event, '104', 104)">
             minIncrValueRange min incr
           </code>
-          <div class="tip" id="101">
-            <strong>Signature:</strong> min:Minimum -&gt; incr:Value -&gt; ValueRange<br />
+          <div class="tip" id="104">
+            <strong>Signature:</strong> min:Minimum -&gt; incr:BigRational -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L532-532" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L413-413" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -948,15 +967,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '102', 102)" onmouseover="showTip(event, '102', 102)">
+          <code onmouseout="hideTip(event, '105', 105)" onmouseover="showTip(event, '105', 105)">
             minLTmax max min
           </code>
-          <div class="tip" id="102">
+          <div class="tip" id="105">
             <strong>Signature:</strong> max:Maximum -&gt; min:Minimum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L354-354" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L218-218" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -968,15 +987,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '103', 103)" onmouseover="showTip(event, '103', 103)">
+          <code onmouseout="hideTip(event, '106', 106)" onmouseover="showTip(event, '106', 106)">
             minLTmin m1 m2
           </code>
-          <div class="tip" id="103">
+          <div class="tip" id="106">
             <strong>Signature:</strong> m1:Minimum -&gt; m2:Minimum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L332-332" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L196-196" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -988,15 +1007,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '104', 104)" onmouseover="showTip(event, '104', 104)">
+          <code onmouseout="hideTip(event, '107', 107)" onmouseover="showTip(event, '107', 107)">
             minMaxValueRange succ fail min max
           </code>
-          <div class="tip" id="104">
-            <strong>Signature:</strong> succ:(ValueRange -&gt; &#39;?6909) -&gt; fail:(Message -&gt; &#39;?6909) -&gt; min:Minimum -&gt; max:Maximum -&gt; &#39;?6909<br />
-                          <strong>Type parameters:</strong> '?6909          </div>
+          <div class="tip" id="107">
+            <strong>Signature:</strong> succ:(ValueRange -&gt; &#39;?6926) -&gt; fail:(Message -&gt; &#39;?6926) -&gt; min:Minimum -&gt; max:Maximum -&gt; &#39;?6926<br />
+                          <strong>Type parameters:</strong> '?6926          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L539-539" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L425-425" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1010,15 +1029,15 @@ to <code>succ</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '105', 105)" onmouseover="showTip(event, '105', 105)">
+          <code onmouseout="hideTip(event, '108', 108)" onmouseover="showTip(event, '108', 108)">
             minMultipleOf incr min
           </code>
-          <div class="tip" id="105">
-            <strong>Signature:</strong> incr:Value -&gt; min:Minimum -&gt; BigRational<br />
+          <div class="tip" id="108">
+            <strong>Signature:</strong> incr:BigRational -&gt; min:Minimum -&gt; BigRational<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L399-399" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L263-263" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1028,15 +1047,15 @@ to <code>succ</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '106', 106)" onmouseover="showTip(event, '106', 106)">
+          <code onmouseout="hideTip(event, '109', 109)" onmouseover="showTip(event, '109', 109)">
             minRange isIncl m
           </code>
-          <div class="tip" id="106">
-            <strong>Signature:</strong> isIncl:bool -&gt; m:Value -&gt; Range<br />
+          <div class="tip" id="109">
+            <strong>Signature:</strong> isIncl:bool -&gt; m:BigRational -&gt; Range<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L525-525" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L406-406" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1049,15 +1068,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '107', 107)" onmouseover="showTip(event, '107', 107)">
+          <code onmouseout="hideTip(event, '110', 110)" onmouseover="showTip(event, '110', 110)">
             minSTEmax max min
           </code>
-          <div class="tip" id="107">
+          <div class="tip" id="110">
             <strong>Signature:</strong> max:Maximum -&gt; min:Minimum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L362-362" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L226-226" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1069,15 +1088,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '108', 108)" onmouseover="showTip(event, '108', 108)">
+          <code onmouseout="hideTip(event, '111', 111)" onmouseover="showTip(event, '111', 111)">
             minSTEmin m1 m2
           </code>
-          <div class="tip" id="108">
+          <div class="tip" id="111">
             <strong>Signature:</strong> m1:Minimum -&gt; m2:Minimum -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L340-340" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L204-204" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1089,19 +1108,19 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '109', 109)" onmouseover="showTip(event, '109', 109)">
+          <code onmouseout="hideTip(event, '112', 112)" onmouseover="showTip(event, '112', 112)">
             minToValue _arg1
           </code>
-          <div class="tip" id="109">
-            <strong>Signature:</strong> _arg1:Minimum -&gt; Value<br />
+          <div class="tip" id="112">
+            <strong>Signature:</strong> _arg1:Minimum -&gt; BigRational<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L381-381" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L245-245" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuemodule-value.html" title="Value"><code>Value</code></a>.</p>
+          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> to a <code>Value</code>.</p>
 
 
         </td>
@@ -1109,15 +1128,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '110', 110)" onmouseover="showTip(event, '110', 110)">
+          <code onmouseout="hideTip(event, '113', 113)" onmouseover="showTip(event, '113', 113)">
             print (...)
           </code>
-          <div class="tip" id="110">
+          <div class="tip" id="113">
             <strong>Signature:</strong> unr:bool -&gt; vals:string [] -&gt; min:string -&gt; minincl:bool -&gt; incr:string -&gt; max:string -&gt; maxincl:bool -&gt; string<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L422-422" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L291-291" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1129,15 +1148,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '111', 111)" onmouseover="showTip(event, '111', 111)">
+          <code onmouseout="hideTip(event, '114', 114)" onmouseover="showTip(event, '114', 114)">
             raiseExc m
           </code>
-          <div class="tip" id="111">
-            <strong>Signature:</strong> m:Message -&gt; &#39;?6869<br />
-                          <strong>Type parameters:</strong> '?6869          </div>
+          <div class="tip" id="114">
+            <strong>Signature:</strong> m:Message -&gt; &#39;?6884<br />
+                          <strong>Type parameters:</strong> '?6884          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L265-265" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L128-128" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1149,15 +1168,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '112', 112)" onmouseover="showTip(event, '112', 112)">
+          <code onmouseout="hideTip(event, '115', 115)" onmouseover="showTip(event, '115', 115)">
             setIncr incr vr
           </code>
-          <div class="tip" id="112">
-            <strong>Signature:</strong> incr:Value -&gt; vr:ValueRange -&gt; ValueRange<br />
+          <div class="tip" id="115">
+            <strong>Signature:</strong> incr:BigRational -&gt; vr:ValueRange -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L680-680" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L567-567" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1170,15 +1189,15 @@ If increment cannot be set the original vr is returned.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '113', 113)" onmouseover="showTip(event, '113', 113)">
+          <code onmouseout="hideTip(event, '116', 116)" onmouseover="showTip(event, '116', 116)">
             setMax max vr
           </code>
-          <div class="tip" id="113">
+          <div class="tip" id="116">
             <strong>Signature:</strong> max:Maximum -&gt; vr:ValueRange -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L655-655" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L542-542" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1191,15 +1210,15 @@ If maximum cannot be set the original vr is returned.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '114', 114)" onmouseover="showTip(event, '114', 114)">
+          <code onmouseout="hideTip(event, '117', 117)" onmouseover="showTip(event, '117', 117)">
             setMin min vr
           </code>
-          <div class="tip" id="114">
+          <div class="tip" id="117">
             <strong>Signature:</strong> min:Minimum -&gt; vr:ValueRange -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L631-631" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L517-517" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1212,15 +1231,15 @@ If minimum cannot be set the original vr is returned.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '115', 115)" onmouseover="showTip(event, '115', 115)">
+          <code onmouseout="hideTip(event, '118', 118)" onmouseover="showTip(event, '118', 118)">
             setValues vs vr
           </code>
-          <div class="tip" id="115">
-            <strong>Signature:</strong> vs:Set&lt;Value&gt; -&gt; vr:ValueRange -&gt; ValueRange<br />
+          <div class="tip" id="118">
+            <strong>Signature:</strong> vs:Set&lt;BigRational&gt; -&gt; vr:ValueRange -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L706-706" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L594-594" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1232,15 +1251,15 @@ If minimum cannot be set the original vr is returned.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '116', 116)" onmouseover="showTip(event, '116', 116)">
+          <code onmouseout="hideTip(event, '119', 119)" onmouseover="showTip(event, '119', 119)">
             toString vr
           </code>
-          <div class="tip" id="116">
+          <div class="tip" id="119">
             <strong>Signature:</strong> vr:ValueRange -&gt; string<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L450-450" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L321-321" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1252,15 +1271,15 @@ If minimum cannot be set the original vr is returned.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '117', 117)" onmouseover="showTip(event, '117', 117)">
+          <code onmouseout="hideTip(event, '120', 120)" onmouseover="showTip(event, '120', 120)">
             unrestricted 
           </code>
-          <div class="tip" id="117">
+          <div class="tip" id="120">
             <strong>Signature:</strong> ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L507-507" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L388-388" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
