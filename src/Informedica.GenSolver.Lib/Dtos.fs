@@ -146,35 +146,35 @@ module Variable =
 
         let dto = createNew (let (N.Name n) = v.Name in n)
 
-        let unr = v.ValueRange |> VR.isUnrestricted
+        let unr = v.Values |> VR.isUnrestricted
 
         let minincl = 
-            match v.ValueRange |> VR.getMin with
+            match v.Values |> VR.getMin with
             | Some m -> m |> VR.isMinExcl |> not | None -> false
             
         let maxincl = 
-            match v.ValueRange |> VR.getMax with
+            match v.Values |> VR.getMax with
             | Some m -> m |> VR.isMaxExcl |> not | None -> false
 
         let min  = 
-            v.ValueRange 
+            v.Values 
             |> VR.getMin 
             |> Option.bind (VR.minToValue >> Some) 
             |> optToString
 
         let max  = 
-            v.ValueRange 
+            v.Values 
             |> VR.getMax 
             |> Option.bind (VR.maxToValue >> Some) 
             |> optToString
 
         let incr = 
-            v.ValueRange
+            v.Values
             |> VR.getIncr
             |> optToString
 
         let vals = 
-            v.ValueRange 
+            v.Values 
             |> VR.getValueSet 
             |> Set.map (fun n -> n.ToString()) 
             |> Set.toArray

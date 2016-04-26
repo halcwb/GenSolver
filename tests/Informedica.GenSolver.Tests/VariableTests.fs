@@ -83,7 +83,7 @@ module Testing =
 
             let contains v vr = vr |> VR.contains v
 
-            let isBetweenMinMax min max  = VR.isBetween min None max 
+            let isBetweenMinMax min max  = VR.isBetweenAndMultOf min None max 
 
             let createExcMinMax vs min max = VR.createExc false vs min None max
             let createMinMax succ fail vs min max = VR.create succ fail false vs min None max

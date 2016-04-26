@@ -24,7 +24,7 @@ module Equation =
     /// Equation exception
     exception EquationException of Message
 
-    /// Raise exception with message `m`.
+    /// Raise an `EquationException` with `Message` `m`.
     let raiseExc m = m |> EquationException |> raise
 
     /// Create an `Equation` with an `y` and
