@@ -41,7 +41,7 @@
   <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule.html">Variable</a></span>
 </p>
 <div class="xmldoc">
-<p>Funcions to handle <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a></p>
+<p>Funcions and type to handle <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> that represents the name of a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a>.</p>
 
 </div>
 
@@ -100,12 +100,13 @@
                           <strong>Type parameters:</strong> '?6820          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L50-50" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L49-49" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create with <code>succ</code> function when success
-and <code>fail</code> function when failure</p>
+          <p>Create with continuation with <code>succ</code> function
+when success and <code>fail</code> function when failure.
+Creates a <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> from a<code>string</code>.</p>
 
 
         </td>
@@ -121,14 +122,12 @@ and <code>fail</code> function when failure</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L65-65" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L62-62" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a Name that
-is a non empty string
-Note: this function will fail
-when string is null or white space</p>
+          <p>Create a <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> that, raises
+an <a href="informedica-gensolver-lib-variablemodule-namemodule-nameexception.html" title="NameException"><code>NameException</code></a> when it fails.</p>
 
 
         </td>
@@ -144,7 +143,7 @@ when string is null or white space</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L59-59" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L58-58" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -165,11 +164,11 @@ succeeds else <code>None</code>.</p>
                           <strong>Type parameters:</strong> '?6818          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L42-42" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L40-40" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Raise an exception with <code>m</code>.</p>
+          <p>Raise a <a href="informedica-gensolver-lib-variablemodule-namemodule-nameexception.html" title="NameException"><code>NameException</code></a> with <code>Message</code> <code>m</code>.</p>
 
 
         </td>
@@ -185,11 +184,13 @@ succeeds else <code>None</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L67-67" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L65-65" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Return the <code>string</code> value of a <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a>.</p>
+
+
         </td>
       </tr>
     </tbody>

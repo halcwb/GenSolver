@@ -40,6 +40,12 @@
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
 </p>
 <div class="xmldoc">
+<p>Functions that handle the <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> type that
+either represents a <code>ProductEquation</code> </br>
+y = x1 <em> x2 </em> ... <em> xn </br>
+or a <code>SumEquations</code> </br>
+y = x1 </em> x2 <em> ... </em> xn</p>
+
 </div>
 
 <!-- Render nested types and modules, if there are any -->
@@ -54,8 +60,8 @@
           <td class="type-name">
             <a href="informedica-gensolver-lib-equationmodule-equation.html">Equation</a>
           </td>
-          <td class="xmldoc"><p>An equation is either a product equation
-or a sumequation, the first variable is the
+          <td class="xmldoc"><p>An equation is either a <code>ProductEquation</code>
+or a <code>Sumequation</code>, the first variable is the
 dependent variable, i.e. the result of the
 equation, the second part are the independent
 variables in the equation</p>
@@ -100,7 +106,7 @@ variables in the equation</p>
                           <strong>Type parameters:</strong> '?7010          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L63-63" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L67-67" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -121,15 +127,15 @@ variables in the equation</p>
                           <strong>Type parameters:</strong> '?7003, '?7004          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L35-35" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L39-39" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create an <code>Equation</code> with an <code>y</code> and
+          <p>Create an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> with an <code>y</code> and
 <code>xs</code>. Fails if a variable is added more
 than one time using the <code>fail</code> function.
-The type of Equation product or addition
-is determined by <code>c</code>.</p>
+The type of Equation product or sum
+is determined by the constructor <code>c</code>.</p>
 
 
         </td>
@@ -145,7 +151,7 @@ is determined by <code>c</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L44-44" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L48-48" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -167,7 +173,7 @@ than one time using the <code>fail</code> function.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L54-54" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L58-58" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -189,7 +195,7 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L49-49" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L53-53" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -211,7 +217,7 @@ than one time using the <code>fail</code> function.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L59-59" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L63-63" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -233,7 +239,7 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L94-94" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L103-103" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -251,7 +257,7 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L85-85" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L94-94" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -269,11 +275,15 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L67-67" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L74-74" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Make sure that the <code>Variables</code> in the
+<a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> can only contain positive
+non zero values.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -287,11 +297,11 @@ than one time raising an exception.</p>
                           <strong>Type parameters:</strong> '?7001          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L28-28" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L32-32" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Raise exception with message <code>m</code>.</p>
+          <p>Raise an <a href="informedica-gensolver-lib-equationmodule-equationexception.html" title="EquationException"><code>EquationException</code></a> with <code>Message</code> <code>m</code>.</p>
 
 
         </td>
@@ -307,11 +317,14 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L76-76" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L85-85" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Replace a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> <code>v</code> in the
+<a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> <code>e</code>.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -325,13 +338,13 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L104-104" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L113-113" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Solve an equation <code>e</code>, return true when
 the equation has changed. And the original
-Equation list with the replaced vars.</p>
+Equation list <code>es</code> with the replaced vars.</p>
 
 
         </td>

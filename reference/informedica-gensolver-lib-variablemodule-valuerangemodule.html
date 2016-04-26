@@ -41,7 +41,13 @@
   <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule.html">Variable</a></span>
 </p>
 <div class="xmldoc">
-<p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
+<p>Functions and types to handle <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
+<ul>
+<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a></li>
+<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a></li>
+<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a></li>
+<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a></li>
+</ul>
 
 </div>
 
@@ -57,7 +63,7 @@
           <td class="type-name">
             <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html">Maximum</a>
           </td>
-          <td class="xmldoc"><p>The maximum <code>Value</code> in
+          <td class="xmldoc"><p>The maximum value in
 a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>. Can be inclusive
 or exclusive.</p>
 
@@ -75,7 +81,7 @@ or exclusive.</p>
           <td class="type-name">
             <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html">Minimum</a>
           </td>
-          <td class="xmldoc"><p>The minimal <code>Value</code> in
+          <td class="xmldoc"><p>The minimal value in
 a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>. Can be inclusive
 or exclusive.</p>
 
@@ -85,10 +91,13 @@ or exclusive.</p>
           <td class="type-name">
             <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html">Range</a>
           </td>
-          <td class="xmldoc"><p>A range is restricted by either a
+          <td class="xmldoc"><p>A <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a> is restricted by either a
 <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>, a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>, a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>
-and a increment of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> and
-<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>.</p>
+and a increment, an increment and
+a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> or a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> and a
+<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>. There is no <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a> with
+both an min, incr, and max as that
+is in fact a <code>ValueSet</code>.</p>
 
 </td>
         </tr>
@@ -133,14 +142,14 @@ a finite set of values or a <a href="informedica-gensolver-lib-variablemodule-va
                           <strong>Type parameters:</strong> '?6886          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L138-138" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L144-144" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Aply the give functions to <code>Values</code>
-where <code>unr</code> is used for an unrestricted
-<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>, fv is used for <code>ValueSet</code> and
-fr is used for <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a></p>
+where <code>unr</code> is used for an <code>Unrestricted</code>
+<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>, <code>fv</code> is used for <code>ValueSet</code> and
+<code>fr</code> is used for <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a></p>
 
 
         </td>
@@ -156,14 +165,15 @@ fr is used for <a href="informedica-gensolver-lib-variablemodule-valuerangemodul
                           <strong>Type parameters:</strong> '?6888          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L147-147" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L154-154" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Aply the give functions to <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>
 where <code>fMin</code> is used for a range with only
-a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>, <code>fMax</code> is used for maximum <code>fMinIncr</code>
-is used for <code>MinIncr</code> and <code>fMinMax</code> for <code>MinMax</code>.</p>
+a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>, <code>fMax</code> is used for range <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>,
+<code>fMinIncr</code> is used for <code>MinIncr</code> , <code>fIncrMax</code>
+for <code>IncrMax</code> and <code>fMinMax</code> for <code>MinMax</code>.</p>
 
 
         </td>
@@ -179,15 +189,16 @@ is used for <code>MinIncr</code> and <code>fMinMax</code> for <code>MinMax</code
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L728-728" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L743-743" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Applies an infix operator
+          <p>Applies an infix operator <code>op</code>
 to <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>x1</code> and <code>x2</code>.
-Only add values to the result set if &gt; 0.
-Calculates minimum, increment or maximum
-if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
+Calculates <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>, increment or <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>
+if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.
+Doesn't perform any calculation when both
+<code>x1</code> and <code>x2</code> are <code>Unrestricted</code>.</p>
 
 
         </td>
@@ -203,11 +214,15 @@ if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L712-712" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L726-726" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Calculate an increment with
+<code>incr1</code> of x1 and <code>incr2</code> of x2
+in an equation: y = x1 <code>op</code> x2</p>
+
+
         </td>
       </tr>
       <tr>
@@ -221,11 +236,15 @@ if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L673-673" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L684-684" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Calculate the <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> with
+<code>max1</code> of x1 and <code>max2</code>, <code>min2</code> of x2
+in an equation: y = x1 <code>op</code> x2</p>
+
+
         </td>
       </tr>
       <tr>
@@ -239,11 +258,15 @@ if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L628-628" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L636-636" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Calculate the <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> with
+<code>min1</code> of x1 and <code>min2</code>, <code>max2</code> of x2
+in an equation: y = x1 <code>op</code> x2</p>
+
+
         </td>
       </tr>
       <tr>
@@ -257,11 +280,14 @@ if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
                           <strong>Type parameters:</strong> '?6941          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L619-619" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L624-624" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Safely calculate <code>v1</code> and <code>v2</code> using operator <code>op</code>,
+returns None if operator is division and <code>v2</code> is 0.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -275,12 +301,12 @@ if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L501-501" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L502-502" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Check whether a <code>ValueRang</code> <code>vr</code> contains
-a <code>Value</code> <code>v</code>.</p>
+          <p>Check whether a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code> contains
+a value <code>v</code>.</p>
 
 
         </td>
@@ -296,7 +322,7 @@ a <code>Value</code> <code>v</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L156-156" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L163-163" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -317,18 +343,17 @@ Returns 0 if not a <code>ValueSet</code>.</p>
                           <strong>Type parameters:</strong> '?6928          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L443-443" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L448-448" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Create a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> using a <code>ValueSet</code> <code>vs</code>
-an optional <code>min</code>, <code>incr</code> and <code>max</code>. If the <code>vs</code>
-is an empty set then create a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>. If <code>vs</code>
-is an empty set and both min, incr and max are
-<code>None</code> than an empty <code>ValueSet</code> will be returned.
-If <code>vs</code> is not empty the set will be filtered
-by <code>min</code>, <code>incr</code> and <code>max</code>. If <code>unr</code> then an
-unrestricted <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> will be returned to <code>succ</code>.</p>
+an optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code>, <code>incr</code> and <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code>.
+If the <code>vs</code> is an empty set then create a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>.
+If both <code>min</code>, <code>incr</code> and <code>max</code> are <code>None</code>, and
+<code>unr</code> created an <code>Unrestricted</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> else
+create an <code>empty</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>. Pass the result
+to <code>succ</code>, if failing a <code>Message</code> to <code>fail</code>.</p>
 
 
         </td>
@@ -344,11 +369,11 @@ unrestricted <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L462-462" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L467-467" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create <code>ValueRang</code> and raises
+          <p>Create <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> and raises
 an exception if it fails.</p>
 
 
@@ -365,7 +390,7 @@ an exception if it fails.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L402-402" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L410-410" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -386,7 +411,7 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L398-398" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L406-406" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -407,7 +432,7 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L465-465" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L470-470" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -427,11 +452,11 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L394-394" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L402-402" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a 'ValueSet`.</p>
+          <p>Create a <code>ValueSet</code>.</p>
 
 
         </td>
@@ -447,7 +472,7 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L391-391" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L399-399" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -467,12 +492,12 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L236-236" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L243-243" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Filter a set of values according
-to increment, min and max constraints</p>
+to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
 
 
         </td>
@@ -488,7 +513,7 @@ to increment, min and max constraints</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L485-485" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L487-487" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -506,12 +531,11 @@ to increment, min and max constraints</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L491-491" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L492-492" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get the maximum from
-values if there is one</p>
+          <p>Get the optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a></p>
 
 
         </td>
@@ -527,15 +551,11 @@ values if there is one</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L480-480" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L482-482" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get the minimum from
-values if there is one
-<em>Note when no minimum is specified
-but there is an increment, then
-the increment is the minimum</em></p>
+          <p>Get an optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a></p>
 
 
         </td>
@@ -551,11 +571,11 @@ the increment is the minimum</em></p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L242-242" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L249-249" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get the maximum <code>Value</code> in a <code>Value Set</code>. Returns <code>None</code> if an empty set.</p>
+          <p>Get the maximum value in a value set. Returns <code>None</code> if an empty set.</p>
 
 
         </td>
@@ -571,11 +591,11 @@ the increment is the minimum</em></p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L239-239" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L246-246" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get the minimal <code>Value</code> in a <code>Value Set</code>. Returns <code>None</code> if an empty set.</p>
+          <p>Get the minimal value in a value set. Returns <code>None</code> if an empty set.</p>
 
 
         </td>
@@ -591,12 +611,13 @@ the increment is the minimum</em></p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L473-473" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L479-479" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get a <code>Value Set</code>, returns an empty set
-when <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> is not a <code>ValueSet</code>.</p>
+          <p>Get a set of values from a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>,
+returns an empty set when <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> is not
+a <code>ValueSet</code> or the set of values is actually empty.</p>
 
 
         </td>
@@ -612,11 +633,11 @@ when <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valueran
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L418-418" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L426-426" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a <code>MinIncr</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
+          <p>Create an <code>IncrMax</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
 
 
         </td>
@@ -625,21 +646,21 @@ when <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valueran
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '88', 88)" onmouseover="showTip(event, '88', 88)">
-            isBetween min incr max v
+            isBetweenAndMultOf min incr max v
           </code>
           <div class="tip" id="88">
             <strong>Signature:</strong> min:Minimum option -&gt; incr:BigRational option -&gt; max:Maximum option -&gt; v:BigRational -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L183-183" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L190-190" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether a <code>Value</code> is between a 'min'
-a <code>max</code> and a multiple of <code>incr</code>. When min,
-incr and max are <code>None</code> then this will return
-<code>true</code> for any <code>Value</code>.</p>
+          <p>Checks whether a value is between an optional 'min'
+an optional <code>max</code> and is a multiple of <code>incr</code>.
+When min, incr and max are <code>None</code> then this will
+return <code>true</code> for any value.</p>
 
 
         </td>
@@ -655,12 +676,12 @@ incr and max are <code>None</code> then this will return
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L177-177" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L184-184" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Checks whether a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> is <code>ValueSet</code>
-and doesn't contain any <code>Value</code>.</p>
+and doesn't contain any value.</p>
 
 
         </td>
@@ -676,11 +697,11 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L257-257" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L264-264" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether maximum is exclusive.</p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> is exclusive.</p>
 
 
         </td>
@@ -696,11 +717,11 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L260-260" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L267-267" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether maximum is inclusive.</p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> is inclusive.</p>
 
 
         </td>
@@ -716,11 +737,11 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L251-251" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L258-258" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether minimum is exclusive.</p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> is exclusive.</p>
 
 
         </td>
@@ -736,11 +757,11 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L254-254" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L261-261" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether minimum is inclusive.</p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> is inclusive.</p>
 
 
         </td>
@@ -756,7 +777,7 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L171-171" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L178-178" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -776,7 +797,7 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L161-161" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L168-168" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -796,7 +817,7 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L166-166" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L173-173" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -816,11 +837,11 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L207-207" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L214-214" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether maximum <code>m1</code> &gt; <code>m2</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>m2</code> &gt; <code>m1</code></p>
 
 
         </td>
@@ -836,7 +857,7 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L270-270" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L277-277" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -854,7 +875,7 @@ and doesn't contain any <code>Value</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L410-410" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L418-418" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -875,11 +896,11 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L215-215" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L222-222" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether maximum <code>m1</code> &lt;= <code>m2</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>m2</code> &lt;= <code>m1</code></p>
 
 
         </td>
@@ -895,11 +916,11 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L248-248" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L255-255" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> to a <code>Value</code>.</p>
+          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> to a value.</p>
 
 
         </td>
@@ -915,11 +936,11 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L229-229" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L236-236" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether minimum <code>min</code> = maximum <code>max</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code> = <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code></p>
 
 
         </td>
@@ -935,7 +956,7 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L277-277" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L284-284" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -955,7 +976,7 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L413-413" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L421-421" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -975,11 +996,11 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L218-218" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L225-225" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether minimum <code>min</code> &gt; maximum <code>max</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code> &gt; <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code></p>
 
 
         </td>
@@ -995,11 +1016,11 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L196-196" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L203-203" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether minimum <code>m2</code> &gt; <code>m1</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>m2</code> &gt; <code>m1</code></p>
 
 
         </td>
@@ -1015,13 +1036,12 @@ either inclusive or exclusive.</p>
                           <strong>Type parameters:</strong> '?6926          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L425-425" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L432-432" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a <code>MinMax</code> <code>ValueRang</code>, if min &gt; max
-pass message to <code>fail</code> else pass
-to <code>succ</code>.</p>
+          <p>Create a <code>MinMax</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>. If <code>min</code> &gt; <code>max</code>
+pass a <code>Message</code> to <code>fail</code> else pass result to <code>succ</code>.</p>
 
 
         </td>
@@ -1037,7 +1057,7 @@ to <code>succ</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L263-263" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L270-270" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1055,7 +1075,7 @@ to <code>succ</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L406-406" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L414-414" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1076,11 +1096,11 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L226-226" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L233-233" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether minimum <code>min</code> &lt;= maximum <code>max</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code> &lt;= <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code></p>
 
 
         </td>
@@ -1096,11 +1116,11 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L204-204" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L211-211" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether minimum <code>m1</code> &lt;= <code>m2</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>m2</code> &lt;= <code>m1</code></p>
 
 
         </td>
@@ -1116,11 +1136,11 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L245-245" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L252-252" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> to a <code>Value</code>.</p>
+          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> to a value.</p>
 
 
         </td>
@@ -1136,11 +1156,12 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L291-291" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L299-299" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a string (to print).</p>
+          <p>Create a string (to print) representation of
+a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
 
 
         </td>
@@ -1156,11 +1177,11 @@ either inclusive or exclusive.</p>
                           <strong>Type parameters:</strong> '?6884          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L128-128" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L134-134" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Raise an exception with message <code>m</code>.</p>
+          <p>Raise a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerangeexception.html" title="ValueRangeException"><code>ValueRangeException</code></a> with <code>Message</code> <code>m</code>.</p>
 
 
         </td>
@@ -1176,12 +1197,12 @@ either inclusive or exclusive.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L567-567" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L568-568" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply a <code>incr</code> to a <code>ValueRang</code> <code>vr</code>.
-If increment cannot be set the original vr is returned.</p>
+          <p>Apply a <code>incr</code> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code>.
+If increment cannot be set the original is returned.</p>
 
 
         </td>
@@ -1197,12 +1218,12 @@ If increment cannot be set the original vr is returned.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L542-542" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L543-543" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code> to a <code>ValueRang</code> <code>vr</code>.
-If maximum cannot be set the original vr is returned.</p>
+          <p>Apply a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code>.
+If maximum cannot be set the original is returned.</p>
 
 
         </td>
@@ -1218,12 +1239,12 @@ If maximum cannot be set the original vr is returned.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L517-517" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L518-518" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code> to a <code>ValueRang</code> <code>vr</code>.
-If minimum cannot be set the original vr is returned.</p>
+          <p>Apply a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code>.
+If minimum cannot be set the original is returned.</p>
 
 
         </td>
@@ -1239,11 +1260,13 @@ If minimum cannot be set the original vr is returned.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L594-594" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L597-597" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Appy a <code>Value Set</code> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code>.</p>
+          <p>Appy a set of values to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code>.
+the result is a filtered or the intersect of
+the set of values and <code>vr</code>.</p>
 
 
         </td>
@@ -1259,11 +1282,11 @@ If minimum cannot be set the original vr is returned.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L321-321" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L329-329" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Convert a <code>ValueRang</code> to a <code>string</code>.</p>
+          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> to a <code>string</code>.</p>
 
 
         </td>
@@ -1279,11 +1302,11 @@ If minimum cannot be set the original vr is returned.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L388-388" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L396-396" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>An unrestricted <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
+          <p>An <code>Unrestricted</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
 
 
         </td>

@@ -40,12 +40,10 @@
   <span>Namespace: Informedica.GenSolver.Lib</span><br />
 </p>
 <div class="xmldoc">
-<p>Contains functions to handle
-the <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> type and the types
-<a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> depends on:</p>
+<p>Contains functions and types to represent
+a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> in an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a>:</p>
 <ul>
 <li><a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a></li>
-<li><code>Value</code></li>
 <li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a></li>
 <li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a></li>
 </ul>
@@ -65,9 +63,11 @@ the <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Vari
             <a href="informedica-gensolver-lib-variablemodule-variable.html">Variable</a>
           </td>
           <td class="xmldoc"><p>Represents a variable in an
-<code>Equation</code>. The variable is
+<a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a>. The variable is
 identified by <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> and has
-a set of possible <code>Values</code>.</p>
+a <code>Values</code> that are either
+<code>Unrestricted</code> or restricted by
+a <code>ValueSet</code> or a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>.</p>
 
 </td>
         </tr>
@@ -82,7 +82,7 @@ a set of possible <code>Values</code>.</p>
           <td class="module-name">
             <a href="informedica-gensolver-lib-variablemodule-namemodule.html">Name</a>
           </td>
-          <td class="xmldoc"><p>Funcions to handle <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a></p>
+          <td class="xmldoc"><p>Funcions and type to handle <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> that represents the name of a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a>.</p>
 
 </td>
         </tr>
@@ -90,7 +90,13 @@ a set of possible <code>Values</code>.</p>
           <td class="module-name">
             <a href="informedica-gensolver-lib-variablemodule-valuerangemodule.html">ValueRange</a>
           </td>
-          <td class="xmldoc"><p>Functions to handle <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
+          <td class="xmldoc"><p>Functions and types to handle <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>.</p>
+<ul>
+<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a></li>
+<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a></li>
+<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a></li>
+<li><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a></li>
+</ul>
 
 </td>
         </tr>
@@ -116,11 +122,13 @@ a set of possible <code>Values</code>.</p>
                           <strong>Type parameters:</strong> '?6774          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L821-821" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L851-851" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Apply <code>f</code> to <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> <code>var</code>.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -134,11 +142,14 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L861-861" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L914-914" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Apply the operator <code>op</code> to <code>v1</code> and <code>v2</code>
+return an intermediate <em>result</em> <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a>.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -152,11 +163,13 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L849-849" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L890-890" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Get the number of distinct values</p>
+
+
         </td>
       </tr>
       <tr>
@@ -170,11 +183,12 @@ a set of possible <code>Values</code>.</p>
                           <strong>Type parameters:</strong> '?6770          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L815-815" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L834-834" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a variable</p>
+          <p>Create a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> and passes
+the result to <code>succ</code></p>
 
 
         </td>
@@ -190,11 +204,16 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L819-819" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L844-844" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Helper create function to
+store the result of a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a>
+calculation before applying to
+the actual result <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a>.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -208,11 +227,14 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L817-817" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L838-838" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Create a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> and directly
+return the result.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -226,11 +248,14 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L851-851" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L894-894" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Checks whether <code>v1</code> and <code>v2</code> have the
+same <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a></p>
+
+
         </td>
       </tr>
       <tr>
@@ -244,11 +269,13 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L823-823" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L854-854" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Helper function for type inference</p>
+
+
         </td>
       </tr>
       <tr>
@@ -262,11 +289,13 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L829-829" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L861-861" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Get the <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> of a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a>.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -280,11 +309,13 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L831-831" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L864-864" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Get the <code>ValueRange of a</code>Variable`.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -298,11 +329,15 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L857-857" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L906-906" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Checks whether a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> is <em>solvable</em>
+i.e. can be further restricted to one value
+(or no values at all)</p>
+
+
         </td>
       </tr>
       <tr>
@@ -316,11 +351,15 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L853-853" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L899-899" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Checks whether a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> <code>v</code> is solved,
+i.e. there is but one possible value or
+there are no possible values left.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -334,11 +373,14 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L859-859" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L910-910" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Checks whether there are no restrictions to
+possible values a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> can contain</p>
+
+
         </td>
       </tr>
       <tr>
@@ -352,11 +394,13 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L837-837" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L871-871" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Change <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a> to <code>n</code>.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -370,11 +414,14 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L843-843" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L881-881" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Set the values to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>
+that prevents zero or negative values.</p>
+
+
         </td>
       </tr>
       <tr>
@@ -388,11 +435,14 @@ a set of possible <code>Values</code>.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L839-839" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L875-875" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Apply a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code> to
+<a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> <code>v</code>.</p>
+
+
         </td>
       </tr>
     </tbody>
