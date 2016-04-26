@@ -182,8 +182,8 @@ module Testing =
                         let vs = Set.empty |> Set.add x
                             
                         let succ vr = 
-                            vr |> contains v && 
-                            vr |> contains (v + BR.three) |> not
+                            vr |> contains x && 
+                            vr |> contains (x + BR.three) |> not
                         let fail _ = false
                         createMinMax succ fail vs min max
                     testProp test
@@ -197,16 +197,17 @@ module Testing =
                 [<Property>]
                 member x.``The isBetween function returns true for any Value LTE to one`` () =
                     let prop v =    
-                        v |> isBetweenMinMax min max
+                        let inBetween = v |> isBetweenMinMax min max
+                        if v >= 1N then inBetween else inBetween |> not
                     testProp prop
 
                 [<Test>]
                 member x.``Min is ST Min Excl 1 and ST Max Incl 2 but LT Max Excl 1`` () =
                     let minExcl = 1N |> createMinExcl
                     let maxExcl = 2N |> createMaxExcl
-                    test <@ min |> Option.get |> VR.minSTEmin minExcl @>                     // min incl 1 < min excl 1
-                    test <@ min |> Option.get |> VR.minSTEmax maxExcl  @>                    // min incl 1 < max excl 2
-                    test <@ min |> Option.get |> VR.minLTmax (1N |> createMaxExcl) @>        // min incl 1 > max excl 1
+                    test <@ min |> Option.get |> VR.minSTEmin minExcl @>                     // min incl 1 < min incl 1
+                    test <@ min |> Option.get |> VR.minSTEmax maxExcl  @>                    // min incl 1 < max incl 2
+                    test <@ min |> Option.get |> VR.minLTmax (1N |> createMaxExcl) @>        // min incl 1 > max incl 1
 
                     test <@ min |> Option.get |> VR.minLTmax (1N |> createMaxIncl) |> not @> // min incl 1 > max incl 1 is false
                     test <@ min |> Option.get |> VR.minLTmin (1N |> createMinIncl) |> not @> // min incl 1 > min incl 1 is false
@@ -228,7 +229,9 @@ module Testing =
                     let test v = 
                         let vs = vs |> Set.add v
                         
-                        let succ vr = vr |> VR.contains v
+                        let succ vr =
+                            let contains = vr |> VR.contains v
+                            if v >= 1N then contains else contains |> not
                         let fail _ = printfn "fail"; false
                         
                         createMinMax succ fail vs min max
@@ -242,9 +245,10 @@ module Testing =
                 let vs = Set.empty
 
                 [<Property>]
-                member x.``The isBetween function returns true for any Value LTE to 1`` () =
+                member x.``The isBetween function returns true for any Value STE to 1`` () =
                     let prop v =
-                        v |> isBetweenMinMax min max |> not
+                        let inBetween = v |> isBetweenMinMax min max
+                        if v <= 1N then inBetween else inBetween |> not
                     testProp prop
 
                 [<Test>]
@@ -264,7 +268,9 @@ module Testing =
                     let test v = 
                         let vs = vs |> Set.add v
                         
-                        let succ vr = vr |> VR.contains v
+                        let succ vr = 
+                            let contains = vr |> VR.contains v
+                            if v <= 1N then contains else contains |> not
                         let fail _  = false
                                                 
                         createMinMax succ fail vs min max
@@ -308,12 +314,12 @@ module Testing =
 
             [<TestFixture>]
             type ``Given a ValueRange with a Min and a ValueRange with a Min`` () =
-                let createVrMin excl v = VR.createExc false Set.empty (v |> VR.createMin excl |> Some) None None
+                let createVrMin incl v = VR.createExc false Set.empty (v |> VR.createMin incl |> Some) None None
 
-                let test op pred v1 excl1 v2 excl2 =
-                    let vr1 = v1 |> createVrMin excl1 
-                    let vr2 = v2 |> createVrMin excl2
-                    (vr1 |> op <| vr2) |> VR.getMin |> pred v1 v2 excl1 excl2                
+                let test op pred v1 incl1 v2 incl2 =
+                    let vr1 = v1 |> createVrMin incl1 
+                    let vr2 = v2 |> createVrMin incl2
+                    (vr1 |> op <| vr2) |> VR.getMin |> pred v1 v2 incl1 incl2                
                 
                 [<Property>]
                 member x.``When multiplied the result has min that is the multiple`` () =
@@ -348,7 +354,7 @@ module Testing =
                             
             [<TestFixture>]
             type ``Given a ValueRange with a Max and a ValueRange with a Max`` () =
-                let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
+                let createVrMax incl v = VR.createExc false Set.empty None None (v |> VR.createMax incl |> Some)
 
                 let test op pred v1 incl1 v2 incl2 =
                     let vr1 = v1 |> createVrMax incl1 
@@ -365,14 +371,14 @@ module Testing =
                     prop
                             
                 [<Property>]
-                member x.``When divided the result has max none`` () =
+                member x.``When divided the result has Max is None`` () =
                     let prop =
                         let pred _ _ _ _ m = m = None
                         test (/) pred
                     prop
 
                 [<Property>]
-                member x.``When added the result has max that is the addition`` () =
+                member x.``When added the result has Max that is Max + Max`` () =
                     let prop =
                         let pred v1 v2 incl1 incl2 m = m |> Option.get = ((v1 + v2) |> VR.createMax (incl1 && incl2))
                         test (+) pred
@@ -380,23 +386,22 @@ module Testing =
                     prop
                             
                 [<Property>]
-                member x.``When subtracting the result has max is the first max`` () =
+                member x.``When subtracting the result has Max is None`` () =
                     let prop =
-                        let pred v1 _ _ _ m = m = (v1 |> VR.createMax false |> Some)
+                        let pred _ _ _ _ m = m = None
                         test (-) pred
-
                     prop
                             
             [<TestFixture>]
-            type ``Given a ValueRange with a Min and a ValueRange with a Max`` () =
-                let createVrMin excl v = VR.createExc false Set.empty (v |> VR.createMin excl |> Some) None None
-                let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
+            type ``Given a calculation with ValueRange with a Min and a ValueRange with a Max`` () =
+                let createVrMin incl v = VR.createExc false Set.empty (v |> VR.createMin incl |> Some) None None
+                let createVrMax incl v = VR.createExc false Set.empty None None (v |> VR.createMax incl |> Some)
 
-                let test op predMin predMax v1 excl1 v2 excl2 =
-                    let vr1 = v1 |> createVrMin excl1 
-                    let vr2 = v2 |> createVrMax excl2
-                    (vr1 |> op <| vr2) |> VR.getMin |> predMin v1 v2 excl1 excl2 &&
-                    (vr1 |> op <| vr2) |> VR.getMax |> predMax v1 v2 excl1 excl2
+                let test op predMin predMax v1 incl1 v2 incl2 =
+                    let vr1 = v1 |> createVrMin incl1 
+                    let vr2 = v2 |> createVrMax incl2
+                    (vr1 |> op <| vr2) |> VR.getMin |> predMin v1 v2 incl1 incl2 &&
+                    (vr1 |> op <| vr2) |> VR.getMax |> predMax v1 v2 incl1 incl2
                 
                 
                 [<Property>]
@@ -407,44 +412,42 @@ module Testing =
                     prop
                             
                 [<Property>]
-                member x.``When divided the result has Min division of Min/Max and Max None`` () =
+                member x.``When divided the result has Min of Min/Max and Max is None`` () =
                     let prop =
                         let predMin v1 v2 incl1 incl2 m =
-                            m = ((v1 / v2) |> VR.createMin (incl1 && incl2) |> Some)
+                            if v2 = 0N then true
+                            else
+                                m = ((v1 / v2) |> VR.createMin (incl1 && incl2) |> Some)
                         let predMax _ _ _ _ m = m = None
                         test (/) predMin predMax
                     prop
 
                 [<Property>]
-                member x.``When added the result has Min is Min Excl and Max None`` () =
+                member x.``When added the result has Min is None and Max None`` () =
                     let prop =
-                        let predMin v1 _ _ _ m =
-                            m = (v1 |> VR.createMin false |> Some)
-                        let predMax _ _ _ _ m = m = None
-                        test (+) predMin predMax
+                        let pred _ _ _ _ m = m = None
+                        test (+) pred pred
                     prop
                             
                 [<Property>]
-                member x.``When subtracting the result has Min Min - Max and Max None`` () =
+                member x.``When subtracting the result has Min is Max - Min and Max None`` () =
                     let prop =
                         let predMin v1 v2 incl1 incl2 m =
-                            if v1 > v2 then
-                                m = (v1 - v2 |> VR.createMin (incl1 && incl2) |> Some) 
-                            else m = None 
+                            m = (v1 - v2 |> VR.createMin (incl1 && incl2) |> Some) 
                         let predMax _ _ _ _ m = m = None
                         test (-) predMin predMax
                     prop
                     
             [<TestFixture>]
-            type ``Given a ValueRange with a Max and a ValueRange with a Min`` () =
-                let createVrMin excl v = VR.createExc false Set.empty (v |> VR.createMin excl |> Some) None None
-                let createVrMax excl v = VR.createExc false Set.empty None None (v |> VR.createMax excl |> Some)
+            type ``Given calculation with ValueRange with a Max and a ValueRange with a Min`` () =
+                let createVrMin incl v = VR.createExc false Set.empty (v |> VR.createMin incl |> Some) None None
+                let createVrMax incl v = VR.createExc false Set.empty None None (v |> VR.createMax incl |> Some)
 
-                let test op predMin predMax v1 excl1 v2 excl2 =
-                    let vr1 = v1 |> createVrMax excl1 
-                    let vr2 = v2 |> createVrMin excl2
-                    (vr1 |> op <| vr2) |> VR.getMin |> predMin v1 v2 excl1 excl2 &&
-                    (vr1 |> op <| vr2) |> VR.getMax |> predMax v1 v2 excl1 excl2
+                let test op predMin predMax v1 incl1 v2 incl2 =
+                    let vr1 = v1 |> createVrMax incl1 
+                    let vr2 = v2 |> createVrMin incl2
+                    (vr1 |> op <| vr2) |> VR.getMin |> predMin v1 v2 incl1 incl2 &&
+                    (vr1 |> op <| vr2) |> VR.getMax |> predMax v1 v2 incl1 incl2
                 
                 
                 [<Property>]
@@ -455,30 +458,28 @@ module Testing =
                     prop
                             
                 [<Property>]
-                member x.``When divided the result has Max division of Max/Min and Min None`` () =
+                member x.``When divided the result has Max of Max/Min and Min is None`` () =
                     let prop =
-                        let predMax v1 v2 excl1 excl2 m =
-                            m = ((v1 / v2) |> VR.createMax (excl1 || excl2) |> Some)
+                        let predMax v1 v2 incl1 incl2 m =
+                            if v2 = 0N then true
+                            else
+                                m = ((v1 / v2) |> VR.createMax (incl1 && incl2) |> Some)
                         let predMin _ _ _ _ m = m = None
                         test (/) predMin predMax
                     prop
 
                 [<Property>]
-                member x.``When added the result has Min is Min Excl and Max None`` () =
+                member x.``When added the result has Min is None and Max None`` () =
                     let prop =
-                        let predMin _ v2 _ _ m =
-                            m = (v2 |> VR.createMin false |> Some)
-                        let predMax _ _ _ _ m = m = None
-                        test (+) predMin predMax
+                        let pred _ _ _ _ m = m = None
+                        test (+) pred pred
                     prop
                             
                 [<Property>]
-                member x.``When subtracting the result has Max Max - Min and Min None`` () =
+                member x.``When subtracting the result has Max is Max - Min and Min is None`` () =
                     let prop =
-                        let predMax v1 v2 excl1 excl2 m =
-                            if v1 > v2 then
-                                m = (v1 - v2 |> VR.createMax (excl1 || excl2) |> Some) 
-                            else m = None 
+                        let predMax v1 v2 incl1 incl2 m =
+                            m = (v1 - v2 |> VR.createMax (incl1 && incl2) |> Some)
                         let predMin _ _ _ _ m = m = None
                         test (-) predMin predMax
                     prop

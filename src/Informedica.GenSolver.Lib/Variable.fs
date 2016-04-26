@@ -660,7 +660,7 @@ module Variable =
 
             | BR.Subtr -> 
                 match min1, max2 with
-                // y.min = x1.min - x2.min
+                // y.min = x1.min - x2.max
                 | Some m1, Some m2 ->
                     let v1, v2 = m1 |> minToValue, m2 |> maxToValue
                     let incl = m1 |> isMinIncl && m2 |> isMaxIncl
@@ -688,7 +688,7 @@ module Variable =
                 // y.max = x1.max / x2.min
                 | Some m1, Some m2 ->
                     let v1, v2 = m1 |> maxToValue, m2 |> minToValue
-                    let incl = m1 |> isMaxIncl || m2 |> isMinIncl
+                    let incl = m1 |> isMaxIncl && m2 |> isMinIncl
                     let cmax = createMax incl
                     true, calcOpt cmax v1 v2
                 | _ -> true, None
@@ -698,7 +698,7 @@ module Variable =
                 // y.max = x1.max - x2.min
                 | Some m1, Some m2 -> 
                     let v1, v2 = m1 |> maxToValue, m2 |> minToValue
-                    let incl = m1 |> isMaxIncl || m2 |> isMinIncl
+                    let incl = m1 |> isMaxIncl && m2 |> isMinIncl
                     let cmax = createMax incl
                     match calcOpt cmax v1 v2 with
                     | Some m -> true, m |> Some
