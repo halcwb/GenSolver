@@ -1,6 +1,10 @@
 ﻿namespace Informedica.GenSolver.Lib
 
-
+/// Functions that handle the `Equation` type that
+/// either represents a `ProductEquation` </br>
+/// y = x1 * x2 * ... * xn </br>
+/// or a `SumEquations` </br>
+/// y = x1 * x2 * ... * xn
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Equation =
 
@@ -8,8 +12,8 @@ module Equation =
 
     module VAR = Variable
     
-    /// An equation is either a product equation
-    /// or a sumequation, the first variable is the
+    /// An equation is either a `ProductEquation`
+    /// or a `Sumequation`, the first variable is the
     /// dependent variable, i.e. the result of the 
     /// equation, the second part are the independent
     /// variables in the equation
@@ -30,8 +34,8 @@ module Equation =
     /// Create an `Equation` with an `y` and
     /// `xs`. Fails if a variable is added more
     /// than one time using the `fail` function.
-    /// The type of Equation product or addition
-    /// is determined by `c`.
+    /// The type of Equation product or sum
+    /// is determined by the constructor `c`.
     let create c succ fail (y, xs) = 
         let vars = y::xs
         match vars |> List.filter (fun v -> vars |> List.filter ((=) v) |> List.length > 1) with
@@ -64,6 +68,9 @@ module Equation =
         | ProductEquation (y,xs) -> fp y xs
         | SumEquation (y, xs)    -> fs y xs
 
+    /// Make sure that the `Variables` in the
+    /// `Equation` can only contain positive 
+    /// non zero values.
     let nonZeroOrNegative e =
         let set c y xs =
             let y' = y |> VAR.setNonZeroOrNegative
@@ -73,6 +80,8 @@ module Equation =
         let fs = set SumEquation
         e |> apply fp fs
 
+    /// Replace a `Variable` `v` in the 
+    /// `Equation` `e`.
     let replace v e =
         let r c v vs =
             let vs = vs |> List.replace ((VAR.eqName) v) v
@@ -100,7 +109,7 @@ module Equation =
 
     /// Solve an equation `e`, return true when
     /// the equation has changed. And the original
-    /// Equation list with the replaced vars.
+    /// Equation list `es` with the replaced vars.
     let solve es e =
         let replace es v =
             let es = es |> List.map (replace v)

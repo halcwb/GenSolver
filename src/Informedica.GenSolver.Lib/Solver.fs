@@ -11,10 +11,16 @@ module Solver =
     module VAR = Variable
     module E = Equation
  
+    /// The `Result` of solving an `Equation`
+    /// is that either the `Equation` is the 
+    /// same or has `Changed`.
     type Result =
         | UnChanged
         | Changed   of E.Equation list
 
+    /// Solve the equation `e` and return 
+    /// the set of equations `es` it belongs 
+    /// to either as `Changed` or `Unchanged`
     let solveEquation e es = 
         let changed, es' = e |> E.solve es
         if changed then es' |> Changed else UnChanged
@@ -52,7 +58,9 @@ module Solver =
                             |> solveEqs rest
 
             solveEqs eqs []
-
+    
+    /// Solve an `Equation` list and return the 
+    /// updated list.
     let solve = createSolve solveEquation E.isSolvable
 
 

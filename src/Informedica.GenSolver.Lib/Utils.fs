@@ -1,6 +1,7 @@
 ﻿namespace Informedica.GenSolver.Utils
 
 
+/// Function to perform a safe null check
 module NullCheck =
 
     /// This is the F# 4 implementation of
@@ -12,6 +13,7 @@ module NullCheck =
         | _ -> false
 
 
+/// Helper functions for `System.String`
 module String = 
 
     open System
@@ -24,13 +26,14 @@ module String =
 
     let contains c s = (s |> get).Contains(c) 
 
-    let trim s    = (s |> get).Trim()
+    let trim s = (s |> get).Trim()
 
     let toLower s = (s |> get).ToLower()
 
     let length s = (s |> get).Length
 
 
+/// Helper functions for `BigRational`
 module BigRational = 
     
     let apply f (x: BigRational) = f x
@@ -60,11 +63,14 @@ module BigRational =
         | Some v' -> v' |> toString
         | None    -> ""
 
+    /// Convert `n` to a multiple of `d`.
     let toMultipleOf d n  =
         let m = (n / d) |> BigRational.ToInt32 |> BigRational.FromInt
         if m * d < n then (m + 1N) * d else m * d
 
-    let isMultiple (incr: BigRational) (v: BigRational) = 
+    /// Checks whether `v` is a multiple of `incr`
+    let isMultiple incr v =
+        let incr, v = incr |> get, v |> get 
         (v.Numerator * incr.Denominator) % (incr.Numerator * v.Denominator) = 0I
 
     let zero = 0N
@@ -87,6 +93,10 @@ module BigRational =
     /// Check whether the operator is divsion
     let opIsDiv op   = (three |> op <| two) = three / two // = 3/2
 
+    /// Match an operator `op` to either
+    /// multiplication, division, addition
+    /// or subtraction, returns `NoOp` when
+    /// the operation is neither.
     let (|Mult|Div|Add|Subtr|NoOp|) op =
         match op with
         | _ when op |> opIsMult  -> Mult
@@ -96,6 +106,7 @@ module BigRational =
         | _ -> NoOp
 
 
+/// Helper functions for `List`
 module List =
 
     /// Replace an element in a list
@@ -109,6 +120,8 @@ module List =
 
     let distinct xs = xs |> Seq.ofList |> Seq.distinct |> Seq.toList
 
+
+/// Helper functions for `Array`
 module Array = 
     
     let replace pred x xs = 
@@ -118,6 +131,7 @@ module Array =
         |> List.toArray
 
 
+/// Helper functions for `Option`
 module Option = 
 
     let none _ = None
