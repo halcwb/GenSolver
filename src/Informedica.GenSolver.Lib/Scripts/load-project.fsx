@@ -6,4 +6,5 @@
       "../Equation.fs"
       "../Solver.fs"
       "../Dtos.fs"
+      "../Api.fs"
       "../AssemblyInfo.fs"

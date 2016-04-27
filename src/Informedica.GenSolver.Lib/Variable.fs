@@ -223,11 +223,16 @@ module Variable =
 
         /// Checks whether `Minimum` `min` > `Maximum` `max`
         let minLTmax max min =
-            match min, max with
-            | MinIncl min', MaxIncl max' -> min' > max'
-            | MinExcl min', MaxIncl max' 
-            | MinExcl min', MaxExcl max' 
-            | MinIncl min', MaxExcl max' -> min' >= max' 
+            let minmax =
+                match min, max with
+                | MinIncl min', MaxIncl max' -> min' > max'
+                | MinExcl min', MaxIncl max' 
+                | MinExcl min', MaxExcl max' 
+                | MinIncl min', MaxExcl max' -> min' >= max' 
+            if minmax then 
+                printfn "MinLargerThanMax: %A > %A" min max
+                true
+            else false
 
         /// Checks whether `Minimum` `min` <= `Maximum` `max`
         let minSTEmax max min = min |> minLTmax max |> not
@@ -619,6 +624,220 @@ module Variable =
         
         // #region ---- CALCULATION -----
 
+        let calcMinMax op x1 x2 =
+            match op with
+            | BR.Mult ->
+                match x1, x2 with
+                | (None, None), (None, None) 
+                | _, (None, None) 
+                | (None, None), _ -> None, None
+
+                | (Some min, None),     (None,     Some max) 
+                | (None,     Some max), (Some min, None)  ->
+                    let min' = None
+                    // if max <= 0 && min => 0 -> max = max * min
+                    let max' = 
+                        let v1 = max |> maxToValue
+                        let v2 = min |> minToValue
+                        let incl = max |> isMaxIncl && min |> isMinIncl
+                        if v1 <= 0N && v2 >= 0N then 
+                            v1 * v2 |> createMax incl |> Some
+                        else None
+                    min', max'
+
+                | (Some min1, None), (Some min2, None) -> 
+                    let max = None
+                    // if min1 >= 0 && min2 >= 0 -> min = min1 * min2
+                    let min = 
+                        let min1' = min1 |> minToValue
+                        let min2' = min2 |> minToValue
+                        let incl = min1 |> isMinIncl && min2 |> isMinIncl
+                        if min1' >= 0N && min2' >= 0N then 
+                            min1' * min2' |> createMin incl |> Some
+                        else None
+                    min, max
+
+                | (Some min1, None), (Some min2, Some max2) -> 
+                    // if min1 >= 0 && min2 >= 0 -> min = min1 * min2
+                    let min = 
+                        let min1' = min1 |> minToValue
+                        let min2' = min2 |> minToValue
+                        let incl = min1 |> isMinIncl && min2 |> isMinIncl
+                        if min1' >= 0N && min2' >= 0N then 
+                            min1' * min2' |> createMin incl |> Some
+                        else None
+                    // if max1 <= 0 -> max = max1 * min1
+                    let max = 
+                        let max2' = max2 |> maxToValue
+                        let min1' = min1 |> minToValue
+                        let incl = max2 |> isMaxIncl && min2 |> isMinIncl
+                        if max2' <= 0N then 
+                            max2' * min1' |> createMax incl |> Some
+                        else None
+                    min, max
+
+                | (Some min1, Some max1), (Some min2, None) -> 
+                    // if min1 >= 0 && min2 >= 0 -> min = min1 * min2
+                    let min = 
+                        let min1' = min1 |> minToValue
+                        let min2' = min2 |> minToValue
+                        let incl = min1 |> isMinIncl && min2 |> isMinIncl
+                        if min1' >= 0N && min2' >= 0N then 
+                            min1' * min2' |> createMin incl |> Some
+                        else None
+                    // if max1 <= 0 -> max = max1 * min2
+                    let max = 
+                        let max1' = max1 |> maxToValue
+                        let min2' = min2 |> minToValue
+                        let incl = max1 |> isMaxIncl && min2 |> isMinIncl
+                        if max1' <= 0N then 
+                            max1' * min2' |> createMax incl |> Some
+                        else None
+                    min, max
+                  
+                | (None , Some max1), (None, Some max2) -> 
+                    // if max1 <= 0 && max2 <= 0 -> min = max1 * max2
+                    let min = 
+                        let max1' = max1 |> maxToValue
+                        let max2' = max2 |> maxToValue
+                        let incl = max1 |> isMaxIncl && max2 |> isMaxIncl
+                        if max1' <= 0N && max2' <= 0N then 
+                            max1' * max2' |> createMin incl |> Some
+                        else None
+                    let max = None
+                    min, max
+
+                | (Some min1, Some max1), (None, Some max2) ->
+                    // if max1 <= 0 -> min = max1 * max2
+                    let min = 
+                        let max1' = max1 |> maxToValue
+                        let max2' = max2 |> maxToValue
+                        let incl = max1 |> isMaxIncl && max2 |> isMaxIncl
+                        if max1'<= 0N then 
+                            max1' * max2' |> createMin incl |> Some
+                        else None
+                    // if min1 >= 0 -> max = max1 * max2
+                    let max = 
+                        let min1' = min1 |> minToValue
+                        let max1' = max1 |> maxToValue
+                        let max2' = max2 |> maxToValue
+                        let incl = max1 |> isMaxIncl && max2 |> isMaxIncl
+                        if min1' >= 0N then 
+                            max1' * max2' |> createMax incl |> Some
+                        else None
+                    min, max
+
+                | (None  , Some max1),    (Some min2, Some max2) -> 
+                    // if max2 <= 0 -> min = max1 * max2
+                    let min = 
+                        let max1' = max1 |> maxToValue
+                        let max2' = max2 |> maxToValue
+                        let incl = max1 |> isMaxIncl && max2 |> isMaxIncl
+                        if max2'<= 0N then 
+                            max1' * max2' |> createMin incl |> Some
+                        else None
+                    // if min2 >= 0 -> max = max1 * max2
+                    let max = 
+                        let min2' = min2 |> minToValue
+                        let max1' = max1 |> maxToValue
+                        let max2' = max2 |> maxToValue
+                        let incl = max1 |> isMaxIncl && max2 |> isMaxIncl
+                        if min2' >= 0N then 
+                            max1' * max2' |> createMax incl |> Some
+                        else None
+                    min, max
+
+                | (Some min1, Some max1), (Some min2, Some max2) -> 
+                    // min = min1 * min2
+                    let min =
+                        let min1' = min1 |> minToValue
+                        let min2' = min2 |> minToValue
+                        let incl = min1 |> isMinIncl && min2 |> isMinIncl
+                        min1' * min2' |> createMin incl |> Some
+                    // max = max1 * max2
+                    let max =
+                        let max1' = max1 |> maxToValue
+                        let max2' = max2 |> maxToValue
+                        let incl = max1 |> isMaxIncl && max2 |> isMaxIncl
+                        max1' * max2' |> createMax incl |> Some
+                    min, max
+                        
+            | BR.Div ->
+                match x1, x2 with
+                | (None, None), (None, None) 
+                | _, (None, None) 
+                | (None, None), _ -> None, None
+
+                | (None  , Some max1), (Some min2, None) -> 
+                    let min = None
+                    // If max1 <= 0 && min2 >= 0 -> max < 0
+                    let max = 
+                        let max1' = max1 |> maxToValue
+                        let min2' = min2 |> minToValue
+                        if max1' <= 0N && min2' >= 0N then 
+                            0N |> createMax false |> Some
+                        else None
+                    min, max
+                    
+                | (Some min1, None), (Some min2, None) ->
+                    // if min1 && min2 > 0 -> min = < 0
+                    let min =
+                        let min1' = min1 |> minToValue
+                        let min2' = min2 |> minToValue
+                        if min1' >= 0N && min2' >= 0N then
+                            0N |> createMin false |> Some
+                        else None
+                    let max = None
+                    min, max
+                        
+                | (Some min1, Some max1), (Some min2, None)      -> None, None
+                | (Some min1, None),      (None,      Some max2) -> None, None
+                | (None  , Some max1),    (None,      Some max2) -> None, None
+                | (Some min1, Some max1), (None,      Some max2) -> None, None
+                | (Some min1, None),      (Some min2, Some max2) -> None, None
+                | (None  , Some max1),    (Some min2, Some max2) -> None, None
+                | (Some min1, Some max1), (Some min2, Some max2) -> None, None
+
+            | BR.Add ->
+                match x1, x2 with
+                | (None,   None),         (None,      None)      -> None, None
+                | (Some min1, None),      (None,      None)      -> None, None
+                | (None  , Some max1),    (None,      None)      -> None, None
+                | (Some min1, Some max1), (None,      None)      -> None, None
+                | (None,   None),         (Some min2, None)      -> None, None
+                | (None,   None),         (None,      Some max2) -> None, None
+                | (None,   None),         (Some min2, Some max2) -> None, None
+
+                | (None  , Some max1),    (Some min2, None)      -> None, None
+                | (Some min1, None),      (Some min2, None)      -> None, None
+                | (Some min1, Some max1), (Some min2, None)      -> None, None
+                | (Some min1, None),      (None,      Some max2) -> None, None
+                | (None  , Some max1),    (None,      Some max2) -> None, None
+                | (Some min1, Some max1), (None,      Some max2) -> None, None
+                | (Some min1, None),      (Some min2, Some max2) -> None, None
+                | (None  , Some max1),    (Some min2, Some max2) -> None, None
+                | (Some min1, Some max1), (Some min2, Some max2) -> None, None
+
+            | BR.Subtr ->
+                match x1, x2 with
+                | (None,   None),         (None,      None)      -> None, None
+                | (Some min1, None),      (None,      None)      -> None, None
+                | (None  , Some max1),    (None,      None)      -> None, None
+                | (Some min1, Some max1), (None,      None)      -> None, None
+                | (None,   None),         (Some min2, None)      -> None, None
+                | (None,   None),         (None,      Some max2) -> None, None
+                | (None,   None),         (Some min2, Some max2) -> None, None
+
+                | (None  , Some max1),    (Some min2, None)      -> None, None
+                | (Some min1, None),      (Some min2, None)      -> None, None
+                | (Some min1, Some max1), (Some min2, None)      -> None, None
+                | (Some min1, None),      (None,      Some max2) -> None, None
+                | (None  , Some max1),    (None,      Some max2) -> None, None
+                | (Some min1, Some max1), (None,      Some max2) -> None, None
+                | (Some min1, None),      (Some min2, Some max2) -> None, None
+                | (None  , Some max1),    (Some min2, Some max2) -> None, None
+                | (Some min1, Some max1), (Some min2, Some max2) -> None, None
+
         /// Safely calculate `v1` and `v2` using operator `op`,
         /// returns None if operator is division and `v2` is 0.
         let calcOpt op c v1 v2 =
@@ -628,17 +847,18 @@ module Variable =
             | BR.Add  -> v1 |> op <| v2 |> c |> Some
             // prevent division by zero
             | BR.Div  -> if v2 <> BR.zero then (v1 |> op <| v2) |> c |> Some else None
-            | BR.NoOp -> None
 
         /// Calculate the `Minimum` with
         /// `min1` of x1 and `min2`, `max2` of x2
         /// in an equation: y = x1 `op` x2
-        let calcMin op min1 min2 max2 = 
+        let calcMin op min1 max1 min2 max2 = 
             let calcOpt = calcOpt op
             match op with
-            | BR.Mult ->
+            | BR.Mult 
+            | BR.Add ->
                 match min1, min2 with
                 // y.min = x1.min * x2.min
+                // y.min = x1.min + x2.min
                 | Some m1, Some m2 -> 
                     let v1, v2 = m1 |> minToValue, m2 |> minToValue
                     let incl = m1 |> isMinIncl && m2 |> isMinIncl
@@ -646,79 +866,50 @@ module Variable =
                     calcOpt cmin v1 v2 
                 | _ -> None
 
-            | BR.Div ->
+            | BR.Div   -> 
+                let zeroMin = BR.zero |> createMin true
+                
+                None
+            | BR.Subtr ->
                 match min1, max2 with
                 // y.min = x1.min / x2.max
+                // y.min = x1.min - x2.max
                 | Some m1, Some m2 ->
                     let v1, v2 = m1 |> minToValue, m2 |> maxToValue
                     let incl = m1 |> isMinIncl && m2 |> isMaxIncl
                     let cmin = createMin incl
                     calcOpt cmin v1 v2
                 | _ -> None
-
-            | BR.Add -> 
-                match min1, min2 with
-                // y.min = x1.min + x2.min
-                | Some m1, Some m2 ->
-                    let v1, v2 = m1 |> minToValue, m2 |> minToValue
-                    let incl = m1 |> isMinIncl && m2 |> isMinIncl
-                    let cmin = createMin incl
-                    calcOpt cmin v1 v2 
-                | _ -> None
-
-            | BR.Subtr -> 
-                match min1, max2 with
-                // y.min = x1.min - x2.max
-                | Some m1, Some m2 ->
-                    let v1, v2 = m1 |> minToValue, m2 |> maxToValue
-                    let incl = m1 |> isMinIncl && m2 |> isMaxIncl
-                    let cmin = createMin incl
-                    calcOpt cmin v1 v2 
-                | _ -> None
-
-            | BR.NoOp -> None
                        
         /// Calculate the `Maximum` with
         /// `max1` of x1 and `max2`, `min2` of x2
         /// in an equation: y = x1 `op` x2
-        let calcMax op max1 max2 min2 = 
+        let calcMax op min1 max1 max2 min2 = 
             let calcOpt = calcOpt op
             match op with
-            | BR.Mult | BR.Add -> 
+            | BR.Mult 
+            | BR.Add -> 
                 // y.max = x1.max * x2.max
+                // y.max = x1.max + x2.max
                 match max1, max2 with
                 | Some m1, Some m2 -> 
                     let v1, v2 = m1 |> maxToValue, m2 |> maxToValue
                     let incl = m1 |> isMaxIncl && m2 |> isMaxIncl
                     let cmax = createMax incl
-                    true, calcOpt cmax v1 v2 
-                | _ -> true, None    
+                    calcOpt cmax v1 v2 
+                | _ -> None    
 
-            | BR.Div -> 
+            | BR.Div 
+            | BR.Subtr ->
                 match max1, min2 with
                 // y.max = x1.max / x2.min
+                // y.max = x1.max - x2.min
                 | Some m1, Some m2 ->
                     let v1, v2 = m1 |> maxToValue, m2 |> minToValue
                     let incl = m1 |> isMaxIncl && m2 |> isMinIncl
                     let cmax = createMax incl
-                    true, calcOpt cmax v1 v2
-                | _ -> true, None
-
-            | BR.Subtr -> 
-                match max1, min2 with
-                // y.max = x1.max - x2.min
-                | Some m1, Some m2 -> 
-                    let v1, v2 = m1 |> maxToValue, m2 |> minToValue
-                    let incl = m1 |> isMaxIncl && m2 |> isMinIncl
-                    let cmax = createMax incl
-                    match calcOpt cmax v1 v2 with
-                    | Some m -> true, m |> Some
-                    // if x1.max < x2.max then the range do not overlap
-                    // so the result cannot have any values
-                    | None   -> false, None 
-                | _ -> true, None
-
-            | BR.NoOp -> true, None
+                    calcOpt cmax v1 v2
+                | _ -> None
 
         /// Calculate an increment with
         /// `incr1` of x1 and `incr2` of x2
@@ -766,16 +957,14 @@ module Variable =
                 let min1, incr1, max1 = x1 |> getMin, x1 |> getIncr, x1 |> getMax
                 let min2, incr2, max2 = x2 |> getMin, x2 |> getIncr, x2 |> getMax
                 
-                let min = calcMin op min1 min2 max2                       
-                let trueMax, max = calcMax op max1 max2 min2
+                let min = calcMin op min1 max1 min2 max2                       
+                let max = calcMax op min1 max1 max2 min2
 
                 let incr = calcIncr op incr1 incr2
 
-                if not trueMax then empty // if not trueMax then there is no valid possible value for y
-                else
-                    match min, incr, max with
-                    | None, None, None -> unrestricted
-                    | _ -> createExc false Set.empty min incr max
+                match min, incr, max with
+                | None, None, None -> unrestricted
+                | _ -> create id (fun _ -> empty) false Set.empty min incr max
 
 
         // Extend type with basic arrhythmic operations.
@@ -929,6 +1118,8 @@ module Variable =
         /// of an expression to `Variable` `y`. Note that 
         /// that the resulting y is the same or a more 
         /// restricted version.
-        static member (!=) (y, expr) = expr |> getValueRange |> setValueRange y
+        static member (!=) (y, expr) = 
+            if y |> isSolvable then expr |> getValueRange |> setValueRange y
+            else y
 
 

@@ -280,7 +280,11 @@ module Equation =
             s.Substring(0, s.Length - 2)
 
     /// Helper function to create a `Variable` from a `dto`
-    let fromVarDtoExc dto = try dto |> Variable.fromDtoExc with | Variable.DtoException(m) -> m |> VariableMessage |> raiseExc
+    let fromVarDtoExc dto = 
+        try 
+            dto |> Variable.fromDtoExc 
+        with 
+        | Variable.DtoException(m) -> m |> VariableMessage |> raiseExc
 
     /// Create a `Dto` and raise an exception if it fails
     let fromDtoExc dto =
@@ -301,5 +305,4 @@ module Equation =
             { Vars = y::xs |> List.map Variable.toDto |> List.toArray; IsProdEq = isProd }
         let fp = c true 
         let fs = c false 
-
         e |> E.apply fp fs

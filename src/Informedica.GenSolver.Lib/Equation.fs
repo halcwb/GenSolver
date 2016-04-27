@@ -121,10 +121,14 @@ module Equation =
             | x::tail ->
                 let xs' = xs |> List.filter ((<>) x)
                 let es, x' =
-                    match xs' with
-                    | [] -> x != y
-                    | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
-                    |> replace es
+//                    // If x is already solved, it will not change
+//                    if x |> VAR.isSolved then es, x 
+//                    // Calculate the new x
+//                    else
+                        match xs' with
+                        | [] -> x != y
+                        | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
+                        |> replace es
                 tail |> calc (x' <> x || changed) es op1 op2 y (x'::xs')
 
         let y, xs, op1, op2 =

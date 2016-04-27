@@ -57,6 +57,7 @@
     <Compile Include="Equation.fs" />
     <Compile Include="Solver.fs" />
     <Compile Include="Dtos.fs" />
+    <Compile Include="Api.fs" />
     <None Include="Scripts\load-references.fsx" />
     <None Include="Scripts\load-project.fsx" />
     <None Include="Scripts\Variable.fsx" />

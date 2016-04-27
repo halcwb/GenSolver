@@ -32,6 +32,8 @@ module String =
 
     let length s = (s |> get).Length
 
+    let isNullOrWhiteSpace = String.IsNullOrWhiteSpace
+
 
 /// Helper functions for `BigRational`
 module BigRational = 
@@ -97,13 +99,13 @@ module BigRational =
     /// multiplication, division, addition
     /// or subtraction, returns `NoOp` when
     /// the operation is neither.
-    let (|Mult|Div|Add|Subtr|NoOp|) op =
+    let (|Mult|Div|Add|Subtr|) op =
         match op with
         | _ when op |> opIsMult  -> Mult
         | _ when op |> opIsDiv   -> Div
         | _ when op |> opIsAdd   -> Add
         | _ when op |> opIsSubtr -> Subtr
-        | _ -> NoOp
+        | _ -> failwith "Operator is not supported"
 
 
 /// Helper functions for `List`
@@ -135,5 +137,7 @@ module Array =
 module Option = 
 
     let none _ = None
+
+
 
 
