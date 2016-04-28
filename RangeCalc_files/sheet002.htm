@@ -1,0 +1,268 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 15">
+<link id=Main-File rel=Main-File href="../RangeCalc.htm">
+<link rel=File-List href=filelist.xml>
+<link rel=Stylesheet href=stylesheet.css>
+<style>
+<!--table
+	{mso-displayed-decimal-separator:"\.";
+	mso-displayed-thousand-separator:"\.";}
+@page
+	{margin:.75in .7in .75in .7in;
+	mso-header-margin:.3in;
+	mso-footer-margin:.3in;}
+-->
+</style>
+<![if !supportTabStrip]><script language="JavaScript">
+<!--
+function fnUpdateTabs()
+ {
+  if (parent.window.g_iIEVer>=4) {
+   if (parent.document.readyState=="complete"
+    && parent.frames['frTabs'].document.readyState=="complete")
+   parent.fnSetActiveSheet(1);
+  else
+   window.setTimeout("fnUpdateTabs();",150);
+ }
+}
+
+if (window.name!="frSheet")
+ window.location.replace("../RangeCalc.htm");
+else
+ fnUpdateTabs();
+//-->
+</script>
+<![endif]>
+</head>
+
+<body link="#0563C1" vlink="#954F72">
+
+<table border=0 cellpadding=0 cellspacing=0 width=1353 style='border-collapse:
+ collapse;table-layout:fixed;width:1015pt'>
+ <col width=43 span=2 style='mso-width-source:userset;mso-width-alt:1450;
+ width:32pt'>
+ <col width=325 style='mso-width-source:userset;mso-width-alt:11025;width:244pt'>
+ <col width=41 span=4 style='mso-width-source:userset;mso-width-alt:1382;
+ width:31pt'>
+ <col width=15 style='mso-width-source:userset;mso-width-alt:494;width:11pt'>
+ <col width=82 style='mso-width-source:userset;mso-width-alt:2798;width:62pt'>
+ <col width=95 style='mso-width-source:userset;mso-width-alt:3225;width:71pt'>
+ <col width=97 style='mso-width-source:userset;mso-width-alt:3276;width:72pt'>
+ <col width=111 style='mso-width-source:userset;mso-width-alt:3771;width:83pt'>
+ <col width=111 span=2 style='mso-width-source:userset;mso-width-alt:3754;
+ width:83pt'>
+ <col width=78 span=4 style='mso-width-source:userset;mso-width-alt:2662;
+ width:59pt'>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 width=43 style='height:14.35pt;width:32pt'></td>
+  <td width=43 style='width:32pt'></td>
+  <td width=325 style='width:244pt'>condition</td>
+  <td width=41 style='width:31pt'>min1</td>
+  <td width=41 style='width:31pt'>max1</td>
+  <td width=41 style='width:31pt'>min2</td>
+  <td width=41 style='width:31pt'>max2</td>
+  <td width=15 style='width:11pt'></td>
+  <td width=82 style='width:62pt'>min1 / min2</td>
+  <td width=95 style='width:71pt'>min1 / max2</td>
+  <td width=97 style='width:72pt'>max1 / min2</td>
+  <td width=111 style='width:83pt'>max1 / max2</td>
+  <td class=xl67 width=111 style='width:83pt'>min</td>
+  <td class=xl67 width=111 style='width:83pt'>max</td>
+  <td class=xl67 width=78 style='width:59pt'>min</td>
+  <td class=xl67 width=78 style='width:59pt'>max</td>
+ </tr>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 style='height:14.35pt'>pp</td>
+  <td>pp</td>
+  <td>min1 &gt;= 0 &amp;&amp; min2 &gt;= 0</td>
+  <td align=right>1</td>
+  <td align=right>4</td>
+  <td align=right>2</td>
+  <td align=right>6</td>
+  <td></td>
+  <td align=right>2</td>
+  <td align=right>6</td>
+  <td align=right>8</td>
+  <td align=right>0.666666667</td>
+  <td class=xl67>max1 / max2</td>
+  <td class=xl67>max1 / min2</td>
+  <td class=xl67>0</td>
+  <td class=xl67>None</td>
+ </tr>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 style='height:14.35pt'>pp</td>
+  <td>nn</td>
+  <td>min1 &gt;= 0 &amp;&amp; max2 &lt; 0</td>
+  <td align=right>1</td>
+  <td class=xl68 align=right>1.001</td>
+  <td align=right>-6</td>
+  <td class=xl68 align=right>-6</td>
+  <td></td>
+  <td align=right>-6</td>
+  <td align=right>-5.99</td>
+  <td align=right>-6006</td>
+  <td align=right>-1671118531</td>
+  <td class=xl67>max1 / min2</td>
+  <td class=xl67>min1 / max2</td>
+  <td class=xl67>None</td>
+  <td class=xl67>0</td>
+ </tr>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 style='height:14.35pt'>pp</td>
+  <td>np</td>
+  <td>min1 &gt;= 0 &amp;&amp; min2 &lt; 0 &amp;&amp; max2 &gt; 0</td>
+  <td align=right>1</td>
+  <td class=xl68 align=right>1.001</td>
+  <td align=right>-0.01</td>
+  <td align=right>0.01</td>
+  <td></td>
+  <td align=right>-0.01</td>
+  <td align=right>0.01</td>
+  <td align=right>-10.01</td>
+  <td align=right>100100</td>
+  <td class=xl67>max1 / min2</td>
+  <td class=xl67>max1 / max2</td>
+  <td class=xl67>None</td>
+  <td class=xl67>None</td>
+ </tr>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 style='height:14.35pt'>nn</td>
+  <td>pp</td>
+  <td>max1 &lt; 0 &amp;&amp; min2 &gt;= 0</td>
+  <td align=right>-4</td>
+  <td align=right>-3.99</td>
+  <td align=right>2</td>
+  <td class=xl68 align=right>2.001</td>
+  <td></td>
+  <td align=right>-8</td>
+  <td align=right>-8004</td>
+  <td align=right>-7.98</td>
+  <td align=right>-0.001994003</td>
+  <td class=xl67>min1 / max2</td>
+  <td class=xl67>max1 / max2</td>
+  <td class=xl67>None</td>
+  <td class=xl67>0</td>
+ </tr>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 style='height:14.35pt'>nn</td>
+  <td>nn</td>
+  <td>max1 &lt; 0 &amp;&amp; max2 &lt; 0</td>
+  <td align=right>-4</td>
+  <td align=right>-1</td>
+  <td align=right>-6</td>
+  <td align=right>-2</td>
+  <td></td>
+  <td align=right>24</td>
+  <td align=right>8</td>
+  <td align=right>6</td>
+  <td align=right>0.5</td>
+  <td class=xl67>max1 / max2</td>
+  <td class=xl67>min1 / min2</td>
+  <td class=xl67>0</td>
+  <td class=xl67>None</td>
+ </tr>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 style='height:14.35pt'>nn</td>
+  <td>np</td>
+  <td>max1 &lt; 0 &amp;&amp; min2 &lt; 0 &amp;&amp; max2 &gt;= 0</td>
+  <td align=right>-4</td>
+  <td align=right>-1</td>
+  <td align=right>-6</td>
+  <td align=right>1</td>
+  <td></td>
+  <td align=right>24</td>
+  <td align=right>-4</td>
+  <td align=right>6</td>
+  <td align=right>-1</td>
+  <td class=xl67>min1 / max2</td>
+  <td class=xl67>min1 / min2</td>
+  <td class=xl67>None</td>
+  <td class=xl67>None</td>
+ </tr>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 style='height:14.35pt'>np</td>
+  <td>pp</td>
+  <td>min1 &lt; 0 &amp;&amp; max1 &gt;= 0 &amp;&amp; min2 &gt;= 0</td>
+  <td align=right>-4</td>
+  <td align=right>1000</td>
+  <td align=right>2</td>
+  <td align=right>2.1</td>
+  <td></td>
+  <td align=right>-8</td>
+  <td align=right>-8.4</td>
+  <td align=right>2000</td>
+  <td align=right>4761904762</td>
+  <td class=xl67>min1 / max2</td>
+  <td class=xl67>max1 / min2</td>
+  <td class=xl67>None</td>
+  <td class=xl67>None</td>
+ </tr>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 style='height:14.35pt'>np</td>
+  <td>nn</td>
+  <td>min1 &lt; 0 &amp;&amp; max1 &gt;= 0 &amp;&amp; max2 &lt; 0</td>
+  <td align=right>-4</td>
+  <td align=right>2</td>
+  <td align=right>-6</td>
+  <td align=right>-2</td>
+  <td></td>
+  <td align=right>24</td>
+  <td align=right>8</td>
+  <td align=right>-12</td>
+  <td align=right>-1</td>
+  <td class=xl67>max1 / min2</td>
+  <td class=xl67>min1 / min2</td>
+  <td class=xl67>None</td>
+  <td class=xl67>None</td>
+ </tr>
+ <tr height=19 style='height:14.35pt'>
+  <td height=19 style='height:14.35pt'>np</td>
+  <td>np</td>
+  <td>min1 &lt; 0 &amp;&amp; max1 &gt;= 0 &amp;&amp; min2 &lt; 0 &amp;&amp;
+  max2 &gt;= 0</td>
+  <td align=right>-4</td>
+  <td align=right>2</td>
+  <td align=right>-2</td>
+  <td align=right>6</td>
+  <td></td>
+  <td align=right>8</td>
+  <td align=right>-24</td>
+  <td align=right>-4</td>
+  <td align=right>0.333333333</td>
+  <td class=xl67>min1 / max2</td>
+  <td class=xl67>min1 / min2</td>
+  <td class=xl67>None</td>
+  <td class=xl67>None</td>
+ </tr>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=43 style='width:32pt'></td>
+  <td width=43 style='width:32pt'></td>
+  <td width=325 style='width:244pt'></td>
+  <td width=41 style='width:31pt'></td>
+  <td width=41 style='width:31pt'></td>
+  <td width=41 style='width:31pt'></td>
+  <td width=41 style='width:31pt'></td>
+  <td width=15 style='width:11pt'></td>
+  <td width=82 style='width:62pt'></td>
+  <td width=95 style='width:71pt'></td>
+  <td width=97 style='width:72pt'></td>
+  <td width=111 style='width:83pt'></td>
+  <td width=111 style='width:83pt'></td>
+  <td width=111 style='width:83pt'></td>
+  <td width=78 style='width:59pt'></td>
+  <td width=78 style='width:59pt'></td>
+ </tr>
+ <![endif]>
+</table>
+
+</body>
+
+</html>

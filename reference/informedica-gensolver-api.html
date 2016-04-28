@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Message - GenSolver</title>
+    <title>Api - GenSolver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="halcwb"/>
@@ -35,33 +35,53 @@
 
 
 
-<h1>Message</h1>
+<h1>Api</h1>
 <p>
-  <span>Namespace: Informedica.GenSolver.Lib</span><br />
-  <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule-namemodule.html">Name</a></span>
+  <span>Namespace: Informedica.GenSolver</span><br />
 </p>
 <div class="xmldoc">
-<p>Error messages for type <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a>.</p>
-
 </div>
-  <h3>Union Cases</h3>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
   <table class="table table-bordered member-list">
     <thead>
-      <tr><td>Union Case</td><td>Description</td></tr>
+      <tr><td>Function or value</td><td>Description</td></tr>
     </thead>
     <tbody>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '195', 195)" onmouseover="showTip(event, '195', 195)">
-            LongerThan30(int)
+          <code onmouseout="hideTip(event, '1', 1)" onmouseover="showTip(event, '1', 1)">
+            init eqs
           </code>
-          <div class="tip" id="195">
-            <strong>Signature:</strong> int<br />
+          <div class="tip" id="1">
+            <strong>Signature:</strong> eqs:String list -&gt; Equation list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L34-34" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L14-14" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Initialize the solver returning a set of equations</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2', 2)" onmouseover="showTip(event, '2', 2)">
+            nonZeroNegative eqs
+          </code>
+          <div class="tip" id="2">
+            <strong>Signature:</strong> eqs:Equation list -&gt; Equation list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L47-47" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -71,15 +91,35 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '196', 196)" onmouseover="showTip(event, '196', 196)">
-            NullOrWhiteSpaceException
+          <code onmouseout="hideTip(event, '3', 3)" onmouseover="showTip(event, '3', 3)">
+            printEqs eqs
           </code>
-          <div class="tip" id="196">
-            <strong>Signature:</strong> <br />
+          <div class="tip" id="3">
+            <strong>Signature:</strong> eqs:Equation list -&gt; Equation list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L33-33" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L32-32" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Print a set of equations to the stdout.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4', 4)" onmouseover="showTip(event, '4', 4)">
+            solve n p v eqs
+          </code>
+          <div class="tip" id="4">
+            <strong>Signature:</strong> n:string -&gt; p:string -&gt; v:string -&gt; eqs:Equation list -&gt; Equation list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L38-38" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>

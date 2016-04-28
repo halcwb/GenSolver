@@ -34,67 +34,142 @@
         <div class="span9" id="main">
           
 <h1><a name="How-to-use-this-library" class="anchor" href="#How-to-use-this-library">How to use this library</a></h1>
-<p>First open up the name space</p>
+<p>The simplest way to use or tryout this library is through the Api interface</p>
 <table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
 </pre></td>
-<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">Informedica</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="i">GenSolver</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="i">Lib</span>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">module</span> <span class="t">API</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">Informedica</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="i">GenSolver</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="i">Api</span>
 </code></pre></td>
 </tr>
 </table>
-<h2><a name="How-to-create-a-value" class="anchor" href="#How-to-create-a-value">How to create a value</a></h2>
-<p>Then create a value</p>
-<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l"> 1: </span>
-<span class="l"> 2: </span>
-<span class="l"> 3: </span>
-<span class="l"> 4: </span>
-<span class="l"> 5: </span>
-<span class="l"> 6: </span>
-<span class="l"> 7: </span>
-<span class="l"> 8: </span>
-<span class="l"> 9: </span>
-<span class="l">10: </span>
-<span class="l">11: </span>
-<span class="l">12: </span>
-<span class="l">13: </span>
-<span class="l">14: </span>
-<span class="l">15: </span>
-<span class="l">16: </span>
-<span class="l">17: </span>
-<span class="l">18: </span>
-<span class="l">19: </span>
-<span class="l">20: </span>
+<h2><a name="Setting-up-a-Calulation-Model" class="anchor" href="#Setting-up-a-Calulation-Model">Setting up a Calulation Model</a></h2>
+<p>A string based calculation model can be specified. This model can only contain sum equations and/or
+product equations. So take for example conversion from Fahrenheit to Celsius. The original
+formula looks like this:</p>
+<blockquote>
+<p>cels = (fahr - 32) * 5 / 9</p>
+</blockquote>
+<p>This can be refactored to:</p>
+<blockquote>
+<p>fahr = x + 32 and </br>
+cels = x + 5/9</p>
+</blockquote>
+<p>However an equation can only contain variables, so the final version of the model looks like:</p>
+<blockquote>
+<p>fahr = x + const32 </br>
+cels = x + const5/9</p>
+</blockquote>
+<p>These equations can be feed as strings to the init function that will convert those strings in 2 equations
+with the variables <code>fahr</code>, <code>cels</code>, <code>x</code>, <code>const32</code> and <code>const5/9</code>.</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
 </pre></td>
-<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs4', 4)" onmouseover="showTip(event, 'fs4', 4)" class="i">dto</span> <span class="o">=</span> 
-    <span onmouseout="hideTip(event, 'fs5', 5)" onmouseover="showTip(event, 'fs5', 5)" class="i">Variable</span><span class="o">.</span><span class="i">Dto</span><span class="o">.</span><span class="i">createNew</span> <span class="s">&quot;Test&quot;</span>
-    <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs5', 6)" onmouseover="showTip(event, 'fs5', 6)" class="i">Variable</span><span class="o">.</span><span class="i">Dto</span><span class="o">.</span><span class="i">setMin</span> <span class="s">&quot;2&quot;</span>
-    <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs5', 7)" onmouseover="showTip(event, 'fs5', 7)" class="i">Variable</span><span class="o">.</span><span class="i">Dto</span><span class="o">.</span><span class="i">setMax</span> <span class="s">&quot;10&quot;</span>
-
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs6', 8)" onmouseover="showTip(event, 'fs6', 8)" class="i">value</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 9)" onmouseover="showTip(event, 'fs4', 9)" class="i">dto</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs5', 10)" onmouseover="showTip(event, 'fs5', 10)" class="i">Variable</span><span class="o">.</span><span class="i">Dto</span><span class="o">.</span><span class="i">fromDtoExc</span>
-
-<span onmouseout="hideTip(event, 'fs5', 11)" onmouseover="showTip(event, 'fs5', 11)" class="i">Variable</span><span class="o">.</span><span class="i">Dto</span><span class="o">.</span><span class="i">toString</span> <span onmouseout="hideTip(event, 'fs4', 12)" onmouseover="showTip(event, 'fs4', 12)" class="i">dto</span>
-
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs7', 13)" onmouseover="showTip(event, 'fs7', 13)" class="i">eqs</span> <span class="o">=</span> [|
-    <span class="s">&quot;total = frequency * quantity&quot;</span>
-    <span class="s">&quot;quantity = rate * duration&quot;</span>
-|]
-
-<span class="c">// let api = Solver.Api (fun r m -&gt; printfn &quot;%A&quot; m; r) (fun r m -&gt; printfn &quot;%A&quot;; r)</span>
-<span class="c">// eqs |&gt; api.init</span>
-<span class="c">//     |&gt; api.setProp &quot;frequency&quot; &quot;incr&quot; &quot;1&quot;</span>
-<span class="c">//     |&gt; api.setProp &quot;frequency&quot; &quot;max&quot; &quot;24&quot;</span>
-<span class="c">//     |&gt; api.setProp &quot;total&quot; &quot;max&quot; &quot;12&quot;</span>
-<span class="c">//     |&gt; api.setProp &quot;quantity&quot; &quot;incr&quot; &quot;1&quot;</span>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs4', 4)" onmouseover="showTip(event, 'fs4', 4)" class="i">fahrCelsConv_Setup</span> <span class="o">=</span>
+    <span class="t">API</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs5', 5)" onmouseover="showTip(event, 'fs5', 5)" class="f">init</span> [
+        <span class="s">&quot;fahr = x + const32&quot;</span>
+        <span class="s">&quot;cels = x * const5/9&quot;</span>
+    ]
 </code></pre></td>
 </tr>
 </table>
+<p>We can look at the generated equations by using the <code>printEquations</code> function.</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span onmouseout="hideTip(event, 'fs4', 6)" onmouseover="showTip(event, 'fs4', 6)" class="i">fahrCelsConv_Setup</span>
+<span class="o">|&gt;</span> <span class="t">API</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs6', 7)" onmouseover="showTip(event, 'fs6', 7)" class="f">printEqs</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs7', 8)" onmouseover="showTip(event, 'fs7', 8)" class="f">ignore</span>
+</code></pre></td>
+</tr>
+</table>
+<p>This wil spit out the equations:</p>
+<blockquote>
+<p>cels<..> = x<..> * const5/9<..> </br>
+fahr<..> = x<..> + const32<..></p>
+</blockquote>
+<p>Having obtained the model <code>fahrCelsConv_Setup</code>, the model can be solved by the <code>API.solve</code> function.
+This will print out the intermediate results and return an updated model.
+The following properties can be set for each variable in the equation:</p>
+<ul>
+<li><code>unr</code>: Whether the value range for the variable is unrestricted</li>
+<li><code>vals</code>: A list of possible values for the variable</li>
+<li><code>minincl</code>: The lower boundary for the variable, inclusive that value</li>
+<li><code>minexcl</code>: The lower boundary for the variable, exclusive that value</li>
+<li><code>increment</code>: Each possible of a value for the variable should be a multiple of the increment for that variable</li>
+<li><code>maxincl</code>: The upper boundary for the variable, inclusive that value</li>
+<li><code>maxexcl</code>: The upper boundary for the variable, exclusive that value</li>
+</ul>
+<p>So, the first step to further prepare the model is to set the two <em>constant</em> variables to a single possible value</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
+<span class="l">6: </span>
+<span class="l">7: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs8', 9)" onmouseover="showTip(event, 'fs8', 9)" class="i">fahrCelsConv</span> <span class="o">=</span>
+    <span class="t">API</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs5', 10)" onmouseover="showTip(event, 'fs5', 10)" class="f">init</span> [
+        <span class="s">&quot;fahr = x + const32&quot;</span>
+        <span class="s">&quot;cels = x * const5/9&quot;</span>
+    ]
+    <span class="o">|&gt;</span> <span class="t">API</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs9', 11)" onmouseover="showTip(event, 'fs9', 11)" class="f">solve</span> <span class="s">&quot;const32&quot;</span>  <span class="s">&quot;vals&quot;</span> <span class="s">&quot;32&quot;</span>
+    <span class="o">|&gt;</span> <span class="t">API</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs9', 12)" onmouseover="showTip(event, 'fs9', 12)" class="f">solve</span> <span class="s">&quot;const5/9&quot;</span> <span class="s">&quot;vals&quot;</span> <span class="s">&quot;5/9&quot;</span>
+</code></pre></td>
+</tr>
+</table>
+<p>Now the calulation model is ready for use.</p>
+<h1><a name="Using-the-Calculation-Model" class="anchor" href="#Using-the-Calculation-Model">Using the Calculation Model</a></h1>
+<p>For example convert 20 degrees Celsius to Fahrenheit:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span onmouseout="hideTip(event, 'fs8', 13)" onmouseover="showTip(event, 'fs8', 13)" class="i">fahrCelsConv</span>
+<span class="o">|&gt;</span> <span class="t">API</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs9', 14)" onmouseover="showTip(event, 'fs9', 14)" class="f">solve</span> <span class="s">&quot;cels&quot;</span> <span class="s">&quot;vals&quot;</span> <span class="s">&quot;20&quot;</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs7', 15)" onmouseover="showTip(event, 'fs7', 15)" class="f">ignore</span>
+</code></pre></td>
+</tr>
+</table>
+<p>The result looks like:</p>
+<blockquote>
+<p>cels[20] = x[36] * const5/9[5/9] </br>
+fahr[68] = x[36] + const32[32]</p>
+</blockquote>
+<p>However the model is more capable than simple conversion. It can also determine the value range in Celsius
+for a value range in Fahrenheit:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span onmouseout="hideTip(event, 'fs8', 16)" onmouseover="showTip(event, 'fs8', 16)" class="i">fahrCelsConv</span>
+<span class="o">|&gt;</span> <span class="t">API</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs9', 17)" onmouseover="showTip(event, 'fs9', 17)" class="f">solve</span> <span class="s">&quot;fahr&quot;</span> <span class="s">&quot;minincl&quot;</span> <span class="s">&quot;30&quot;</span>
+<span class="o">|&gt;</span> <span class="t">API</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs9', 18)" onmouseover="showTip(event, 'fs9', 18)" class="f">solve</span> <span class="s">&quot;fahr&quot;</span> <span class="s">&quot;maxincl&quot;</span> <span class="s">&quot;140&quot;</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs7', 19)" onmouseover="showTip(event, 'fs7', 19)" class="f">ignore</span>
+</code></pre></td>
+</tr>
+</table>
+<blockquote>
+<p>Setting variable fahr minincl with 50 </br>
+cels[10..&gt; = x[18..&gt; * const5/9[5/9] </br>
+fahr[50..&gt; = x[18..&gt; + const32[32] </br></p>
+<p>Setting variable fahr maxincl with 140 </br>
+cels[10..60] = x[18..108] * const5/9[5/9] </br>
+fahr[50..140] = x[18..108] + const32[32]</p>
+</blockquote>
+<p>And so the Celsius range is 10 to 60.</p>
 
 <div class="tip" id="fs1">namespace Informedica</div>
 <div class="tip" id="fs2">namespace Informedica.GenSolver</div>
-<div class="tip" id="fs3">namespace Informedica.GenSolver.Lib</div>
-<div class="tip" id="fs4">val dto : obj<br /><br />Full name: Tutorial.dto</div>
-<div class="tip" id="fs5">module Variable<br /><br />from Informedica.GenSolver.Lib<br /><em><br /><br />&#160;Contains functions and types to represent<br />&#160;a `Variable` in an `Equation`:<br /><br />&#160;* `Name`<br />&#160;* `Range`<br />&#160;* `ValueRange`</em></div>
-<div class="tip" id="fs6">val value : obj<br /><br />Full name: Tutorial.value</div>
-<div class="tip" id="fs7">val eqs : string []<br /><br />Full name: Tutorial.eqs</div>
+<div class="tip" id="fs3">module Api<br /><br />from Informedica.GenSolver</div>
+<div class="tip" id="fs4">val fahrCelsConv_Setup : Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Tutorial.fahrCelsConv_Setup</div>
+<div class="tip" id="fs5">val init : eqs:System.String list -&gt; Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Informedica.GenSolver.Api.init<br /><em><br /><br />&#160;Initialize the solver returning a set of equations</em></div>
+<div class="tip" id="fs6">val printEqs : eqs:Informedica.GenSolver.Lib.Equation.Equation list -&gt; Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Informedica.GenSolver.Api.printEqs<br /><em><br /><br />&#160;Print a set of equations to the stdout.</em></div>
+<div class="tip" id="fs7">val ignore : value:&#39;T -&gt; unit<br /><br />Full name: Microsoft.FSharp.Core.Operators.ignore</div>
+<div class="tip" id="fs8">val fahrCelsConv : Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Tutorial.fahrCelsConv</div>
+<div class="tip" id="fs9">val solve : n:string -&gt; p:string -&gt; v:string -&gt; eqs:Informedica.GenSolver.Lib.Equation.Equation list -&gt; Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Informedica.GenSolver.Api.solve</div>
 
         </div>
         <div class="span3">
@@ -112,6 +187,7 @@
             <li><a href="/GenSolver/tutorial.html">Sample tutorial</a></li>
 
             <li class="nav-header">Documentation</li>
+			<li><a href="/GenSolver/RangeCalc.html">Calculation Rules</a></li>
             <li><a href="/GenSolver/reference/index.html">API Reference</a></li>
           </ul>
         </div>
