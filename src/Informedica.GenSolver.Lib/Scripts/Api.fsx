@@ -92,12 +92,4 @@ map
 |> solve "dbp" "vals" "50"
 |> ignore
 
-let cross v1 op v2 =
-    [ for x1 in v1 do
-        for x2 in v2 do
-            yield x1 |> op <| x2 ]
-    |> List.sort
-
-cross [8N;6N] (/) [4N;3N]
-
         

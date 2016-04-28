@@ -483,10 +483,12 @@ module Variable =
         /// a `ValueSet` or the set of values is actually empty.
         let getValueSet = apply Set.empty id (fun _ -> Set.empty) 
 
+        let getRangeMin = applyRange Some Option.none (fst >> Some) Option.none (fst >> Some) 
+
+        let getRangeMax = applyRange  Option.none Some Option.none (snd >> Some) (snd >> Some)
+
         /// Get an optional `Minimum`
-        let getMin = 
-            let fRange = applyRange Some Option.none (fst >> Some) Option.none (fst >> Some) 
-            apply None getSetMin fRange
+        let getMin = apply None getSetMin getRangeMin
 
         // Get an optional increment
         let getIncr = 
@@ -494,9 +496,7 @@ module Variable =
             apply None Option.none fRange
 
         /// Get the optional `Maximum`
-        let getMax = 
-            let fRange = applyRange  Option.none Some Option.none (snd >> Some) (snd >> Some)
-            apply None getSetMax fRange
+        let getMax = apply None getSetMax getRangeMax
 
         // #endregion
 
@@ -629,7 +629,7 @@ module Variable =
             let calc c op (x1, incl1) (x2, incl2) = 
                 match x1, x2 with
                 | Some (v1), Some (v2) -> 
-                    if op |> BR.opIsDiv && v1 = 0N then None
+                    if op |> BR.opIsDiv && v2 = 0N then None
                     else v1 |> op <| v2 |> c (incl1 && incl2) |> Some
                 | _ -> None
 
@@ -677,22 +677,21 @@ module Variable =
 
             let division min1 max1 min2 max2 =
                 match (min1 |> fst, max1 |> fst), (min2 |> fst, max2 |> fst) with
-                | PP, PP -> 
-                    let incl = min1 |> snd
-                    0N |> createMin incl |> Some, None
-                | PP, NN -> 
-                    let incl = min1 |> snd
-                    None, 0N |> createMax incl |> Some
-                | NN, PP -> 
-                    let incl = max1 |> snd
-                    None, 0N |> createMax incl |> Some
-                | NN, NN -> 
-                    let incl = max1 |> snd
-                    0N |> createMin incl |> Some, None
-                | PP, NP              
+                | PP, PP -> // min = min1 / max2, max =	max1 / min2
+                    calcMin (/) min1 max2, calcMax (/) max1 min2
+                | PP, NN -> // min = max1 / max2	, max = min1 / min2
+                    calcMin (/) max1 max2, calcMax (/) min1 min2
+                | NN, PP -> // min = min1 / min2, max = max1 / max2
+                    calcMin (/) min1 min2, calcMax (/) max1 max2
+                | NN, NN -> // min = max1 / min2	, max = min1 / max2
+                    calcMin (/) max1 min2, calcMax (/) min1 max2
+                | NP, PP -> // min = min1 / min2, max = max1 / min2
+                    calcMin (/) min1 min2, calcMax (/) max1 min2
+                | NP, NN -> // min = max1 / max2, max = min1 / max2
+                    calcMin (/) max1 max2, calcMax (/) min1 max2
+
                 | NN, NP 
-                | NP, PP 
-                | NP, NN 
+                | PP, NP              
                 | NP, NP -> None, None
 
             let calcMinMax = function 
