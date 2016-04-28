@@ -103,7 +103,7 @@ for a value range in Fahrenheit:
 *)
 
 fahrCelsConv
-|> API.solve "fahr" "minincl" "50"
+|> API.solve "fahr" "minincl" "30"
 |> API.solve "fahr" "maxincl" "140"
 |> ignore
 
