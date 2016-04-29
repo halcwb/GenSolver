@@ -96,6 +96,11 @@ module Variable =
             | MaxIncl of BigRational
             | MaxExcl of BigRational
 
+        /// The increment in a `Range`. 
+        /// Increment has to be a non zero
+        /// or negative value
+        type Increment = Increment of BigRational
+
         /// `ValueRange` represents a discrete set of 
         /// non-zero positive rational numbers.
         /// A `ValueRange` is either unrestricted,
@@ -115,8 +120,8 @@ module Variable =
         and Range =
             | Min of Minimum
             | Max of Maximum
-            | MinIncr of Minimum * BigRational
-            | IncrMax of BigRational * Maximum
+            | MinIncr of Minimum * Increment
+            | IncrMax of Increment * Maximum
             | MinMax  of Minimum * Maximum
 
         // #endregion
@@ -126,6 +131,7 @@ module Variable =
         /// Failure messages.
         type Message =
             | MinLargerThanMax of Minimum * Maximum
+            | ZeroOrNegativeIncrement of BigRational
              
         /// `ValueRange` exception type
         exception ValueRangeException of Message
@@ -193,7 +199,7 @@ module Variable =
             let fMin  = function | None -> fTrue  | Some(MinIncl m) -> (<=) m | Some(MinExcl m) -> (<) m
             let fMax  = function | None -> fTrue  | Some(MaxIncl m) -> (>=) m | Some(MaxExcl m) -> (>) m
 
-            let fIncr = function | None -> fTrue  | Some(incr) -> BR.isMultiple incr 
+            let fIncr = function | None -> fTrue  | Some(Increment i) -> BR.isMultiple i 
 
             v |> fIncr incr &&
             v |> fMin min &&
@@ -259,6 +265,9 @@ module Variable =
         /// Convert a `Maximum` to a value.
         let maxToValue = function | MaxIncl v | MaxExcl v -> v    
 
+        /// Convert an `Increment` to a value
+        let incrToValue (Increment i) = i
+
         /// Checks whether `Minimum` is exclusive.
         let isMinExcl = function | MinIncl _ -> false | MinExcl _ -> true
 
@@ -271,17 +280,17 @@ module Variable =
         /// Checks whether `Maximum` is inclusive.
         let isMaxIncl = isMaxExcl >> not
         
-        // Calculate `Minimum` as a multiple of `incr`
+        // Calculate `Minimum` as a multiple of `Increment` `incr`
         let minMultipleOf incr min =
             let n = match min with | MinIncl m | MinExcl m -> m 
-            let d = incr
+            let d = incr |> incrToValue
             let n' = n |> BR.toMultipleOf d
             if min |> isMinExcl && n' <= n then n' + d else n'
 
         // Calculate `Maximum` `max` as a multiple of incr
         let maxMultipleOf incr max =
             let n = match max with | MaxIncl m | MaxExcl m -> m 
-            let d = incr
+            let d = incr |> incrToValue
             let n' = n |> BR.toMultipleOf d
             if max |> isMaxExcl && n' >= n then n' - d else n'
 
@@ -289,8 +298,9 @@ module Variable =
         let minIncrMaxToValueSet min incr max =
             let min' = min |> minMultipleOf incr
             let max' = match max with | MaxIncl m | MaxExcl m -> m 
+            let incr' = incr |> incrToValue
 
-            let vs = [min'..incr..max'] |> Set.ofList
+            let vs = [min'..incr'..max'] |> Set.ofList
             // Remove the maximimum value if it equals to maximum when maximum is exclusive
             if vs |> Set.isEmpty |> not && 
                max |> isMaxExcl &&
@@ -360,7 +370,7 @@ module Variable =
                         | MinIncl v -> v |> BR.toString, true
                         | MinExcl v -> v |> BR.toString ,false  
 
-                    let incr = incr |> BR.toString
+                    let incr = incr |> incrToValue |> BR.toString
                 
                     print min minincl incr "" false
 
@@ -370,7 +380,7 @@ module Variable =
                         | MaxIncl v -> v |> BR.toString, true
                         | MaxExcl v -> v |> BR.toString ,false  
 
-                    let incr = incr |> BR.toString
+                    let incr = incr |> incrToValue |> BR.toString
                 
                     print "" false incr max maxincl
 
@@ -413,6 +423,10 @@ module Variable =
         /// Create a `Maximum` that is 
         /// either inclusive or exclusive.
         let createMax isIncl m = if isIncl then m |> MaxIncl else m |> MaxExcl
+
+        /// Create an `Increment` that 
+        /// is a non zero or negative value
+        let createIncr succ fail i = if i <= 0N then i |> fail else i |> Increment |> succ
 
         /// Create a `Minimum` `Range` that is 
         /// either inclusive or exclusive.
@@ -459,7 +473,7 @@ module Variable =
                 | Some min', None,       Some max' -> minMaxValueRange succ fail min' max'
                 | Some min', Some incr', None      -> minIncrValueRange min' incr' |> succ
                 | None,      Some incr', Some max' -> incrMaxValueRange incr' max' |> succ
-                | None,      Some incr', None      -> minIncrValueRange (incr' |> MinIncl) incr' |> succ
+                | None,      Some incr', None      -> minIncrValueRange (incr' |> incrToValue |> MinIncl) incr' |> succ
                 | Some min', Some incr', Some max' -> minIncrMaxToValueSet min' incr' max' |> succ
             else
                 vs
@@ -575,9 +589,12 @@ module Variable =
             let fail _ = vr
             let cr = create succ fail false Set.empty
             // Check whether the new incr is more restrictive than the old incr
-            let checkIncr f incr' = if incr |> BigRational.isMultiple incr' then incr |> f else vr
+            let checkIncr f incr' = 
+                if incr |> incrToValue |> BigRational.isMultiple (incr' |> incrToValue) then 
+                    incr |> f
+                else vr
 
-            let unr = minIncrValueRange (createMin true incr) incr
+            let unr = minIncrValueRange (createMin true (incr |> incrToValue)) incr
 
             let fValueSet = 
                 let min = vr |> getMin
@@ -641,7 +658,7 @@ module Variable =
                 match min, max with
                 | Some(min), _ when min >= 0N -> PP
                 | _, Some(max) when max < 0N  -> NN
-                | Some(min), Some(max) when min < 0N && max > 0N ->  NP
+                | Some(min), Some(max) when min < 0N && max >= 0N ->  NP
                 | _ -> NP
 
             let addition min1 max1 min2 max2 =
@@ -703,7 +720,7 @@ module Variable =
 
         /// Safely calculate `v1` and `v2` using operator `op`,
         /// returns None if operator is division and `v2` is 0.
-        let calcOpt op c v1 v2 =
+        let calcOpt op c v1 v2 = 
             match op with
             | BR.Mult  
             | BR.Subtr   
@@ -717,12 +734,12 @@ module Variable =
         /// in an equation: y = x1 `op` x2
         let calcIncr op incr1 incr2 = 
             match incr1, incr2 with
-            | Some i1, Some i2 ->
+            | Some (Increment i1), Some (Increment i2) ->
                 match op with
                 // y.incr = x1.incr * x2.incr
-                | BR.Mult -> i1 * i2 |> Some
+                | BR.Mult -> i1 * i2  |> Increment|> Some
                 // when y = x1 + x2 then y.incr = gcd of x1.incr and x2.incr
-                | BR.Add | BR.Subtr -> BR.gcd i1 i2 |> Some
+                | BR.Add | BR.Subtr -> BR.gcd i1 i2 |> Increment |> Some
                 |  _ -> None
             | _ -> None
 
@@ -771,12 +788,7 @@ module Variable =
                             | None   -> false
                         m |> Option.bind (maxToValue >> Some), incl
 
-                    let mn1 = min1 |> getMin
-                    let mx1 = max1 |> getMax
-                    let mn2 = min2 |> getMin
-                    let mx2 = max2 |> getMax
-
-                    MinMaxCalcultor.calcMinMax op mn1 mx1 mn2 mx2
+                    MinMaxCalcultor.calcMinMax op (min1 |> getMin) (max1 |> getMax) (min2 |> getMin) (max2 |> getMax)
 
                 let incr = calcIncr op incr1 incr2
 

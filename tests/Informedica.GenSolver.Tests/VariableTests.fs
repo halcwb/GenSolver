@@ -314,11 +314,11 @@ module Testing =
 
             [<TestFixture>]
             type ``Given a ValueRange with a Min and a ValueRange with a Min`` () =
-                let createVrMin incl v = VR.createExc false Set.empty (v |> VR.createMin incl |> Some) None None
+                let create incl v = VR.createExc false Set.empty (v |> VR.createMin incl |> Some) None None
 
                 let test op pred v1 incl1 v2 incl2 =
-                    let vr1 = v1 |> createVrMin incl1 
-                    let vr2 = v2 |> createVrMin incl2
+                    let vr1 = v1 |> create incl1 
+                    let vr2 = v2 |> create incl2
                     (vr1 |> op <| vr2) |> VR.getMin |> pred v1 v2 incl1 incl2                
                 
                 [<Property>]
@@ -329,12 +329,12 @@ module Testing =
 
                     prop
                             
-//                [<Property>]
-//                member x.``When divided the result has min none`` () =
-//                    let prop =
-//                        let pred _ _ _ _ m = m = None
-//                        test (/) pred
-//                    prop
+                [<Property>]
+                member x.``When divided the result has a Min None`` () =
+                    let prop =
+                        let pred _ _ _ _ m = m = None 
+                        test (/) pred
+                    prop
 
                 [<Property>]
                 member x.``When added the result has min that is the addition`` () =
@@ -604,15 +604,14 @@ module Testing =
                 let setMax m = DTO.setMax m maxincl
                 let setIncr i = DTO.setIncr i
                 
-                let toStr(n: BigRational) =
-                    if n <= 0N then "" else n.ToString()
+                let toStr(n: BigRational) = n.ToString()
 
                 let dto = 
                     let dto = DTO.createNew "test"
                     let vals = vs |> Array.map toStr |> Array.filter (System.String.IsNullOrWhiteSpace >> not)
                     let dto = dto |> DTO.setVals vals
-                    let dto = dto |> setMin (min |> toStr)
-                    let dto = dto |> setMax (max |> toStr)
+                    let dto = if min <= max then dto |> setMin (min |> toStr) else dto
+                    let dto = if max >= min then dto |> setMax (max |> toStr) else dto
                     let dto = dto |> setIncr (incr |> toStr)
                     dto
      

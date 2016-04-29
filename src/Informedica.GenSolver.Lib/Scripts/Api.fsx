@@ -53,16 +53,16 @@ let gentconc =
     ] |> nonZeroNegative
 
 gentconc 
-|> solve "gent.sub.comp.qty" "vals" "20,80,400"
-|> solve "gent.sub.comp.conc" "vals" "10,40"
-|> solve "gent.comp.total" "vals" "2,10"
-|> solve "gent.comp.qty" "incr" "1"
 |> solve "gent.ampuls" "minincl" "1/2"
 |> solve "gent.ampuls" "maxincl" "2"
-|> solve "drug.total" "vals" "5,10,20,50,100"
 |> solve "gent.sub.drug.conc" "maxincl" "2"
 |> solve "gent.dose.kg" "maxincl" "7"
 |> solve "gent.dose.kg" "minincl" "5"
+|> solve "gent.sub.comp.qty" "vals" "20,80,400"
+|> solve "gent.sub.comp.conc" "vals" "10,40"
+|> solve "gent.comp.total" "vals" "2,10"
+|> solve "drug.total" "vals" "5,10,20,50,100"
+|> solve "gent.comp.qty" "incr" "1/10"
 |> ignore
 
 let fahrtocels =

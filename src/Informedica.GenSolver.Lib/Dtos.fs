@@ -132,7 +132,10 @@ module Variable =
 
         let max = dto.Max |> minMax VR.createMax dto.MaxIncl
 
-        let incr = dto.Incr |> minMax (fun _ v -> v) false
+        let incr = 
+            let faili i = i |> VR.ZeroOrNegativeIncrement |> ValueRangeMessage |> fail
+            dto.Incr 
+            |> minMax (fun _ v -> v |> VR.createIncr id faili) false
 
         let vr = VR.create succ (fun m -> m |> ValueRangeMessage |> fail) dto.Unr vs min incr max
 
@@ -159,7 +162,10 @@ module Variable =
 
         let max = dto.Max |> minMax VR.createMax dto.MaxIncl
 
-        let incr = dto.Incr |> minMax (fun _ v -> v) false
+        let incr = 
+            match dto.Incr |> minMax (fun _ -> VR.createIncr succ fail) false with
+            | Some i -> i
+            | None -> None
 
         let vr = VR.create succ (fun m -> m |> ValueRangeMessage |> fail) dto.Unr vs min incr max
 
@@ -198,6 +204,7 @@ module Variable =
         let incr = 
             v.Values
             |> VR.getIncr
+            |> Option.bind (VR.incrToValue >> Some)
             |> optToString
 
         let vals = 
