@@ -403,7 +403,7 @@ module Testing =
                     (vr1 |> op <| vr2) |> VR.getMin |> predMin v1 v2 incl1 incl2 &&
                     (vr1 |> op <| vr2) |> VR.getMax |> predMax v1 v2 incl1 incl2
                 
-                
+//                
 //                [<Property>]
 //                member x.``When multiplied the result has Min None and Max None`` () =
 //                    let prop =
@@ -459,17 +459,14 @@ module Testing =
                         test (*) pred pred
                     prop
                             
-//                [<Property>]
-//                member x.``When divided the result has Max of zero and Min is None`` () =
-//                    let prop =
-//                        let predMax v1 v2 incl1 incl2 m =
-//                            if v2 = 0N then true
-//                            else
-//                                m = ((0N) |> VR.createMax (incl1 && incl2) |> Some)
-//                        let predMin _ _ _ _ m = m = None
-//                        test (/) predMin predMax
-//                    prop
-//
+                [<Property>]
+                member x.``When divided the result has Max of None and Min is None when Min <= 0N`` () =
+                    let prop =
+                        let pred _ min _ _ m = 
+                            if min <= 0N then m = None else true
+                        test (/) pred pred
+                    prop
+
                 [<Property>]
                 member x.``When added the result has Min is None and Max None`` () =
                     let prop =
