@@ -71,6 +71,9 @@
 !/docs/files/
 !/docs/files/img/
 !/docs/files/img/*.png
+!/docs/files/*.htm
+!/docs/files/RangeCalc_files/
+!/docs/files/RangeCalc_files/*.*
 !/docs/misc/
 !/docs/misc/RangeCalc.xlsx
 
