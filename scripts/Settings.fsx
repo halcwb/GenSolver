@@ -23,7 +23,7 @@ let summary = "A solver that solves a set of product and sum equations in which 
 let description = ""
 
 // List of author names (for NuGet package)
-let authors = [ "halcwb" ]
+let authors = "halcwb"
 
 // Tags for your project (for NuGet package)
 let tags = "Informedica"
