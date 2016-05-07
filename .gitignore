@@ -20,6 +20,8 @@
 # Add command and batch files
 !*.cmd
 !*.sh
+# Except release.cmd (contains pw and key)
+release.cmd
 
 # Add proc file
 !Procfile
