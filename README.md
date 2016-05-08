@@ -5,6 +5,7 @@
 Mono | .NET
 ---- | ----
 [![Mono CI Build Status](https://img.shields.io/travis/halcwb/GenSolver/master.svg)](https://travis-ci.org/halcwb/GenSolver) | [![.NET Build Status](https://img.shields.io/appveyor/ci/halcwb/GenSolver/master.svg)](https://ci.appveyor.com/project/halcwb/GenSolver)
+[![NuGet Status](http://img.shields.io/nuget/v/Informedica.GenSolver.Lib.svg?style=flat)](https://www.nuget.org/packages/Informedica.GenSolver.Lib/)
 
 
 ## Background
@@ -92,9 +93,7 @@ GenSolver thus ensures that in any combination of product and/or sum equations a
 the resulting restrictions in other variables are respected, there is always a solution where each variable in the equations can just 
 have one possible value, i.e. all the equations are in a *solved state*.
 
-A more elaborate example and output of GenSolver looks like this:
-
- 
+A more elaborate example and output of GenSolver can be found [here](http://halcwb.github.io/GenSolver/tutorial.html).
 
 
 ## Setup
