@@ -777,13 +777,15 @@ module Variable =
                 
                 let min, max = 
                     let getMin m = 
-                        let incl = match m with
+                        let incl = 
+                            match m with
                             | Some v -> v |> isMinIncl
                             | None   -> false
                         m |> Option.bind (minToValue >> Some), incl
 
                     let getMax m = 
-                        let incl = match m with
+                        let incl = 
+                            match m with
                             | Some v -> v |> isMaxIncl
                             | None   -> false
                         m |> Option.bind (maxToValue >> Some), incl

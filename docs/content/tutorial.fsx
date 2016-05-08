@@ -16,17 +16,17 @@ A string based calculation model can be specified. This model can only contain s
 product equations. So take for example conversion from Fahrenheit to Celsius. The original
 formula looks like this:
 
-> cels = (fahr - 32) * 5 / 9 
+> cels = (fahr - 32) \* 5 / 9 
 
 This can be refactored to: 
 
 > fahr = x + 32 and </br>
-> cels = x + 5/9
+> cels = x \* 5/9
 
 However an equation can only contain variables, so the final version of the model looks like:
 
 > fahr = x + const32 </br>
-> cels = x + const5/9
+> cels = x \* const5/9
 
 These equations can be feed as strings to the init function that will convert those strings in 2 equations
 with the variables `fahr`, `cels`, `x`, `const32` and `const5/9`.
@@ -48,7 +48,7 @@ fahrCelsConv_Setup
 (**
 This wil spit out the equations:
 
-> cels<..> = x<..> * const5/9<..> </br>
+> cels<..> = x<..> \* const5/9<..> </br>
 > fahr<..> = x<..> + const32<..> 
 
 *)
@@ -95,7 +95,7 @@ fahrCelsConv
 (**
 The result looks like:
 
-> cels[20] = x[36] * const5/9[5/9] </br>
+> cels[20] = x[36] \* const5/9[5/9] </br>
 > fahr[68] = x[36] + const32[32] 
 
 However the model is more capable than simple conversion. It can also determine the value range in Celsius 
@@ -110,11 +110,11 @@ fahrCelsConv
 (**
 
 > Setting variable fahr minincl with 50 </br>
-> cels[10..> = x[18..> * const5/9[5/9] </br> 
+> cels[10..> = x[18..> \* const5/9[5/9] </br> 
 > fahr[50..> = x[18..> + const32[32] </br> 
 > 
 > Setting variable fahr maxincl with 140 </br>
-> cels[10..60] = x[18..108] * const5/9[5/9] </br>
+> cels[10..60] = x[18..108] \* const5/9[5/9] </br>
 > fahr[50..140] = x[18..108] + const32[32] 
 
 And so the Celsius range is 10 to 60.
@@ -127,7 +127,7 @@ And so the Celsius range is 10 to 60.
 (** 
 To calculate the amount of joules to perform a medical cardioversion the following formula can be used:
 
-> joules = weight * joules.perkg
+> joules = weight \* joules.perkg
 
 *)
 
@@ -138,7 +138,7 @@ let cardioversion =
 
 
 (** 
-Howerver, a defribillator can only be set to a discrete set of joule values
+However, a defribillator can only be set to a discrete set of joule values
 *)
 
 cardioversion 
@@ -175,24 +175,24 @@ can be reached.
 
 (** 
 
-> Setting variable joules vals with 1,2,3,5,7,10,20,30,50,70,100,150,200,300,360
-> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight<..> * joules.perkg<..> 
-> -----
+> Setting variable joules vals with 1,2,3,5,7,10,20,30,50,70,100,150,200,300,360 </br>
+> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight<..> \* joules.perkg<..> </br>
+> </br>
 > Setting variable weight minincl with 3
-> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight[3..> * joules.perkg<..120] 
-> -----
+> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight[3..> \* joules.perkg<..120] </br>
+> </br>
 > Setting variable weight maxincl with 150
-> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight[3..150] * joules.perkg[1/150..120] 
-> -----
-> Setting variable joules.perkg maxincl with 4
-> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight[3..150] * joules.perkg[1/150..4] 
-> -----
-> Setting variable weight vals with 4
-> joules[1, 2, 3, 5, 7, 10] = weight[4] * joules.perkg[1/4, 1/2, 3/4, 5/4, 7/4, 5/2] 
-> -----
-> Setting variable joules vals with 10
-> joules[10] = weight[4] * joules.perkg[5/2] 
-> -----
+> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight[3..150] \* joules.perkg[1/150..120] </br>
+> </br>
+> Setting variable joules.perkg maxincl with 4 </br>
+> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight[3..150] \* joules.perkg[1/150..4] </br>
+> </br>
+> Setting variable weight vals with 4 </br>
+> joules[1, 2, 3, 5, 7, 10] = weight[4] \* joules.perkg[1/4, 1/2, 3/4, 5/4, 7/4, 5/2] </br>
+> </br>
+> Setting variable joules vals with 10 </br>
+> joules[10] = weight[4] \* joules.perkg[5/2] </br>
+> </br>
 > val it : unit = ()
 
 *)
