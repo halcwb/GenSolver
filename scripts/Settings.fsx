@@ -16,7 +16,7 @@ let project = "GenSolver"
 
 // Short summary of the project
 // (used as description in AssemblyInfo and as a short summary for NuGet package)
-let summary = "A solver that solves a set of product and sum equations in which variables are discrete sets of rational numbers that cannot be zero or negative"
+let summary = "A solver that solves a set of product and sum equations in which variables are discrete sets of rational numbers or ranges limited by an minimum or maximum, or an increment"
 
 // Longer description of the project
 // (used as a description for NuGet package; line breaks are automatically cleaned up)
