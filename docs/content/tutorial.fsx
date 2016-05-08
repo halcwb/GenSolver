@@ -103,7 +103,7 @@ for a value range in Fahrenheit:
 *)
 
 fahrCelsConv
-|> API.solve "fahr" "minincl" "30"
+|> API.solve "fahr" "minincl" "50"
 |> API.solve "fahr" "maxincl" "140"
 |> ignore
 
@@ -118,4 +118,81 @@ fahrCelsConv
 > fahr[50..140] = x[18..108] + const32[32] 
 
 And so the Celsius range is 10 to 60.
+*)
+
+(**
+# Discrete sets of values
+*)
+
+(** 
+To calculate the amount of joules to perform a medical cardioversion the following formula can be used:
+
+> joules = weight * joules.perkg
+
+*)
+
+let cardioversion = 
+    API.init [
+        "joules = weight * joules.perkg"
+    ]
+
+
+(** 
+Howerver, a defribillator can only be set to a discrete set of joule values
+*)
+
+cardioversion 
+|> API.solve "joules" "vals" "1,2,3,5,7,10,20,30,50,70,100,150,200,300,360"
+
+(** 
+For this set of values the amount of joule can be calculated for a weight range 
+*)
+
+|> API.solve "weight" "minincl" "3"
+|> API.solve "weight" "maxincl" "150"
+
+(** 
+Typically the amount of joules necessary is about 4 joules/kg
+*)
+
+|> API.solve "joules.perkg" "maxincl" "4"
+
+(** 
+Then the amount of joules can be calculated rounded for the available discrete 
+set of possible joules. For example for a body weight of 4 kg.
+*)
+
+
+|> API.solve "weight" "vals" "4"
+
+(** 
+It can be determined that with 10 joules the nearest possible dose of joules to 4 joules/kg 
+can be reached. 
+*)
+
+|> API.solve "joules" "vals" "10"
+|> ignore
+
+(** 
+
+> Setting variable joules vals with 1,2,3,5,7,10,20,30,50,70,100,150,200,300,360
+> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight<..> * joules.perkg<..> 
+> -----
+> Setting variable weight minincl with 3
+> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight[3..> * joules.perkg<..120] 
+> -----
+> Setting variable weight maxincl with 150
+> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight[3..150] * joules.perkg[1/150..120] 
+> -----
+> Setting variable joules.perkg maxincl with 4
+> joules[1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 300, 360] = weight[3..150] * joules.perkg[1/150..4] 
+> -----
+> Setting variable weight vals with 4
+> joules[1, 2, 3, 5, 7, 10] = weight[4] * joules.perkg[1/4, 1/2, 3/4, 5/4, 7/4, 5/2] 
+> -----
+> Setting variable joules vals with 10
+> joules[10] = weight[4] * joules.perkg[5/2] 
+> -----
+> val it : unit = ()
+
 *)
