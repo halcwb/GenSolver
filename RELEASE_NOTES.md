@@ -1,4 +1,7 @@
-#### 0.1.0-beta - May 7 2015
+#### 0.1.1-beta - May 8 2016
+* Added complex medication calculation model example
+
+#### 0.1.0-beta - May 7 2016
 * First working release
 * Create a set of product and sum equations
 * Set variable properties 
