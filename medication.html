@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Medication Calculation Model
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="A solver that solves a set of product and sum equations in which variables are discrete sets of rational numbers that cannot be zero or negative"/>
+    <meta name="author" content="halcwb"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/GenSolver/content/style.css" />
+    <script type="text/javascript" src="/GenSolver/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/halcwb/GenSolver">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/GenSolver/index.html">GenSolver</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+<h1><a name="Medication-Calculation-Model" class="anchor" href="#Medication-Calculation-Model">Medication Calculation Model</a></h1>
+<p>A more complex calcultation model involves calculation of medication</p>
+<p>A prescription of a drug can have a frequency, quantity and total or/and a rate, quantity and time
+in which the drug is administered. A drug can contain one or more components and each component can
+contain multiple substances.</p>
+<p>This gives rise to the following model:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">  1: </span>
+<span class="l">  2: </span>
+<span class="l">  3: </span>
+<span class="l">  4: </span>
+<span class="l">  5: </span>
+<span class="l">  6: </span>
+<span class="l">  7: </span>
+<span class="l">  8: </span>
+<span class="l">  9: </span>
+<span class="l"> 10: </span>
+<span class="l"> 11: </span>
+<span class="l"> 12: </span>
+<span class="l"> 13: </span>
+<span class="l"> 14: </span>
+<span class="l"> 15: </span>
+<span class="l"> 16: </span>
+<span class="l"> 17: </span>
+<span class="l"> 18: </span>
+<span class="l"> 19: </span>
+<span class="l"> 20: </span>
+<span class="l"> 21: </span>
+<span class="l"> 22: </span>
+<span class="l"> 23: </span>
+<span class="l"> 24: </span>
+<span class="l"> 25: </span>
+<span class="l"> 26: </span>
+<span class="l"> 27: </span>
+<span class="l"> 28: </span>
+<span class="l"> 29: </span>
+<span class="l"> 30: </span>
+<span class="l"> 31: </span>
+<span class="l"> 32: </span>
+<span class="l"> 33: </span>
+<span class="l"> 34: </span>
+<span class="l"> 35: </span>
+<span class="l"> 36: </span>
+<span class="l"> 37: </span>
+<span class="l"> 38: </span>
+<span class="l"> 39: </span>
+<span class="l"> 40: </span>
+<span class="l"> 41: </span>
+<span class="l"> 42: </span>
+<span class="l"> 43: </span>
+<span class="l"> 44: </span>
+<span class="l"> 45: </span>
+<span class="l"> 46: </span>
+<span class="l"> 47: </span>
+<span class="l"> 48: </span>
+<span class="l"> 49: </span>
+<span class="l"> 50: </span>
+<span class="l"> 51: </span>
+<span class="l"> 52: </span>
+<span class="l"> 53: </span>
+<span class="l"> 54: </span>
+<span class="l"> 55: </span>
+<span class="l"> 56: </span>
+<span class="l"> 57: </span>
+<span class="l"> 58: </span>
+<span class="l"> 59: </span>
+<span class="l"> 60: </span>
+<span class="l"> 61: </span>
+<span class="l"> 62: </span>
+<span class="l"> 63: </span>
+<span class="l"> 64: </span>
+<span class="l"> 65: </span>
+<span class="l"> 66: </span>
+<span class="l"> 67: </span>
+<span class="l"> 68: </span>
+<span class="l"> 69: </span>
+<span class="l"> 70: </span>
+<span class="l"> 71: </span>
+<span class="l"> 72: </span>
+<span class="l"> 73: </span>
+<span class="l"> 74: </span>
+<span class="l"> 75: </span>
+<span class="l"> 76: </span>
+<span class="l"> 77: </span>
+<span class="l"> 78: </span>
+<span class="l"> 79: </span>
+<span class="l"> 80: </span>
+<span class="l"> 81: </span>
+<span class="l"> 82: </span>
+<span class="l"> 83: </span>
+<span class="l"> 84: </span>
+<span class="l"> 85: </span>
+<span class="l"> 86: </span>
+<span class="l"> 87: </span>
+<span class="l"> 88: </span>
+<span class="l"> 89: </span>
+<span class="l"> 90: </span>
+<span class="l"> 91: </span>
+<span class="l"> 92: </span>
+<span class="l"> 93: </span>
+<span class="l"> 94: </span>
+<span class="l"> 95: </span>
+<span class="l"> 96: </span>
+<span class="l"> 97: </span>
+<span class="l"> 98: </span>
+<span class="l"> 99: </span>
+<span class="l">100: </span>
+<span class="l">101: </span>
+<span class="l">102: </span>
+<span class="l">103: </span>
+<span class="l">104: </span>
+<span class="l">105: </span>
+<span class="l">106: </span>
+<span class="l">107: </span>
+<span class="l">108: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs17', 22)" onmouseover="showTip(event, 'fs17', 22)" class="i">eqs</span> <span class="o">=</span> <span class="s">&quot; = &quot;</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs18', 23)" onmouseover="showTip(event, 'fs18', 23)" class="i">tms</span> <span class="o">=</span> <span class="s">&quot; * &quot;</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs19', 24)" onmouseover="showTip(event, 'fs19', 24)" class="i">add</span> <span class="o">=</span> <span class="s">&quot; + &quot;</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs20', 25)" onmouseover="showTip(event, 'fs20', 25)" class="i">time</span>   <span class="o">=</span> <span class="s">&quot;time&quot;</span>         <span class="c">// Time</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs21', 26)" onmouseover="showTip(event, 'fs21', 26)" class="i">freq</span>   <span class="o">=</span> <span class="s">&quot;freq&quot;</span>         <span class="c">// Frequency</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs22', 27)" onmouseover="showTip(event, 'fs22', 27)" class="i">total</span>  <span class="o">=</span> <span class="s">&quot;prescr.total&quot;</span> <span class="c">// Total prescribed</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs23', 28)" onmouseover="showTip(event, 'fs23', 28)" class="i">qty</span>    <span class="o">=</span> <span class="s">&quot;prescr.qty&quot;</span>   <span class="c">// Quantity prescribed</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs24', 29)" onmouseover="showTip(event, 'fs24', 29)" class="i">rate</span>   <span class="o">=</span> <span class="s">&quot;prescr.rate&quot;</span>  <span class="c">// Rate prescribed</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs25', 30)" onmouseover="showTip(event, 'fs25', 30)" class="i">drug_total</span> <span class="o">=</span> <span class="s">&quot;drug.total&quot;</span> <span class="c">// Total of drug</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs26', 31)" onmouseover="showTip(event, 'fs26', 31)" class="i">drug_qty</span>   <span class="o">=</span> <span class="s">&quot;drug.qty&quot;</span>   <span class="c">// Quantity of drug</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs27', 32)" onmouseover="showTip(event, 'fs27', 32)" class="i">wght</span> <span class="o">=</span> <span class="s">&quot;weight&quot;</span> <span class="c">// Weight adjustment</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs28', 33)" onmouseover="showTip(event, 'fs28', 33)" class="i">bsa</span>  <span class="o">=</span> <span class="s">&quot;bsa&quot;</span>    <span class="c">// Body surface area adjustment</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs29', 34)" onmouseover="showTip(event, 'fs29', 34)" class="f">compSub</span> <span onmouseout="hideTip(event, 'fs30', 35)" onmouseover="showTip(event, 'fs30', 35)" class="i">c</span> <span onmouseout="hideTip(event, 'fs31', 36)" onmouseover="showTip(event, 'fs31', 36)" class="i">comp_total</span> <span onmouseout="hideTip(event, 'fs32', 37)" onmouseover="showTip(event, 'fs32', 37)" class="i">comp_drug_qty</span> <span onmouseout="hideTip(event, 'fs6', 38)" onmouseover="showTip(event, 'fs6', 38)" class="i">s</span> <span class="o">=</span> 
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs33', 39)" onmouseover="showTip(event, 'fs33', 39)" class="i">sub_comp_qty</span>  <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 40)" onmouseover="showTip(event, 'fs6', 40)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs30', 41)" onmouseover="showTip(event, 'fs30', 41)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.comp.qty&quot;</span>  <span class="c">// Quantity of substance in component</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs34', 42)" onmouseover="showTip(event, 'fs34', 42)" class="i">sub_comp_conc</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 43)" onmouseover="showTip(event, 'fs6', 43)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs30', 44)" onmouseover="showTip(event, 'fs30', 44)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.comp.conc&quot;</span> <span class="c">// Concentration of substance in component</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs35', 45)" onmouseover="showTip(event, 'fs35', 45)" class="i">sub_drug_qty</span>  <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 46)" onmouseover="showTip(event, 'fs6', 46)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.drug.qty&quot;</span>  <span class="c">// Quantity of substance in drug</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs36', 47)" onmouseover="showTip(event, 'fs36', 47)" class="i">sub_drug_conc</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 48)" onmouseover="showTip(event, 'fs6', 48)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.drug.conc&quot;</span> <span class="c">// Concentration of substance in drug</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs37', 49)" onmouseover="showTip(event, 'fs37', 49)" class="i">sub_dose_qty</span>   <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 50)" onmouseover="showTip(event, 'fs6', 50)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.dose.qty&quot;</span>   <span class="c">// Quantity dose of substance</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs38', 51)" onmouseover="showTip(event, 'fs38', 51)" class="i">sub_dose_total</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 52)" onmouseover="showTip(event, 'fs6', 52)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.dose.total&quot;</span> <span class="c">// Total dose of substance</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs39', 53)" onmouseover="showTip(event, 'fs39', 53)" class="i">sub_dose_rate</span>  <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 54)" onmouseover="showTip(event, 'fs6', 54)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.dose.rate&quot;</span>  <span class="c">// Rate dose of substance</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs40', 55)" onmouseover="showTip(event, 'fs40', 55)" class="i">sub_dose_qty_wght</span>   <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 56)" onmouseover="showTip(event, 'fs6', 56)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.dose.qty.wght&quot;</span>   <span class="c">// Weight adjusted quantity dose of substance</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs41', 57)" onmouseover="showTip(event, 'fs41', 57)" class="i">sub_dose_total_wght</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 58)" onmouseover="showTip(event, 'fs6', 58)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.dose.total.wght&quot;</span> <span class="c">// Weight adjusted total dose of substance</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs42', 59)" onmouseover="showTip(event, 'fs42', 59)" class="i">sub_dose_rate_wght</span>  <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 60)" onmouseover="showTip(event, 'fs6', 60)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.dose.rate.wght&quot;</span>  <span class="c">// Weight adjusted rate dose of substance</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs43', 61)" onmouseover="showTip(event, 'fs43', 61)" class="i">sub_dose_qty_bsa</span>   <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 62)" onmouseover="showTip(event, 'fs6', 62)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.dose.qty.bsa&quot;</span>   <span class="c">// Body surface area adjusted quantity dose of substance</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs44', 63)" onmouseover="showTip(event, 'fs44', 63)" class="i">sub_dose_total_bsa</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 64)" onmouseover="showTip(event, 'fs6', 64)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.dose.total.bsa&quot;</span> <span class="c">// Body surface area adjusted total dose of substance</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs45', 65)" onmouseover="showTip(event, 'fs45', 65)" class="i">sub_dose_rate_bsa</span>  <span class="o">=</span> <span onmouseout="hideTip(event, 'fs6', 66)" onmouseover="showTip(event, 'fs6', 66)" class="i">s</span> <span class="o">+</span> <span class="s">&quot;.dose.rate.bsa&quot;</span>  <span class="c">// Body surface area adjusted rate dose of substance</span>
+
+
+    [
+        <span onmouseout="hideTip(event, 'fs33', 67)" onmouseover="showTip(event, 'fs33', 67)" class="i">sub_comp_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 68)" onmouseover="showTip(event, 'fs17', 68)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs34', 69)" onmouseover="showTip(event, 'fs34', 69)" class="i">sub_comp_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 70)" onmouseover="showTip(event, 'fs18', 70)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs31', 71)" onmouseover="showTip(event, 'fs31', 71)" class="i">comp_total</span>
+        <span onmouseout="hideTip(event, 'fs35', 72)" onmouseover="showTip(event, 'fs35', 72)" class="i">sub_drug_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 73)" onmouseover="showTip(event, 'fs17', 73)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs36', 74)" onmouseover="showTip(event, 'fs36', 74)" class="i">sub_drug_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 75)" onmouseover="showTip(event, 'fs18', 75)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs25', 76)" onmouseover="showTip(event, 'fs25', 76)" class="i">drug_total</span>
+        <span onmouseout="hideTip(event, 'fs35', 77)" onmouseover="showTip(event, 'fs35', 77)" class="i">sub_drug_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 78)" onmouseover="showTip(event, 'fs17', 78)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs34', 79)" onmouseover="showTip(event, 'fs34', 79)" class="i">sub_comp_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 80)" onmouseover="showTip(event, 'fs18', 80)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs32', 81)" onmouseover="showTip(event, 'fs32', 81)" class="i">comp_drug_qty</span>
+        <span onmouseout="hideTip(event, 'fs38', 82)" onmouseover="showTip(event, 'fs38', 82)" class="i">sub_dose_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 83)" onmouseover="showTip(event, 'fs17', 83)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs37', 84)" onmouseover="showTip(event, 'fs37', 84)" class="i">sub_dose_qty</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 85)" onmouseover="showTip(event, 'fs18', 85)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs21', 86)" onmouseover="showTip(event, 'fs21', 86)" class="i">freq</span> 
+        <span onmouseout="hideTip(event, 'fs37', 87)" onmouseover="showTip(event, 'fs37', 87)" class="i">sub_dose_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 88)" onmouseover="showTip(event, 'fs17', 88)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs39', 89)" onmouseover="showTip(event, 'fs39', 89)" class="i">sub_dose_rate</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 90)" onmouseover="showTip(event, 'fs18', 90)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs20', 91)" onmouseover="showTip(event, 'fs20', 91)" class="i">time</span>
+        <span onmouseout="hideTip(event, 'fs37', 92)" onmouseover="showTip(event, 'fs37', 92)" class="i">sub_dose_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 93)" onmouseover="showTip(event, 'fs17', 93)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs36', 94)" onmouseover="showTip(event, 'fs36', 94)" class="i">sub_drug_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 95)" onmouseover="showTip(event, 'fs18', 95)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs23', 96)" onmouseover="showTip(event, 'fs23', 96)" class="i">qty</span>
+        <span onmouseout="hideTip(event, 'fs38', 97)" onmouseover="showTip(event, 'fs38', 97)" class="i">sub_dose_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 98)" onmouseover="showTip(event, 'fs17', 98)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs36', 99)" onmouseover="showTip(event, 'fs36', 99)" class="i">sub_drug_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 100)" onmouseover="showTip(event, 'fs18', 100)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs22', 101)" onmouseover="showTip(event, 'fs22', 101)" class="i">total</span>
+        <span onmouseout="hideTip(event, 'fs39', 102)" onmouseover="showTip(event, 'fs39', 102)" class="i">sub_dose_rate</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 103)" onmouseover="showTip(event, 'fs17', 103)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs36', 104)" onmouseover="showTip(event, 'fs36', 104)" class="i">sub_drug_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 105)" onmouseover="showTip(event, 'fs18', 105)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs24', 106)" onmouseover="showTip(event, 'fs24', 106)" class="i">rate</span>
+
+        <span onmouseout="hideTip(event, 'fs37', 107)" onmouseover="showTip(event, 'fs37', 107)" class="i">sub_dose_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 108)" onmouseover="showTip(event, 'fs17', 108)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs40', 109)" onmouseover="showTip(event, 'fs40', 109)" class="i">sub_dose_qty_wght</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 110)" onmouseover="showTip(event, 'fs18', 110)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs27', 111)" onmouseover="showTip(event, 'fs27', 111)" class="i">wght</span>
+        <span onmouseout="hideTip(event, 'fs38', 112)" onmouseover="showTip(event, 'fs38', 112)" class="i">sub_dose_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 113)" onmouseover="showTip(event, 'fs17', 113)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs41', 114)" onmouseover="showTip(event, 'fs41', 114)" class="i">sub_dose_total_wght</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 115)" onmouseover="showTip(event, 'fs18', 115)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs27', 116)" onmouseover="showTip(event, 'fs27', 116)" class="i">wght</span>
+        <span onmouseout="hideTip(event, 'fs39', 117)" onmouseover="showTip(event, 'fs39', 117)" class="i">sub_dose_rate</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 118)" onmouseover="showTip(event, 'fs17', 118)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs42', 119)" onmouseover="showTip(event, 'fs42', 119)" class="i">sub_dose_rate_wght</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 120)" onmouseover="showTip(event, 'fs18', 120)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs27', 121)" onmouseover="showTip(event, 'fs27', 121)" class="i">wght</span>
+
+        <span onmouseout="hideTip(event, 'fs37', 122)" onmouseover="showTip(event, 'fs37', 122)" class="i">sub_dose_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 123)" onmouseover="showTip(event, 'fs17', 123)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs43', 124)" onmouseover="showTip(event, 'fs43', 124)" class="i">sub_dose_qty_bsa</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 125)" onmouseover="showTip(event, 'fs18', 125)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs28', 126)" onmouseover="showTip(event, 'fs28', 126)" class="i">bsa</span>
+        <span onmouseout="hideTip(event, 'fs38', 127)" onmouseover="showTip(event, 'fs38', 127)" class="i">sub_dose_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 128)" onmouseover="showTip(event, 'fs17', 128)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs44', 129)" onmouseover="showTip(event, 'fs44', 129)" class="i">sub_dose_total_bsa</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 130)" onmouseover="showTip(event, 'fs18', 130)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs28', 131)" onmouseover="showTip(event, 'fs28', 131)" class="i">bsa</span>
+        <span onmouseout="hideTip(event, 'fs39', 132)" onmouseover="showTip(event, 'fs39', 132)" class="i">sub_dose_rate</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 133)" onmouseover="showTip(event, 'fs17', 133)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs45', 134)" onmouseover="showTip(event, 'fs45', 134)" class="i">sub_dose_rate_bsa</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 135)" onmouseover="showTip(event, 'fs18', 135)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs28', 136)" onmouseover="showTip(event, 'fs28', 136)" class="i">bsa</span>
+    ]
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs46', 137)" onmouseover="showTip(event, 'fs46', 137)" class="f">comp</span> <span onmouseout="hideTip(event, 'fs47', 138)" onmouseover="showTip(event, 'fs47', 138)" class="i">cs</span> <span class="o">=</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs30', 139)" onmouseover="showTip(event, 'fs30', 139)" class="i">c</span>, <span onmouseout="hideTip(event, 'fs48', 140)" onmouseover="showTip(event, 'fs48', 140)" class="i">sl</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs47', 141)" onmouseover="showTip(event, 'fs47', 141)" class="i">cs</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs49', 142)" onmouseover="showTip(event, 'fs49', 142)" class="i">comp_qty</span>   <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 143)" onmouseover="showTip(event, 'fs30', 143)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.comp.qty&quot;</span>   <span class="c">// Quantity of component</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs31', 144)" onmouseover="showTip(event, 'fs31', 144)" class="i">comp_total</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 145)" onmouseover="showTip(event, 'fs30', 145)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.comp.total&quot;</span> <span class="c">// Total of component</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs32', 146)" onmouseover="showTip(event, 'fs32', 146)" class="i">comp_drug_qty</span>  <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 147)" onmouseover="showTip(event, 'fs30', 147)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.drug.qty&quot;</span>  <span class="c">// Quantity of component in drug</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs50', 148)" onmouseover="showTip(event, 'fs50', 148)" class="i">comp_drug_conc</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 149)" onmouseover="showTip(event, 'fs30', 149)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.drug.conc&quot;</span> <span class="c">// Concentration of component in drug</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs51', 150)" onmouseover="showTip(event, 'fs51', 150)" class="i">comp_dose_qty</span>   <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 151)" onmouseover="showTip(event, 'fs30', 151)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.dose.qty&quot;</span>   <span class="c">// Quantity dose of component</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs52', 152)" onmouseover="showTip(event, 'fs52', 152)" class="i">comp_dose_total</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 153)" onmouseover="showTip(event, 'fs30', 153)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.dose.total&quot;</span> <span class="c">// Total dose of component</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs53', 154)" onmouseover="showTip(event, 'fs53', 154)" class="i">comp_dose_rate</span>  <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 155)" onmouseover="showTip(event, 'fs30', 155)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.dose.rate&quot;</span>  <span class="c">// Rate dose of component</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs54', 156)" onmouseover="showTip(event, 'fs54', 156)" class="i">comp_dose_qty_wght</span>   <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 157)" onmouseover="showTip(event, 'fs30', 157)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.dose.qty.wght&quot;</span>   <span class="c">// Weight adjusted quantity dose of component</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs55', 158)" onmouseover="showTip(event, 'fs55', 158)" class="i">comp_dose_total_wght</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 159)" onmouseover="showTip(event, 'fs30', 159)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.dose.total.wght&quot;</span> <span class="c">// Weight adjusted total dose of component</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs56', 160)" onmouseover="showTip(event, 'fs56', 160)" class="i">comp_dose_rate_wght</span>  <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 161)" onmouseover="showTip(event, 'fs30', 161)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.dose.rate.wght&quot;</span>  <span class="c">// Weight adjusted rate dose of component</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs57', 162)" onmouseover="showTip(event, 'fs57', 162)" class="i">comp_dose_qty_bsa</span>   <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 163)" onmouseover="showTip(event, 'fs30', 163)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.dose.qty.bsa&quot;</span>   <span class="c">// Body surface area adjusted quantity dose of component</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs58', 164)" onmouseover="showTip(event, 'fs58', 164)" class="i">comp_dose_total_bsa</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 165)" onmouseover="showTip(event, 'fs30', 165)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.dose.total.bsa&quot;</span> <span class="c">// Body surface area adjusted total dose of component</span>
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs59', 166)" onmouseover="showTip(event, 'fs59', 166)" class="i">comp_dose_rate_bsa</span>  <span class="o">=</span> <span onmouseout="hideTip(event, 'fs30', 167)" onmouseover="showTip(event, 'fs30', 167)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.dose.rate.bsa&quot;</span>  <span class="c">// Body surface area adjusted rate dose of component</span>
+
+    [
+        <span onmouseout="hideTip(event, 'fs25', 168)" onmouseover="showTip(event, 'fs25', 168)" class="i">drug_total</span>      <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 169)" onmouseover="showTip(event, 'fs17', 169)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs49', 170)" onmouseover="showTip(event, 'fs49', 170)" class="i">comp_qty</span>       <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 171)" onmouseover="showTip(event, 'fs18', 171)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs31', 172)" onmouseover="showTip(event, 'fs31', 172)" class="i">comp_total</span>
+        <span onmouseout="hideTip(event, 'fs32', 173)" onmouseover="showTip(event, 'fs32', 173)" class="i">comp_drug_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 174)" onmouseover="showTip(event, 'fs17', 174)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs50', 175)" onmouseover="showTip(event, 'fs50', 175)" class="i">comp_drug_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 176)" onmouseover="showTip(event, 'fs18', 176)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs25', 177)" onmouseover="showTip(event, 'fs25', 177)" class="i">drug_total</span>
+        <span onmouseout="hideTip(event, 'fs52', 178)" onmouseover="showTip(event, 'fs52', 178)" class="i">comp_dose_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 179)" onmouseover="showTip(event, 'fs17', 179)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs51', 180)" onmouseover="showTip(event, 'fs51', 180)" class="i">comp_dose_qty</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 181)" onmouseover="showTip(event, 'fs18', 181)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs21', 182)" onmouseover="showTip(event, 'fs21', 182)" class="i">freq</span> 
+        <span onmouseout="hideTip(event, 'fs51', 183)" onmouseover="showTip(event, 'fs51', 183)" class="i">comp_dose_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 184)" onmouseover="showTip(event, 'fs17', 184)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs53', 185)" onmouseover="showTip(event, 'fs53', 185)" class="i">comp_dose_rate</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 186)" onmouseover="showTip(event, 'fs18', 186)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs20', 187)" onmouseover="showTip(event, 'fs20', 187)" class="i">time</span>
+        <span onmouseout="hideTip(event, 'fs51', 188)" onmouseover="showTip(event, 'fs51', 188)" class="i">comp_dose_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 189)" onmouseover="showTip(event, 'fs17', 189)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs50', 190)" onmouseover="showTip(event, 'fs50', 190)" class="i">comp_drug_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 191)" onmouseover="showTip(event, 'fs18', 191)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs23', 192)" onmouseover="showTip(event, 'fs23', 192)" class="i">qty</span>
+        <span onmouseout="hideTip(event, 'fs52', 193)" onmouseover="showTip(event, 'fs52', 193)" class="i">comp_dose_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 194)" onmouseover="showTip(event, 'fs17', 194)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs50', 195)" onmouseover="showTip(event, 'fs50', 195)" class="i">comp_drug_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 196)" onmouseover="showTip(event, 'fs18', 196)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs22', 197)" onmouseover="showTip(event, 'fs22', 197)" class="i">total</span>
+        <span onmouseout="hideTip(event, 'fs53', 198)" onmouseover="showTip(event, 'fs53', 198)" class="i">comp_dose_rate</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 199)" onmouseover="showTip(event, 'fs17', 199)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs50', 200)" onmouseover="showTip(event, 'fs50', 200)" class="i">comp_drug_conc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 201)" onmouseover="showTip(event, 'fs18', 201)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs24', 202)" onmouseover="showTip(event, 'fs24', 202)" class="i">rate</span>
+
+        <span onmouseout="hideTip(event, 'fs51', 203)" onmouseover="showTip(event, 'fs51', 203)" class="i">comp_dose_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 204)" onmouseover="showTip(event, 'fs17', 204)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs54', 205)" onmouseover="showTip(event, 'fs54', 205)" class="i">comp_dose_qty_wght</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 206)" onmouseover="showTip(event, 'fs18', 206)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs27', 207)" onmouseover="showTip(event, 'fs27', 207)" class="i">wght</span>
+        <span onmouseout="hideTip(event, 'fs52', 208)" onmouseover="showTip(event, 'fs52', 208)" class="i">comp_dose_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 209)" onmouseover="showTip(event, 'fs17', 209)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs55', 210)" onmouseover="showTip(event, 'fs55', 210)" class="i">comp_dose_total_wght</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 211)" onmouseover="showTip(event, 'fs18', 211)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs27', 212)" onmouseover="showTip(event, 'fs27', 212)" class="i">wght</span>
+        <span onmouseout="hideTip(event, 'fs53', 213)" onmouseover="showTip(event, 'fs53', 213)" class="i">comp_dose_rate</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 214)" onmouseover="showTip(event, 'fs17', 214)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs56', 215)" onmouseover="showTip(event, 'fs56', 215)" class="i">comp_dose_rate_wght</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 216)" onmouseover="showTip(event, 'fs18', 216)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs27', 217)" onmouseover="showTip(event, 'fs27', 217)" class="i">wght</span>
+
+        <span onmouseout="hideTip(event, 'fs51', 218)" onmouseover="showTip(event, 'fs51', 218)" class="i">comp_dose_qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 219)" onmouseover="showTip(event, 'fs17', 219)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs57', 220)" onmouseover="showTip(event, 'fs57', 220)" class="i">comp_dose_qty_bsa</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 221)" onmouseover="showTip(event, 'fs18', 221)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs28', 222)" onmouseover="showTip(event, 'fs28', 222)" class="i">bsa</span>
+        <span onmouseout="hideTip(event, 'fs52', 223)" onmouseover="showTip(event, 'fs52', 223)" class="i">comp_dose_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 224)" onmouseover="showTip(event, 'fs17', 224)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs58', 225)" onmouseover="showTip(event, 'fs58', 225)" class="i">comp_dose_total_bsa</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 226)" onmouseover="showTip(event, 'fs18', 226)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs28', 227)" onmouseover="showTip(event, 'fs28', 227)" class="i">bsa</span>
+        <span onmouseout="hideTip(event, 'fs53', 228)" onmouseover="showTip(event, 'fs53', 228)" class="i">comp_dose_rate</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 229)" onmouseover="showTip(event, 'fs17', 229)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs59', 230)" onmouseover="showTip(event, 'fs59', 230)" class="i">comp_dose_rate_bsa</span>  <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 231)" onmouseover="showTip(event, 'fs18', 231)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs28', 232)" onmouseover="showTip(event, 'fs28', 232)" class="i">bsa</span>
+
+    ] <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs60', 233)" onmouseover="showTip(event, 'fs60', 233)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs61', 234)" onmouseover="showTip(event, 'fs61', 234)" class="f">append</span> (<span onmouseout="hideTip(event, 'fs48', 235)" onmouseover="showTip(event, 'fs48', 235)" class="i">sl</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs60', 236)" onmouseover="showTip(event, 'fs60', 236)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs62', 237)" onmouseover="showTip(event, 'fs62', 237)" class="f">collect</span> (<span onmouseout="hideTip(event, 'fs29', 238)" onmouseover="showTip(event, 'fs29', 238)" class="f">compSub</span> <span onmouseout="hideTip(event, 'fs30', 239)" onmouseover="showTip(event, 'fs30', 239)" class="i">c</span> <span onmouseout="hideTip(event, 'fs31', 240)" onmouseover="showTip(event, 'fs31', 240)" class="i">comp_total</span> <span onmouseout="hideTip(event, 'fs32', 241)" onmouseover="showTip(event, 'fs32', 241)" class="i">comp_drug_qty</span>))
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs63', 242)" onmouseover="showTip(event, 'fs63', 242)" class="f">drug</span> <span onmouseout="hideTip(event, 'fs64', 243)" onmouseover="showTip(event, 'fs64', 243)" class="i">cs</span> <span class="o">=</span>   
+    [ 
+        <span onmouseout="hideTip(event, 'fs22', 244)" onmouseover="showTip(event, 'fs22', 244)" class="i">total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 245)" onmouseover="showTip(event, 'fs17', 245)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs23', 246)" onmouseover="showTip(event, 'fs23', 246)" class="i">qty</span>        <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 247)" onmouseover="showTip(event, 'fs18', 247)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs21', 248)" onmouseover="showTip(event, 'fs21', 248)" class="i">freq</span>
+        <span onmouseout="hideTip(event, 'fs23', 249)" onmouseover="showTip(event, 'fs23', 249)" class="i">qty</span>   <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 250)" onmouseover="showTip(event, 'fs17', 250)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs24', 251)" onmouseover="showTip(event, 'fs24', 251)" class="i">rate</span>       <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 252)" onmouseover="showTip(event, 'fs18', 252)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs20', 253)" onmouseover="showTip(event, 'fs20', 253)" class="i">time</span>
+        <span onmouseout="hideTip(event, 'fs22', 254)" onmouseover="showTip(event, 'fs22', 254)" class="i">total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 255)" onmouseover="showTip(event, 'fs17', 255)" class="i">eqs</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs25', 256)" onmouseover="showTip(event, 'fs25', 256)" class="i">drug_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs18', 257)" onmouseover="showTip(event, 'fs18', 257)" class="i">tms</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs26', 258)" onmouseover="showTip(event, 'fs26', 258)" class="i">drug_qty</span>
+    ] 
+    <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs60', 259)" onmouseover="showTip(event, 'fs60', 259)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs61', 260)" onmouseover="showTip(event, 'fs61', 260)" class="f">append</span> (<span onmouseout="hideTip(event, 'fs64', 261)" onmouseover="showTip(event, 'fs64', 261)" class="i">cs</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs60', 262)" onmouseover="showTip(event, 'fs60', 262)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs62', 263)" onmouseover="showTip(event, 'fs62', 263)" class="f">collect</span> <span onmouseout="hideTip(event, 'fs46', 264)" onmouseover="showTip(event, 'fs46', 264)" class="f">comp</span>)
+    <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs60', 265)" onmouseover="showTip(event, 'fs60', 265)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs61', 266)" onmouseover="showTip(event, 'fs61', 266)" class="f">append</span> [ 
+        <span onmouseout="hideTip(event, 'fs25', 267)" onmouseover="showTip(event, 'fs25', 267)" class="i">drug_total</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs17', 268)" onmouseover="showTip(event, 'fs17', 268)" class="i">eqs</span> <span class="o">+</span> (<span onmouseout="hideTip(event, 'fs64', 269)" onmouseover="showTip(event, 'fs64', 269)" class="i">cs</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs60', 270)" onmouseover="showTip(event, 'fs60', 270)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs65', 271)" onmouseover="showTip(event, 'fs65', 271)" class="f">fold</span> (<span class="k">fun</span> <span onmouseout="hideTip(event, 'fs66', 272)" onmouseover="showTip(event, 'fs66', 272)" class="i">acc</span> (<span onmouseout="hideTip(event, 'fs30', 273)" onmouseover="showTip(event, 'fs30', 273)" class="i">c</span>, _) <span class="k">-&gt;</span> 
+        <span class="k">if</span> <span onmouseout="hideTip(event, 'fs66', 274)" onmouseover="showTip(event, 'fs66', 274)" class="i">acc</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="k">then</span> <span onmouseout="hideTip(event, 'fs30', 275)" onmouseover="showTip(event, 'fs30', 275)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.drug.qty&quot;</span> <span class="k">else</span> <span onmouseout="hideTip(event, 'fs66', 276)" onmouseover="showTip(event, 'fs66', 276)" class="i">acc</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs19', 277)" onmouseover="showTip(event, 'fs19', 277)" class="i">add</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs30', 278)" onmouseover="showTip(event, 'fs30', 278)" class="i">c</span> <span class="o">+</span> <span class="s">&quot;.drug.qty&quot;</span>) <span class="s">&quot;&quot;</span>)
+        ]
+
+    <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs13', 279)" onmouseover="showTip(event, 'fs13', 279)" class="f">init</span>              <span class="c">// Initialize the calculation model</span>
+    <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs15', 280)" onmouseover="showTip(event, 'fs15', 280)" class="f">nonZeroNegative</span>   <span class="c">// Set all variables to only contain non zero positive values</span>
+</code></pre></td>
+</tr>
+</table>
+<p>For a 'simple' one component, one substance drug like a paracetamol supp, the following
+equantions are generated:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs67', 281)" onmouseover="showTip(event, 'fs67', 281)" class="i">paracetamol</span> <span class="o">=</span> [(<span class="s">&quot;supp&quot;</span>, [<span class="s">&quot;paracetamol&quot;</span>])] <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs63', 282)" onmouseover="showTip(event, 'fs63', 282)" class="f">drug</span>
+
+<span onmouseout="hideTip(event, 'fs67', 283)" onmouseover="showTip(event, 'fs67', 283)" class="i">paracetamol</span> 
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs9', 284)" onmouseover="showTip(event, 'fs9', 284)" class="f">printEqs</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs68', 285)" onmouseover="showTip(event, 'fs68', 285)" class="f">ignore</span>
+</code></pre></td>
+</tr>
+</table>
+<blockquote>
+<p>paracetamol.supp.comp.qty<0..> = paracetamol.supp.comp.conc<0..> * supp.comp.total<0..>  </br>
+paracetamol.drug.qty<0..> = paracetamol.drug.conc<0..> * drug.total<0..>  </br>
+paracetamol.drug.qty<0..> = paracetamol.supp.comp.conc<0..> * supp.drug.qty<0..>  </br>
+paracetamol.dose.total<0..> = paracetamol.dose.qty<0..> * freq<0..>  </br>
+paracetamol.dose.qty<0..> = paracetamol.dose.rate<0..> * time<0..>  </br>
+paracetamol.dose.qty<0..> = paracetamol.drug.conc<0..> * prescr.qty<0..>  </br>
+paracetamol.dose.total<0..> = paracetamol.drug.conc<0..> * prescr.total<0..>  </br>
+paracetamol.dose.rate<0..> = paracetamol.drug.conc<0..> * prescr.rate<0..>  </br>
+paracetamol.dose.qty<0..> = paracetamol.dose.qty.wght<0..> * weight<0..>  </br>
+paracetamol.dose.total<0..> = paracetamol.dose.total.wght<0..> * weight<0..>  </br>
+paracetamol.dose.rate<0..> = paracetamol.dose.rate.wght<0..> * weight<0..>  </br>
+paracetamol.dose.qty<0..> = paracetamol.dose.qty.bsa<0..> * bsa<0..>  </br>
+paracetamol.dose.total<0..> = paracetamol.dose.total.bsa<0..> * bsa<0..>  </br>
+paracetamol.dose.rate<0..> = paracetamol.dose.rate.bsa<0..> * bsa<0..>  </br>
+drug.total<0..> = supp.comp.qty<0..> * supp.comp.total<0..>  </br>
+supp.drug.qty<0..> = supp.drug.conc<0..> * drug.total<0..>  </br>
+supp.dose.total<0..> = supp.dose.qty<0..> * freq<0..>  </br>
+supp.dose.qty<0..> = supp.dose.rate<0..> * time<0..>  </br>
+supp.dose.qty<0..> = supp.drug.conc<0..> * prescr.qty<0..>  </br>
+supp.dose.total<0..> = supp.drug.conc<0..> * prescr.total<0..>  </br>
+supp.dose.rate<0..> = supp.drug.conc<0..> * prescr.rate<0..>  </br>
+supp.dose.qty<0..> = supp.dose.qty.wght<0..> * weight<0..>  </br>
+supp.dose.total<0..> = supp.dose.total.wght<0..> * weight<0..>  </br>
+supp.dose.rate<0..> = supp.dose.rate.wght<0..> * weight<0..>  </br>
+supp.dose.qty<0..> = supp.dose.qty.bsa<0..> * bsa<0..>  </br>
+supp.dose.total<0..> = supp.dose.total.bsa<0..> * bsa<0..>  </br>
+supp.dose.rate<0..> = supp.dose.rate.bsa<0..> * bsa<0..>  </br>
+prescr.total<0..> = prescr.qty<0..> * freq<0..>  </br>
+prescr.qty<0..> = prescr.rate<0..> * time<0..>  </br>
+prescr.total<0..> = drug.total<0..> * drug.qty<0..>  </br>
+drug.total<0..> = supp.drug.qty<0..>  </br></p>
+</blockquote>
+<h2><a name="Using-the-model" class="anchor" href="#Using-the-model">Using the model</a></h2>
+<p>Next we can start using the model.</p>
+<p>A paracetamol supp can have a set of quanities, like: 50, 60, 120, 240, 500 and 1000 mg.
+And a supp has a total of 1. As the drug contains only the supp, the drug total equals
+the compoment total and is 1.</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span onmouseout="hideTip(event, 'fs67', 286)" onmouseover="showTip(event, 'fs67', 286)" class="i">paracetamol</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs11', 287)" onmouseover="showTip(event, 'fs11', 287)" class="f">solve</span> <span class="s">&quot;paracetamol.supp.comp.qty&quot;</span> <span class="s">&quot;vals&quot;</span> <span class="s">&quot;50, 60, 120,240, 500, 1000&quot;</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs11', 288)" onmouseover="showTip(event, 'fs11', 288)" class="f">solve</span> <span class="s">&quot;supp.comp.total&quot;</span> <span class="s">&quot;vals&quot;</span> <span class="s">&quot;1&quot;</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs11', 289)" onmouseover="showTip(event, 'fs11', 289)" class="f">solve</span> <span class="s">&quot;supp.drug.qty&quot;</span> <span class="s">&quot;vals&quot;</span> <span class="s">&quot;1&quot;</span>
+</code></pre></td>
+</tr>
+</table>
+<p>Lets assume that patients normally tolerate one supp at a time. So, the prescription quantity can
+be set to 1. Also, the frequency of administration will be around, 1,2,3,4 or 6 times daily.</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs11', 290)" onmouseover="showTip(event, 'fs11', 290)" class="f">solve</span> <span class="s">&quot;prescr.qty&quot;</span> <span class="s">&quot;vals&quot;</span> <span class="s">&quot;1&quot;</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs11', 291)" onmouseover="showTip(event, 'fs11', 291)" class="f">solve</span> <span class="s">&quot;freq&quot;</span> <span class="s">&quot;vals&quot;</span> <span class="s">&quot;1,2,3,4,6&quot;</span>
+</code></pre></td>
+</tr>
+</table>
+<p>The maximum paracetamol dose is 4000 mg/day. For children the dose is weight adjusted and should
+not exceed 90 mg/kg/day</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs11', 292)" onmouseover="showTip(event, 'fs11', 292)" class="f">solve</span> <span class="s">&quot;paracetamol.dose.total&quot;</span> <span class="s">&quot;maxincl&quot;</span> <span class="s">&quot;4000&quot;</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs11', 293)" onmouseover="showTip(event, 'fs11', 293)" class="f">solve</span> <span class="s">&quot;paracetamol.dose.total.wght&quot;</span> <span class="s">&quot;maxincl&quot;</span> <span class="s">&quot;90&quot;</span>
+</code></pre></td>
+</tr>
+</table>
+<p>Suppose we want to prescribe paracetamol with this setup to a child of 6 kg. With a frequency of
+3 or 4 times/day.</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs11', 294)" onmouseover="showTip(event, 'fs11', 294)" class="f">solve</span> <span class="s">&quot;weight&quot;</span> <span class="s">&quot;vals&quot;</span> <span class="s">&quot;6&quot;</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs11', 295)" onmouseover="showTip(event, 'fs11', 295)" class="f">solve</span> <span class="s">&quot;freq&quot;</span> <span class="s">&quot;vals&quot;</span> <span class="s">&quot;3,4&quot;</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs9', 296)" onmouseover="showTip(event, 'fs9', 296)" class="f">printEqs</span>
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs68', 297)" onmouseover="showTip(event, 'fs68', 297)" class="f">ignore</span>
+</code></pre></td>
+</tr>
+</table>
+<blockquote>
+<p>paracetamol.supp.comp.qty[50, 60, 120] = paracetamol.supp.comp.conc[50, 60, 120] * supp.comp.total[1]  </br>
+paracetamol.drug.qty[50, 60, 120] = paracetamol.drug.conc[50, 60, 120] * drug.total[1]  </br>
+paracetamol.drug.qty[50, 60, 120] = paracetamol.supp.comp.conc[50, 60, 120] * supp.drug.qty[1]  </br>
+paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.dose.qty[50, 60, 120] * freq[3, 4]  </br>
+paracetamol.dose.qty[50, 60, 120] = paracetamol.dose.rate<0..> * time<0..>  </br>
+paracetamol.dose.qty[50, 60, 120] = paracetamol.drug.conc[50, 60, 120] * prescr.qty[1]  </br>
+paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.drug.conc[50, 60, 120] * prescr.total[3, 4]  </br>
+paracetamol.dose.rate<0..> = paracetamol.drug.conc[50, 60, 120] * prescr.rate<0..>  </br>
+paracetamol.dose.qty[50, 60, 120] = paracetamol.dose.qty.wght[25/3, 10, 20] * weight[6]  </br>
+paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.dose.total.wght[25, 30, 100/3, 40, 60, 80] * weight[6]  </br>
+paracetamol.dose.rate<0..> = paracetamol.dose.rate.wght<0..> * weight[6]  </br>
+paracetamol.dose.qty[50, 60, 120] = paracetamol.dose.qty.bsa<0..> * bsa<0..>  </br>
+paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.dose.total.bsa<0..> * bsa<0..>  </br>
+paracetamol.dose.rate<0..> = paracetamol.dose.rate.bsa<0..> * bsa<0..>  </br>
+drug.total[1] = supp.comp.qty[1] * supp.comp.total[1]  </br>
+supp.drug.qty[1] = supp.drug.conc[1] * drug.total[1]  </br>
+supp.dose.total[3, 4] = supp.dose.qty[1] * freq[3, 4]  </br>
+supp.dose.qty[1] = supp.dose.rate<0..> * time<0..>  </br>
+supp.dose.qty[1] = supp.drug.conc[1] * prescr.qty[1]  </br>
+supp.dose.total[3, 4] = supp.drug.conc[1] * prescr.total[3, 4]  </br>
+supp.dose.rate<0..> = supp.drug.conc[1] * prescr.rate<0..>  </br>
+supp.dose.qty[1] = supp.dose.qty.wght[1/6] * weight[6]  </br>
+supp.dose.total[3, 4] = supp.dose.total.wght[1/2, 2/3] * weight[6]  </br>
+supp.dose.rate<0..> = supp.dose.rate.wght<0..> * weight[6]  </br>
+supp.dose.qty[1] = supp.dose.qty.bsa<0..> * bsa<0..>  </br>
+supp.dose.total[3, 4] = supp.dose.total.bsa<0..> * bsa<0..>  </br>
+supp.dose.rate<0..> = supp.dose.rate.bsa<0..> * bsa<0..>  </br>
+prescr.total[3, 4] = prescr.qty[1] * freq[3, 4]  </br>
+prescr.qty[1] = prescr.rate<0..> * time<0..>  </br>
+prescr.total[3, 4] = drug.total[1] * drug.qty[3, 4]  </br>
+drug.total[1] = supp.drug.qty[1]  </br></p>
+</blockquote>
+
+<div class="tip" id="fs1">namespace Informedica</div>
+<div class="tip" id="fs2">namespace Informedica.GenSolver</div>
+<div class="tip" id="fs3">namespace Informedica.GenSolver.Utils</div>
+<div class="tip" id="fs4">module Api<br /><br />from Informedica.GenSolver</div>
+<div class="tip" id="fs5">val procss : s:string -&gt; string<br /><br />Full name: Medication.procss</div>
+<div class="tip" id="fs6">val s : string</div>
+<div class="tip" id="fs7">Multiple items<br />module String<br /><br />from Informedica.GenSolver.Utils<br /><em><br /><br />&#160;Helper functions for `System.String`</em><br /><br />--------------------<br />module String<br /><br />from Microsoft.FSharp.Core</div>
+<div class="tip" id="fs8">val replace : os:string -&gt; ns:string -&gt; s:System.String -&gt; string<br /><br />Full name: Informedica.GenSolver.Utils.String.replace</div>
+<div class="tip" id="fs9">val printEqs : (Informedica.GenSolver.Lib.Equation.Equation list -&gt; Informedica.GenSolver.Lib.Equation.Equation list)<br /><br />Full name: Medication.printEqs</div>
+<div class="tip" id="fs10">val printEqs : f:(string -&gt; string) -&gt; eqs:Informedica.GenSolver.Lib.Equation.Equation list -&gt; Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Informedica.GenSolver.Api.printEqs<br /><em><br /><br />&#160;Print a set of equations to the stdout.<br />&#160;Using `f` to allow additional processing<br />&#160;of the string.</em></div>
+<div class="tip" id="fs11">val solve : (string -&gt; string -&gt; string -&gt; Informedica.GenSolver.Lib.Equation.Equation list -&gt; Informedica.GenSolver.Lib.Equation.Equation list)<br /><br />Full name: Medication.solve</div>
+<div class="tip" id="fs12">val solve : f:(string -&gt; string) -&gt; n:string -&gt; p:string -&gt; v:string -&gt; eqs:Informedica.GenSolver.Lib.Equation.Equation list -&gt; Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Informedica.GenSolver.Api.solve</div>
+<div class="tip" id="fs13">val init : (System.String list -&gt; Informedica.GenSolver.Lib.Equation.Equation list)<br /><br />Full name: Medication.init</div>
+<div class="tip" id="fs14">val init : eqs:System.String list -&gt; Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Informedica.GenSolver.Api.init<br /><em><br /><br />&#160;Initialize the solver returning a set of equations</em></div>
+<div class="tip" id="fs15">val nonZeroNegative : (Informedica.GenSolver.Lib.Equation.Equation list -&gt; Informedica.GenSolver.Lib.Equation.Equation list)<br /><br />Full name: Medication.nonZeroNegative</div>
+<div class="tip" id="fs16">val nonZeroNegative : eqs:Informedica.GenSolver.Lib.Equation.Equation list -&gt; Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Informedica.GenSolver.Api.nonZeroNegative</div>
+<div class="tip" id="fs17">val eqs : string<br /><br />Full name: Medication.eqs</div>
+<div class="tip" id="fs18">val tms : string<br /><br />Full name: Medication.tms</div>
+<div class="tip" id="fs19">val add : string<br /><br />Full name: Medication.add</div>
+<div class="tip" id="fs20">val time : string<br /><br />Full name: Medication.time</div>
+<div class="tip" id="fs21">val freq : string<br /><br />Full name: Medication.freq</div>
+<div class="tip" id="fs22">val total : string<br /><br />Full name: Medication.total</div>
+<div class="tip" id="fs23">val qty : string<br /><br />Full name: Medication.qty</div>
+<div class="tip" id="fs24">val rate : string<br /><br />Full name: Medication.rate</div>
+<div class="tip" id="fs25">val drug_total : string<br /><br />Full name: Medication.drug_total</div>
+<div class="tip" id="fs26">val drug_qty : string<br /><br />Full name: Medication.drug_qty</div>
+<div class="tip" id="fs27">val wght : string<br /><br />Full name: Medication.wght</div>
+<div class="tip" id="fs28">val bsa : string<br /><br />Full name: Medication.bsa</div>
+<div class="tip" id="fs29">val compSub : c:string -&gt; comp_total:string -&gt; comp_drug_qty:string -&gt; s:string -&gt; string list<br /><br />Full name: Medication.compSub</div>
+<div class="tip" id="fs30">val c : string</div>
+<div class="tip" id="fs31">val comp_total : string</div>
+<div class="tip" id="fs32">val comp_drug_qty : string</div>
+<div class="tip" id="fs33">val sub_comp_qty : string</div>
+<div class="tip" id="fs34">val sub_comp_conc : string</div>
+<div class="tip" id="fs35">val sub_drug_qty : string</div>
+<div class="tip" id="fs36">val sub_drug_conc : string</div>
+<div class="tip" id="fs37">val sub_dose_qty : string</div>
+<div class="tip" id="fs38">val sub_dose_total : string</div>
+<div class="tip" id="fs39">val sub_dose_rate : string</div>
+<div class="tip" id="fs40">val sub_dose_qty_wght : string</div>
+<div class="tip" id="fs41">val sub_dose_total_wght : string</div>
+<div class="tip" id="fs42">val sub_dose_rate_wght : string</div>
+<div class="tip" id="fs43">val sub_dose_qty_bsa : string</div>
+<div class="tip" id="fs44">val sub_dose_total_bsa : string</div>
+<div class="tip" id="fs45">val sub_dose_rate_bsa : string</div>
+<div class="tip" id="fs46">val comp : string * string list -&gt; string list<br /><br />Full name: Medication.comp</div>
+<div class="tip" id="fs47">val cs : string * string list</div>
+<div class="tip" id="fs48">val sl : string list</div>
+<div class="tip" id="fs49">val comp_qty : string</div>
+<div class="tip" id="fs50">val comp_drug_conc : string</div>
+<div class="tip" id="fs51">val comp_dose_qty : string</div>
+<div class="tip" id="fs52">val comp_dose_total : string</div>
+<div class="tip" id="fs53">val comp_dose_rate : string</div>
+<div class="tip" id="fs54">val comp_dose_qty_wght : string</div>
+<div class="tip" id="fs55">val comp_dose_total_wght : string</div>
+<div class="tip" id="fs56">val comp_dose_rate_wght : string</div>
+<div class="tip" id="fs57">val comp_dose_qty_bsa : string</div>
+<div class="tip" id="fs58">val comp_dose_total_bsa : string</div>
+<div class="tip" id="fs59">val comp_dose_rate_bsa : string</div>
+<div class="tip" id="fs60">Multiple items<br />module List<br /><br />from Informedica.GenSolver.Utils<br /><em><br /><br />&#160;Helper functions for `List`</em><br /><br />--------------------<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs61">val append : list1:&#39;T list -&gt; list2:&#39;T list -&gt; &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List.append</div>
+<div class="tip" id="fs62">val collect : mapping:(&#39;T -&gt; &#39;U list) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.collect</div>
+<div class="tip" id="fs63">val drug : cs:(string * string list) list -&gt; Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Medication.drug</div>
+<div class="tip" id="fs64">val cs : (string * string list) list</div>
+<div class="tip" id="fs65">val fold : folder:(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; state:&#39;State -&gt; list:&#39;T list -&gt; &#39;State<br /><br />Full name: Microsoft.FSharp.Collections.List.fold</div>
+<div class="tip" id="fs66">val acc : string</div>
+<div class="tip" id="fs67">val paracetamol : Informedica.GenSolver.Lib.Equation.Equation list<br /><br />Full name: Medication.paracetamol</div>
+<div class="tip" id="fs68">val ignore : value:&#39;T -&gt; unit<br /><br />Full name: Microsoft.FSharp.Core.Operators.ignore</div>
+
+        </div>
+        <div class="span3">
+          <img src="/GenSolver/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">GenSolver</li>
+            <li><a href="/GenSolver/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/##ProjectName##">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/halcwb/GenSolver">Source Code on GitHub</a></li>
+            <li><a href="/GenSolver/license.html">License</a></li>
+            <li><a href="/GenSolver/release-notes.html">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/GenSolver/tutorial.html">Sample tutorial</a></li>
+            <li><a href="/GenSolver/medication.html">Medication Calculation Model example</a></li>
+
+            <li class="nav-header">Documentation</li>
+			<li><a href="/GenSolver/RangeCalc.htm">Calculation Rules</a></li>
+            <li><a href="/GenSolver/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/halcwb/GenSolver"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>
