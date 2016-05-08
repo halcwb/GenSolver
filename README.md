@@ -2,10 +2,9 @@
 
 ## Build Status
 
-Mono | .NET
----- | ----
-[![Mono CI Build Status](https://img.shields.io/travis/halcwb/GenSolver/master.svg)](https://travis-ci.org/halcwb/GenSolver) | [![.NET Build Status](https://img.shields.io/appveyor/ci/halcwb/GenSolver/master.svg)](https://ci.appveyor.com/project/halcwb/GenSolver)
-[![NuGet Status](http://img.shields.io/nuget/v/Informedica.GenSolver.Lib.svg?style=flat)](https://www.nuget.org/packages/Informedica.GenSolver.Lib/)
+Mono | .NET | NuGet|
+---- | ---- | ---- |
+[![Mono CI Build Status](https://img.shields.io/travis/halcwb/GenSolver/master.svg)](https://travis-ci.org/halcwb/GenSolver) | [![.NET Build Status](https://img.shields.io/appveyor/ci/halcwb/GenSolver/master.svg)](https://ci.appveyor.com/project/halcwb/GenSolver) | [![NuGet Status](http://img.shields.io/nuget/v/Informedica.GenSolver.Lib.svg?style=flat)](https://www.nuget.org/packages/Informedica.GenSolver.Lib/)
 
 
 ## Background
