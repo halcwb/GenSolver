@@ -29,20 +29,22 @@ module Api =
 
 
     /// Print a set of equations to the stdout.
-    let printEqs eqs = 
+    /// Using `f` to allow additional processing
+    /// of the string.
+    let printEqs f eqs = 
         for e in eqs |> List.map E.toDto do 
-            printfn "%s" (e |> E.toString)
+            printfn "%s" (e |> E.toString |> f)
         printfn "-----"
         eqs    
 
-    let solve n p v eqs =
+    let solve f n p v eqs =
         printfn "Setting variable %s %s with %s" n p v
         eqs 
         |> List.map E.toDto
         |> List.map (E.setVar n p v)
         |> List.map E.fromDtoExc
         |> Solver.solve
-        |> printEqs
+        |> printEqs f
 
     let nonZeroNegative eqs =
         eqs 

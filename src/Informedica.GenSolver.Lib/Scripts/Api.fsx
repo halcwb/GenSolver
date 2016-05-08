@@ -7,26 +7,73 @@ open Swensen.Unquote
 
 open Informedica.GenSolver.Api 
 
-let oneCompDrug = 
-    init [
-        "sub.comp.qty   = sub.comp.conc * comp.total"
-        "sub.drug.qty   = sub.comp.conc * comp.qty"
-        "sub.drug.qty   = sub.drug.conc * drug.total"
-        "sub.dose.qty   = sub.drug.conc * pres.qty"
-        "sub.dose.total = sub.dose.qty  * pres.freq" 
-        "drug.total     = comp.qty +"
-    ] |> nonZeroNegative
+let eqs = " = "
+let tms = " * "
 
-oneCompDrug 
-|> solve "sub.comp.conc" "vals" "60, 120, 240, 500, 1000" 
-|> solve "comp.total" "vals" "1"
-|> solve "comp.qty" "vals" "1"
-|> solve "sub.dose.total" "maxincl" "2000"
-|> solve "sub.dose.total" "minincl" "500"
-|> solve "pres.freq" "vals" "2,3,4"
-|> solve "pres.qty" "maxincl" "1"
-|> solve "pres.qty" "incr" "1/2"
-|> ignore
+let time   = "time"
+let freq   = "freq"
+let total  = "prescr.total"
+let qty    = "prescr.qty"
+let rate   = "prescr.rate"
+
+let drug_total = "drug.total"
+let drug_qty   = "drug.qty"
+
+let compSub c comp_total s = 
+    let sub_comp_qty  = s + "." + c + ".comp.qty"  // Quantity of substance in component
+    let sub_comp_conc = s + "." + c + ".comp.conc" // Concentration of substance in component
+
+    let sub_drug_qty  = s + ".drug.qty"  // Quantity of substance in drug
+    let sub_drug_conc = s + ".drug.conc" // Concentration of substance in drug
+
+    let sub_dose_qty   = s + ".dose.qty"   // Quantity dose of substance
+    let sub_dose_total = s + ".dose.total" // Total dose of substance
+    let sub_dose_rate  = s + ".dose.rate"  // Rate dose of substance
+
+    [
+        sub_comp_qty   + eqs + sub_comp_conc + tms + comp_total
+        sub_drug_qty   + eqs + sub_drug_conc + tms + drug_total
+        sub_dose_total + eqs + sub_dose_qty  + tms + freq 
+        sub_dose_qty   + eqs + sub_dose_rate + tms + time
+        sub_dose_qty   + eqs + sub_drug_conc + tms + qty
+        sub_dose_total + eqs + sub_drug_conc + tms + total
+        sub_dose_rate  + eqs + sub_drug_conc + tms + rate
+    ]
+
+let comp cs =
+    let c, sl = cs
+    let comp_qty   = c + ".comp.qty"   // Quantity of component
+    let comp_total = c + ".comp.total" // Total of component
+
+    let comp_drug_qty  = c + ".drug.qty"  // Quantity of component in drug
+    let comp_drug_conc = c + ".drug.conc" // Concentration of component in drug
+
+    let comp_dose_qty   = c + ".dose.qty"   // Quantity dose of component
+    let comp_dose_total = c + ".dose.total" // Total dose of component
+    let comp_dose_rate  = c + ".dose.rate"  // Rate dose of component
+
+    [
+        drug_total      + eqs + comp_qty       + tms + comp_total
+        comp_drug_qty   + eqs + comp_drug_conc + tms + drug_total
+        comp_dose_total + eqs + comp_dose_qty  + tms + freq 
+        comp_dose_qty   + eqs + comp_dose_rate + tms + time
+        comp_dose_qty   + eqs + comp_drug_conc + tms + qty
+        comp_dose_total + eqs + comp_drug_conc + tms + total
+        comp_dose_rate  + eqs + comp_drug_conc + tms + rate
+    ] |> List.append (sl |> List.collect (compSub c comp_total))
+
+let drug cs =   
+    [ 
+        total + eqs + qty        + tms + freq
+        qty   + eqs + rate       + tms + time
+        total + eqs + drug_total + tms + drug_qty
+    ] |> List.append (cs |> List.collect comp)
+
+    |> init
+    |> nonZeroNegative
+
+let paracetamol = [("paracetamol", ["paracetamol.supp"])] |> drug
+
 
 let cardioversion = 
     init [
@@ -62,7 +109,7 @@ gentconc
 |> solve "gent.sub.comp.conc" "vals" "10,40"
 |> solve "gent.comp.total" "vals" "2,10"
 |> solve "drug.total" "vals" "5,10,20,50,100"
-|> solve "gent.comp.qty" "incr" "1/10"
+//|> solve "gent.comp.qty" "incr" "1/10"
 |> ignore
 
 let fahrtocels =
@@ -87,7 +134,6 @@ let map =
 map
 |> solve "c1/3" "vals" "1/3"
 |> solve "c2/3" "vals" "2/3"
-// Ready to use
 |> solve "map" "vals" "80"
 |> solve "dbp" "vals" "50"
 |> ignore

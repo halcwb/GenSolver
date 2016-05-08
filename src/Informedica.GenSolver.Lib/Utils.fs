@@ -34,6 +34,8 @@ module String =
 
     let isNullOrWhiteSpace = String.IsNullOrWhiteSpace
 
+    let replace (os: string) ns s = (s |> get).Replace(os, ns)
+
 
 /// Helper functions for `BigRational`
 module BigRational = 

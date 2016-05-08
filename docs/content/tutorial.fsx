@@ -7,7 +7,15 @@
 The simplest way to use or tryout this library is through the Api interface
 *)
 
+open Informedica.GenSolver.Utils
+
 module API = Informedica.GenSolver.Api
+
+let procss s = "> " + s + " </br> "|> String.replace "*" "\*"
+
+let printEqs = API.printEqs procss
+let solve    = API.solve procss
+let init     = API.init
 
 (**
 ## Setting up a Calulation Model
@@ -33,7 +41,7 @@ with the variables `fahr`, `cels`, `x`, `const32` and `const5/9`.
 *)
 
 let fahrCelsConv_Setup =
-    API.init [
+    init [
         "fahr = x + const32"
         "cels = x * const5/9"
     ]
@@ -43,7 +51,7 @@ We can look at the generated equations by using the `printEquations` function.
 *)
 
 fahrCelsConv_Setup
-|> API.printEqs |> ignore
+|> printEqs |> ignore
 
 (**
 This wil spit out the equations:
@@ -71,12 +79,12 @@ So, the first step to further prepare the model is to set the two *constant* var
 *)
 
 let fahrCelsConv =
-    API.init [
+    init [
         "fahr = x + const32"
         "cels = x * const5/9"
     ]
-    |> API.solve "const32"  "vals" "32"
-    |> API.solve "const5/9" "vals" "5/9"
+    |> solve "const32"  "vals" "32"
+    |> solve "const5/9" "vals" "5/9"
 
 (**
 Now the calulation model is ready for use.
@@ -89,7 +97,7 @@ For example convert 20 degrees Celsius to Fahrenheit:
 *)
 
 fahrCelsConv
-|> API.solve "cels" "vals" "20"
+|> solve "cels" "vals" "20"
 |> ignore
 
 (**
@@ -103,8 +111,8 @@ for a value range in Fahrenheit:
 *)
 
 fahrCelsConv
-|> API.solve "fahr" "minincl" "50"
-|> API.solve "fahr" "maxincl" "140"
+|> solve "fahr" "minincl" "50"
+|> solve "fahr" "maxincl" "140"
 |> ignore
 
 (**
@@ -132,7 +140,7 @@ To calculate the amount of joules to perform a medical cardioversion the followi
 *)
 
 let cardioversion = 
-    API.init [
+    init [
         "joules = weight * joules.perkg"
     ]
 
@@ -142,20 +150,20 @@ However, a defribillator can only be set to a discrete set of joule values
 *)
 
 cardioversion 
-|> API.solve "joules" "vals" "1,2,3,5,7,10,20,30,50,70,100,150,200,300,360"
+|> solve "joules" "vals" "1,2,3,5,7,10,20,30,50,70,100,150,200,300,360"
 
 (** 
 For this set of values the amount of joule can be calculated for a weight range 
 *)
 
-|> API.solve "weight" "minincl" "3"
-|> API.solve "weight" "maxincl" "150"
+|> solve "weight" "minincl" "3"
+|> solve "weight" "maxincl" "150"
 
 (** 
 Typically the amount of joules necessary is about 4 joules/kg
 *)
 
-|> API.solve "joules.perkg" "maxincl" "4"
+|> solve "joules.perkg" "maxincl" "4"
 
 (** 
 Then the amount of joules can be calculated rounded for the available discrete 
@@ -163,14 +171,14 @@ set of possible joules. For example for a body weight of 4 kg.
 *)
 
 
-|> API.solve "weight" "vals" "4"
+|> solve "weight" "vals" "4"
 
 (** 
 It can be determined that with 10 joules the nearest possible dose of joules to 4 joules/kg 
 can be reached. 
 *)
 
-|> API.solve "joules" "vals" "10"
+|> solve "joules" "vals" "10"
 |> ignore
 
 (** 

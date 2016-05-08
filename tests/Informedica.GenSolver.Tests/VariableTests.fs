@@ -59,12 +59,12 @@ module Testing =
             type ``The create function`` () =
 
                 [<Property>]
-                member x.``Returns Name without trailing spaces at least 1 and no more than 30 characters`` () =
+                member x.``Returns Name without trailing spaces at least 1 and no more than 1000 characters`` () =
                     let prop s =
-                        let succ (N.Name n) = n = (s |> String.trim) && n  |> String.length <= 30
+                        let succ (N.Name n) = n = (s |> String.trim) && n  |> String.length <= 1000
                         let fail = function 
                             | N.NullOrWhiteSpaceException -> true
-                            | N.LongerThan30 x -> x > 30
+                            | N.LongerThan1000 x -> x > 1000
                         create succ fail s
                     prop
 

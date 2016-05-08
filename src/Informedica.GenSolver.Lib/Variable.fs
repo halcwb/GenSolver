@@ -31,7 +31,7 @@ module Variable =
         /// Error messages for type `Name`.
         type Message = 
             | NullOrWhiteSpaceException
-            | LongerThan30 of int
+            | LongerThan1000 of int
 
         /// Exception type for `Name`.
         exception NameException of Message
@@ -50,8 +50,8 @@ module Variable =
             if n |> String.IsNullOrWhiteSpace then NullOrWhiteSpaceException |> fail
             else 
                 match n |> String.trim with
-                | n' when n' |> String.length <= 30 -> n' |> Name |> succ
-                | n' -> n' |> String.length |> LongerThan30 |> fail
+                | n' when n' |> String.length <= 1000 -> n' |> Name |> succ
+                | n' -> n' |> String.length |> LongerThan1000 |> fail
 
         /// Returns a `Name` option if creation
         /// succeeds else `None`.
