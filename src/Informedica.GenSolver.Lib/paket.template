@@ -1,4 +1,10 @@
 type project
+authors
+	halcwb
+description
+	A solver that solves any set of product and sum equations in which variables are discrete sets of rational numbers or number ranges.
+projectUrl
+	https://halcwb.github.io/GenSolver
 iconUrl
     https://raw.githubusercontent.com/halcwb/GenSolver/master/docs/files/img/logo.png
 licenseUrl
