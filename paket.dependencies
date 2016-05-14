@@ -12,6 +12,7 @@ github fsharp/FAKE modules/Octokit/Octokit.fsx
 // group project
 
 nuget FSPowerPack.Community
+nuget Informedica.GenUtils.Lib
 
 // group test
 

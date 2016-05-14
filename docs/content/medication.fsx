@@ -1,6 +1,6 @@
 ﻿(*** hide ***)
 #I "../../src/Informedica.GenSolver.Lib/Scripts"
-#load "load-project.fsx"
+#load "load-project-release.fsx"
 
 #time
 

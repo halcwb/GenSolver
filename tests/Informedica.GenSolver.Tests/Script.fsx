@@ -1,9 +1,7 @@
 ﻿// Learn more about F# at http://fsharp.net. See the 'F# Tutorial' project
 // for more guidance on F# programming.
-#I "../../src/Informedica.GenSolver.Lib/"
 #I "Scripts/"
-#load "load-references.fsx"
-#load "Variable.fs"
+#load "load-references-release.fsx"
 
 // Define your library scripting code here
 open Informedica.GenSolver.Lib
@@ -13,35 +11,40 @@ open FsCheck
 open NUnit.Framework
 
 
-let bigRGen (n, d) = 
-        let d = if d = 0 then 1 else d
-        let n' = abs(n) |> BigRational.FromInt
-        let d' = abs(d) |> BigRational.FromInt
-        n'/d'
+/// Create the necessary test generators
+module Generators =
 
-let bigRGenerator =
-    gen {
-        let! n = Arb.generate<int>
-        let! d = Arb.generate<int>
-        return bigRGen(n, d)
-    }
+    let bigRGen (n, d) = 
+            let d = if d = 0 then 1 else d
+            let n' = abs(n) |> BigRational.FromInt
+            let d' = abs(d) |> BigRational.FromInt
+            n'/d'
 
-type MyGenerators () =
-    static member BigRational () =
-        { new Arbitrary<BigRational>() with
-            override x.Generator = bigRGenerator }
+    let bigRGenerator =
+        gen {
+            let! n = Arb.generate<int>
+            let! d = Arb.generate<int>
+            return bigRGen(n, d)
+        }
 
-Arb.register<MyGenerators>() |> ignore
-
-Check.Quick(fun  (a:BigRational) -> printfn "%A" (BigRational.ToDouble(a)); true)
-
+    type MyGenerators () =
+        static member BigRational () =
+            { new Arbitrary<BigRational>() with
+                override x.Generator = bigRGenerator }
 
 
+[<SetUpFixture>]
+type Config () =
+    
+    /// Make sure the generators are
+    /// registered before running any
+    /// test code.
+    [<SetUp>]
+    member x.Setup () = 
 
-printfn "%A" (1N/2N)
+        Arb.register<Generators.MyGenerators>() |> ignore
 
-type Test = { Name: string; mutable Value: int }
-let test1 = { Name = "test1"; Test.Value = 1 }
-let l1 = [test1]
-let l2 = [test1]
-test1.Value <- 2
+
+
+(new Config()).Setup()
+

@@ -1,9 +1,8 @@
-﻿#load "load-references.fsx"
-#load "load-project.fsx"
+﻿#load "load-references-release.fsx"
+#load "load-project-release.fsx"
 
 #time
 
-open FsCheck
 
 open Informedica.GenSolver.Lib
 

@@ -22,6 +22,84 @@ Engineering tasks:
 - Write tests in script file of main project and then move tests to test project
 - Added messages and pass exception<messages> to failure functions
 
+- Fix build and release:
+	
+-        let lastTravisBuild   = Travis.getLatestBuild project
+ +        let lastTravisBuild   = Travis.getLatestBuild gitName
+          // Get the latest .Net build
+ -        let lastAppVeyorBuild = AppVeyor.getLatestBuild project
+ +        let lastAppVeyorBuild = AppVeyor.getLatestBuild gitName
+
+-                Git.Branches.pull "" "origin" "master"
+ +                Git.Branches.pull "" remote master 
+ 
++// The repos name of the project on GitHub
+ +let reposName = Settings.reposName
+ +
+  // The url for the raw files hosted
+ -let gitRaw = environVarOrDefault "gitRaw" ("https://raw.github.com/" + gitOwner + "/" + gitName)
+ +let gitRaw = environVarOrDefault "gitRaw" ("https://raw.github.com/" + gitOwner + "/" + reposName)
+
++          Attribute.Company (authors |> String.concat ",")
+
+     if Branches.getAllBranches "" |> List.exists ((=) "remotes/origin/gh-pages") then
+ -        Repository.cloneSingleBranch "" (gitHome + "/" + gitName) "gh-pages" tempDocsDir
+ +        Repository.cloneSingleBranch "" (gitHome + "/" + reposName) "gh-pages" tempDocsDir
+  
+          CopyRecursive "docs/output" tempDocsDir true |> tracefn "%A"
+          StageAll tempDocsDir
+ @@ -390,8 +396,8 @@ Target "Release" (fun _ ->
+      let remote =
+          Git.CommandHelper.getGitResult "" "remote -v"
+          |> Seq.filter (fun (s: string) -> s.EndsWith("(push)"))
+ -        |> Seq.tryFind (fun (s: string) -> s.Contains(gitOwner + "/" + gitName))
+ -        |> function None -> gitHome + "/" + gitName | Some (s: string) -> s.Split().[0]
+ +        |> Seq.tryFind (fun (s: string) -> s.Contains(gitOwner + "/" + reposName))
+ +        |> function None -> gitHome + "/" + reposName | Some (s: string) -> s.Split().[0]
+
+-let project = "GenUtils"
+ +let project = "Informedica.GenUtils.Lib"
+
+ // The name of the project on GitHub
+ -let gitName = project + ".git"
+ +let gitName = "GenUtils" 
+ +
+ +// The repository name
+ +let reposName = gitName + ".git" 
+	
+-let projectName = Settings.project
+ +let projectName = Settings.gitName
+  let gitHome = Settings.gitOwner
+ -let gitLink = Settings.gitName
+ +let gitLink = Settings.reposName	
+ 
+-let projectName = Settings.gitName
+ +let projectName = Settings.project
+ +let gitName = Settings.gitName
+  let gitHome = Settings.gitOwner
+  let gitLink = Settings.reposName
+  let summary = Settings.summary
+ @@ -21,17 +22,17 @@ let author  = Settings.gitOwner
+  
+  let referenceBinaries = []
+  // Web site location for the generated documentation
+ -let website = "/" + projectName
+ +let website = "/" + gitName
+  
+ -let githubLink = sprintf "http://github.com/%s/%s" gitHome projectName
+ +let githubLink = sprintf "http://github.com/%s/%s" gitHome gitName
+  
+  // Specify more information about your project
+  let info =
+ -  [ "project-name", projectName
+ +  [ "project-name", gitName
+      "project-author", author
+      "project-summary", summary
+      "project-github", githubLink
+ -    "project-nuget", "http://nuget.org/packages/##ProjectName##" ]
+ +    "project-nuget", "http://nuget.org/packages/" + projectName ]
+   
+	
 To Do on current task:
 - Create tests for current functionality
 - Update documentation
