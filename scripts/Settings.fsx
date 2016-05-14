@@ -40,7 +40,7 @@ let gitOwner = "halcwb"
 let gitHome = "https://github.com/" + gitOwner
 
 // The name of the project on GitHub
-let gitName = "GenUtils"
+let gitName = "GenSolver"
 
 // The name of the GitHub repository
 let reposName = gitName + ".git"
