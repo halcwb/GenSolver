@@ -1,3 +1,7 @@
+#### 0.1.2-beta - May 14 2016
+* Switched to nuget Utils library
+* Removed dependencies on FsCheck and Unquote
+
 #### 0.1.1-beta - May 8 2016
 * Added complex medication calculation model example
 
