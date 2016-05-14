@@ -17,85 +17,76 @@ module NullCheck =
 module String = 
 
     open System
-
-    let apply f (s: String) = f s
     
-    let get = apply id
+    module UT = Informedica.GenUtils.Lib.BCL.String
 
-    let splitAt c s = (s |> get).Split([|c|]) 
+    let apply = UT.apply
+    
+    let get = UT.get
 
-    let contains c s = (s |> get).Contains(c) 
+    let splitAt = UT.splitAt
 
-    let trim s = (s |> get).Trim()
+    let contains = UT.contains
 
-    let toLower s = (s |> get).ToLower()
+    let trim = UT.trim
 
-    let length s = (s |> get).Length
+    let toLower = UT.toLower
 
-    let isNullOrWhiteSpace = String.IsNullOrWhiteSpace
+    let length = UT.length
 
-    let replace (os: string) ns s = (s |> get).Replace(os, ns)
+    let isNullOrWhiteSpace = UT.isNullOrWhiteSpace
+
+    let replace = UT.replace
 
 
 /// Helper functions for `BigRational`
 module BigRational = 
+
+    module BR = Informedica.GenUtils.Lib.BigRational
     
-    let apply f (x: BigRational) = f x
+    let apply= BR.apply
 
-    let get = apply id
+    let get = BR.get
 
-    let parse = BigRational.Parse
+    let parse = BR.parse
 
-    let fromInt = BigRational.FromInt
+    let fromInt = BR.fromInt
 
-    let tryParse s = 
-        try 
-            s |> parse |> Some 
-        with 
-        | _ -> None
+    let tryParse = BR.tryParse
 
-    let rec gcd a b =
-        match b with
-        | _  when b = 0N -> abs a
-        | _ -> gcd b ((a.Numerator % b.Numerator) |> BigRational.FromBigInt)
+    let gcd = BR.gcd
 
-    let toString v = (v |> get).ToString()
+    let toString = BR.toString
 
     /// Convert an optional `Value` to a `string`.
     /// If `None` then return empty `string`.
-    let optToString = function
-        | Some v' -> v' |> toString
-        | None    -> ""
+    let optToString = BR.optToString
 
     /// Convert `n` to a multiple of `d`.
-    let toMultipleOf d n  =
-        let m = (n / d) |> BigRational.ToInt32 |> BigRational.FromInt
-        if m * d < n then (m + 1N) * d else m * d
+    let toMultipleOf = BR.toMultipleOf
 
     /// Checks whether `v` is a multiple of `incr`
-    let isMultiple incr v =
-        let incr, v = incr |> get, v |> get 
-        (v.Numerator * incr.Denominator) % (incr.Numerator * v.Denominator) = 0I
+    let isMultiple = BR.isMultiple
 
-    let zero = 0N
+    let zero = BR.zero
 
-    let one = 1N
+    let one = BR.one
 
-    let two = 2N
+    let two = BR.two
 
-    let three = 3N
+    let three = BR.three
 
     /// Check whether the operator is subtraction
-    let opIsSubtr op = (three |> op <| two) = three - two // = 1
+    let opIsSubtr = BR.opIsSubtr
 
     /// Check whether the operator is addition
-    let opIsAdd op   = (three |> op <| two) = three + two // = 5
+    let opIsAdd = BR.opIsAdd
 
     /// Check whether the operator is multiplication
-    let opIsMult op  = (three |> op <| two) = three * two // = 6
+    let opIsMult = BR.opIsMult
 
     /// Check whether the operator is divsion
-    let opIsDiv op   = (three |> op <| two) = three / two // = 3/2
+    let opIsDiv = BR.opIsDiv
 
     /// Match an operator `op` to either
     /// multiplication, division, addition
