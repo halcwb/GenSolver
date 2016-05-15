@@ -5,9 +5,9 @@ open System.Reflection
 [<assembly: AssemblyProductAttribute("Informedica.GenSolver.Lib")>]
 [<assembly: AssemblyCompanyAttribute("halcwb")>]
 [<assembly: AssemblyDescriptionAttribute("A solver that solves a set of product and sum equations in which variables are discrete sets of rational numbers or ranges limited by an minimum or maximum, or an increment")>]
-[<assembly: AssemblyVersionAttribute("0.1.1")>]
-[<assembly: AssemblyFileVersionAttribute("0.1.1")>]
+[<assembly: AssemblyVersionAttribute("0.1.2")>]
+[<assembly: AssemblyFileVersionAttribute("0.1.2")>]
 do ()
 
 module internal AssemblyVersionInformation =
-    let [<Literal>] Version = "0.1.1"
+    let [<Literal>] Version = "0.1.2"
