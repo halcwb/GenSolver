@@ -1,7 +1,9 @@
+redirects: on
 source https://nuget.org/api/v2
 
 // group build
 
+nuget FSharp.Core <= 3.1.2.5
 nuget FSharp.Formatting
 nuget Fake
 nuget SourceLink.Fake
