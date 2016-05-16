@@ -1,3 +1,6 @@
+#### 0.1.3-beta - May 16 2016
+* Added utility methods to apply a function to a minimum, increment or maximum
+
 #### 0.1.2-beta - May 14 2016
 * Switched to nuget Utils library
 * Removed dependencies on FsCheck and Unquote

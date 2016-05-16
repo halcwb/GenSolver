@@ -143,6 +143,23 @@ module Variable =
         
         // #region ---- UTILS -----
 
+        /// Apply `f` to the bigrational
+        /// value of `Minimum`
+        let applyMin f = function 
+            | MinIncl(m) -> m |> f |> MinIncl
+            | MinExcl(m) -> m |> f |> MinExcl 
+            
+        /// Apply `f` to the bigrational
+        /// value of `Increment`
+        let applyIncr f = function 
+            | Increment(i) -> i |> f |> Increment
+            
+        /// Apply `f` to the bigrational
+        /// value of `Maximum`
+        let applyMax f = function 
+            | MaxIncl(m) -> m |> f |> MaxIncl
+            | MaxExcl(m) -> m |> f |> MaxExcl 
+            
         /// Aply the give functions to `Values`
         /// where `unr` is used for an `Unrestricted` 
         /// `ValueRange`, `fv` is used for `ValueSet` and
