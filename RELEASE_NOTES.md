@@ -1,3 +1,6 @@
+#### 0.2.0-beta - May 26 2016
+* Significant performance boost by only solving equations with changed vars
+
 #### 0.1.3-beta - May 16 2016
 * Added utility methods to apply a function to a minimum, increment or maximum
 
