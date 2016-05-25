@@ -102,8 +102,8 @@ variables in the equation</p>
             apply fp fs _arg1
           </code>
           <div class="tip" id="32">
-            <strong>Signature:</strong> fp:(Variable -&gt; Variable list -&gt; &#39;?7040) -&gt; fs:(Variable -&gt; Variable list -&gt; &#39;?7040) -&gt; _arg1:Equation -&gt; &#39;?7040<br />
-                          <strong>Type parameters:</strong> '?7040          </div>
+            <strong>Signature:</strong> fp:(Variable -&gt; Variable list -&gt; &#39;?7043) -&gt; fs:(Variable -&gt; Variable list -&gt; &#39;?7043) -&gt; _arg1:Equation -&gt; &#39;?7043<br />
+                          <strong>Type parameters:</strong> '?7043          </div>
         </td>
         <td class="xmldoc">
             <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L67-67" class="github-link">
@@ -120,11 +120,29 @@ variables in the equation</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '33', 33)" onmouseover="showTip(event, '33', 33)">
-            create c succ fail (y, xs)
+            contains v
           </code>
           <div class="tip" id="33">
-            <strong>Signature:</strong> c:(Variable * Variable list -&gt; &#39;?7033) -&gt; succ:(&#39;?7033 -&gt; &#39;?7034) -&gt; fail:(Message -&gt; &#39;?7034) -&gt; (y:Variable * xs:Variable list) -&gt; &#39;?7034<br />
-                          <strong>Type parameters:</strong> '?7033, '?7034          </div>
+            <strong>Signature:</strong> v:Variable -&gt; Equation -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L91-91" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '34', 34)" onmouseover="showTip(event, '34', 34)">
+            create c succ fail (y, xs)
+          </code>
+          <div class="tip" id="34">
+            <strong>Signature:</strong> c:(Variable * Variable list -&gt; &#39;?7036) -&gt; succ:(&#39;?7036 -&gt; &#39;?7037) -&gt; fail:(Message -&gt; &#39;?7037) -&gt; (y:Variable * xs:Variable list) -&gt; &#39;?7037<br />
+                          <strong>Type parameters:</strong> '?7036, '?7037          </div>
         </td>
         <td class="xmldoc">
             <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L39-39" class="github-link">
@@ -143,10 +161,10 @@ is determined by the constructor <code>c</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '34', 34)" onmouseover="showTip(event, '34', 34)">
+          <code onmouseout="hideTip(event, '35', 35)" onmouseover="showTip(event, '35', 35)">
             createProductEq 
           </code>
-          <div class="tip" id="34">
+          <div class="tip" id="35">
             <strong>Signature:</strong> (Equation -&gt; Equation) -&gt; (Message -&gt; Equation) -&gt; Variable * Variable list -&gt; Equation<br />
                       </div>
         </td>
@@ -165,10 +183,10 @@ than one time using the <code>fail</code> function.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '35', 35)" onmouseover="showTip(event, '35', 35)">
+          <code onmouseout="hideTip(event, '36', 36)" onmouseover="showTip(event, '36', 36)">
             createProductEqExc 
           </code>
-          <div class="tip" id="35">
+          <div class="tip" id="36">
             <strong>Signature:</strong> Variable * Variable list -&gt; Equation<br />
                       </div>
         </td>
@@ -187,10 +205,10 @@ than one time raising an exception.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '36', 36)" onmouseover="showTip(event, '36', 36)">
+          <code onmouseout="hideTip(event, '37', 37)" onmouseover="showTip(event, '37', 37)">
             createSumEq 
           </code>
-          <div class="tip" id="36">
+          <div class="tip" id="37">
             <strong>Signature:</strong> (Equation -&gt; Equation) -&gt; (Message -&gt; Equation) -&gt; Variable * Variable list -&gt; Equation<br />
                       </div>
         </td>
@@ -209,10 +227,10 @@ than one time using the <code>fail</code> function.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '37', 37)" onmouseover="showTip(event, '37', 37)">
+          <code onmouseout="hideTip(event, '38', 38)" onmouseover="showTip(event, '38', 38)">
             createSumEqExc 
           </code>
-          <div class="tip" id="37">
+          <div class="tip" id="38">
             <strong>Signature:</strong> Variable * Variable list -&gt; Equation<br />
                       </div>
         </td>
@@ -231,33 +249,15 @@ than one time raising an exception.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '38', 38)" onmouseover="showTip(event, '38', 38)">
-            isSolvable _arg1
-          </code>
-          <div class="tip" id="38">
-            <strong>Signature:</strong> _arg1:Equation -&gt; bool<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L103-103" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
           <code onmouseout="hideTip(event, '39', 39)" onmouseover="showTip(event, '39', 39)">
-            isSolved _arg1
+            equals eq1 eq2
           </code>
           <div class="tip" id="39">
-            <strong>Signature:</strong> _arg1:Equation -&gt; bool<br />
+            <strong>Signature:</strong> eq1:Equation -&gt; eq2:Equation -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L94-94" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L93-93" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -268,14 +268,86 @@ than one time raising an exception.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '40', 40)" onmouseover="showTip(event, '40', 40)">
-            nonZeroOrNegative e
+            isProduct 
           </code>
           <div class="tip" id="40">
+            <strong>Signature:</strong> Equation -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L71-71" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '41', 41)" onmouseover="showTip(event, '41', 41)">
+            isSolvable _arg1
+          </code>
+          <div class="tip" id="41">
+            <strong>Signature:</strong> _arg1:Equation -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L121-121" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '42', 42)" onmouseover="showTip(event, '42', 42)">
+            isSolved _arg1
+          </code>
+          <div class="tip" id="42">
+            <strong>Signature:</strong> _arg1:Equation -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L112-112" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '43', 43)" onmouseover="showTip(event, '43', 43)">
+            isSum 
+          </code>
+          <div class="tip" id="43">
+            <strong>Signature:</strong> Equation -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L73-73" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '44', 44)" onmouseover="showTip(event, '44', 44)">
+            nonZeroOrNegative e
+          </code>
+          <div class="tip" id="44">
             <strong>Signature:</strong> e:Equation -&gt; Equation<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L74-74" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L82-82" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -289,12 +361,12 @@ non zero values.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '41', 41)" onmouseover="showTip(event, '41', 41)">
+          <code onmouseout="hideTip(event, '45', 45)" onmouseover="showTip(event, '45', 45)">
             raiseExc m
           </code>
-          <div class="tip" id="41">
-            <strong>Signature:</strong> m:Message -&gt; &#39;?7031<br />
-                          <strong>Type parameters:</strong> '?7031          </div>
+          <div class="tip" id="45">
+            <strong>Signature:</strong> m:Message -&gt; &#39;?7034<br />
+                          <strong>Type parameters:</strong> '?7034          </div>
         </td>
         <td class="xmldoc">
             <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L32-32" class="github-link">
@@ -309,15 +381,15 @@ non zero values.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '42', 42)" onmouseover="showTip(event, '42', 42)">
+          <code onmouseout="hideTip(event, '46', 46)" onmouseover="showTip(event, '46', 46)">
             replace v e
           </code>
-          <div class="tip" id="42">
+          <div class="tip" id="46">
             <strong>Signature:</strong> v:Variable -&gt; e:Equation -&gt; Equation<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L85-85" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L103-103" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -330,15 +402,15 @@ non zero values.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '43', 43)" onmouseover="showTip(event, '43', 43)">
-            solve es e
+          <code onmouseout="hideTip(event, '47', 47)" onmouseover="showTip(event, '47', 47)">
+            solve e
           </code>
-          <div class="tip" id="43">
-            <strong>Signature:</strong> es:Equation list -&gt; e:Equation -&gt; bool * Equation list<br />
+          <div class="tip" id="47">
+            <strong>Signature:</strong> e:Equation -&gt; Variable list * Equation<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L113-113" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L131-131" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -347,6 +419,24 @@ the equation has changed. And the original
 Equation list <code>es</code> with the replaced vars.</p>
 
 
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '48', 48)" onmouseover="showTip(event, '48', 48)">
+            toVars 
+          </code>
+          <div class="tip" id="48">
+            <strong>Signature:</strong> Equation -&gt; Variable list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L75-75" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
     </tbody>
