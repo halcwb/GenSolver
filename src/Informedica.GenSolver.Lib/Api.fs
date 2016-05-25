@@ -32,6 +32,14 @@ module Api =
     /// Using `f` to allow additional processing
     /// of the string.
     let printEqs f eqs = 
+        let eqs = 
+            eqs 
+            |> List.sortBy (fun e ->
+                e 
+                |> Informedica.GenSolver.Lib.Equation.toVars
+                |> List.head
+                |> Informedica.GenSolver.Lib.Variable.getName)
+
         for e in eqs |> List.map E.toDto do 
             printfn "%s" (e |> E.toString |> f)
         printfn "-----"

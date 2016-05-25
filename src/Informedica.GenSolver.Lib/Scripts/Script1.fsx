@@ -124,16 +124,16 @@ let drug cs =
 
 
 let items = ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j";"k";"l";"m"]
-let test = 
-    [
-        ("supp", items)
-    ] |> drug
+let test () = 
+    let drg =
+        [
+            ("supp", items)
+        ] |> drug
 
-
-items
-|> List.fold (fun t i ->
-    t
-    |> solve (i + ".drug.qty") "vals" "1"
-    |> solve (i + ".drug.conc") "vals" "1"
-    |> solve (i + ".supp.comp.qty") "vals" "1") test
-|> ignore
+    items
+    |> List.fold (fun t i ->
+        t
+        |> solve (i + ".drug.qty") "vals" "1"
+        |> solve (i + ".drug.conc") "vals" "1"
+(*       |> solve (i + ".supp.comp.qty") "vals" "1"*)) drg
+    |> ignore

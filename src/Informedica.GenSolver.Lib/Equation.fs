@@ -68,6 +68,14 @@ module Equation =
         | ProductEquation (y,xs) -> fp y xs
         | SumEquation (y, xs)    -> fs y xs
 
+    let isProduct = apply (fun _ _ -> true) (fun _ _ -> false)
+
+    let isSum = apply (fun _ _ -> true) (fun _ _ -> false)
+
+    let toVars = 
+        let f y xs = y::xs
+        apply f f
+
     /// Make sure that the `Variables` in the
     /// `Equation` can only contain positive 
     /// non zero values.
@@ -79,6 +87,16 @@ module Equation =
         let fp = set ProductEquation
         let fs = set SumEquation
         e |> apply fp fs
+
+    let contains v = toVars >> (List.exists (VAR.eqName v))
+
+    let equals eq1 eq2 = 
+        let vrs1 = eq1 |> toVars
+        let vrs2 = eq2 |> toVars
+        vrs1 |> List.forall (fun vr -> 
+            vrs2 |> List.exists (VAR.eqName vr)) &&
+        ((eq1 |> isProduct) && (eq2 |> isProduct) ||
+         (eq1 |> isSum)     && (eq2 |> isSum))
 
     /// Replace a `Variable` `v` in the 
     /// `Equation` `e`.
@@ -110,50 +128,49 @@ module Equation =
     /// Solve an equation `e`, return true when
     /// the equation has changed. And the original
     /// Equation list `es` with the replaced vars.
-    let solve es e =
-        let replace es v =
-            let es = es |> List.map (replace v)
-            es, v
+    let solve e =
 
-        let rec calc changed es op1 op2 y xs rest =
+        let rec calc changed op1 op2 y xs rest =
             match rest with 
-            | []  -> changed, es, xs
+            | []  -> changed, xs
             | x::tail ->
                 let xs' = xs |> List.filter ((<>) x)
-                let es, x' =
-//                    // If x is already solved, it will not change
-//                    if x |> VAR.isSolved then es, x 
-//                    // Calculate the new x
-//                    else
-                        match xs' with
-                        | [] -> x != y
-                        | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
-                        |> replace es
-                tail |> calc (x' <> x || changed) es op1 op2 y (x'::xs')
+                let x' =
+                    match xs' with
+                    | [] -> x != y
+                    | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
+
+                let changed = if x' = x then changed else x'::changed
+                tail |> calc changed op1 op2 y (x'::xs')
 
         let y, xs, op1, op2 =
             match e with
             | ProductEquation (y, xs) -> y, xs, (*), (/)
             | SumEquation     (y, xs) -> y, xs, (+), (-)
 
-        let rec loop op1 op2 y xs changed es =
+        let rec loop op1 op2 y xs changed =
             let x   = xs |> List.head
             let xs' = xs |> List.filter ((<>) x)
             // op1 = (*) or (+) and op2 = (/) or (-)
             // Calculate y = x1 op1 x2 op1 .. op1 xn
-            let ychanged, es, y' = calc false es op1 op1 x xs' [y]
+            let ychanged, y' = calc [] op1 op1 x xs' [y]
+//            printf "%A" ychanged
             // Replace y with the new y with is in a list
             let y = y' |> List.head
             // Calculate x1 = y op2 (x2 op1 x3 .. op1 xn)
             //       and x2 = y op2 (x1 op1 x3 .. op1 xn)
             //       etc..
-            let xchanged, es, xs = calc false es op1 op2 y xs xs
+            let xchanged, xs = calc [] op1 op2 y xs xs
+//            printf "%A" xchanged
             // If something has changed restart until nothing changes anymore
-            if xchanged || ychanged then loop op1 op2 y xs true es
+            let changed' = ychanged @ xchanged
+            if changed' |> List.length = 0 then changed, e 
             else
-                changed, es
+                printfn "Loop solveEq" 
+                changed @ changed'
+                |> loop op1 op2 y xs
             
         match xs with 
-        | [] -> false, es
-        | _  -> loop op1 op2 y xs false es
+        | [] -> [], e
+        | _  -> loop op1 op2 y xs  []
 
