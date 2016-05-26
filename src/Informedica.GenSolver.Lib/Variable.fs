@@ -36,15 +36,15 @@ module Variable =
         /// Exception type for `Name`.
         exception NameException of Message
 
-        /// Raise a `NameException` with `Message` `m`.
+        /// Raise a `NameException` with `Message` **m**.
         let raiseExc msg = msg |> NameException |> raise
 
         // #endregion
 
         // #region ---- CREATE -----
 
-        /// Create with continuation with `succ` function 
-        /// when success and `fail` function when failure.
+        /// Create with continuation with **succ** function 
+        /// when success and **fail** function when failure.
         /// Creates a `Name` from a`string`.
         let create succ fail n =
             if n |> String.IsNullOrWhiteSpace then NullOrWhiteSpaceException |> fail
@@ -102,9 +102,9 @@ module Variable =
         type Increment = Increment of BigRational
 
         /// `ValueRange` represents a discrete set of 
-        /// non-zero positive rational numbers.
+        /// rational numbers.
         /// A `ValueRange` is either unrestricted,
-        /// a finite set of values or a `Range`.
+        /// a finite set of `BigRational` or a `Range`.
         type ValueRange =
             | Unrestricted
             | ValueSet of BigRational Set
@@ -115,8 +115,8 @@ module Variable =
         /// and a increment, an increment and
         /// a `Maximum` or a `Minimum` and a
         /// `Maximum`. There is no `Range` with
-        /// both an min, incr, and max as that
-        /// is in fact a `ValueSet`.
+        /// both an min, incr, and max, as that
+        /// is, in fact, a `ValueSet`.
         and Range =
             | Min of Minimum
             | Max of Maximum
@@ -136,44 +136,44 @@ module Variable =
         /// `ValueRange` exception type
         exception ValueRangeException of Message
 
-        /// Raise a `ValueRangeException` with `Message` `m`.
+        /// Raise a `ValueRangeException` with `Message` **m**.
         let raiseExc m = m |> ValueRangeException |> raise
 
         // #endregion
         
         // #region ---- UTILS -----
 
-        /// Apply `f` to the bigrational
+        /// Apply **f** to the bigrational
         /// value of `Minimum`
         let applyMin f = function 
             | MinIncl(m) -> m |> f |> MinIncl
             | MinExcl(m) -> m |> f |> MinExcl 
             
-        /// Apply `f` to the bigrational
+        /// Apply **f** to the bigrational
         /// value of `Increment`
         let applyIncr f = function 
             | Increment(i) -> i |> f |> Increment
             
-        /// Apply `f` to the bigrational
+        /// Apply **f** to the bigrational
         /// value of `Maximum`
         let applyMax f = function 
             | MaxIncl(m) -> m |> f |> MaxIncl
             | MaxExcl(m) -> m |> f |> MaxExcl 
             
         /// Aply the give functions to `Values`
-        /// where `unr` is used for an `Unrestricted` 
-        /// `ValueRange`, `fv` is used for `ValueSet` and
-        /// `fr` is used for `Range`
+        /// where **unr** is used for an `Unrestricted` 
+        /// `ValueRange`, **fv** is used for `ValueSet` and
+        /// **fr** is used for `Range`
         let apply unr fValueSet fRange = function
             | Unrestricted        -> unr
             | ValueSet vs         -> vs |> fValueSet
             | Range r             -> r  |> fRange
 
         /// Aply the give functions to `Range`
-        /// where `fMin` is used for a range with only
-        /// a `Minimum`, `fMax` is used for range `Maximum`,
-        /// `fMinIncr` is used for `MinIncr` , `fIncrMax`
-        /// for `IncrMax` and `fMinMax` for `MinMax`. 
+        /// where **fMin** is used for a range with only
+        /// a `Minimum`, **fMax** is used for range `Maximum`,
+        /// **fMinIncr** is used for `MinIncr` , **fIncrMax**
+        /// for `IncrMax` and **fMinMax** for `MinMax`. 
         let applyRange fMin fMax fMinIncr fIncrMax fMinMax = function
             | Min m               -> m |> fMin
             | Max m               -> m |> fMax
@@ -206,8 +206,8 @@ module Variable =
         /// and doesn't contain any value.
         let isEmpty vr = (vr |> count = 0) && (vr |> isValueSet)
 
-        /// Checks whether a value is between an optional 'min'
-        /// an optional `max` and is a multiple of `incr`. 
+        /// Checks whether a `BigRational` is between an optional **min**
+        /// an optional **max** and is a multiple of **incr**. 
         /// When min, incr and max are `None` then this will 
         /// return `true` for any value.
         let isBetweenAndMultOf min incr max v =
@@ -222,7 +222,7 @@ module Variable =
             v |> fMin min &&
             v |> fMax max
 
-        /// Checks whether `Minimum` `m2` > `m1`
+        /// Checks whether `Minimum` **m2** > **m1**
         let minLTmin m1 m2 = 
             match m2, m1 with
             | MinIncl m2', MinIncl m1' 
@@ -230,10 +230,10 @@ module Variable =
             | MinIncl m2', MinExcl m1' -> m2' > m1' 
             | MinExcl m2', MinIncl m1' -> m2' >= m1'
 
-        /// Checks whether `Minimum` `m2` <= `m1`
+        /// Checks whether `Minimum` **m2** <= **m1**
         let minSTEmin m1 m2 = m2 |> minLTmin m1 |> not
 
-        /// Checks whether `Maximum` `m2` > `m1`
+        /// Checks whether `Maximum` **m2** > **m1**
         let maxLTmax m1 m2 = 
             match m2, m1 with
             | MaxIncl m2', MaxIncl m1' 
@@ -241,10 +241,10 @@ module Variable =
             | MaxExcl m2', MaxIncl m1' -> m2' > m1'
             | MaxIncl m2', MaxExcl m1' -> m2' >= m1' 
 
-        /// Checks whether `Maximum` `m2` <= `m1`
+        /// Checks whether `Maximum` **m2** <= **m1**
         let maxSTEmax m1 m2 = m2 |> maxLTmax m1 |> not
 
-        /// Checks whether `Minimum` `min` > `Maximum` `max`
+        /// Checks whether `Minimum` **min** > `Maximum` **max**
         let minLTmax max min =
             let minmax =
                 match min, max with
@@ -257,32 +257,32 @@ module Variable =
                 true
             else false
 
-        /// Checks whether `Minimum` `min` <= `Maximum` `max`
+        /// Checks whether `Minimum` **min** <= `Maximum` **max**
         let minSTEmax max min = min |> minLTmax max |> not
 
-        /// Checks whether `Minimum` `min` = `Maximum` `max`
+        /// Checks whether `Minimum` **min** = `Maximum` **max**
         let minEQmax max min = 
             match min, max with
             | MinIncl min', MaxIncl max' -> min' = max'
             | _ -> false
 
-        /// Filter a set of values according
-        /// to `min`, `incr` and `max` constraints
+        /// Filter a set of `BigRational` according
+        /// to **min**, **incr** and **max** constraints
         let filter min incr max = Set.filter (fun v -> v |> isBetweenAndMultOf min incr max)
 
-        /// Get the minimal value in a value set. Returns `None` if an empty set.
+        /// Get the minimal value in a `BigRational` set. Returns `None` if an empty set.
         let getSetMin s = if s |> Set.isEmpty then None else s.MinimumElement |> MinIncl |> Some
 
-        /// Get the maximum value in a value set. Returns `None` if an empty set.
+        /// Get the maximum value in a `BigRational` set. Returns `None` if an empty set.
         let getSetMax s = if s |> Set.isEmpty then None else s.MaximumElement |> MaxIncl |> Some
 
-        /// Convert a `Minimum` to a value.
+        /// Convert a `Minimum` to a `BigRational`.
         let minToValue = function | MinIncl v | MinExcl v -> v
         
-        /// Convert a `Maximum` to a value.
+        /// Convert a `Maximum` to a `BigRational`.
         let maxToValue = function | MaxIncl v | MaxExcl v -> v    
 
-        /// Convert an `Increment` to a value
+        /// Convert an `Increment` to a `BigRational`
         let incrToValue (Increment i) = i
 
         /// Checks whether `Minimum` is exclusive.
@@ -297,21 +297,21 @@ module Variable =
         /// Checks whether `Maximum` is inclusive.
         let isMaxIncl = isMaxExcl >> not
         
-        // Calculate `Minimum` as a multiple of `Increment` `incr`
+        // Calculate `Minimum` as a multiple of `Increment` **incr**
         let minMultipleOf incr min =
             let n = match min with | MinIncl m | MinExcl m -> m 
             let d = incr |> incrToValue
             let n' = n |> BR.toMultipleOf d
             if min |> isMinExcl && n' <= n then n' + d else n'
 
-        // Calculate `Maximum` `max` as a multiple of incr
+        // Calculate `Maximum` **max** as a multiple of **incr**
         let maxMultipleOf incr max =
             let n = match max with | MaxIncl m | MaxExcl m -> m 
             let d = incr |> incrToValue
             let n' = n |> BR.toMultipleOf d
             if max |> isMaxExcl && n' >= n then n' - d else n'
 
-        /// Create a set of values using `min`, `incr` and a `max`.
+        /// Create a set of `BigRational` using **min**, **incr** and a **max**.
         let minIncrMaxToValueSet min incr max =
             let min' = min |> minMultipleOf incr
             let max' = match max with | MaxIncl m | MaxExcl m -> m 
@@ -336,23 +336,20 @@ module Variable =
                     let right = if maxincl then "]" else ">"
 
                     match min, incr, max with
-                    | Some min, None, None          -> sprintf "%s%s..>" left min
-                    | Some min, None, Some max      -> sprintf "%s%s..%s%s" left min max right
-                    | None,     None, Some max      -> sprintf "<..%s%s" max right
-                    | Some min, Some incr, None     -> sprintf "%s%s..%s..>" left min incr 
-                    | None,     Some incr, Some max -> sprintf "<..%s..%s%s" incr max right
+                    | Some min, None, None          -> sprintf "%s%A..>" left min
+                    | Some min, None, Some max      -> sprintf "%s%A..%A%s" left min max right
+                    | None,     None, Some max      -> sprintf "<..%A%s" max right
+                    | Some min, Some incr, None     -> sprintf "%s%A..%A..>" left min incr 
+                    | None,     Some incr, Some max -> sprintf "<..%A..%A%s" incr max right
                     | _ -> "[]"
 
             let printVals vals =
-                let vals = vals |> Array.map BR.parse |> Array.sort |> Array.map BR.toString
-                "[" + (vals |> Array.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
+                let vals = vals |> List.sort |> List.map BR.toString
+                "[" + (vals |> List.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
 
             let vals = 
-                if vals |> Array.isEmpty |> not then vals |> printVals
+                if vals |> List.isEmpty |> not then vals |> printVals
                 else
-                    let min  = if min = ""  then None else Some min
-                    let incr = if incr = "" then None else Some incr
-                    let max  = if max = ""  then None else Some max
                     printRange min incr max
 
             sprintf "%s" vals
@@ -360,63 +357,62 @@ module Variable =
         /// Convert a `ValueRange` to a `string`.
         let toString vr =
             let fVs vs = 
-                let vs = vs |> Seq.map BR.toString |> Seq.toArray
-                print false vs "" false "" "" false
+                print false (vs |> Set.toList) None false None None false
             
             let fRange =
-                let print min minincl incr max maxincl = print false [||] min minincl incr max maxincl
+                let print min minincl incr max maxincl = print false [] min minincl incr max maxincl
 
                 let fMin min =
                     let min, minincl = 
                         match min with
-                        | MinIncl v -> v |> BR.toString, true
-                        | MinExcl v -> v |> BR.toString ,false  
-                    print min minincl "" "" false
+                        | MinIncl v -> v |> Some, true
+                        | MinExcl v -> v |> Some, false  
+                    print min minincl None None false
 
                 let fMax max =
                     let max, maxincl = 
                         match max with
-                        | MaxIncl v -> v |> BR.toString, true
-                        | MaxExcl v -> v |> BR.toString ,false  
+                        | MaxIncl v -> v |> Some, true
+                        | MaxExcl v -> v |> Some ,false  
 
-                    print "" false "" max maxincl
+                    print None false None max maxincl
 
                 let fMinIncr (min, incr)  = 
                     let min, minincl = 
                         match min with
-                        | MinIncl v -> v |> BR.toString, true
-                        | MinExcl v -> v |> BR.toString ,false  
+                        | MinIncl v -> v |> Some, true
+                        | MinExcl v -> v |> Some ,false  
 
-                    let incr = incr |> incrToValue |> BR.toString
+                    let incr = incr |> incrToValue |> Some
                 
-                    print min minincl incr "" false
+                    print min minincl incr None false
 
                 let fIncrMax (incr, max)  = 
                     let max, maxincl = 
                         match max with
-                        | MaxIncl v -> v |> BR.toString, true
-                        | MaxExcl v -> v |> BR.toString ,false  
+                        | MaxIncl v -> v |> Some, true
+                        | MaxExcl v -> v |> Some ,false  
 
-                    let incr = incr |> incrToValue |> BR.toString
+                    let incr = incr |> incrToValue |> Some
                 
-                    print "" false incr max maxincl
+                    print None false incr max maxincl
 
                 let fMinMax (min, max) =
                     let min, minincl = 
                         match min with
-                        | MinIncl v -> v |> BR.toString, true
-                        | MinExcl v -> v |> BR.toString ,false  
+                        | MinIncl v -> v |> Some, true
+                        | MinExcl v -> v |> Some ,false  
 
                     let max, maxincl = 
                         match max with
-                        | MaxIncl v -> v |> BR.toString, true
-                        | MaxExcl v -> v |> BR.toString ,false  
+                        | MaxIncl v -> v |> Some, true
+                        | MaxExcl v -> v |> Some ,false  
 
-                    print min minincl "" max maxincl
+                    print min minincl None max maxincl
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax
 
-            let unr = print true [||] "" false "" "" false
+            let unr = print true [] None false None None false
             
             vr |> apply unr fVs fRange 
 
@@ -463,8 +459,8 @@ module Variable =
             let max' = max |> maxMultipleOf incr |> MaxIncl
             (incr, max') |> IncrMax |> Range
             
-        /// Create a `MinMax` `ValueRange`. If `min` > `max`
-        /// pass a `Message` to `fail` else pass result to `succ`.
+        /// Create a `MinMax` `ValueRange`. If **min** > **max**
+        /// pass a `Message` to **fail** else pass result to **succ**.
         let minMaxValueRange succ fail min max = 
             if min |> minLTmax max then (min, max) |> MinLargerThanMax |> fail
             elif min |> minEQmax max then 
@@ -474,13 +470,13 @@ module Variable =
                 |> succ
             else (min, max) |> MinMax |> Range |> succ
 
-        /// Create a `ValueRange` using a `ValueSet` `vs`
-        /// an optional `Minimum` `min`, `incr` and `Maximum` `max`.
-        /// If the `vs` is an empty set then create a `Range`. 
-        /// If both `min`, `incr` and `max` are `None`, and
-        /// `unr` created an `Unrestricted` `ValueRange` else
+        /// Create a `ValueRange` using a `ValueSet` **vs**
+        /// an optional `Minimum` **min**, **incr** and `Maximum` **max**.
+        /// If the **vs** is an empty set then create a `Range`. 
+        /// If both **min**, **incr** and **max** are `None`, and
+        /// **unr** created an `Unrestricted` `ValueRange` else
         /// create an `empty` `ValueRange`. Pass the result 
-        /// to `succ`, if failing a `Message` to `fail`.
+        /// to **succ**, if failing a `Message` to **fail**.
         let create succ fail unr vs min incr max =
             if vs |> Set.isEmpty then 
                 match min, incr, max with
@@ -509,32 +505,33 @@ module Variable =
 
         // #region ---- GETTERS ----
 
-        /// Get a set of values from a `ValueRange`, 
+        /// Get a set of `BigRational` from a `ValueRange`, 
         /// returns an empty set when `ValueRange` is not 
-        /// a `ValueSet` or the set of values is actually empty.
+        /// a `ValueSet` or the set of `BigRational` is actually empty.
         let getValueSet = apply Set.empty id (fun _ -> Set.empty) 
 
+        /// Get a `Minimum` option in a `Range`
         let getRangeMin = applyRange Some Option.none (fst >> Some) Option.none (fst >> Some) 
-
+        /// Get a `Maximum` option in a `Range`
         let getRangeMax = applyRange  Option.none Some Option.none (snd >> Some) (snd >> Some)
 
-        /// Get an optional `Minimum`
+        /// Get an optional `Minimum` in a `ValueRange`
         let getMin = apply None getSetMin getRangeMin
 
-        // Get an optional increment
+        // Get an optional `Increment` in a `ValueRange`
         let getIncr = 
             let fRange = applyRange Option.none Option.none (snd >> Some) Option.none Option.none
             apply None Option.none fRange
 
-        /// Get the optional `Maximum`
+        /// Get an optional `Maximum` in a `ValueRange`
         let getMax = apply None getSetMax getRangeMax
 
         // #endregion
 
         // #region --- CONTAINS ---
 
-        /// Check whether a `ValueRange` `vr` contains
-        /// a value `v`.
+        /// Check whether a `ValueRange` **vr** contains
+        /// a `BigRational` **v**.
         let contains v vr = 
             match vr with
             | ValueSet vs when vs |> Set.isEmpty -> false
@@ -549,7 +546,7 @@ module Variable =
 
         // #region ---- SETTERS ----
 
-        /// Apply a `Minimum` `min` to a `ValueRange` `vr`.
+        /// Apply a `Minimum` **min** to a `ValueRange` **vr**.
         /// If minimum cannot be set the original is returned.
         let setMin min vr =
             let succ = id
@@ -574,7 +571,7 @@ module Variable =
 
             vr |> apply (Min min |> Range) fValueSet fRange
 
-        /// Apply a `Maximum` `max` to a `ValueRange` `vr`.
+        /// Apply a `Maximum` **max** to a `ValueRange` **vr**.
         /// If maximum cannot be set the original is returned.
         let setMax max vr =
             let succ = id
@@ -599,7 +596,7 @@ module Variable =
 
             vr |> apply (Max max |> Range) fValueSet fRange
 
-        /// Apply a `incr` to a `ValueRange` `vr`.
+        /// Apply a **incr** to a `ValueRange` **vr**.
         /// If increment cannot be set the original is returned.
         let setIncr incr vr =
             let succ = id
@@ -630,9 +627,9 @@ module Variable =
 
             vr |> apply unr fValueSet fRange
 
-        /// Appy a set of values to a `ValueRange` `vr`.
+        /// Appy a set of `BigRational` to a `ValueRange` **vr**.
         /// the result is a filtered or the intersect of
-        /// the set of values and `vr`.
+        /// the set of `BigRational` and **vr**.
         let setValues vs vr =
             let succ = id
             let fail _ = vr
@@ -658,8 +655,14 @@ module Variable =
         
         // #region ---- CALCULATION -----
 
+        /// Functions to calculate the `Minimum` 
+        /// and `Maximum` in a `ValueRange`
         module MinMaxCalcultor =
             
+            /// Calculate **x1** and **x2** with operator **op**
+            /// and use **incl1** and **inc2** to determine whether
+            /// the result is inclusive. Use constructor **c** to 
+            /// create the optional result.
             let calc c op (x1, incl1) (x2, incl2) = 
                 match x1, x2 with
                 | Some (v1), Some (v2) -> 
@@ -667,10 +670,18 @@ module Variable =
                     else v1 |> op <| v2 |> c (incl1 && incl2) |> Some
                 | _ -> None
 
+            /// Calculate an optional `Minimum`
             let calcMin = calc createMin
 
+            /// Calculate an optional `Maximum`
             let calcMax = calc createMax
 
+            /// Match a min, max tuple **min**, **max**
+            /// to:
+            /// 
+            /// * `PP`: both positive
+            /// * `NN`: both negative
+            /// * `NP`: one negative, the other positive
             let (|PP|NN|NP|) (min, max) = 
                 match min, max with
                 | Some(min), _ when min >= 0N -> PP
@@ -678,16 +689,25 @@ module Variable =
                 | Some(min), Some(max) when min < 0N && max >= 0N ->  NP
                 | _ -> NP
 
+            /// Calculate `Minimum` option and 
+            /// `Maximum` option for addition of
+            /// (**min1**, **max1**) and (**min2**, **max2)
             let addition min1 max1 min2 max2 =
                 let min = calcMin (+) min1 min2
                 let max = calcMax (+) max1 max2
                 min, max
 
+            /// Calculate `Minimum` option and 
+            /// `Maximum` option for subtraction of
+            /// (**min1**, **max1**) and (**min2**, **max2)
             let subtraction min1 max1 min2 max2 =
                 let min = calcMin (-) min1 max2
                 let max = calcMax (-) max1 min2
                 min, max
 
+            /// Calculate `Minimum` option and 
+            /// `Maximum` option for multiplication of
+            /// (**min1**, **max1**) and (**min2**, **max2)
             let multiplication min1 max1 min2 max2 =
                 match ((min1 |> fst), (max1 |> fst)), ((min2 |> fst), (max2 |> fst)) with
                 | PP, PP ->  // min = min1 * min2, max = max1 * max2
@@ -709,6 +729,9 @@ module Variable =
                 | NP, NP -> // min = min1 * max2, max = max1 * max2
                     calcMin (*) min1 max2, calcMax (*) max1 max2 
 
+            /// Calculate `Minimum` option and 
+            /// `Maximum` option for division of
+            /// (**min1**, **max1**) and (**min2**, **max2)
             let division min1 max1 min2 max2 =
                 match (min1 |> fst, max1 |> fst), (min2 |> fst, max2 |> fst) with
                 | PP, PP -> // min = min1 / max2, max =	max1 / min2
@@ -728,6 +751,8 @@ module Variable =
                 | PP, NP              
                 | NP, NP -> None, None
 
+            /// Match the right minmax calcultion
+            /// according to the operand
             let calcMinMax = function 
                 | BR.Mult  -> multiplication
                 | BR.Div   -> division
@@ -735,8 +760,8 @@ module Variable =
                 | BR.Subtr -> subtraction
 
 
-        /// Safely calculate `v1` and `v2` using operator `op`,
-        /// returns None if operator is division and `v2` is 0.
+        /// Safely calculate **v1** and **v2** using operator **op**,
+        /// returns None if operator is division and **v2** is 0.
         let calcOpt op c v1 v2 = 
             match op with
             | BR.Mult  
@@ -747,8 +772,8 @@ module Variable =
 
                        
         /// Calculate an increment with
-        /// `incr1` of x1 and `incr2` of x2
-        /// in an equation: y = x1 `op` x2
+        /// **incr1** of x1 and **incr2** of x2
+        /// in an equation: y = x1 **op** x2
         let calcIncr op incr1 incr2 = 
             match incr1, incr2 with
             | Some (Increment i1), Some (Increment i2) ->
@@ -760,12 +785,12 @@ module Variable =
                 |  _ -> None
             | _ -> None
 
-        /// Applies an infix operator `op`
-        /// to `ValueRange` `x1` and `x2`. 
+        /// Applies an infix operator **op**
+        /// to `ValueRange` **x1** and **x2**. 
         /// Calculates `Minimum`, increment or `Maximum`
-        /// if either `x1` or `x2` is not a `ValueSet`.
+        /// if either **x1** or **x2** is not a `ValueSet`.
         /// Doesn't perform any calculation when both
-        /// `x1` and `x2` are `Unrestricted`.
+        /// **x1** and **x2** are `Unrestricted`.
         let calc op (x1, x2) =
             let calcOpt = calcOpt op
 
@@ -827,9 +852,9 @@ module Variable =
 
             static member (-) (vr1, vr2) = calc (-) (vr1, vr2)
 
-            /// Apply the expression `expr` to a `ValueRange` `y`.
+            /// Apply the expression **expr** to a `ValueRange` **y**.
             /// The result can only be an equal or more restricted
-            /// version of `y`
+            /// version of **y**
             static member (!=) (y, expr) = 
                 let set get set vr = 
                     match expr |> get with 
@@ -868,7 +893,7 @@ module Variable =
     // #region ---- CREATORS -----
 
     /// Create a `Variable` and passes
-    /// the result to `succ`
+    /// the result to **succ**
     let create succ n vs = { Name = n; Values = vs } |> succ
 
     /// Create a `Variable` and directly
@@ -885,7 +910,7 @@ module Variable =
 
     // #region ---- UTILS -----
 
-    /// Apply `f` to `Variable` `var`.
+    /// Apply **f** to `Variable` **var**.
     let apply f (var: Variable) = var |> f
 
     /// Helper function for type inference
@@ -905,11 +930,11 @@ module Variable =
 
     // #region ---- SETTERS -----
 
-    /// Change `Name` to `n`.
+    /// Change `Name` to **n**.
     let setName n v = { v with Name = n }
 
-    /// Apply a `ValueRange` `vr` to
-    /// `Variable` `v`.
+    /// Apply a `ValueRange` **vr** to
+    /// `Variable` **v**.
     let setValueRange v vr = 
         let vr' = (v |> get).Values != vr
         { v with Values = vr'}
@@ -927,11 +952,11 @@ module Variable =
     /// Get the number of distinct values
     let count v = v |> getValueRange |> VR.count
 
-    /// Checks whether `v1` and `v2` have the 
+    /// Checks whether **v1** and **v2** have the 
     /// same `Name`
     let eqName v1 v2 = v1 |> getName = (v2).Name
 
-    /// Checks whether a `Variable` `v` is solved,
+    /// Checks whether a `Variable` **v** is solved,
     /// i.e. there is but one possible value or
     /// there are no possible values left.
     let isSolved v = 
@@ -947,7 +972,7 @@ module Variable =
     /// possible values a `Variable` can contain
     let isUnrestricted = getValueRange >> VR.isUnrestricted
 
-    /// Apply the operator `op` to `v1` and `v2`
+    /// Apply the operator **op** to **v1** and **v2**
     /// return an intermediate *result* `Variable`.
     let calc op (v1, v2) =
         (v1 |> getValueRange) |> op <| (v2 |> getValueRange) |> createRes
@@ -963,8 +988,8 @@ module Variable =
 
         static member (-) (v1, v2) = calc (-) (v1, v2)
 
-        /// Apply a `Variable` `expr` that is a result 
-        /// of an expression to `Variable` `y`. Note that 
+        /// Apply a `Variable` **expr** that is a result 
+        /// of an expression to `Variable` **y**. Note that 
         /// that the resulting y is the same or a more 
         /// restricted version.
         static member (!=) (y, expr) = 

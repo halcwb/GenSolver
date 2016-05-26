@@ -4,6 +4,7 @@
 #I "../../src/Informedica.GenSolver.Lib/Scripts"
 #load "load-project-release.fsx"
 
+#time
 
 (**
 GenSolver
@@ -33,7 +34,7 @@ module UT  = Informedica.GenUtils.Lib.BCL.String
 module Api = Informedica.GenSolver.Api
 
 // Format print output to use in markdown
-let solve = Api.solve (fun s -> "> " + s + "</br>" |> UT.replace "*" "\*")
+let solve = Api.solve (fun s -> "> " + s + "</br>" |> UT.replace "*" "\*" |> printfn "%s")
 
 // Initialize calculation model
 Api.init [ 
@@ -41,25 +42,29 @@ Api.init [
     "x1 = x3 + x4"
 ]
 // Stepwise solve the model
-|> solve "y" "vals" "4"
-|> solve "x4" "vals" "6"
-|> solve "x2" "vals" "5"
+|> solve "y"  "vals" [4N]
+|> solve "x4" "vals" [6N]
+|> solve "x2" "vals" [5N]
 |> ignore
 
 (** 
 Prints:
 
-> Setting variable y vals with 4 </br>
-> y[4] = x1<..> \* x2<..> </br>
+> Setting variable y vals with 4</br>
 > x1<..> = x3<..> + x4<..> </br>
-> </br>
-> Setting variable x4 vals with 6 </br>
 > y[4] = x1<..> \* x2<..> </br>
+> -----</br>
+> Setting variable x4 vals with 6</br>
 > x1<..> = x3<..> + x4[6] </br>
-> </br>
-> Setting variable x2 vals with 5 </br>
+> y[4] = x1<..> \* x2<..> </br>
+> -----</br>
+> Setting variable x2 vals with 5</br>
+Loop solveEq
+Loop solveEq
+> x1[4/5] = x3[-26/5] + x4[6] </br>
 > y[4] = x1[4/5] \* x2[5] </br>
-> x1[4/5] = x3[-26/5] + x4[6] 
+> -----</br>
+> Real: 00:00:00.001, CPU: 00:00:00.015, GC gen0: 0, gen1: 0, gen2: 0
 
 *)
 

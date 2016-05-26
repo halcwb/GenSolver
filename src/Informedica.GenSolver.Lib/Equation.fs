@@ -88,8 +88,12 @@ module Equation =
         let fs = set SumEquation
         e |> apply fp fs
 
+    /// Check whether an `Equation` contains
+    /// a `Variable` **v**
     let contains v = toVars >> (List.exists (VAR.eqName v))
 
+    /// Check whether `Equation`s 
+    /// **eq1** and **eq2** are equal
     let equals eq1 eq2 = 
         let vrs1 = eq1 |> toVars
         let vrs2 = eq2 |> toVars
@@ -97,6 +101,22 @@ module Equation =
             vrs2 |> List.exists (VAR.eqName vr)) &&
         ((eq1 |> isProduct) && (eq2 |> isProduct) ||
          (eq1 |> isSum)     && (eq2 |> isSum))
+
+    /// Find a `Variable` **vr** in
+    /// an `Equation` **eq** and return
+    /// the result in a list
+    let find vr eq =
+        eq
+        |> toVars
+        |> List.filter (fun vr' -> vr' |> VAR.getName = (vr |> VAR.getName))
+
+    /// Find a `Variable` with `Name`
+    /// **n** in an `Equation` **eq**
+    /// and return the result as a list
+    let findName n eq =
+        eq
+        |> toVars
+        |> List.filter (fun vr -> vr |> VAR.getName = n)
 
     /// Replace a `Variable` `v` in the 
     /// `Equation` `e`.

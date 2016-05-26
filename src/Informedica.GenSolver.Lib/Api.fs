@@ -5,17 +5,18 @@ module Api =
     open System
     open Informedica.GenSolver.Utils
 
-    module VAR = Informedica.GenSolver.Dtos.Variable
-    module E = Informedica.GenSolver.Dtos.Equation
-    module Solver = Informedica.GenSolver.Lib.Solver
-    module Equation = Informedica.GenSolver.Lib.Equation
+    module VD = Informedica.GenSolver.Dtos.Variable
+    module VR = Informedica.GenSolver.Lib.Variable
+    module ED = Informedica.GenSolver.Dtos.Equation
+    module SV = Informedica.GenSolver.Lib.Solver
+    module EQ = Informedica.GenSolver.Lib.Equation
 
     /// Initialize the solver returning a set of equations
     let init eqs = 
         let notempty = String.IsNullOrWhiteSpace >> not
         let prodEqs, sumEqs = eqs |> List.partition (String.contains "*")
-        let createProdEqs = List.map (E.createProd >> E.fromDtoExc)
-        let createSumEqs  = List.map (E.createSum  >> E.fromDtoExc)
+        let createProdEqs = List.map (ED.createProd >> ED.fromDtoExc)
+        let createSumEqs  = List.map (ED.createSum  >> ED.fromDtoExc)
 
         let parse eqs op = 
             eqs 
@@ -23,7 +24,7 @@ module Api =
             |> List.map (Array.collect (String.splitAt op))
             |> List.map (Array.map String.trim)
             |> List.map (Array.filter notempty)
-            |> List.map (Array.map VAR.createNew)
+            |> List.map (Array.map VD.createNew)
             
         (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
 
@@ -36,26 +37,44 @@ module Api =
             eqs 
             |> List.sortBy (fun e ->
                 e 
-                |> Informedica.GenSolver.Lib.Equation.toVars
+                |> EQ.toVars
                 |> List.head
-                |> Informedica.GenSolver.Lib.Variable.getName)
+                |> VR.getName)
 
-        for e in eqs |> List.map E.toDto do 
-            printfn "%s" (e |> E.toString |> f)
-        printfn "-----"
+        for e in eqs |> List.map ED.toDto do 
+            sprintf "%s" (e |> ED.toString) |> f
+        "-----" |> f 
         eqs    
 
-    let solve f n p v eqs =
-        printfn "Setting variable %s %s with %s" n p v
-        eqs 
-        |> List.map E.toDto
-        |> List.map (E.setVar n p v)
-        |> List.map E.fromDtoExc
-        |> Solver.solve
-        |> printEqs f
+    /// Solve an `Equations` list with
+    ///
+    /// * f: function used to process string message
+    /// * n: the name of the variable to be updated
+    /// * p: the property of the variable to be updated
+    /// * vs: the values to update the property of the variable
+    /// * eqs: the list of equations to solve
+    let solve f n p vs eqs =
+        let vrs = 
+            eqs 
+            |> List.collect (fun e -> e |> EQ.findName (n |> VR.Name.createExc))
+        
+        match vrs with
+        | vr::_ ->
+            sprintf "Setting variable %s %s with %s" n p (vs |> List.map BigRational.toString |> String.concat ", ") |> f
+
+            let vr' = 
+                vr
+                |> VD.toDto
+                |> VD.setProp p vs
+                |> VD.fromDtoExc
+
+            eqs 
+            |> SV.solve vr'
+            |> printEqs f
+        | _ -> eqs
 
     let nonZeroNegative eqs =
         eqs 
-        |> List.map Equation.nonZeroOrNegative
+        |> List.map EQ.nonZeroOrNegative
 
 

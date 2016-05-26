@@ -8,7 +8,7 @@ open Informedica.GenSolver.Utils
 
 module API = Informedica.GenSolver.Api
 
-let procss s = "> " + s + " </br> "|> String.replace "*" "\*"
+let procss s = "> " + s + " </br> "|> String.replace "*" "\*" |> printfn "%s"
 
 let printEqs = API.printEqs procss
 let solve    = API.solve procss
@@ -153,37 +153,39 @@ paracetamol
 
 (** 
 
-> paracetamol.supp.comp.qty<0..> = paracetamol.supp.comp.conc<0..> \* supp.comp.total<0..>  </br> 
-> paracetamol.drug.qty<0..> = paracetamol.drug.conc<0..> \* drug.total<0..>  </br> 
-> paracetamol.drug.qty<0..> = paracetamol.supp.comp.conc<0..> \* supp.drug.qty<0..>  </br> 
-> paracetamol.dose.total<0..> = paracetamol.dose.qty<0..> \* freq<0..>  </br> 
-> paracetamol.dose.qty<0..> = paracetamol.dose.rate<0..> \* time<0..>  </br> 
-> paracetamol.dose.qty<0..> = paracetamol.drug.conc<0..> \* prescr.qty<0..>  </br> 
-> paracetamol.dose.total<0..> = paracetamol.drug.conc<0..> \* prescr.total<0..>  </br> 
-> paracetamol.dose.rate<0..> = paracetamol.drug.conc<0..> \* prescr.rate<0..>  </br> 
-> paracetamol.dose.qty<0..> = paracetamol.dose.qty.wght<0..> \* weight<0..>  </br> 
-> paracetamol.dose.total<0..> = paracetamol.dose.total.wght<0..> \* weight<0..>  </br> 
-> paracetamol.dose.rate<0..> = paracetamol.dose.rate.wght<0..> \* weight<0..>  </br> 
-> paracetamol.dose.qty<0..> = paracetamol.dose.qty.bsa<0..> \* bsa<0..>  </br> 
-> paracetamol.dose.total<0..> = paracetamol.dose.total.bsa<0..> \* bsa<0..>  </br> 
-> paracetamol.dose.rate<0..> = paracetamol.dose.rate.bsa<0..> \* bsa<0..>  </br> 
-> drug.total<0..> = supp.comp.qty<0..> \* supp.comp.total<0..>  </br> 
-> supp.drug.qty<0..> = supp.drug.conc<0..> \* drug.total<0..>  </br> 
-> supp.dose.total<0..> = supp.dose.qty<0..> \* freq<0..>  </br> 
-> supp.dose.qty<0..> = supp.dose.rate<0..> \* time<0..>  </br> 
-> supp.dose.qty<0..> = supp.drug.conc<0..> \* prescr.qty<0..>  </br> 
-> supp.dose.total<0..> = supp.drug.conc<0..> \* prescr.total<0..>  </br> 
-> supp.dose.rate<0..> = supp.drug.conc<0..> \* prescr.rate<0..>  </br> 
-> supp.dose.qty<0..> = supp.dose.qty.wght<0..> \* weight<0..>  </br> 
-> supp.dose.total<0..> = supp.dose.total.wght<0..> \* weight<0..>  </br> 
-> supp.dose.rate<0..> = supp.dose.rate.wght<0..> \* weight<0..>  </br> 
-> supp.dose.qty<0..> = supp.dose.qty.bsa<0..> \* bsa<0..>  </br> 
-> supp.dose.total<0..> = supp.dose.total.bsa<0..> \* bsa<0..>  </br> 
-> supp.dose.rate<0..> = supp.dose.rate.bsa<0..> \* bsa<0..>  </br> 
-> prescr.total<0..> = prescr.qty<0..> \* freq<0..>  </br> 
-> prescr.qty<0..> = prescr.rate<0..> \* time<0..>  </br> 
-> prescr.total<0..> = drug.total<0..> \* drug.qty<0..>  </br> 
-> drug.total<0..> = supp.drug.qty<0..>  </br> 
+> drug.total<0N..> = supp.comp.qty<0N..> \* supp.comp.total<0N..>  </br> 
+> drug.total<0N..> = supp.drug.qty<0N..>  </br> 
+> paracetamol.dose.qty<0N..> = paracetamol.dose.rate<0N..> \* time<0N..>  </br> 
+> paracetamol.dose.qty<0N..> = paracetamol.drug.conc<0N..> \* prescr.qty<0N..>  </br> 
+> paracetamol.dose.qty<0N..> = paracetamol.dose.qty.wght<0N..> \* weight<0N..>  </br> 
+> paracetamol.dose.qty<0N..> = paracetamol.dose.qty.bsa<0N..> \* bsa<0N..>  </br> 
+> paracetamol.dose.rate<0N..> = paracetamol.drug.conc<0N..> \* prescr.rate<0N..>  </br> 
+> paracetamol.dose.rate<0N..> = paracetamol.dose.rate.wght<0N..> \* weight<0N..>  </br> 
+> paracetamol.dose.rate<0N..> = paracetamol.dose.rate.bsa<0N..> \* bsa<0N..>  </br> 
+> paracetamol.dose.total<0N..> = paracetamol.dose.qty<0N..> \* freq<0N..>  </br> 
+> paracetamol.dose.total<0N..> = paracetamol.drug.conc<0N..> \* prescr.total<0N..>  </br> 
+> paracetamol.dose.total<0N..> = paracetamol.dose.total.wght<0N..> \* weight<0N..>  </br> 
+> paracetamol.dose.total<0N..> = paracetamol.dose.total.bsa<0N..> \* bsa<0N..>  </br> 
+> paracetamol.drug.qty<0N..> = paracetamol.drug.conc<0N..> \* drug.total<0N..>  </br> 
+> paracetamol.drug.qty<0N..> = paracetamol.supp.comp.conc<0N..> \* supp.drug.qty<0N..>  </br> 
+> paracetamol.supp.comp.qty<0N..> = paracetamol.supp.comp.conc<0N..> \* supp.comp.total<0N..>  </br> 
+> prescr.qty<0N..> = prescr.rate<0N..> \* time<0N..>  </br> 
+> prescr.total<0N..> = prescr.qty<0N..> \* freq<0N..>  </br> 
+> prescr.total<0N..> = drug.total<0N..> \* drug.qty<0N..>  </br> 
+> supp.dose.qty<0N..> = supp.dose.rate<0N..> \* time<0N..>  </br> 
+> supp.dose.qty<0N..> = supp.drug.conc<0N..> \* prescr.qty<0N..>  </br> 
+> supp.dose.qty<0N..> = supp.dose.qty.wght<0N..> \* weight<0N..>  </br> 
+> supp.dose.qty<0N..> = supp.dose.qty.bsa<0N..> \* bsa<0N..>  </br> 
+> supp.dose.rate<0N..> = supp.drug.conc<0N..> \* prescr.rate<0N..>  </br> 
+> supp.dose.rate<0N..> = supp.dose.rate.wght<0N..> \* weight<0N..>  </br> 
+> supp.dose.rate<0N..> = supp.dose.rate.bsa<0N..> \* bsa<0N..>  </br> 
+> supp.dose.total<0N..> = supp.dose.qty<0N..> \* freq<0N..>  </br> 
+> supp.dose.total<0N..> = supp.drug.conc<0N..> \* prescr.total<0N..>  </br> 
+> supp.dose.total<0N..> = supp.dose.total.wght<0N..> \* weight<0N..>  </br> 
+> supp.dose.total<0N..> = supp.dose.total.bsa<0N..> \* bsa<0N..>  </br> 
+> supp.drug.qty<0N..> = supp.drug.conc<0N..> \* drug.total<0N..>  </br> 
+> ----- </br> 
+> Real: 00:00:00.036, CPU: 00:00:00.031, GC gen0: 0, gen1: 0, gen2: 0
 
 *)
 
@@ -200,9 +202,9 @@ the compoment total and is 1.
 *)
 
 paracetamol
-|> solve "paracetamol.supp.comp.qty" "vals" "50, 60, 120,240, 500, 1000"
-|> solve "supp.comp.total" "vals" "1"
-|> solve "supp.drug.qty" "vals" "1"
+|> solve "paracetamol.supp.comp.qty" "vals" [50N; 60N; 120N; 240N; 500N; 1000N]
+|> solve "supp.comp.total"           "vals" [1N]
+|> solve "supp.drug.qty"             "vals" [1N]
 
 
 (** 
@@ -210,60 +212,61 @@ Lets assume that patients normally tolerate one supp at a time. So, the prescrip
 be set to 1. Also, the frequency of administration will be around, 1,2,3,4 or 6 times daily.
 *)
 
-|> solve "prescr.qty" "vals" "1"
-|> solve "freq" "vals" "1,2,3,4,6"
+|> solve "prescr.qty" "vals" [1N]
+|> solve "freq"       "vals" [1N; 2N; 3N; 4N; 6N]
 
 (** 
 The maximum paracetamol dose is 4000 mg/day. For children the dose is weight adjusted and should 
 not exceed 90 mg/kg/day
 *)
 
-|> solve "paracetamol.dose.total" "maxincl" "4000"
-|> solve "paracetamol.dose.total.wght" "maxincl" "90"
+|> solve "paracetamol.dose.total"      "maxincl" [4000N]
+|> solve "paracetamol.dose.total.wght" "maxincl" [90N]
 
 (** 
 Suppose we want to prescribe paracetamol with this setup to a child of 6 kg. With a frequency of 
 3 or 4 times/day.
 *)
 
-|> solve "weight" "vals" "6"
-|> solve "freq" "vals" "3,4"
-|> printEqs
+|> solve "weight" "vals" [6N]
+|> solve "freq"   "vals" [3N; 4N]
 |> ignore
 
 (** 
 
-> paracetamol.supp.comp.qty[50, 60, 120] = paracetamol.supp.comp.conc[50, 60, 120] \* supp.comp.total[1]  </br> 
+> drug.total[1] = supp.drug.qty[1]  </br> 
+> drug.total[1] = supp.comp.qty[1] \* supp.comp.total[1]  </br> 
+> paracetamol.dose.qty[50, 60, 120] = paracetamol.dose.rate<0N..> \* time<0N..>  </br> 
+> paracetamol.dose.qty[50, 60, 120] = paracetamol.dose.qty.bsa<0N..> \* bsa<0N..>  </br> 
+> paracetamol.dose.qty[50, 60, 120] = paracetamol.drug.conc[50, 60, 120] \* prescr.qty[1]  </br> 
+> paracetamol.dose.qty[50, 60, 120] = paracetamol.dose.qty.wght[25/3, 10, 20] \* weight[6]  </br> 
+> paracetamol.dose.rate<0N..> = paracetamol.dose.rate.bsa<0N..> \* bsa<0N..>  </br> 
+> paracetamol.dose.rate<0N..> = paracetamol.dose.rate.wght<0N..> \* weight[6]  </br> 
+> paracetamol.dose.rate<0N..> = paracetamol.drug.conc[50, 60, 120] \* prescr.rate<0N..>  </br> 
+> paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.dose.qty[50, 60, 120] \* freq[3, 4]  </br> 
+> paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.dose.total.bsa<0N..> \* bsa<0N..>  </br> 
+> paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.drug.conc[50, 60, 120] \* prescr.total[3, 4]  </br> 
+> paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.dose.total.wght[25, 30, 100/3, 40, 60, 80] \* weight[6]  </br> 
 > paracetamol.drug.qty[50, 60, 120] = paracetamol.drug.conc[50, 60, 120] \* drug.total[1]  </br> 
 > paracetamol.drug.qty[50, 60, 120] = paracetamol.supp.comp.conc[50, 60, 120] \* supp.drug.qty[1]  </br> 
-> paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.dose.qty[50, 60, 120] \* freq[3, 4]  </br> 
-> paracetamol.dose.qty[50, 60, 120] = paracetamol.dose.rate<0..> \* time<0..>  </br> 
-> paracetamol.dose.qty[50, 60, 120] = paracetamol.drug.conc[50, 60, 120] \* prescr.qty[1]  </br> 
-> paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.drug.conc[50, 60, 120] \* prescr.total[3, 4]  </br> 
-> paracetamol.dose.rate<0..> = paracetamol.drug.conc[50, 60, 120] \* prescr.rate<0..>  </br> 
-> paracetamol.dose.qty[50, 60, 120] = paracetamol.dose.qty.wght[25/3, 10, 20] \* weight[6]  </br> 
-> paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.dose.total.wght[25, 30, 100/3, 40, 60, 80] \* weight[6]  </br> 
-> paracetamol.dose.rate<0..> = paracetamol.dose.rate.wght<0..> \* weight[6]  </br> 
-> paracetamol.dose.qty[50, 60, 120] = paracetamol.dose.qty.bsa<0..> \* bsa<0..>  </br> 
-> paracetamol.dose.total[150, 180, 200, 240, 360, 480] = paracetamol.dose.total.bsa<0..> \* bsa<0..>  </br> 
-> paracetamol.dose.rate<0..> = paracetamol.dose.rate.bsa<0..> \* bsa<0..>  </br> 
-> drug.total[1] = supp.comp.qty[1] \* supp.comp.total[1]  </br> 
-> supp.drug.qty[1] = supp.drug.conc[1] \* drug.total[1]  </br> 
-> supp.dose.total[3, 4] = supp.dose.qty[1] \* freq[3, 4]  </br> 
-> supp.dose.qty[1] = supp.dose.rate<0..> \* time<0..>  </br> 
-> supp.dose.qty[1] = supp.drug.conc[1] \* prescr.qty[1]  </br> 
-> supp.dose.total[3, 4] = supp.drug.conc[1] \* prescr.total[3, 4]  </br> 
-> supp.dose.rate<0..> = supp.drug.conc[1] \* prescr.rate<0..>  </br> 
-> supp.dose.qty[1] = supp.dose.qty.wght[1/6] \* weight[6]  </br> 
-> supp.dose.total[3, 4] = supp.dose.total.wght[1/2, 2/3] \* weight[6]  </br> 
-> supp.dose.rate<0..> = supp.dose.rate.wght<0..> \* weight[6]  </br> 
-> supp.dose.qty[1] = supp.dose.qty.bsa<0..> \* bsa<0..>  </br> 
-> supp.dose.total[3, 4] = supp.dose.total.bsa<0..> \* bsa<0..>  </br> 
-> supp.dose.rate<0..> = supp.dose.rate.bsa<0..> \* bsa<0..>  </br> 
+> paracetamol.supp.comp.qty[50, 60, 120] = paracetamol.supp.comp.conc[50, 60, 120] \* supp.comp.total[1]  </br> 
+> prescr.qty[1] = prescr.rate<0N..> \* time<0N..>  </br> 
 > prescr.total[3, 4] = prescr.qty[1] \* freq[3, 4]  </br> 
-> prescr.qty[1] = prescr.rate<0..> \* time<0..>  </br> 
 > prescr.total[3, 4] = drug.total[1] \* drug.qty[3, 4]  </br> 
-> drug.total[1] = supp.drug.qty[1]  </br> 
+> supp.dose.qty[1] = supp.drug.conc[1] \* prescr.qty[1]  </br> 
+> supp.dose.qty[1] = supp.dose.rate<0N..> \* time<0N..>  </br> 
+> supp.dose.qty[1] = supp.dose.qty.bsa<0N..> \* bsa<0N..>  </br> 
+> supp.dose.qty[1] = supp.dose.qty.wght[1/6] \* weight[6]  </br> 
+> supp.dose.rate<0N..> = supp.dose.rate.bsa<0N..> \* bsa<0N..>  </br> 
+> supp.dose.rate<0N..> = supp.drug.conc[1] \* prescr.rate<0N..>  </br> 
+> supp.dose.rate<0N..> = supp.dose.rate.wght<0N..> \* weight[6]  </br> 
+> supp.dose.total[3, 4] = supp.dose.qty[1] \* freq[3, 4]  </br> 
+> supp.dose.total[3, 4] = supp.drug.conc[1] \* prescr.total[3, 4]  </br> 
+> supp.dose.total[3, 4] = supp.dose.total.bsa<0N..> \* bsa<0N..>  </br> 
+> supp.dose.total[3, 4] = supp.dose.total.wght[1/2, 2/3] \* weight[6]  </br> 
+> supp.drug.qty[1] = supp.drug.conc[1] \* drug.total[1]  </br> 
+> ----- </br> 
+> Real: 00:00:00.092, CPU: 00:00:00.109, GC gen0: 3, gen1: 1, gen2: 1
 
 *)
 

@@ -22,11 +22,11 @@ module Variable =
         { 
             Name: string
             Unr: bool
-            Vals: string[]
-            Min: string
+            Vals: BigRational list
+            Min: BigRational option
             MinIncl: bool
-            Incr: string
-            Max: string
+            Incr: BigRational option
+            Max: BigRational option
             MaxIncl: bool 
         }
 
@@ -46,7 +46,7 @@ module Variable =
     let createDto n unr vals min minincl incr max maxincl =  { Name = n; Unr = unr; Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl }
 
     /// Create an *empty* *new* `Dto` with only a name `n`
-    let createNew n = createDto n true [||] "" false "" "" false
+    let createNew n = createDto n true [] None false None None false
 
     /// Apply `f` to an `Dto` `d`
     let apply f (d: Dto) = f d
@@ -77,29 +77,25 @@ module Variable =
 
     /// Set a `Dto` member `p` with a value `v` to a `Dto` `dto`.
     /// If no field can be matched the `dto` is returned unchanged. 
-    let setProp p v dto =
+    let setProp p vs dto =
+        let getVal vs = 
+            match vs with
+            | [v] -> v |> Some
+            | _   -> None
+
         match p with 
-        | Vals     -> dto |> setVals (v |> String.splitAt ',')
-        | MinIncl  -> dto |> setMin v true
-        | MinExcl  -> dto |> setMin v false
-        | Incr     -> dto |> setIncr v 
-        | MaxIncl  -> dto |> setMax v true
-        | MaxExcl  -> dto |> setMax v false
+        | Vals     -> dto |> setVals vs
+        | MinIncl  -> dto |> setMin  (vs |> getVal) true
+        | MinExcl  -> dto |> setMin  (vs |> getVal) false
+        | Incr     -> dto |> setIncr (vs |> getVal)  
+        | MaxIncl  -> dto |> setMax  (vs |> getVal) true
+        | MaxExcl  -> dto |> setMax  (vs |> getVal) false
         | NoProp   -> dto
 
     /// Return a `string` representation of a `Dto`
     let toString { Name = name; Unr = unr; Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl } = 
         let vals = VR.print unr vals min minincl incr max maxincl 
         sprintf "%s%s" name vals
-
-    /// Parse a `string` to a `BigRational` option
-    /// return `None` when the `s` is null or whitespace
-    let parseOpt succ fail s = 
-        if s |> String.IsNullOrWhiteSpace then None |> succ
-        else 
-            match s |> BigRational.tryParse with
-            | Some v -> v |> Some |> succ
-            | None   -> s |> ParseFailure |> fail
         
     /// Parse a sequence of `string` to
     /// `BigRational`, return the result 
@@ -108,7 +104,6 @@ module Variable =
     let toValueSet succ fail vals =
         try
             vals 
-            |> Seq.map BigRational.parse
             |> Set.ofSeq
             |> succ
         with 
@@ -124,18 +119,11 @@ module Variable =
         
         let vs = dto.Vals |> toValueSet succ fail
 
-        let minMax c i s = 
-            let cr = Option.bind ((c i) >> Some)
-            s |> parseOpt cr fail
-
-        let min = dto.Min |> minMax VR.createMin dto.MinIncl
-
-        let max = dto.Max |> minMax VR.createMax dto.MaxIncl
-
+        let min = dto.Min |> Option.bind (fun v -> v |> VR.createMin dto.MinIncl |> Some)
+        let max = dto.Max |> Option.bind (fun v -> v |> VR.createMax dto.MaxIncl |> Some)
         let incr = 
             let faili i = i |> VR.ZeroOrNegativeIncrement |> ValueRangeMessage |> fail
-            dto.Incr 
-            |> minMax (fun _ v -> v |> VR.createIncr id faili) false
+            dto.Incr |> Option.bind (fun v -> v |> VR.createIncr succ faili |> Some)
 
         let vr = VR.create succ (fun m -> m |> ValueRangeMessage |> fail) dto.Unr vs min incr max
 
@@ -154,18 +142,12 @@ module Variable =
             | Some vs' -> vs' 
             | None -> Set.empty
 
-        let minMax c i s = 
-            let cr = Option.bind ((c i) >> Some)
-            s |> parseOpt cr fail
-
-        let min = dto.Min |> minMax VR.createMin dto.MinIncl
-
-        let max = dto.Max |> minMax VR.createMax dto.MaxIncl
+        let min = dto.Min |> Option.bind (fun v -> v |> VR.createMin dto.MinIncl |> Some)
+        let max = dto.Max |> Option.bind (fun v -> v |> VR.createMax dto.MaxIncl |> Some)
 
         let incr = 
-            match dto.Incr |> minMax (fun _ -> VR.createIncr succ fail) false with
-            | Some i -> i
-            | None -> None
+            dto.Incr 
+            |> Option.bind (fun v -> v |> VR.createIncr succ fail)
 
         let vr = VR.create succ (fun m -> m |> ValueRangeMessage |> fail) dto.Unr vs min incr max
 
@@ -193,25 +175,21 @@ module Variable =
             v.Values 
             |> VR.getMin 
             |> Option.bind (VR.minToValue >> Some) 
-            |> optToString
 
         let max  = 
             v.Values 
             |> VR.getMax 
             |> Option.bind (VR.maxToValue >> Some) 
-            |> optToString
 
         let incr = 
             v.Values
             |> VR.getIncr
             |> Option.bind (VR.incrToValue >> Some)
-            |> optToString
 
         let vals = 
             v.Values 
             |> VR.getValueSet 
-            |> Set.map (fun n -> n.ToString()) 
-            |> Set.toArray
+            |> Set.toList
 
         { dto with Unr = unr; Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl }
 
@@ -222,7 +200,7 @@ module Equation =
 
     open Informedica.GenSolver.Utils
 
-    module E = Informedica.GenSolver.Lib.Equation
+    module EQ = Informedica.GenSolver.Lib.Equation
     
     /// `Dto` for an `Equation`
     [<CLIMutable>]
@@ -231,7 +209,7 @@ module Equation =
     /// `Message` type for failures
     type Message =
         | NoVarsInEquation 
-        | EquationMessage of E.Message
+        | EquationMessage of EQ.Message
         | VariableMessage of Variable.Message
 
     /// `DtoException type 
@@ -256,21 +234,21 @@ module Equation =
     /// Helper function to facilitate type 
     let get = apply id
 
-    /// If equation `eq` contains a variable 
-    /// with name `n` then the property `p` of
-    /// that variable is updated with value `v`. 
-    let setVar n p v eq = 
-        let var = 
-            match (eq |> get).Vars |> Array.tryFind (fun v -> n = v.Name) with
-            | Some var' -> var' |> Variable.setProp p v |> Some
-            | None -> None
-        { eq with 
-            Vars = 
-                match var with
-                | Some var' -> 
-                    eq.Vars 
-                    |> Array.replace (fun v -> v.Name = n) var'
-                | None -> eq.Vars }
+//    /// If equation `eq` contains a variable 
+//    /// with name `n` then the property `p` of
+//    /// that variable is updated with value `v`. 
+//    let setVar n p v eq = 
+//        let var = 
+//            match (eq |> get).Vars |> Array.tryFind (fun v -> n = v.Name) with
+//            | Some var' -> var' |> Variable.setProp p v |> Some
+//            | None -> None
+//        { eq with 
+//            Vars = 
+//                match var with
+//                | Some var' -> 
+//                    eq.Vars 
+//                    |> Array.replace (fun v -> v.Name = n) var'
+//                | None -> eq.Vars }
 
     /// Return the `string` representation of a `Dto`
     let toString e = 
@@ -303,8 +281,8 @@ module Equation =
         | y::xs ->
             let y = y |> fromVarDtoExc
             let e = (y, xs |> List.map fromVarDtoExc)
-            if dto.IsProdEq then e |> E.createProductEq succ (fun m -> m |> EquationMessage |> fail)
-            else e |> E.createSumEq succ (fun m -> m |> EquationMessage |> fail)
+            if dto.IsProdEq then e |> EQ.createProductEq succ (fun m -> m |> EquationMessage |> fail)
+            else e |> EQ.createSumEq succ (fun m -> m |> EquationMessage |> fail)
 
     /// Create a `Dto` from an `Equation` `e`
     let toDto e =
@@ -312,4 +290,4 @@ module Equation =
             { Vars = y::xs |> List.map Variable.toDto |> List.toArray; IsProdEq = isProd }
         let fp = c true 
         let fs = c false 
-        e |> E.apply fp fs
+        e |> EQ.apply fp fs

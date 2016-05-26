@@ -605,11 +605,10 @@ module Testing =
 
                 let dto = 
                     let dto = DTO.createNew "test"
-                    let vals = vs |> Array.map toStr |> Array.filter (System.String.IsNullOrWhiteSpace >> not)
-                    let dto = dto |> DTO.setVals vals
-                    let dto = if min <= max then dto |> setMin (min |> toStr) else dto
-                    let dto = if max >= min then dto |> setMax (max |> toStr) else dto
-                    let dto = dto |> setIncr (incr |> toStr)
+                    let dto = dto |> DTO.setVals vs
+                    let dto = if min <= max then dto |> setMin min else dto
+                    let dto = if max >= min then dto |> setMax max else dto
+                    let dto = dto |> setIncr incr
                     dto
      
                 match dto |> DTO.fromDtoOpt with

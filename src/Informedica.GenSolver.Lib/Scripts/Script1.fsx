@@ -6,7 +6,7 @@ open Informedica.GenSolver.Utils
 
 module API = Informedica.GenSolver.Api
 
-let procss s = "> " + s + " </br> "|> String.replace "*" "\*"
+let procss s = "> " + s + " </br> "|> String.replace "*" "\*" |> printfn "%s"
 
 let printEqs = API.printEqs procss
 let solve    = API.solve procss
@@ -133,7 +133,7 @@ let test () =
     items
     |> List.fold (fun t i ->
         t
-        |> solve (i + ".drug.qty") "vals" "1"
-        |> solve (i + ".drug.conc") "vals" "1"
-(*       |> solve (i + ".supp.comp.qty") "vals" "1"*)) drg
+        |> solve (i + ".drug.qty") "vals" [1N]
+        |> solve (i + ".drug.conc") "vals" [1N]
+        |> solve (i + ".supp.comp.qty") "vals" [1N]) drg
     |> ignore
