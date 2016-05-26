@@ -1,3 +1,6 @@
+#### 0.2.2-beta - May 26 2016
+* Removed debugging print functions
+
 #### 0.2.1-beta - May 26 2016
 * Additional performance boost
 * Refactored code
