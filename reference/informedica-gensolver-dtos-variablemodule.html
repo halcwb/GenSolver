@@ -91,12 +91,12 @@ vice versa.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '16', 16)" onmouseover="showTip(event, '16', 16)">
+          <code onmouseout="hideTip(event, '15', 15)" onmouseover="showTip(event, '15', 15)">
             apply f d
           </code>
-          <div class="tip" id="16">
-            <strong>Signature:</strong> f:(Dto -&gt; &#39;?7089) -&gt; d:Dto -&gt; &#39;?7089<br />
-                          <strong>Type parameters:</strong> '?7089          </div>
+          <div class="tip" id="15">
+            <strong>Signature:</strong> f:(Dto -&gt; &#39;?7093) -&gt; d:Dto -&gt; &#39;?7093<br />
+                          <strong>Type parameters:</strong> '?7093          </div>
         </td>
         <td class="xmldoc">
             <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L52-52" class="github-link">
@@ -111,11 +111,11 @@ vice versa.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '17', 17)" onmouseover="showTip(event, '17', 17)">
+          <code onmouseout="hideTip(event, '16', 16)" onmouseover="showTip(event, '16', 16)">
             createDto (...)
           </code>
-          <div class="tip" id="17">
-            <strong>Signature:</strong> n:string -&gt; unr:bool -&gt; vals:string [] -&gt; min:string -&gt; minincl:bool -&gt; incr:string -&gt; max:string -&gt; maxincl:bool -&gt; Dto<br />
+          <div class="tip" id="16">
+            <strong>Signature:</strong> n:string -&gt; unr:bool -&gt; vals:BigRational list -&gt; min:BigRational option -&gt; minincl:bool -&gt; incr:BigRational option -&gt; max:BigRational option -&gt; maxincl:bool -&gt; Dto<br />
                       </div>
         </td>
         <td class="xmldoc">
@@ -131,10 +131,10 @@ vice versa.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '18', 18)" onmouseover="showTip(event, '18', 18)">
+          <code onmouseout="hideTip(event, '17', 17)" onmouseover="showTip(event, '17', 17)">
             createNew n
           </code>
-          <div class="tip" id="18">
+          <div class="tip" id="17">
             <strong>Signature:</strong> n:string -&gt; Dto<br />
                       </div>
         </td>
@@ -143,7 +143,7 @@ vice versa.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create an <em>empty</em> <em>new</em> <code>Dto</code> with only a name <code>n</code></p>
+          <p>Create an <em>empty</em> <em>new</em> <code>Dto</code> with only a name <strong>n</strong></p>
 
 
         </td>
@@ -151,15 +151,15 @@ vice versa.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '19', 19)" onmouseover="showTip(event, '19', 19)">
+          <code onmouseout="hideTip(event, '18', 18)" onmouseover="showTip(event, '18', 18)">
             fromDtoExc dto
           </code>
-          <div class="tip" id="19">
+          <div class="tip" id="18">
             <strong>Signature:</strong> dto:Dto -&gt; Variable<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L119-119" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L114-114" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -172,15 +172,15 @@ raise a <code>DtoException</code> if this fails.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '20', 20)" onmouseover="showTip(event, '20', 20)">
+          <code onmouseout="hideTip(event, '19', 19)" onmouseover="showTip(event, '19', 19)">
             fromDtoOpt dto
           </code>
-          <div class="tip" id="20">
+          <div class="tip" id="19">
             <strong>Signature:</strong> dto:Dto -&gt; Variable option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L146-146" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L134-134" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -193,20 +193,39 @@ return <code>None</code> when this fails.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '21', 21)" onmouseover="showTip(event, '21', 21)">
-            parseOpt succ fail s
+          <code onmouseout="hideTip(event, '20', 20)" onmouseover="showTip(event, '20', 20)">
+            raiseExc m
           </code>
-          <div class="tip" id="21">
-            <strong>Signature:</strong> succ:(BigRational option -&gt; &#39;?7098) -&gt; fail:(Message -&gt; &#39;?7098) -&gt; s:string -&gt; &#39;?7098<br />
-                          <strong>Type parameters:</strong> '?7098          </div>
+          <div class="tip" id="20">
+            <strong>Signature:</strong> m:Message -&gt; &#39;?7089<br />
+                          <strong>Type parameters:</strong> '?7089          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L97-97" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L43-43" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Parse a <code>string</code> to a <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> option
-return <code>None</code> when the <code>s</code> is null or whitespace</p>
+          <p>Raises a <code>DtoException</code> with <code>Message</code> <strong>m</strong>.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '21', 21)" onmouseover="showTip(event, '21', 21)">
+            setIncr incr dto
+          </code>
+          <div class="tip" id="21">
+            <strong>Signature:</strong> incr:BigRational option -&gt; dto:Dto -&gt; Dto<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L65-65" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Set an <code>incr</code> to a <strong>dto</strong></p>
 
 
         </td>
@@ -215,18 +234,18 @@ return <code>None</code> when the <code>s</code> is null or whitespace</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '22', 22)" onmouseover="showTip(event, '22', 22)">
-            raiseExc m
+            setMax max incl dto
           </code>
           <div class="tip" id="22">
-            <strong>Signature:</strong> m:Message -&gt; &#39;?7085<br />
-                          <strong>Type parameters:</strong> '?7085          </div>
+            <strong>Signature:</strong> max:BigRational option -&gt; incl:bool -&gt; dto:Dto -&gt; Dto<br />
+                      </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L43-43" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L62-62" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Raises a <code>DtoException</code> with <code>Message</code> <code>m</code>.</p>
+          <p>Set a <code>max</code> to an <strong>dto</strong> that is either inclusive <code>incl</code> true or exclusive <code>false</code></p>
 
 
         </td>
@@ -235,18 +254,18 @@ return <code>None</code> when the <code>s</code> is null or whitespace</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '23', 23)" onmouseover="showTip(event, '23', 23)">
-            setIncr incr dto
+            setMin min incl dto
           </code>
           <div class="tip" id="23">
-            <strong>Signature:</strong> incr:string -&gt; dto:Dto -&gt; Dto<br />
+            <strong>Signature:</strong> min:BigRational option -&gt; incl:bool -&gt; dto:Dto -&gt; Dto<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L65-65" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L59-59" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Set an <code>incr</code> to a <code>dto</code></p>
+          <p>Set a <code>min</code> to an <strong>dto</strong> that is either inclusive <code>incl</code> true or exclusive <code>false</code></p>
 
 
         </td>
@@ -255,18 +274,19 @@ return <code>None</code> when the <code>s</code> is null or whitespace</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '24', 24)" onmouseover="showTip(event, '24', 24)">
-            setMax max incl dto
+            setProp p vs dto
           </code>
           <div class="tip" id="24">
-            <strong>Signature:</strong> max:string -&gt; incl:bool -&gt; dto:Dto -&gt; Dto<br />
+            <strong>Signature:</strong> p:String -&gt; vs:BigRational list -&gt; dto:Dto -&gt; Dto<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L62-62" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L80-80" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Set a <code>max</code> to an <code>dto</code> that is either inclusive <code>incl</code> true or exclusive <code>false</code></p>
+          <p>Set a <code>Dto</code> member <strong>p</strong> with a value <code>v</code> to a <code>Dto</code> <strong>dto</strong>.
+If no field can be matched the <strong>dto</strong> is returned unchanged.</p>
 
 
         </td>
@@ -275,51 +295,10 @@ return <code>None</code> when the <code>s</code> is null or whitespace</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '25', 25)" onmouseover="showTip(event, '25', 25)">
-            setMin min incl dto
-          </code>
-          <div class="tip" id="25">
-            <strong>Signature:</strong> min:string -&gt; incl:bool -&gt; dto:Dto -&gt; Dto<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L59-59" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Set a <code>min</code> to an <code>dto</code> that is either inclusive <code>incl</code> true or exclusive <code>false</code></p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '26', 26)" onmouseover="showTip(event, '26', 26)">
-            setProp p v dto
-          </code>
-          <div class="tip" id="26">
-            <strong>Signature:</strong> p:String -&gt; v:String -&gt; dto:Dto -&gt; Dto<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L80-80" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Set a <code>Dto</code> member <code>p</code> with a value <code>v</code> to a <code>Dto</code> <code>dto</code>.
-If no field can be matched the <code>dto</code> is returned unchanged.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '27', 27)" onmouseover="showTip(event, '27', 27)">
             setVals vals dto
           </code>
-          <div class="tip" id="27">
-            <strong>Signature:</strong> vals:string [] -&gt; dto:Dto -&gt; Dto<br />
+          <div class="tip" id="25">
+            <strong>Signature:</strong> vals:BigRational list -&gt; dto:Dto -&gt; Dto<br />
                       </div>
         </td>
         <td class="xmldoc">
@@ -327,7 +306,7 @@ If no field can be matched the <code>dto</code> is returned unchanged.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply an array of <code>vals</code> to an <code>dto</code>
+          <p>Apply an array of <code>vals</code> to an <strong>dto</strong>
 making sure the <code>Unr</code> is set to <code>false</code>.</p>
 
 
@@ -336,15 +315,15 @@ making sure the <code>Unr</code> is set to <code>false</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '28', 28)" onmouseover="showTip(event, '28', 28)">
+          <code onmouseout="hideTip(event, '26', 26)" onmouseover="showTip(event, '26', 26)">
             toDto v
           </code>
-          <div class="tip" id="28">
+          <div class="tip" id="26">
             <strong>Signature:</strong> v:Variable -&gt; Dto<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L177-177" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L159-159" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -356,15 +335,15 @@ making sure the <code>Unr</code> is set to <code>false</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '29', 29)" onmouseover="showTip(event, '29', 29)">
+          <code onmouseout="hideTip(event, '27', 27)" onmouseover="showTip(event, '27', 27)">
             toString arg1
           </code>
-          <div class="tip" id="29">
+          <div class="tip" id="27">
             <strong>Signature:</strong> Dto -&gt; string<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L91-91" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L96-96" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -376,15 +355,15 @@ making sure the <code>Unr</code> is set to <code>false</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '30', 30)" onmouseover="showTip(event, '30', 30)">
+          <code onmouseout="hideTip(event, '28', 28)" onmouseover="showTip(event, '28', 28)">
             toValueSet succ fail vals
           </code>
-          <div class="tip" id="30">
-            <strong>Signature:</strong> succ:(Set&lt;BigRational&gt; -&gt; &#39;?7100) -&gt; fail:(Message -&gt; &#39;?7100) -&gt; vals:seq&lt;string&gt; -&gt; &#39;?7100<br />
-                          <strong>Type parameters:</strong> '?7100          </div>
+          <div class="tip" id="28">
+            <strong>Signature:</strong> succ:(Set&lt;&#39;?7102&gt; -&gt; &#39;?7103) -&gt; fail:(Message -&gt; &#39;?7103) -&gt; vals:seq&lt;&#39;?7102&gt; -&gt; &#39;?7103<br />
+                          <strong>Type parameters:</strong> '?7102, '?7103          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L108-108" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Dtos.fs#L104-104" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -407,10 +386,10 @@ pass a <code>Message</code> to the <code>fail</code> function</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '31', 31)" onmouseover="showTip(event, '31', 31)">
+          <code onmouseout="hideTip(event, '29', 29)" onmouseover="showTip(event, '29', 29)">
             ( |Vals|MinIncl|MinExcl|Incr|MaxIncl|MaxExcl|NoProp| ) (...)
           </code>
-          <div class="tip" id="31">
+          <div class="tip" id="29">
             <strong>Signature:</strong> p:String -&gt; Choice&lt;unit,unit,unit,unit,unit,unit,unit&gt;<br />
                       </div>
         </td>
@@ -419,7 +398,7 @@ pass a <code>Message</code> to the <code>fail</code> function</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Match a string <code>p</code> to a field of <code>Dto</code></p>
+          <p>Match a string <strong>p</strong> to a field of <code>Dto</code></p>
 
 
               <p>CompiledName: <code>|Vals|MinIncl|MinExcl|Incr|MaxIncl|MaxExcl|NoProp|</code></p>

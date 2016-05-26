@@ -42,9 +42,9 @@
 <div class="xmldoc">
 <p>Functions that handle the <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> type that
 either represents a <code>ProductEquation</code> </br>
-y = x1 <em> x2 </em> ... <em> xn </br>
+y = x1 * x2 <em> ... * xn </br>
 or a <code>SumEquations</code> </br>
-y = x1 </em> x2 <em> ... </em> xn</p>
+y = x1 * x2 </em> ... * xn</p>
 
 </div>
 
@@ -98,20 +98,65 @@ variables in the equation</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '32', 32)" onmouseover="showTip(event, '32', 32)">
+          <code onmouseout="hideTip(event, '30', 30)" onmouseover="showTip(event, '30', 30)">
             apply fp fs _arg1
           </code>
-          <div class="tip" id="32">
-            <strong>Signature:</strong> fp:(Variable -&gt; Variable list -&gt; &#39;?7043) -&gt; fs:(Variable -&gt; Variable list -&gt; &#39;?7043) -&gt; _arg1:Equation -&gt; &#39;?7043<br />
-                          <strong>Type parameters:</strong> '?7043          </div>
+          <div class="tip" id="30">
+            <strong>Signature:</strong> fp:(Variable -&gt; Variable list -&gt; &#39;?7045) -&gt; fs:(Variable -&gt; Variable list -&gt; &#39;?7045) -&gt; _arg1:Equation -&gt; &#39;?7045<br />
+                          <strong>Type parameters:</strong> '?7045          </div>
         </td>
         <td class="xmldoc">
             <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L67-67" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply <code>fp</code> to a <code>ProductEquation</code> and
-<code>fs</code> to a <code>SumEquation</code>.</p>
+          <p>Apply <strong>fp</strong> to a <code>ProductEquation</code> and
+<strong>fs</strong> to a <code>SumEquation</code>.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '31', 31)" onmouseover="showTip(event, '31', 31)">
+            contains v
+          </code>
+          <div class="tip" id="31">
+            <strong>Signature:</strong> v:Variable -&gt; Equation -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L96-96" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Check whether an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> contains
+a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> <strong>v</strong></p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '32', 32)" onmouseover="showTip(event, '32', 32)">
+            create c succ fail (y, xs)
+          </code>
+          <div class="tip" id="32">
+            <strong>Signature:</strong> c:(Variable * Variable list -&gt; &#39;?7038) -&gt; succ:(&#39;?7038 -&gt; &#39;?7039) -&gt; fail:(Message -&gt; &#39;?7039) -&gt; (y:Variable * xs:Variable list) -&gt; &#39;?7039<br />
+                          <strong>Type parameters:</strong> '?7038, '?7039          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L39-39" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Create an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> with an <strong>y</strong> and
+<strong>xs</strong>. Fails if a variable is added more
+than one time using the <strong>fail</strong> function.
+The type of Equation product or sum
+is determined by the constructor <strong>c</strong>.</p>
 
 
         </td>
@@ -120,51 +165,9 @@ variables in the equation</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '33', 33)" onmouseover="showTip(event, '33', 33)">
-            contains v
-          </code>
-          <div class="tip" id="33">
-            <strong>Signature:</strong> v:Variable -&gt; Equation -&gt; bool<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L91-91" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '34', 34)" onmouseover="showTip(event, '34', 34)">
-            create c succ fail (y, xs)
-          </code>
-          <div class="tip" id="34">
-            <strong>Signature:</strong> c:(Variable * Variable list -&gt; &#39;?7036) -&gt; succ:(&#39;?7036 -&gt; &#39;?7037) -&gt; fail:(Message -&gt; &#39;?7037) -&gt; (y:Variable * xs:Variable list) -&gt; &#39;?7037<br />
-                          <strong>Type parameters:</strong> '?7036, '?7037          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L39-39" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Create an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> with an <code>y</code> and
-<code>xs</code>. Fails if a variable is added more
-than one time using the <code>fail</code> function.
-The type of Equation product or sum
-is determined by the constructor <code>c</code>.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '35', 35)" onmouseover="showTip(event, '35', 35)">
             createProductEq 
           </code>
-          <div class="tip" id="35">
+          <div class="tip" id="33">
             <strong>Signature:</strong> (Equation -&gt; Equation) -&gt; (Message -&gt; Equation) -&gt; Variable * Variable list -&gt; Equation<br />
                       </div>
         </td>
@@ -173,9 +176,9 @@ is determined by the constructor <code>c</code>.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create an <code>ProductEquation</code> with an <code>y</code> and
-<code>xs</code>. Fails if a variable is added more
-than one time using the <code>fail</code> function.</p>
+          <p>Create an <code>ProductEquation</code> with an <strong>y</strong> and
+<strong>xs</strong>. Fails if a variable is added more
+than one time using the <strong>fail</strong> function.</p>
 
 
         </td>
@@ -183,10 +186,10 @@ than one time using the <code>fail</code> function.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '36', 36)" onmouseover="showTip(event, '36', 36)">
+          <code onmouseout="hideTip(event, '34', 34)" onmouseover="showTip(event, '34', 34)">
             createProductEqExc 
           </code>
-          <div class="tip" id="36">
+          <div class="tip" id="34">
             <strong>Signature:</strong> Variable * Variable list -&gt; Equation<br />
                       </div>
         </td>
@@ -195,8 +198,52 @@ than one time using the <code>fail</code> function.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create an <code>ProductEquation</code> with an <code>y</code> and
-<code>xs</code>. Fails if a variable is added more
+          <p>Create an <code>ProductEquation</code> with an <strong>y</strong> and
+<strong>xs</strong>. Fails if a variable is added more
+than one time raising an exception.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '35', 35)" onmouseover="showTip(event, '35', 35)">
+            createSumEq 
+          </code>
+          <div class="tip" id="35">
+            <strong>Signature:</strong> (Equation -&gt; Equation) -&gt; (Message -&gt; Equation) -&gt; Variable * Variable list -&gt; Equation<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L53-53" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Create an <code>SumEquation</code> with an <strong>y</strong> and
+<strong>xs</strong>. Fails if a variable is added more
+than one time using the <strong>fail</strong> function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '36', 36)" onmouseover="showTip(event, '36', 36)">
+            createSumEqExc 
+          </code>
+          <div class="tip" id="36">
+            <strong>Signature:</strong> Variable * Variable list -&gt; Equation<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L63-63" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Create an <code>SumEquation</code> with an <strong>y</strong> and
+<strong>xs</strong>. Fails if a variable is added more
 than one time raising an exception.</p>
 
 
@@ -206,20 +253,19 @@ than one time raising an exception.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '37', 37)" onmouseover="showTip(event, '37', 37)">
-            createSumEq 
+            equals eq1 eq2
           </code>
           <div class="tip" id="37">
-            <strong>Signature:</strong> (Equation -&gt; Equation) -&gt; (Message -&gt; Equation) -&gt; Variable * Variable list -&gt; Equation<br />
+            <strong>Signature:</strong> eq1:Equation -&gt; eq2:Equation -&gt; bool<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L53-53" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L100-100" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create an <code>SumEquation</code> with an <code>y</code> and
-<code>xs</code>. Fails if a variable is added more
-than one time using the <code>fail</code> function.</p>
+          <p>Check whether <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a>s
+<strong>eq1</strong> and <strong>eq2</strong> are equal</p>
 
 
         </td>
@@ -228,20 +274,20 @@ than one time using the <code>fail</code> function.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '38', 38)" onmouseover="showTip(event, '38', 38)">
-            createSumEqExc 
+            find vr eq
           </code>
           <div class="tip" id="38">
-            <strong>Signature:</strong> Variable * Variable list -&gt; Equation<br />
+            <strong>Signature:</strong> vr:Variable -&gt; eq:Equation -&gt; Variable list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L63-63" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L111-111" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create an <code>SumEquation</code> with an <code>y</code> and
-<code>xs</code>. Fails if a variable is added more
-than one time raising an exception.</p>
+          <p>Find a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> <strong>vr</strong> in
+an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> <strong>eq</strong> and return
+the result in a list</p>
 
 
         </td>
@@ -250,18 +296,22 @@ than one time raising an exception.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '39', 39)" onmouseover="showTip(event, '39', 39)">
-            equals eq1 eq2
+            findName n eq
           </code>
           <div class="tip" id="39">
-            <strong>Signature:</strong> eq1:Equation -&gt; eq2:Equation -&gt; bool<br />
+            <strong>Signature:</strong> n:Name -&gt; eq:Equation -&gt; Variable list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L93-93" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L119-119" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Find a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> with <a href="informedica-gensolver-lib-variablemodule-namemodule-name.html" title="Name"><code>Name</code></a>
+<strong>n</strong> in an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> <strong>eq</strong>
+and return the result as a list</p>
+
+
         </td>
       </tr>
       <tr>
@@ -275,11 +325,13 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L71-71" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L72-72" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Check whether an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> is a product equation</p>
+
+
         </td>
       </tr>
       <tr>
@@ -293,7 +345,7 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L121-121" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L144-144" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -311,7 +363,7 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L112-112" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L135-135" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -329,11 +381,13 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L73-73" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L75-75" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Check whether an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> is a sum equation</p>
+
+
         </td>
       </tr>
       <tr>
@@ -347,7 +401,7 @@ than one time raising an exception.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L82-82" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L85-85" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -365,8 +419,8 @@ non zero values.</p>
             raiseExc m
           </code>
           <div class="tip" id="45">
-            <strong>Signature:</strong> m:Message -&gt; &#39;?7034<br />
-                          <strong>Type parameters:</strong> '?7034          </div>
+            <strong>Signature:</strong> m:Message -&gt; &#39;?7036<br />
+                          <strong>Type parameters:</strong> '?7036          </div>
         </td>
         <td class="xmldoc">
             <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L32-32" class="github-link">
@@ -389,12 +443,12 @@ non zero values.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L103-103" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L126-126" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Replace a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> <code>v</code> in the
-<a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> <code>e</code>.</p>
+          <p>Replace a <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> <strong>v</strong> in the
+<a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> <strong>e</strong>.</p>
 
 
         </td>
@@ -406,17 +460,16 @@ non zero values.</p>
             solve e
           </code>
           <div class="tip" id="47">
-            <strong>Signature:</strong> e:Equation -&gt; Variable list * Equation<br />
+            <strong>Signature:</strong> e:Equation -&gt; Variable list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L131-131" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L153-153" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Solve an equation <code>e</code>, return true when
-the equation has changed. And the original
-Equation list <code>es</code> with the replaced vars.</p>
+          <p>Solve an equation <strong>e</strong>, return a list of
+changed <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a>s.</p>
 
 
         </td>
@@ -432,11 +485,13 @@ Equation list <code>es</code> with the replaced vars.</p>
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L75-75" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Equation.fs#L78-78" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Turn an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> into a list of <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a></p>
+
+
         </td>
       </tr>
     </tbody>

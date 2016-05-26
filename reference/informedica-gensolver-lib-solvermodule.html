@@ -82,29 +82,55 @@ same or has <code>Changed</code>.</p>
             contains eq eqs
           </code>
           <div class="tip" id="49">
-            <strong>Signature:</strong> eq:&#39;?6992 -&gt; eqs:&#39;?6992 list -&gt; bool<br />
-                          <strong>Type parameters:</strong> '?6992          </div>
+            <strong>Signature:</strong> eq:&#39;?6995 -&gt; eqs:&#39;?6995 list -&gt; bool<br />
+                          <strong>Type parameters:</strong> '?6995          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L25-25" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L31-31" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Checks whether a list of <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> <strong>eqs</strong>
+contiains and <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> <strong>eq</strong></p>
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '50', 50)" onmouseover="showTip(event, '50', 50)">
-            createSolve solve isSolvable eqs
+            replace vs es
           </code>
           <div class="tip" id="50">
-            <strong>Signature:</strong> solve:(Equation -&gt; Result) -&gt; isSolvable:(Equation -&gt; bool) -&gt; eqs:Equation list -&gt; Equation list<br />
+            <strong>Signature:</strong> vs:Variable list -&gt; es:Equation list -&gt; Equation list * Equation list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L47-47" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L18-18" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Replace a list of <a href="informedica-gensolver-lib-variablemodule-variable.html" title="Variable"><code>Variable</code></a> <strong>vs</strong>
+in a list of <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> <strong>es</strong>, return
+a list of replaced <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> and a list
+of unchanged <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a></p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '51', 51)" onmouseover="showTip(event, '51', 51)">
+            solve vr eqs
+          </code>
+          <div class="tip" id="51">
+            <strong>Signature:</strong> vr:Variable -&gt; eqs:Equation list -&gt; Equation list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L53-53" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -119,54 +145,15 @@ equation is solved</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '51', 51)" onmouseover="showTip(event, '51', 51)">
-            replace vs es
-          </code>
-          <div class="tip" id="51">
-            <strong>Signature:</strong> vs:Variable list -&gt; es:Equation list -&gt; Equation list * Equation list<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L14-14" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
           <code onmouseout="hideTip(event, '52', 52)" onmouseover="showTip(event, '52', 52)">
-            solve 
-          </code>
-          <div class="tip" id="52">
-            <strong>Signature:</strong> Equation list -&gt; Equation list<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L111-111" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Solve an <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a> list and return the
-updated list.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '53', 53)" onmouseover="showTip(event, '53', 53)">
             solveEquation e
           </code>
-          <div class="tip" id="53">
+          <div class="tip" id="52">
             <strong>Signature:</strong> e:Equation -&gt; Result<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L37-37" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Solver.fs#L43-43" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>

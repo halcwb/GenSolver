@@ -40,6 +40,8 @@
   <span>Namespace: Informedica.GenSolver</span><br />
 </p>
 <div class="xmldoc">
+<p>Public funtions to use the library</p>
+
 </div>
 
 <!-- Render nested types and modules, if there are any -->
@@ -61,7 +63,7 @@
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L14-14" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L16-16" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -81,11 +83,15 @@
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L57-57" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L80-80" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Make a list of <a href="informedica-gensolver-lib-equationmodule-equation.html" title="Equation"><code>Equation</code></a>
+to contain only positive
+values as solutions</p>
+
+
         </td>
       </tr>
       <tr>
@@ -95,16 +101,16 @@
             printEqs f eqs
           </code>
           <div class="tip" id="3">
-            <strong>Signature:</strong> f:(string -&gt; string) -&gt; eqs:Equation list -&gt; Equation list<br />
+            <strong>Signature:</strong> f:(string -&gt; unit) -&gt; eqs:Equation list -&gt; Equation list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L34-34" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L36-36" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Print a set of equations to the stdout.
-Using <code>f</code> to allow additional processing
+          <p>Format a set of equations to print.
+Using <strong>f</strong> to allow additional processing
 of the string.</p>
 
 
@@ -114,18 +120,27 @@ of the string.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '4', 4)" onmouseover="showTip(event, '4', 4)">
-            solve f n p v eqs
+            solve f n p vs eqs
           </code>
           <div class="tip" id="4">
-            <strong>Signature:</strong> f:(string -&gt; string) -&gt; n:string -&gt; p:string -&gt; v:string -&gt; eqs:Equation list -&gt; Equation list<br />
+            <strong>Signature:</strong> f:(string -&gt; unit) -&gt; n:string -&gt; p:string -&gt; vs:BigRational list -&gt; eqs:Equation list -&gt; Equation list<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L48-48" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Api.fs#L57-57" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Solve an <code>Equations</code> list with</p>
+<ul>
+<li>f: function used to process string message</li>
+<li>n: the name of the variable to be updated</li>
+<li>p: the property of the variable to be updated</li>
+<li>vs: the values to update the property of the variable</li>
+<li>eqs: the list of equations to solve</li>
+</ul>
+
+
         </td>
       </tr>
     </tbody>

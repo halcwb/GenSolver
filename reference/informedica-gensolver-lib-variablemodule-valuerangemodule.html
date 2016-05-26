@@ -106,8 +106,8 @@ or exclusive.</p>
 and a increment, an increment and
 a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> or a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> and a
 <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>. There is no <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a> with
-both an min, incr, and max as that
-is in fact a <code>ValueSet</code>.</p>
+both an min, incr, and max, as that
+is, in fact, a <code>ValueSet</code>.</p>
 
 </td>
         </tr>
@@ -116,9 +116,9 @@ is in fact a <code>ValueSet</code>.</p>
             <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html">ValueRange</a>
           </td>
           <td class="xmldoc"><p><a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> represents a discrete set of
-non-zero positive rational numbers.
+rational numbers.
 A <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> is either unrestricted,
-a finite set of values or a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>.</p>
+a finite set of <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> or a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>.</p>
 
 </td>
         </tr>
@@ -141,7 +141,10 @@ a finite set of values or a <a href="informedica-gensolver-lib-variablemodule-va
           <td class="module-name">
             <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minmaxcalcultor.html">MinMaxCalcultor</a>
           </td>
-          <td class="xmldoc"></td>
+          <td class="xmldoc"><p>Functions to calculate the <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>
+and <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> in a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a></p>
+
+</td>
         </tr>
     </tbody>
   </table>
@@ -157,10 +160,10 @@ a finite set of values or a <a href="informedica-gensolver-lib-variablemodule-va
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '75', 75)" onmouseover="showTip(event, '75', 75)">
+          <code onmouseout="hideTip(event, '74', 74)" onmouseover="showTip(event, '74', 74)">
             apply unr fValueSet fRange _arg1
           </code>
-          <div class="tip" id="75">
+          <div class="tip" id="74">
             <strong>Signature:</strong> unr:&#39;?6901 -&gt; fValueSet:(Set&lt;BigRational&gt; -&gt; &#39;?6901) -&gt; fRange:(Range -&gt; &#39;?6901) -&gt; _arg1:ValueRange -&gt; &#39;?6901<br />
                           <strong>Type parameters:</strong> '?6901          </div>
         </td>
@@ -170,9 +173,9 @@ a finite set of values or a <a href="informedica-gensolver-lib-variablemodule-va
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Aply the give functions to <code>Values</code>
-where <code>unr</code> is used for an <code>Unrestricted</code>
-<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>, <code>fv</code> is used for <code>ValueSet</code> and
-<code>fr</code> is used for <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a></p>
+where <strong>unr</strong> is used for an <code>Unrestricted</code>
+<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>, <strong>fv</strong> is used for <code>ValueSet</code> and
+<strong>fr</strong> is used for <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a></p>
 
 
         </td>
@@ -180,10 +183,10 @@ where <code>unr</code> is used for an <code>Unrestricted</code>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '76', 76)" onmouseover="showTip(event, '76', 76)">
+          <code onmouseout="hideTip(event, '75', 75)" onmouseover="showTip(event, '75', 75)">
             applyIncr f _arg1
           </code>
-          <div class="tip" id="76">
+          <div class="tip" id="75">
             <strong>Signature:</strong> f:(BigRational -&gt; BigRational) -&gt; _arg1:Increment -&gt; Increment<br />
                       </div>
         </td>
@@ -192,7 +195,7 @@ where <code>unr</code> is used for an <code>Unrestricted</code>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply <code>f</code> to the bigrational
+          <p>Apply <strong>f</strong> to the bigrational
 value of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-increment.html" title="Increment"><code>Increment</code></a></p>
 
 
@@ -201,10 +204,10 @@ value of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-incr
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '77', 77)" onmouseover="showTip(event, '77', 77)">
+          <code onmouseout="hideTip(event, '76', 76)" onmouseover="showTip(event, '76', 76)">
             applyMax f _arg1
           </code>
-          <div class="tip" id="77">
+          <div class="tip" id="76">
             <strong>Signature:</strong> f:(BigRational -&gt; BigRational) -&gt; _arg1:Maximum -&gt; Maximum<br />
                       </div>
         </td>
@@ -213,7 +216,7 @@ value of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-incr
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply <code>f</code> to the bigrational
+          <p>Apply <strong>f</strong> to the bigrational
 value of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a></p>
 
 
@@ -222,10 +225,10 @@ value of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maxi
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '78', 78)" onmouseover="showTip(event, '78', 78)">
+          <code onmouseout="hideTip(event, '77', 77)" onmouseover="showTip(event, '77', 77)">
             applyMin f _arg1
           </code>
-          <div class="tip" id="78">
+          <div class="tip" id="77">
             <strong>Signature:</strong> f:(BigRational -&gt; BigRational) -&gt; _arg1:Minimum -&gt; Minimum<br />
                       </div>
         </td>
@@ -234,7 +237,7 @@ value of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maxi
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply <code>f</code> to the bigrational
+          <p>Apply <strong>f</strong> to the bigrational
 value of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a></p>
 
 
@@ -243,10 +246,10 @@ value of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-mini
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '79', 79)" onmouseover="showTip(event, '79', 79)">
+          <code onmouseout="hideTip(event, '78', 78)" onmouseover="showTip(event, '78', 78)">
             applyRange (...)
           </code>
-          <div class="tip" id="79">
+          <div class="tip" id="78">
             <strong>Signature:</strong> fMin:(Minimum -&gt; &#39;?6903) -&gt; fMax:(Maximum -&gt; &#39;?6903) -&gt; fMinIncr:(Minimum * Increment -&gt; &#39;?6903) -&gt; fIncrMax:(Increment * Maximum -&gt; &#39;?6903) -&gt; fMinMax:(Minimum * Maximum -&gt; &#39;?6903) -&gt; _arg1:Range -&gt; &#39;?6903<br />
                           <strong>Type parameters:</strong> '?6903          </div>
         </td>
@@ -256,10 +259,35 @@ value of <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-mini
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Aply the give functions to <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>
-where <code>fMin</code> is used for a range with only
-a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>, <code>fMax</code> is used for range <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>,
-<code>fMinIncr</code> is used for <code>MinIncr</code> , <code>fIncrMax</code>
-for <code>IncrMax</code> and <code>fMinMax</code> for <code>MinMax</code>.</p>
+where <strong>fMin</strong> is used for a range with only
+a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>, <strong>fMax</strong> is used for range <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>,
+<strong>fMinIncr</strong> is used for <code>MinIncr</code> , <strong>fIncrMax</strong>
+for <code>IncrMax</code> and <strong>fMinMax</strong> for <code>MinMax</code>.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '79', 79)" onmouseover="showTip(event, '79', 79)">
+            calc op (x1, x2)
+          </code>
+          <div class="tip" id="79">
+            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; (x1:ValueRange * x2:ValueRange) -&gt; ValueRange<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L794-794" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Applies an infix operator <strong>op</strong>
+to <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <strong>x1</strong> and <strong>x2</strong>.
+Calculates <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>, increment or <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>
+if either <strong>x1</strong> or <strong>x2</strong> is not a <code>ValueSet</code>.
+Doesn't perform any calculation when both
+<strong>x1</strong> and <strong>x2</strong> are <code>Unrestricted</code>.</p>
 
 
         </td>
@@ -268,23 +296,20 @@ for <code>IncrMax</code> and <code>fMinMax</code> for <code>MinMax</code>.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '80', 80)" onmouseover="showTip(event, '80', 80)">
-            calc op (x1, x2)
+            calcIncr op incr1 incr2
           </code>
           <div class="tip" id="80">
-            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; (x1:ValueRange * x2:ValueRange) -&gt; ValueRange<br />
+            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; incr1:Increment option -&gt; incr2:Increment option -&gt; Increment option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L769-769" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L777-777" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Applies an infix operator <code>op</code>
-to <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>x1</code> and <code>x2</code>.
-Calculates <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>, increment or <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a>
-if either <code>x1</code> or <code>x2</code> is not a <code>ValueSet</code>.
-Doesn't perform any calculation when both
-<code>x1</code> and <code>x2</code> are <code>Unrestricted</code>.</p>
+          <p>Calculate an increment with
+<strong>incr1</strong> of x1 and <strong>incr2</strong> of x2
+in an equation: y = x1 <strong>op</strong> x2</p>
 
 
         </td>
@@ -293,20 +318,19 @@ Doesn't perform any calculation when both
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '81', 81)" onmouseover="showTip(event, '81', 81)">
-            calcIncr op incr1 incr2
+            calcOpt op c v1 v2
           </code>
           <div class="tip" id="81">
-            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; incr1:Increment option -&gt; incr2:Increment option -&gt; Increment option<br />
-                      </div>
+            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; c:(BigRational -&gt; &#39;?6964) -&gt; v1:BigRational -&gt; v2:BigRational -&gt; &#39;?6964 option<br />
+                          <strong>Type parameters:</strong> '?6964          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L752-752" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L765-765" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Calculate an increment with
-<code>incr1</code> of x1 and <code>incr2</code> of x2
-in an equation: y = x1 <code>op</code> x2</p>
+          <p>Safely calculate <strong>v1</strong> and <strong>v2</strong> using operator <strong>op</strong>,
+returns None if operator is division and <strong>v2</strong> is 0.</p>
 
 
         </td>
@@ -315,19 +339,19 @@ in an equation: y = x1 <code>op</code> x2</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '82', 82)" onmouseover="showTip(event, '82', 82)">
-            calcOpt op c v1 v2
+            contains v vr
           </code>
           <div class="tip" id="82">
-            <strong>Signature:</strong> op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; c:(BigRational -&gt; &#39;?6961) -&gt; v1:BigRational -&gt; v2:BigRational -&gt; &#39;?6961 option<br />
-                          <strong>Type parameters:</strong> '?6961          </div>
+            <strong>Signature:</strong> v:BigRational -&gt; vr:ValueRange -&gt; bool<br />
+                      </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L740-740" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L535-535" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Safely calculate <code>v1</code> and <code>v2</code> using operator <code>op</code>,
-returns None if operator is division and <code>v2</code> is 0.</p>
+          <p>Check whether a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <strong>vr</strong> contains
+a <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> <strong>v</strong>.</p>
 
 
         </td>
@@ -336,30 +360,9 @@ returns None if operator is division and <code>v2</code> is 0.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '83', 83)" onmouseover="showTip(event, '83', 83)">
-            contains v vr
-          </code>
-          <div class="tip" id="83">
-            <strong>Signature:</strong> v:BigRational -&gt; vr:ValueRange -&gt; bool<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L538-538" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Check whether a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code> contains
-a value <code>v</code>.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '84', 84)" onmouseover="showTip(event, '84', 84)">
             count 
           </code>
-          <div class="tip" id="84">
+          <div class="tip" id="83">
             <strong>Signature:</strong> ValueRange -&gt; int<br />
                       </div>
         </td>
@@ -377,25 +380,25 @@ Returns 0 if not a <code>ValueSet</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '85', 85)" onmouseover="showTip(event, '85', 85)">
+          <code onmouseout="hideTip(event, '84', 84)" onmouseover="showTip(event, '84', 84)">
             create succ fail unr vs min incr max
           </code>
-          <div class="tip" id="85">
-            <strong>Signature:</strong> succ:(ValueRange -&gt; &#39;?6946) -&gt; fail:(Message -&gt; &#39;?6946) -&gt; unr:bool -&gt; vs:Set&lt;BigRational&gt; -&gt; min:Minimum option -&gt; incr:Increment option -&gt; max:Maximum option -&gt; &#39;?6946<br />
-                          <strong>Type parameters:</strong> '?6946          </div>
+          <div class="tip" id="84">
+            <strong>Signature:</strong> succ:(ValueRange -&gt; &#39;?6949) -&gt; fail:(Message -&gt; &#39;?6949) -&gt; unr:bool -&gt; vs:Set&lt;BigRational&gt; -&gt; min:Minimum option -&gt; incr:Increment option -&gt; max:Maximum option -&gt; &#39;?6949<br />
+                          <strong>Type parameters:</strong> '?6949          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L484-484" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L480-480" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> using a <code>ValueSet</code> <code>vs</code>
-an optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code>, <code>incr</code> and <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code>.
-If the <code>vs</code> is an empty set then create a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>.
-If both <code>min</code>, <code>incr</code> and <code>max</code> are <code>None</code>, and
-<code>unr</code> created an <code>Unrestricted</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> else
+          <p>Create a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> using a <code>ValueSet</code> <strong>vs</strong>
+an optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <strong>min</strong>, <strong>incr</strong> and <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <strong>max</strong>.
+If the <strong>vs</strong> is an empty set then create a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a>.
+If both <strong>min</strong>, <strong>incr</strong> and <strong>max</strong> are <code>None</code>, and
+<strong>unr</strong> created an <code>Unrestricted</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> else
 create an <code>empty</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>. Pass the result
-to <code>succ</code>, if failing a <code>Message</code> to <code>fail</code>.</p>
+to <strong>succ</strong>, if failing a <code>Message</code> to <strong>fail</strong>.</p>
 
 
         </td>
@@ -403,15 +406,15 @@ to <code>succ</code>, if failing a <code>Message</code> to <code>fail</code>.</p
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '86', 86)" onmouseover="showTip(event, '86', 86)">
+          <code onmouseout="hideTip(event, '85', 85)" onmouseover="showTip(event, '85', 85)">
             createExc 
           </code>
-          <div class="tip" id="86">
+          <div class="tip" id="85">
             <strong>Signature:</strong> bool -&gt; Set&lt;BigRational&gt; -&gt; Minimum option -&gt; Increment option -&gt; Maximum option -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L503-503" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L499-499" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -424,15 +427,15 @@ an exception if it fails.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '87', 87)" onmouseover="showTip(event, '87', 87)">
+          <code onmouseout="hideTip(event, '86', 86)" onmouseover="showTip(event, '86', 86)">
             createIncr succ fail i
           </code>
-          <div class="tip" id="87">
-            <strong>Signature:</strong> succ:(Increment -&gt; &#39;?6938) -&gt; fail:(BigRational -&gt; &#39;?6938) -&gt; i:BigRational -&gt; &#39;?6938<br />
-                          <strong>Type parameters:</strong> '?6938          </div>
+          <div class="tip" id="86">
+            <strong>Signature:</strong> succ:(Increment -&gt; &#39;?6941) -&gt; fail:(BigRational -&gt; &#39;?6941) -&gt; i:BigRational -&gt; &#39;?6941<br />
+                          <strong>Type parameters:</strong> '?6941          </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L446-446" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L442-442" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -445,15 +448,15 @@ is a non zero or negative value</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '88', 88)" onmouseover="showTip(event, '88', 88)">
+          <code onmouseout="hideTip(event, '87', 87)" onmouseover="showTip(event, '87', 87)">
             createMax isIncl m
           </code>
-          <div class="tip" id="88">
+          <div class="tip" id="87">
             <strong>Signature:</strong> isIncl:bool -&gt; m:BigRational -&gt; Maximum<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L442-442" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L438-438" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -466,15 +469,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '89', 89)" onmouseover="showTip(event, '89', 89)">
+          <code onmouseout="hideTip(event, '88', 88)" onmouseover="showTip(event, '88', 88)">
             createMin isIncl m
           </code>
-          <div class="tip" id="89">
+          <div class="tip" id="88">
             <strong>Signature:</strong> isIncl:bool -&gt; m:BigRational -&gt; Minimum<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L438-438" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L434-434" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -487,15 +490,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '90', 90)" onmouseover="showTip(event, '90', 90)">
+          <code onmouseout="hideTip(event, '89', 89)" onmouseover="showTip(event, '89', 89)">
             createOpt 
           </code>
-          <div class="tip" id="90">
+          <div class="tip" id="89">
             <strong>Signature:</strong> bool -&gt; Set&lt;BigRational&gt; -&gt; Minimum option -&gt; Increment option -&gt; Maximum option -&gt; ValueRange option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L506-506" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L502-502" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -507,15 +510,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '91', 91)" onmouseover="showTip(event, '91', 91)">
+          <code onmouseout="hideTip(event, '90', 90)" onmouseover="showTip(event, '90', 90)">
             createValueSet arg0
           </code>
-          <div class="tip" id="91">
+          <div class="tip" id="90">
             <strong>Signature:</strong> arg0:Set&lt;BigRational&gt; -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L434-434" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L430-430" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -527,15 +530,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '92', 92)" onmouseover="showTip(event, '92', 92)">
+          <code onmouseout="hideTip(event, '91', 91)" onmouseover="showTip(event, '91', 91)">
             empty 
           </code>
-          <div class="tip" id="92">
+          <div class="tip" id="91">
             <strong>Signature:</strong> ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L431-431" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L427-427" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -547,10 +550,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '93', 93)" onmouseover="showTip(event, '93', 93)">
+          <code onmouseout="hideTip(event, '92', 92)" onmouseover="showTip(event, '92', 92)">
             filter min incr max
           </code>
-          <div class="tip" id="93">
+          <div class="tip" id="92">
             <strong>Signature:</strong> min:Minimum option -&gt; incr:Increment option -&gt; max:Maximum option -&gt; Set&lt;BigRational&gt; -&gt; Set&lt;BigRational&gt;<br />
                       </div>
         </td>
@@ -559,8 +562,8 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Filter a set of values according
-to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
+          <p>Filter a set of <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> according
+to <strong>min</strong>, <strong>incr</strong> and <strong>max</strong> constraints</p>
 
 
         </td>
@@ -568,15 +571,15 @@ to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '94', 94)" onmouseover="showTip(event, '94', 94)">
+          <code onmouseout="hideTip(event, '93', 93)" onmouseover="showTip(event, '93', 93)">
             getIncr 
           </code>
-          <div class="tip" id="94">
+          <div class="tip" id="93">
             <strong>Signature:</strong> ValueRange -&gt; Increment option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L525-525" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L522-522" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -586,19 +589,39 @@ to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '95', 95)" onmouseover="showTip(event, '95', 95)">
+          <code onmouseout="hideTip(event, '94', 94)" onmouseover="showTip(event, '94', 94)">
             getMax 
           </code>
-          <div class="tip" id="95">
+          <div class="tip" id="94">
             <strong>Signature:</strong> ValueRange -&gt; Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L530-530" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L527-527" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get the optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a></p>
+          <p>Get an optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> in a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a></p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '95', 95)" onmouseover="showTip(event, '95', 95)">
+            getMin 
+          </code>
+          <div class="tip" id="95">
+            <strong>Signature:</strong> ValueRange -&gt; Minimum option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L519-519" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Get an optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> in a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a></p>
 
 
         </td>
@@ -607,18 +630,18 @@ to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '96', 96)" onmouseover="showTip(event, '96', 96)">
-            getMin 
+            getRangeMax 
           </code>
           <div class="tip" id="96">
-            <strong>Signature:</strong> ValueRange -&gt; Minimum option<br />
+            <strong>Signature:</strong> Range -&gt; Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L522-522" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L516-516" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get an optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a></p>
+          <p>Get a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> option in a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a></p>
 
 
         </td>
@@ -627,45 +650,29 @@ to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '97', 97)" onmouseover="showTip(event, '97', 97)">
-            getRangeMax 
+            getRangeMin 
           </code>
           <div class="tip" id="97">
-            <strong>Signature:</strong> Range -&gt; Maximum option<br />
+            <strong>Signature:</strong> Range -&gt; Minimum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L519-519" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L514-514" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Get a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> option in a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-range.html" title="Range"><code>Range</code></a></p>
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '98', 98)" onmouseover="showTip(event, '98', 98)">
-            getRangeMin 
-          </code>
-          <div class="tip" id="98">
-            <strong>Signature:</strong> Range -&gt; Minimum option<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L517-517" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '99', 99)" onmouseover="showTip(event, '99', 99)">
             getSetMax s
           </code>
-          <div class="tip" id="99">
+          <div class="tip" id="98">
             <strong>Signature:</strong> s:Set&lt;BigRational&gt; -&gt; Maximum option<br />
                       </div>
         </td>
@@ -674,7 +681,7 @@ to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get the maximum value in a value set. Returns <code>None</code> if an empty set.</p>
+          <p>Get the maximum value in a <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> set. Returns <code>None</code> if an empty set.</p>
 
 
         </td>
@@ -682,10 +689,10 @@ to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '100', 100)" onmouseover="showTip(event, '100', 100)">
+          <code onmouseout="hideTip(event, '99', 99)" onmouseover="showTip(event, '99', 99)">
             getSetMin s
           </code>
-          <div class="tip" id="100">
+          <div class="tip" id="99">
             <strong>Signature:</strong> s:Set&lt;BigRational&gt; -&gt; Minimum option<br />
                       </div>
         </td>
@@ -694,7 +701,29 @@ to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Get the minimal value in a value set. Returns <code>None</code> if an empty set.</p>
+          <p>Get the minimal value in a <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> set. Returns <code>None</code> if an empty set.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '100', 100)" onmouseover="showTip(event, '100', 100)">
+            getValueSet 
+          </code>
+          <div class="tip" id="100">
+            <strong>Signature:</strong> ValueRange -&gt; Set&lt;BigRational&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L511-511" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Get a set of <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> from a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>,
+returns an empty set when <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> is not
+a <code>ValueSet</code> or the set of <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> is actually empty.</p>
 
 
         </td>
@@ -703,36 +732,14 @@ to <code>min</code>, <code>incr</code> and <code>max</code> constraints</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '101', 101)" onmouseover="showTip(event, '101', 101)">
-            getValueSet 
-          </code>
-          <div class="tip" id="101">
-            <strong>Signature:</strong> ValueRange -&gt; Set&lt;BigRational&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L515-515" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Get a set of values from a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>,
-returns an empty set when <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> is not
-a <code>ValueSet</code> or the set of values is actually empty.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '102', 102)" onmouseover="showTip(event, '102', 102)">
             incrMaxValueRange incr max
           </code>
-          <div class="tip" id="102">
+          <div class="tip" id="101">
             <strong>Signature:</strong> incr:Increment -&gt; max:Maximum -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L462-462" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L458-458" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -744,10 +751,10 @@ a <code>ValueSet</code> or the set of values is actually empty.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '103', 103)" onmouseover="showTip(event, '103', 103)">
+          <code onmouseout="hideTip(event, '102', 102)" onmouseover="showTip(event, '102', 102)">
             incrToValue arg1
           </code>
-          <div class="tip" id="103">
+          <div class="tip" id="102">
             <strong>Signature:</strong> Increment -&gt; BigRational<br />
                       </div>
         </td>
@@ -756,7 +763,7 @@ a <code>ValueSet</code> or the set of values is actually empty.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Convert an <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-increment.html" title="Increment"><code>Increment</code></a> to a value</p>
+          <p>Convert an <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-increment.html" title="Increment"><code>Increment</code></a> to a <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a></p>
 
 
         </td>
@@ -764,10 +771,10 @@ a <code>ValueSet</code> or the set of values is actually empty.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '104', 104)" onmouseover="showTip(event, '104', 104)">
+          <code onmouseout="hideTip(event, '103', 103)" onmouseover="showTip(event, '103', 103)">
             isBetweenAndMultOf min incr max v
           </code>
-          <div class="tip" id="104">
+          <div class="tip" id="103">
             <strong>Signature:</strong> min:Minimum option -&gt; incr:Increment option -&gt; max:Maximum option -&gt; v:BigRational -&gt; bool<br />
                       </div>
         </td>
@@ -776,8 +783,8 @@ a <code>ValueSet</code> or the set of values is actually empty.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether a value is between an optional 'min'
-an optional <code>max</code> and is a multiple of <code>incr</code>.
+          <p>Checks whether a <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> is between an optional <strong>min</strong>
+an optional <strong>max</strong> and is a multiple of <strong>incr</strong>.
 When min, incr and max are <code>None</code> then this will
 return <code>true</code> for any value.</p>
 
@@ -787,10 +794,10 @@ return <code>true</code> for any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '105', 105)" onmouseover="showTip(event, '105', 105)">
+          <code onmouseout="hideTip(event, '104', 104)" onmouseover="showTip(event, '104', 104)">
             isEmpty vr
           </code>
-          <div class="tip" id="105">
+          <div class="tip" id="104">
             <strong>Signature:</strong> vr:ValueRange -&gt; bool<br />
                       </div>
         </td>
@@ -808,10 +815,10 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '106', 106)" onmouseover="showTip(event, '106', 106)">
+          <code onmouseout="hideTip(event, '105', 105)" onmouseover="showTip(event, '105', 105)">
             isMaxExcl _arg1
           </code>
-          <div class="tip" id="106">
+          <div class="tip" id="105">
             <strong>Signature:</strong> _arg1:Maximum -&gt; bool<br />
                       </div>
         </td>
@@ -828,10 +835,10 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '107', 107)" onmouseover="showTip(event, '107', 107)">
+          <code onmouseout="hideTip(event, '106', 106)" onmouseover="showTip(event, '106', 106)">
             isMaxIncl 
           </code>
-          <div class="tip" id="107">
+          <div class="tip" id="106">
             <strong>Signature:</strong> Maximum -&gt; bool<br />
                       </div>
         </td>
@@ -848,10 +855,10 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '108', 108)" onmouseover="showTip(event, '108', 108)">
+          <code onmouseout="hideTip(event, '107', 107)" onmouseover="showTip(event, '107', 107)">
             isMinExcl _arg1
           </code>
-          <div class="tip" id="108">
+          <div class="tip" id="107">
             <strong>Signature:</strong> _arg1:Minimum -&gt; bool<br />
                       </div>
         </td>
@@ -868,10 +875,10 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '109', 109)" onmouseover="showTip(event, '109', 109)">
+          <code onmouseout="hideTip(event, '108', 108)" onmouseover="showTip(event, '108', 108)">
             isMinIncl 
           </code>
-          <div class="tip" id="109">
+          <div class="tip" id="108">
             <strong>Signature:</strong> Minimum -&gt; bool<br />
                       </div>
         </td>
@@ -888,10 +895,10 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '110', 110)" onmouseover="showTip(event, '110', 110)">
+          <code onmouseout="hideTip(event, '109', 109)" onmouseover="showTip(event, '109', 109)">
             isRange 
           </code>
-          <div class="tip" id="110">
+          <div class="tip" id="109">
             <strong>Signature:</strong> ValueRange -&gt; bool<br />
                       </div>
         </td>
@@ -908,10 +915,10 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '111', 111)" onmouseover="showTip(event, '111', 111)">
+          <code onmouseout="hideTip(event, '110', 110)" onmouseover="showTip(event, '110', 110)">
             isUnrestricted 
           </code>
-          <div class="tip" id="111">
+          <div class="tip" id="110">
             <strong>Signature:</strong> ValueRange -&gt; bool<br />
                       </div>
         </td>
@@ -928,10 +935,10 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '112', 112)" onmouseover="showTip(event, '112', 112)">
+          <code onmouseout="hideTip(event, '111', 111)" onmouseover="showTip(event, '111', 111)">
             isValueSet 
           </code>
-          <div class="tip" id="112">
+          <div class="tip" id="111">
             <strong>Signature:</strong> ValueRange -&gt; bool<br />
                       </div>
         </td>
@@ -948,10 +955,10 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '113', 113)" onmouseover="showTip(event, '113', 113)">
+          <code onmouseout="hideTip(event, '112', 112)" onmouseover="showTip(event, '112', 112)">
             maxLTmax m1 m2
           </code>
-          <div class="tip" id="113">
+          <div class="tip" id="112">
             <strong>Signature:</strong> m1:Maximum -&gt; m2:Maximum -&gt; bool<br />
                       </div>
         </td>
@@ -960,7 +967,7 @@ and doesn't contain any value.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>m2</code> &gt; <code>m1</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <strong>m2</strong> &gt; <strong>m1</strong></p>
 
 
         </td>
@@ -968,10 +975,10 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '114', 114)" onmouseover="showTip(event, '114', 114)">
+          <code onmouseout="hideTip(event, '113', 113)" onmouseover="showTip(event, '113', 113)">
             maxMultipleOf incr max
           </code>
-          <div class="tip" id="114">
+          <div class="tip" id="113">
             <strong>Signature:</strong> incr:Increment -&gt; max:Maximum -&gt; BigRational<br />
                       </div>
         </td>
@@ -986,15 +993,15 @@ and doesn't contain any value.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '115', 115)" onmouseover="showTip(event, '115', 115)">
+          <code onmouseout="hideTip(event, '114', 114)" onmouseover="showTip(event, '114', 114)">
             maxRange isIncl m
           </code>
-          <div class="tip" id="115">
+          <div class="tip" id="114">
             <strong>Signature:</strong> isIncl:bool -&gt; m:BigRational -&gt; Range<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L454-454" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L450-450" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1007,10 +1014,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '116', 116)" onmouseover="showTip(event, '116', 116)">
+          <code onmouseout="hideTip(event, '115', 115)" onmouseover="showTip(event, '115', 115)">
             maxSTEmax m1 m2
           </code>
-          <div class="tip" id="116">
+          <div class="tip" id="115">
             <strong>Signature:</strong> m1:Maximum -&gt; m2:Maximum -&gt; bool<br />
                       </div>
         </td>
@@ -1019,7 +1026,7 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>m2</code> &lt;= <code>m1</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <strong>m2</strong> &lt;= <strong>m1</strong></p>
 
 
         </td>
@@ -1027,10 +1034,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '117', 117)" onmouseover="showTip(event, '117', 117)">
+          <code onmouseout="hideTip(event, '116', 116)" onmouseover="showTip(event, '116', 116)">
             maxToValue _arg1
           </code>
-          <div class="tip" id="117">
+          <div class="tip" id="116">
             <strong>Signature:</strong> _arg1:Maximum -&gt; BigRational<br />
                       </div>
         </td>
@@ -1039,7 +1046,7 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> to a value.</p>
+          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> to a <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a>.</p>
 
 
         </td>
@@ -1047,10 +1054,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '118', 118)" onmouseover="showTip(event, '118', 118)">
+          <code onmouseout="hideTip(event, '117', 117)" onmouseover="showTip(event, '117', 117)">
             minEQmax max min
           </code>
-          <div class="tip" id="118">
+          <div class="tip" id="117">
             <strong>Signature:</strong> max:Maximum -&gt; min:Minimum -&gt; bool<br />
                       </div>
         </td>
@@ -1059,7 +1066,7 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code> = <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <strong>min</strong> = <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <strong>max</strong></p>
 
 
         </td>
@@ -1067,10 +1074,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '119', 119)" onmouseover="showTip(event, '119', 119)">
+          <code onmouseout="hideTip(event, '118', 118)" onmouseover="showTip(event, '118', 118)">
             minIncrMaxToValueSet min incr max
           </code>
-          <div class="tip" id="119">
+          <div class="tip" id="118">
             <strong>Signature:</strong> min:Minimum -&gt; incr:Increment -&gt; max:Maximum -&gt; ValueRange<br />
                       </div>
         </td>
@@ -1079,7 +1086,7 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Create a set of values using <code>min</code>, <code>incr</code> and a <code>max</code>.</p>
+          <p>Create a set of <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> using <strong>min</strong>, <strong>incr</strong> and a <strong>max</strong>.</p>
 
 
         </td>
@@ -1087,15 +1094,15 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '120', 120)" onmouseover="showTip(event, '120', 120)">
+          <code onmouseout="hideTip(event, '119', 119)" onmouseover="showTip(event, '119', 119)">
             minIncrValueRange min incr
           </code>
-          <div class="tip" id="120">
+          <div class="tip" id="119">
             <strong>Signature:</strong> min:Minimum -&gt; incr:Increment -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L457-457" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L453-453" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1107,10 +1114,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '121', 121)" onmouseover="showTip(event, '121', 121)">
+          <code onmouseout="hideTip(event, '120', 120)" onmouseover="showTip(event, '120', 120)">
             minLTmax max min
           </code>
-          <div class="tip" id="121">
+          <div class="tip" id="120">
             <strong>Signature:</strong> max:Maximum -&gt; min:Minimum -&gt; bool<br />
                       </div>
         </td>
@@ -1119,7 +1126,7 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code> &gt; <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <strong>min</strong> &gt; <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <strong>max</strong></p>
 
 
         </td>
@@ -1127,10 +1134,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '122', 122)" onmouseover="showTip(event, '122', 122)">
+          <code onmouseout="hideTip(event, '121', 121)" onmouseover="showTip(event, '121', 121)">
             minLTmin m1 m2
           </code>
-          <div class="tip" id="122">
+          <div class="tip" id="121">
             <strong>Signature:</strong> m1:Minimum -&gt; m2:Minimum -&gt; bool<br />
                       </div>
         </td>
@@ -1139,7 +1146,28 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>m2</code> &gt; <code>m1</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <strong>m2</strong> &gt; <strong>m1</strong></p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '122', 122)" onmouseover="showTip(event, '122', 122)">
+            minMaxValueRange succ fail min max
+          </code>
+          <div class="tip" id="122">
+            <strong>Signature:</strong> succ:(ValueRange -&gt; &#39;?6947) -&gt; fail:(Message -&gt; &#39;?6947) -&gt; min:Minimum -&gt; max:Maximum -&gt; &#39;?6947<br />
+                          <strong>Type parameters:</strong> '?6947          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L464-464" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Create a <code>MinMax</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>. If <strong>min</strong> &gt; <strong>max</strong>
+pass a <code>Message</code> to <strong>fail</strong> else pass result to <strong>succ</strong>.</p>
 
 
         </td>
@@ -1148,30 +1176,9 @@ either inclusive or exclusive.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '123', 123)" onmouseover="showTip(event, '123', 123)">
-            minMaxValueRange succ fail min max
-          </code>
-          <div class="tip" id="123">
-            <strong>Signature:</strong> succ:(ValueRange -&gt; &#39;?6944) -&gt; fail:(Message -&gt; &#39;?6944) -&gt; min:Minimum -&gt; max:Maximum -&gt; &#39;?6944<br />
-                          <strong>Type parameters:</strong> '?6944          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L468-468" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Create a <code>MinMax</code> <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a>. If <code>min</code> &gt; <code>max</code>
-pass a <code>Message</code> to <code>fail</code> else pass result to <code>succ</code>.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '124', 124)" onmouseover="showTip(event, '124', 124)">
             minMultipleOf incr min
           </code>
-          <div class="tip" id="124">
+          <div class="tip" id="123">
             <strong>Signature:</strong> incr:Increment -&gt; min:Minimum -&gt; BigRational<br />
                       </div>
         </td>
@@ -1186,15 +1193,15 @@ pass a <code>Message</code> to <code>fail</code> else pass result to <code>succ<
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '125', 125)" onmouseover="showTip(event, '125', 125)">
+          <code onmouseout="hideTip(event, '124', 124)" onmouseover="showTip(event, '124', 124)">
             minRange isIncl m
           </code>
-          <div class="tip" id="125">
+          <div class="tip" id="124">
             <strong>Signature:</strong> isIncl:bool -&gt; m:BigRational -&gt; Range<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L450-450" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L446-446" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1207,10 +1214,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '126', 126)" onmouseover="showTip(event, '126', 126)">
+          <code onmouseout="hideTip(event, '125', 125)" onmouseover="showTip(event, '125', 125)">
             minSTEmax max min
           </code>
-          <div class="tip" id="126">
+          <div class="tip" id="125">
             <strong>Signature:</strong> max:Maximum -&gt; min:Minimum -&gt; bool<br />
                       </div>
         </td>
@@ -1219,7 +1226,7 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code> &lt;= <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <strong>min</strong> &lt;= <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <strong>max</strong></p>
 
 
         </td>
@@ -1227,10 +1234,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '127', 127)" onmouseover="showTip(event, '127', 127)">
+          <code onmouseout="hideTip(event, '126', 126)" onmouseover="showTip(event, '126', 126)">
             minSTEmin m1 m2
           </code>
-          <div class="tip" id="127">
+          <div class="tip" id="126">
             <strong>Signature:</strong> m1:Minimum -&gt; m2:Minimum -&gt; bool<br />
                       </div>
         </td>
@@ -1239,7 +1246,7 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>m2</code> &lt;= <code>m1</code></p>
+          <p>Checks whether <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <strong>m2</strong> &lt;= <strong>m1</strong></p>
 
 
         </td>
@@ -1247,10 +1254,10 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '128', 128)" onmouseover="showTip(event, '128', 128)">
+          <code onmouseout="hideTip(event, '127', 127)" onmouseover="showTip(event, '127', 127)">
             minToValue _arg1
           </code>
-          <div class="tip" id="128">
+          <div class="tip" id="127">
             <strong>Signature:</strong> _arg1:Minimum -&gt; BigRational<br />
                       </div>
         </td>
@@ -1259,7 +1266,7 @@ either inclusive or exclusive.</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> to a value.</p>
+          <p>Convert a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> to a <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a>.</p>
 
 
         </td>
@@ -1267,12 +1274,12 @@ either inclusive or exclusive.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '129', 129)" onmouseover="showTip(event, '129', 129)">
+          <code onmouseout="hideTip(event, '128', 128)" onmouseover="showTip(event, '128', 128)">
             print (...)
           </code>
-          <div class="tip" id="129">
-            <strong>Signature:</strong> unr:bool -&gt; vals:string [] -&gt; min:string -&gt; minincl:bool -&gt; incr:string -&gt; max:string -&gt; maxincl:bool -&gt; string<br />
-                      </div>
+          <div class="tip" id="128">
+            <strong>Signature:</strong> unr:bool -&gt; vals:BigRational list -&gt; min:&#39;?6931 option -&gt; minincl:bool -&gt; incr:&#39;?6932 option -&gt; max:&#39;?6933 option -&gt; maxincl:bool -&gt; string<br />
+                          <strong>Type parameters:</strong> '?6931, '?6932, '?6933          </div>
         </td>
         <td class="xmldoc">
             <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L331-331" class="github-link">
@@ -1288,10 +1295,10 @@ a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '130', 130)" onmouseover="showTip(event, '130', 130)">
+          <code onmouseout="hideTip(event, '129', 129)" onmouseover="showTip(event, '129', 129)">
             raiseExc m
           </code>
-          <div class="tip" id="130">
+          <div class="tip" id="129">
             <strong>Signature:</strong> m:Message -&gt; &#39;?6896<br />
                           <strong>Type parameters:</strong> '?6896          </div>
         </td>
@@ -1300,7 +1307,7 @@ a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Raise a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerangeexception.html" title="ValueRangeException"><code>ValueRangeException</code></a> with <code>Message</code> <code>m</code>.</p>
+          <p>Raise a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerangeexception.html" title="ValueRangeException"><code>ValueRangeException</code></a> with <code>Message</code> <strong>m</strong>.</p>
 
 
         </td>
@@ -1308,19 +1315,19 @@ a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '131', 131)" onmouseover="showTip(event, '131', 131)">
+          <code onmouseout="hideTip(event, '130', 130)" onmouseover="showTip(event, '130', 130)">
             setIncr incr vr
           </code>
-          <div class="tip" id="131">
+          <div class="tip" id="130">
             <strong>Signature:</strong> incr:Increment -&gt; vr:ValueRange -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L604-604" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L601-601" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply a <code>incr</code> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code>.
+          <p>Apply a <strong>incr</strong> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <strong>vr</strong>.
 If increment cannot be set the original is returned.</p>
 
 
@@ -1329,19 +1336,19 @@ If increment cannot be set the original is returned.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '132', 132)" onmouseover="showTip(event, '132', 132)">
+          <code onmouseout="hideTip(event, '131', 131)" onmouseover="showTip(event, '131', 131)">
             setMax max vr
           </code>
-          <div class="tip" id="132">
+          <div class="tip" id="131">
             <strong>Signature:</strong> max:Maximum -&gt; vr:ValueRange -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L579-579" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L576-576" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <code>max</code> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code>.
+          <p>Apply a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> <strong>max</strong> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <strong>vr</strong>.
 If maximum cannot be set the original is returned.</p>
 
 
@@ -1350,19 +1357,19 @@ If maximum cannot be set the original is returned.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '133', 133)" onmouseover="showTip(event, '133', 133)">
+          <code onmouseout="hideTip(event, '132', 132)" onmouseover="showTip(event, '132', 132)">
             setMin min vr
           </code>
-          <div class="tip" id="133">
+          <div class="tip" id="132">
             <strong>Signature:</strong> min:Minimum -&gt; vr:ValueRange -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L554-554" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L551-551" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Apply a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <code>min</code> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code>.
+          <p>Apply a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> <strong>min</strong> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <strong>vr</strong>.
 If minimum cannot be set the original is returned.</p>
 
 
@@ -1371,21 +1378,21 @@ If minimum cannot be set the original is returned.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '134', 134)" onmouseover="showTip(event, '134', 134)">
+          <code onmouseout="hideTip(event, '133', 133)" onmouseover="showTip(event, '133', 133)">
             setValues vs vr
           </code>
-          <div class="tip" id="134">
+          <div class="tip" id="133">
             <strong>Signature:</strong> vs:Set&lt;BigRational&gt; -&gt; vr:ValueRange -&gt; ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L636-636" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L633-633" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Appy a set of values to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <code>vr</code>.
+          <p>Appy a set of <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> to a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a> <strong>vr</strong>.
 the result is a filtered or the intersect of
-the set of values and <code>vr</code>.</p>
+the set of <a href="informedica-gensolver-utils-bigrational.html" title="BigRational"><code>BigRational</code></a> and <strong>vr</strong>.</p>
 
 
         </td>
@@ -1393,15 +1400,15 @@ the set of values and <code>vr</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '135', 135)" onmouseover="showTip(event, '135', 135)">
+          <code onmouseout="hideTip(event, '134', 134)" onmouseover="showTip(event, '134', 134)">
             toString vr
           </code>
-          <div class="tip" id="135">
+          <div class="tip" id="134">
             <strong>Signature:</strong> vr:ValueRange -&gt; string<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L361-361" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L358-358" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -1413,15 +1420,15 @@ the set of values and <code>vr</code>.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '136', 136)" onmouseover="showTip(event, '136', 136)">
+          <code onmouseout="hideTip(event, '135', 135)" onmouseover="showTip(event, '135', 135)">
             unrestricted 
           </code>
-          <div class="tip" id="136">
+          <div class="tip" id="135">
             <strong>Signature:</strong> ValueRange<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L428-428" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L424-424" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>

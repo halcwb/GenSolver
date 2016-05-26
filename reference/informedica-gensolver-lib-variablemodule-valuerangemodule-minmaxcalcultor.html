@@ -41,6 +41,9 @@
   <span>Parent Module: <a href="informedica-gensolver-lib-variablemodule-valuerangemodule.html">ValueRange</a></span>
 </p>
 <div class="xmldoc">
+<p>Functions to calculate the <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a>
+and <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> in a <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-valuerange.html" title="ValueRange"><code>ValueRange</code></a></p>
+
 </div>
 
 <!-- Render nested types and modules, if there are any -->
@@ -54,145 +57,173 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '137', 137)" onmouseover="showTip(event, '137', 137)">
+          <code onmouseout="hideTip(event, '136', 136)" onmouseover="showTip(event, '136', 136)">
             addition (...)
           </code>
-          <div class="tip" id="137">
+          <div class="tip" id="136">
             <strong>Signature:</strong> (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; Minimum option * Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L681-681" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L695-695" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Calculate <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> option and
+<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> option for addition of
+(<strong>min1</strong>, <strong>max1</strong>) and (<strong>min2</strong>, <em></em>max2)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '137', 137)" onmouseover="showTip(event, '137', 137)">
+            calc c op (x1, incl1) (x2, incl2)
+          </code>
+          <div class="tip" id="137">
+            <strong>Signature:</strong> c:(bool -&gt; BigRational -&gt; &#39;?6980) -&gt; op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; (x1:BigRational option * incl1:bool) -&gt; (x2:BigRational option * incl2:bool) -&gt; &#39;?6980 option<br />
+                          <strong>Type parameters:</strong> '?6980          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L666-666" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Calculate <strong>x1</strong> and <strong>x2</strong> with operator <strong>op</strong>
+and use <strong>incl1</strong> and <strong>inc2</strong> to determine whether
+the result is inclusive. Use constructor <strong>c</strong> to
+create the optional result.</p>
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '138', 138)" onmouseover="showTip(event, '138', 138)">
-            calc c op (x1, incl1) (x2, incl2)
+            calcMax 
           </code>
           <div class="tip" id="138">
-            <strong>Signature:</strong> c:(bool -&gt; BigRational -&gt; &#39;?6977) -&gt; op:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; (x1:BigRational option * incl1:bool) -&gt; (x2:BigRational option * incl2:bool) -&gt; &#39;?6977 option<br />
-                          <strong>Type parameters:</strong> '?6977          </div>
+            <strong>Signature:</strong> (BigRational -&gt; BigRational -&gt; BigRational) -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; Maximum option<br />
+                      </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L663-663" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L677-677" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Calculate an optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a></p>
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '139', 139)" onmouseover="showTip(event, '139', 139)">
-            calcMax 
+            calcMin 
           </code>
           <div class="tip" id="139">
-            <strong>Signature:</strong> (BigRational -&gt; BigRational -&gt; BigRational) -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; Maximum option<br />
+            <strong>Signature:</strong> (BigRational -&gt; BigRational -&gt; BigRational) -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; Minimum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L672-672" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L674-674" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Calculate an optional <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a></p>
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '140', 140)" onmouseover="showTip(event, '140', 140)">
-            calcMin 
+            calcMinMax _arg1
           </code>
           <div class="tip" id="140">
-            <strong>Signature:</strong> (BigRational -&gt; BigRational -&gt; BigRational) -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; Minimum option<br />
+            <strong>Signature:</strong> _arg1:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; Minimum option * Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L670-670" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L756-756" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Match the right minmax calcultion
+according to the operand</p>
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '141', 141)" onmouseover="showTip(event, '141', 141)">
-            calcMinMax _arg1
+            division (...)
           </code>
           <div class="tip" id="141">
-            <strong>Signature:</strong> _arg1:(BigRational -&gt; BigRational -&gt; BigRational) -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; BigRational option * bool -&gt; Minimum option * Maximum option<br />
+            <strong>Signature:</strong> (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; Minimum option * Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L731-731" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L735-735" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Calculate <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> option and
+<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> option for division of
+(<strong>min1</strong>, <strong>max1</strong>) and (<strong>min2</strong>, <em></em>max2)</p>
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '142', 142)" onmouseover="showTip(event, '142', 142)">
-            division (...)
+            multiplication (...)
           </code>
           <div class="tip" id="142">
             <strong>Signature:</strong> (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; Minimum option * Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L712-712" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L711-711" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Calculate <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> option and
+<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> option for multiplication of
+(<strong>min1</strong>, <strong>max1</strong>) and (<strong>min2</strong>, <em></em>max2)</p>
+
+
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '143', 143)" onmouseover="showTip(event, '143', 143)">
-            multiplication (...)
+            subtraction (...)
           </code>
           <div class="tip" id="143">
             <strong>Signature:</strong> (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; Minimum option * Maximum option<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L691-691" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L703-703" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
+          <p>Calculate <a href="informedica-gensolver-lib-variablemodule-valuerangemodule-minimum.html" title="Minimum"><code>Minimum</code></a> option and
+<a href="informedica-gensolver-lib-variablemodule-valuerangemodule-maximum.html" title="Maximum"><code>Maximum</code></a> option for subtraction of
+(<strong>min1</strong>, <strong>max1</strong>) and (<strong>min2</strong>, <em></em>max2)</p>
 
-          <code onmouseout="hideTip(event, '144', 144)" onmouseover="showTip(event, '144', 144)">
-            subtraction (...)
-          </code>
-          <div class="tip" id="144">
-            <strong>Signature:</strong> (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; (BigRational option * bool) -&gt; Minimum option * Maximum option<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L686-686" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
+
         </td>
       </tr>
     </tbody>
@@ -206,19 +237,27 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '145', 145)" onmouseover="showTip(event, '145', 145)">
+          <code onmouseout="hideTip(event, '144', 144)" onmouseover="showTip(event, '144', 144)">
             ( |PP|NN|NP| ) (min, max)
           </code>
-          <div class="tip" id="145">
+          <div class="tip" id="144">
             <strong>Signature:</strong> (min:BigRational option * max:BigRational option) -&gt; Choice&lt;unit,unit,unit&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L674-674" class="github-link">
+            <a href="http://github.com/halcwb/GenSolver/tree/master/src/Informedica.GenSolver.Lib/Variable.fs#L685-685" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          
+          <p>Match a min, max tuple <strong>min</strong>, <strong>max</strong>
+to:</p>
+<ul>
+<li><code>PP</code>: both positive</li>
+<li><code>NN</code>: both negative</li>
+<li><code>NP</code>: one negative, the other positive</li>
+</ul>
+
+
               <p>CompiledName: <code>|PP|NN|NP|</code></p>
         </td>
       </tr>
