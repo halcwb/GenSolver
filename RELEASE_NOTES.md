@@ -1,3 +1,9 @@
+#### 0.2.1-beta - May 26 2016
+* Additional performance boost
+* Refactored code
+* Changed api to use of bigrational instead of string numbers
+* Updated documentation
+
 #### 0.2.0-beta - May 26 2016
 * Significant performance boost by only solving equations with changed vars
 

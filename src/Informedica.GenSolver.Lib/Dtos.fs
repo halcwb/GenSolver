@@ -39,32 +39,32 @@ module Variable =
     /// Dto exception type 
     exception DtoException of Message
 
-    /// Raises a `DtoException` with `Message` `m`.
+    /// Raises a `DtoException` with `Message` **m**.
     let raiseExc m = m |> DtoException |> raise
 
     /// Create a `Dto`
     let createDto n unr vals min minincl incr max maxincl =  { Name = n; Unr = unr; Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl }
 
-    /// Create an *empty* *new* `Dto` with only a name `n`
+    /// Create an *empty* *new* `Dto` with only a name **n**
     let createNew n = createDto n true [] None false None None false
 
     /// Apply `f` to an `Dto` `d`
     let apply f (d: Dto) = f d
 
-    /// Apply an array of `vals` to an `dto` 
+    /// Apply an array of `vals` to an **dto** 
     /// making sure the `Unr` is set to `false`.
     let setVals vals dto = { dto with Unr = false; Vals = vals }
 
-    /// Set a `min` to an `dto` that is either inclusive `incl` true or exclusive `false`
+    /// Set a `min` to an **dto** that is either inclusive `incl` true or exclusive `false`
     let setMin  min incl dto = { dto with Unr = false; Min = min; MinIncl = incl }
 
-    /// Set a `max` to an `dto` that is either inclusive `incl` true or exclusive `false`
+    /// Set a `max` to an **dto** that is either inclusive `incl` true or exclusive `false`
     let setMax  max incl dto = { dto with Unr = false; Max = max; MaxIncl = incl } 
 
-    /// Set an `incr` to a `dto`
+    /// Set an `incr` to a **dto**
     let setIncr incr dto = { dto with Unr = false; Incr = incr }
 
-    /// Match a string `p` to a field of `Dto`
+    /// Match a string **p** to a field of `Dto`
     let (|Vals|MinIncl|MinExcl|Incr|MaxIncl|MaxExcl|NoProp|) p =  
         match p |> String.toLower with
         | "vals"     -> Vals
@@ -75,8 +75,8 @@ module Variable =
         | "maxexcl"  -> MaxExcl
         | _          -> NoProp
 
-    /// Set a `Dto` member `p` with a value `v` to a `Dto` `dto`.
-    /// If no field can be matched the `dto` is returned unchanged. 
+    /// Set a `Dto` member **p** with a value `v` to a `Dto` **dto**.
+    /// If no field can be matched the **dto** is returned unchanged. 
     let setProp p vs dto =
         let getVal vs = 
             match vs with
@@ -215,7 +215,7 @@ module Equation =
     /// `DtoException type 
     exception DtoException of Message
 
-    /// Raise a `DtoException` with `Message` `m`
+    /// Raise a `DtoException` with `Message` **m**
     let raiseExc m = m |> DtoException |> raise
 
     /// Create a `Dto` with `vars` (variable dto array)
@@ -228,27 +228,11 @@ module Equation =
     /// Create a `SumEquation` `Dto`
     let createSum  = create false
 
-    /// Apply a function `f` to a `Dto` `dto`
+    /// Apply a function `f` to a `Dto` **dto**
     let apply f (dto: Dto) = dto |> f 
 
     /// Helper function to facilitate type 
     let get = apply id
-
-//    /// If equation `eq` contains a variable 
-//    /// with name `n` then the property `p` of
-//    /// that variable is updated with value `v`. 
-//    let setVar n p v eq = 
-//        let var = 
-//            match (eq |> get).Vars |> Array.tryFind (fun v -> n = v.Name) with
-//            | Some var' -> var' |> Variable.setProp p v |> Some
-//            | None -> None
-//        { eq with 
-//            Vars = 
-//                match var with
-//                | Some var' -> 
-//                    eq.Vars 
-//                    |> Array.replace (fun v -> v.Name = n) var'
-//                | None -> eq.Vars }
 
     /// Return the `string` representation of a `Dto`
     let toString e = 
@@ -264,7 +248,7 @@ module Equation =
                 (xs |> List.fold (fun s v -> s + (v |> varToString) + " " + op + " ") "")
             s.Substring(0, s.Length - 2)
 
-    /// Helper function to create a `Variable` from a `dto`
+    /// Helper function to create a `Variable` from a **dto**
     let fromVarDtoExc dto = 
         try 
             dto |> Variable.fromDtoExc 
@@ -284,7 +268,7 @@ module Equation =
             if dto.IsProdEq then e |> EQ.createProductEq succ (fun m -> m |> EquationMessage |> fail)
             else e |> EQ.createSumEq succ (fun m -> m |> EquationMessage |> fail)
 
-    /// Create a `Dto` from an `Equation` `e`
+    /// Create a `Dto` from an `Equation` **e**
     let toDto e =
         let c isProd y xs =
             { Vars = y::xs |> List.map Variable.toDto |> List.toArray; IsProdEq = isProd }

@@ -2,9 +2,9 @@
 
 /// Functions that handle the `Equation` type that
 /// either represents a `ProductEquation` </br>
-/// y = x1 * x2 * ... * xn </br>
+/// y = x1 \* x2 * ... \* xn </br>
 /// or a `SumEquations` </br>
-/// y = x1 * x2 * ... * xn
+/// y = x1 \* x2 * ... \* xn
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Equation =
 
@@ -31,47 +31,50 @@ module Equation =
     /// Raise an `EquationException` with `Message` `m`.
     let raiseExc m = m |> EquationException |> raise
 
-    /// Create an `Equation` with an `y` and
-    /// `xs`. Fails if a variable is added more
-    /// than one time using the `fail` function.
+    /// Create an `Equation` with an **y** and
+    /// **xs**. Fails if a variable is added more
+    /// than one time using the **fail** function.
     /// The type of Equation product or sum
-    /// is determined by the constructor `c`.
+    /// is determined by the constructor **c**.
     let create c succ fail (y, xs) = 
         let vars = y::xs
         match vars |> List.filter (fun v -> vars |> List.filter ((=) v) |> List.length > 1) with
         | [] -> (y, xs) |> c |> succ
         | duplicates -> duplicates |> DuplicateVariables |> fail
 
-    /// Create an `ProductEquation` with an `y` and
-    /// `xs`. Fails if a variable is added more
-    /// than one time using the `fail` function.
+    /// Create an `ProductEquation` with an **y** and
+    /// **xs**. Fails if a variable is added more
+    /// than one time using the **fail** function.
     let createProductEq = create ProductEquation
 
-    /// Create an `SumEquation` with an `y` and
-    /// `xs`. Fails if a variable is added more
-    /// than one time using the `fail` function.
+    /// Create an `SumEquation` with an **y** and
+    /// **xs**. Fails if a variable is added more
+    /// than one time using the **fail** function.
     let createSumEq = create SumEquation
 
-    /// Create an `ProductEquation` with an `y` and
-    /// `xs`. Fails if a variable is added more
+    /// Create an `ProductEquation` with an **y** and
+    /// **xs**. Fails if a variable is added more
     /// than one time raising an exception.
     let createProductEqExc = createProductEq id raiseExc 
 
-    /// Create an `SumEquation` with an `y` and
-    /// `xs`. Fails if a variable is added more
+    /// Create an `SumEquation` with an **y** and
+    /// **xs**. Fails if a variable is added more
     /// than one time raising an exception.
     let createSumEqExc = createSumEq id raiseExc
 
-    /// Apply `fp` to a `ProductEquation` and
-    /// `fs` to a `SumEquation`.
+    /// Apply **fp** to a `ProductEquation` and
+    /// **fs** to a `SumEquation`.
     let apply fp fs = function
         | ProductEquation (y,xs) -> fp y xs
         | SumEquation (y, xs)    -> fs y xs
 
+    /// Check whether an `Equation` is a product equation
     let isProduct = apply (fun _ _ -> true) (fun _ _ -> false)
 
+    /// Check whether an `Equation` is a sum equation
     let isSum = apply (fun _ _ -> true) (fun _ _ -> false)
 
+    /// Turn an `Equation` into a list of `Variable`
     let toVars = 
         let f y xs = y::xs
         apply f f
@@ -118,8 +121,8 @@ module Equation =
         |> toVars
         |> List.filter (fun vr -> vr |> VAR.getName = n)
 
-    /// Replace a `Variable` `v` in the 
-    /// `Equation` `e`.
+    /// Replace a `Variable` **v** in the 
+    /// `Equation` **e**.
     let replace v e =
         let r c v vs =
             let vs = vs |> List.replace ((VAR.eqName) v) v
@@ -145,9 +148,8 @@ module Equation =
             ([y] @ xs |> List.forall VAR.isUnrestricted |> not)
 
 
-    /// Solve an equation `e`, return true when
-    /// the equation has changed. And the original
-    /// Equation list `es` with the replaced vars.
+    /// Solve an equation **e**, return a list of
+    /// changed `Variable`s. 
     let solve e =
 
         let rec calc changed op1 op2 y xs rest =
@@ -184,13 +186,13 @@ module Equation =
 //            printf "%A" xchanged
             // If something has changed restart until nothing changes anymore
             let changed' = ychanged @ xchanged
-            if changed' |> List.length = 0 then changed, e 
+            if changed' |> List.length = 0 then changed 
             else
                 printfn "Loop solveEq" 
                 changed @ changed'
                 |> loop op1 op2 y xs
             
         match xs with 
-        | [] -> [], e
+        | [] -> []
         | _  -> loop op1 op2 y xs  []
 

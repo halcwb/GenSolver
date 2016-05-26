@@ -11,6 +11,10 @@ module Solver =
     module VAR = Variable
     module EQ = Equation
  
+    /// Replace a list of `Variable` **vs**
+    /// in a list of `Equation` **es**, return
+    /// a list of replaced `Equation` and a list
+    /// of unchanged `Equation`
     let replace vs es =
         let rpl, rst = 
             es 
@@ -22,6 +26,8 @@ module Solver =
             acc |> List.map (fun e -> e |> EQ.replace v)) rpl
         , rst
 
+    /// Checks whether a list of `Equation` **eqs**
+    /// contiains and `Equation` **eq**
     let contains eq eqs = eqs |> List.exists ((=) eq)
 
     /// The `Result` of solving an `Equation`
@@ -29,15 +35,15 @@ module Solver =
     /// same or has `Changed`.
     type Result =
         | UnChanged
-        | Changed   of VAR.Variable list * EQ.Equation
+        | Changed   of VAR.Variable list
 
     /// Solve the equation `e` and return 
     /// the set of equations `es` it belongs 
     /// to either as `Changed` or `Unchanged`
     let solveEquation e = 
-        let changed, e = e |> EQ.solve
+        let changed = e |> EQ.solve
         if changed |> List.length > 0 then 
-            (changed, e) |> Changed 
+            changed |> Changed 
         else UnChanged
         
     /// Create the equation solver using a 
@@ -63,7 +69,7 @@ module Solver =
                     // Equation is changed, so every other equation can 
                     // be changed as well (if changed vars are in the other
                     // equations, so start new
-                    | Changed(vs, e) ->
+                    | Changed vs ->
                         let que, acc =  
                             let rpl, rst = (que @ acc) |> replace vs
 

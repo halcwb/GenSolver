@@ -1,5 +1,6 @@
 ﻿namespace Informedica.GenSolver
 
+/// Public funtions to use the library
 module Api =
 
     open System
@@ -29,8 +30,8 @@ module Api =
         (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
 
 
-    /// Print a set of equations to the stdout.
-    /// Using `f` to allow additional processing
+    /// Format a set of equations to print.
+    /// Using **f** to allow additional processing
     /// of the string.
     let printEqs f eqs = 
         let eqs = 
@@ -73,6 +74,9 @@ module Api =
             |> printEqs f
         | _ -> eqs
 
+    /// Make a list of `Equation`
+    /// to contain only positive
+    /// values as solutions
     let nonZeroNegative eqs =
         eqs 
         |> List.map EQ.nonZeroOrNegative
