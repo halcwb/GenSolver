@@ -42,7 +42,7 @@ module String =
 /// Helper functions for `BigRational`
 module BigRational = 
 
-    module BR = Informedica.GenUtils.Lib.BigRational
+    module BR = Informedica.GenUtils.Lib.BCL.BigRational
     
     let apply= BR.apply
 

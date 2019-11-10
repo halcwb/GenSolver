@@ -1,7 +1,7 @@
 ﻿namespace Informedica.GenSolver.Lib
 
 open System
-
+open MathNet.Numerics
 open Informedica.GenSolver.Utils
 
 /// Contains functions and types to represent

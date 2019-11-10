@@ -1,6 +1,7 @@
 ﻿namespace Informedica.GenSolver.Dtos
 
 open System
+open MathNet.Numerics
 
 open Informedica.GenSolver.Utils
 

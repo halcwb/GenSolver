@@ -1,30 +1,12 @@
-redirects: on
+framework: auto-detect
 source https://nuget.org/api/v2
 
 // group build
 
-nuget FSharp.Core <= 3.1.2.5
-nuget FSharp.Formatting
-nuget Fake
-nuget SourceLink.Fake
-nuget Newtonsoft.Json
-
-github fsharp/FAKE modules/Octokit/Octokit.fsx
-
-github halcwb/GenBuild /scripts/targets.fsx
-github halcwb/GenBuild /scripts/travis.fsx
-github halcwb/GenBuild /scripts/appveyor.fsx
 
 // group project
 
-nuget FSPowerPack.Community
 nuget Informedica.GenUtils.Lib
 
 // group test
 
-nuget FsUnit
-nuget NUnit < 3
-nuget NUnit.Runners < 3
-nuget Unquote
-nuget FsCheck
-nuget FsCheck.NUnit
