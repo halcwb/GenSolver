@@ -63,6 +63,7 @@ publishnuget.cmd
 # Add test files
 !/tests/
 !/tests/Informedica.GenSolver.Tests/
+!/tests/Informedica.GenSolver.Tests/Scripts/
 
 # Ignore generated documentation files
 /docs/content/**/*.md
