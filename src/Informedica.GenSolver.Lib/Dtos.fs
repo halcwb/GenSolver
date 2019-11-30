@@ -1,4 +1,4 @@
-﻿namespace Informedica.GenSolver.Dtos
+﻿namespace Informedica.GenSolver.Lib.Dtos
 
 open System
 open MathNet.Numerics
@@ -7,7 +7,6 @@ open Informedica.GenSolver.Utils
 
 /// Handle the creation of a `Variable` from a `Dto` and
 /// vice versa.
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Variable =
     
     open Informedica.GenSolver.Utils
@@ -196,7 +195,6 @@ module Variable =
 
 
 /// Functions for `Equation` dto type
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Equation =
 
     open Informedica.GenSolver.Utils

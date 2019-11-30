@@ -3,6 +3,7 @@
 #time
 
 open Informedica.GenSolver.Utils
+open MathNet.Numerics
 
 module API = Informedica.GenSolver.Api
 

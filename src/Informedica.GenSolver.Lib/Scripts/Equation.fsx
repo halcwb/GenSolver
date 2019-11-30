@@ -1,10 +1,10 @@
-﻿#load "load-references-release.fsx"
-#load "load-project-release.fsx"
+﻿#load "load-project-release.fsx"
 
 #time
 
 
 open Informedica.GenSolver.Lib
+open MathNet.Numerics
 
 module VAR = Variable
 module N = VAR.Name
@@ -17,7 +17,7 @@ let varIsSolved v = VAR.isSolved
 
 let varIsSolvable =  VAR.isSolvable
 
-let solve e = e |> E.solve [e]
+let solve e = E.solve
 
 let isSolved = E.isSolved
 

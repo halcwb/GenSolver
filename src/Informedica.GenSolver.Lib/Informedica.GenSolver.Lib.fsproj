@@ -5,6 +5,9 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="Scripts/load-project-release.fsx" />
+    <None Include="Scripts/Script1.fsx" />
+    <None Include="Scripts/Equation.fsx" />
     <Compile Include="Utils.fs" />
     <Compile Include="Variable.fs" />
     <Compile Include="Equation.fs" />

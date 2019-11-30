@@ -10,12 +10,10 @@ open Informedica.GenSolver.Utils
 /// * `Name`
 /// * `Range`
 /// * `ValueRange`
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Variable =
 
 
     /// Funcions and type to handle `Name` that represents the name of a `Variable`.
-    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Name =
 
         // #region ---- TYPES -----
@@ -72,7 +70,6 @@ module Variable =
     /// * `Maximum`
     /// * `Range`
     /// * `ValueRange`
-    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module ValueRange =
 
         open System.Collections.Generic

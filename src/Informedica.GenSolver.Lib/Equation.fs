@@ -5,7 +5,6 @@
 /// y = x1 \* x2 * ... \* xn </br>
 /// or a `SumEquations` </br>
 /// y = x1 \* x2 * ... \* xn
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Equation =
 
     open Informedica.GenSolver.Utils
@@ -18,8 +17,8 @@ module Equation =
     /// equation, the second part are the independent
     /// variables in the equation
     type Equation = 
-        | ProductEquation of Variable.Variable * Variable.Variable list
-        | SumEquation     of Variable.Variable * Variable.Variable list
+        | ProductEquation of VAR.Variable * VAR.Variable list
+        | SumEquation     of VAR.Variable * VAR.Variable list
 
     /// Error messages
     type Message = 

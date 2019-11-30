@@ -25,8 +25,11 @@ Target.create "Build" (fun _ ->
 
 Target.create "All" ignore
 
+Target.create "Tests" ignore
+
 "Clean"
   ==> "Build"
+  ==> "Tests"
   ==> "All"
 
 Target.runOrDefault "All"

@@ -1,5 +1,5 @@
 Unquote
-FsUnit
-FSPowerPack.Community
-FsCheck
-FsCheck.NUnit
+Expecto
+Expecto.BenchmarkDotNet
+Expecto.FsCheck
+Expecto.Hopac

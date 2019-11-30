@@ -3,7 +3,6 @@
 /// Implementations of solvers for product equations
 /// sum equations and a set of product and/or sum
 /// equations
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Solver =
     
     open Informedica.GenSolver.Utils
