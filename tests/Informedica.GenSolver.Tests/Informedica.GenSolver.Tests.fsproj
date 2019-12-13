@@ -7,10 +7,10 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Scripts/Variable.fsx" />
-    <Compile Include="Sample.fs" />
+    <None Include="paket.references" />
     <Compile Include="Variable.fs" />
     <Compile Include="Main.fs" />
+    <None Include="Scripts/Variable.fsx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Informedica.GenSolver.Lib\Informedica.GenSolver.Lib.fsproj" />

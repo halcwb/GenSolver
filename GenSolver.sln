@@ -1,15 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B3F6A740-8FCB-4F35-B9E5-BFEBE162627A}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Informedica.GenSolver.Lib", "src\Informedica.GenSolver.Lib\Informedica.GenSolver.Lib.fsproj", "{3412F17F-7A27-4B50-A7DF-98C104E3B37F}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Informedica.GenSolver.Lib", "src\Informedica.GenSolver.Lib\Informedica.GenSolver.Lib.fsproj", "{3412F17F-7A27-4B50-A7DF-98C104E3B37F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{97D6314A-3974-48EA-9D51-2D311CE35481}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Informedica.GenSolver.Tests", "tests\Informedica.GenSolver.Tests\Informedica.GenSolver.Tests.fsproj", "{A56CB0A1-38BE-4369-AAAE-C0D265B0F69F}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Informedica.GenSolver.Tests", "tests\Informedica.GenSolver.Tests\Informedica.GenSolver.Tests.fsproj", "{A56CB0A1-38BE-4369-AAAE-C0D265B0F69F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B3CCA793-FC8D-4B88-B9D5-B95C97D579C4}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		appveyor.yml = appveyor.yml
+		build.cmd = build.cmd
+		build.fsx = build.fsx
+		build.sh = build.sh
+		fake.cmd = fake.cmd
+		fake.sh = fake.sh
+		LICENSE.txt = LICENSE.txt
+		paket.cmd = paket.cmd
+		paket.dependencies = paket.dependencies
+		Procfile = Procfile
+		README.md = README.md
+		RELEASE_NOTES.md = RELEASE_NOTES.md
+		ToDo.txt = ToDo.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,9 +38,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3412F17F-7A27-4B50-A7DF-98C104E3B37F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -49,8 +65,14 @@ Global
 		{A56CB0A1-38BE-4369-AAAE-C0D265B0F69F}.Release|x86.ActiveCfg = Release|Any CPU
 		{A56CB0A1-38BE-4369-AAAE-C0D265B0F69F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3412F17F-7A27-4B50-A7DF-98C104E3B37F} = {B3F6A740-8FCB-4F35-B9E5-BFEBE162627A}
 		{A56CB0A1-38BE-4369-AAAE-C0D265B0F69F} = {97D6314A-3974-48EA-9D51-2D311CE35481}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {99B7EE55-CB34-40C6-8475-E49A9B918850}
 	EndGlobalSection
 EndGlobal

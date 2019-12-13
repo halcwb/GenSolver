@@ -36,7 +36,7 @@ module Testing =
     module Variable =
 
         module VAR = Variable
-        module DTO = Informedica.GenSolver.Dtos.Variable
+        module DTO = Informedica.GenSolver.Lib.Dtos.Variable
         
         module Name =
             

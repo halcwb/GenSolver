@@ -1,17 +1,28 @@
 framework: auto-detect
-source https://nuget.org/api/v2
+redirects: on
+source https://api.nuget.org/v3/index.json
 
-// group build
+// build
+clitool dotnet-fake
 
-
-// group project
-
+// lib
+nuget MathNet.Numerics.FSharp
 nuget Informedica.GenUtils.Lib
 
-// group test
+group Formatting
+	source https://api.nuget.org/v3/index.json
 
-nuget Unquote
-nuget Expecto
-nuget Expecto.BenchmarkDotNet
-nuget Expecto.FsCheck
-nuget Expecto.Hopac
+	nuget FSharp.Formatting
+	nuget FSharp.Formatting.CommandTool
+
+
+// group test
+group Test
+	source https://api.nuget.org/v3/index.json
+
+	nuget Unquote
+	nuget Expecto
+	nuget Expecto.BenchmarkDotNet
+	nuget Expecto.FsCheck
+	nuget Expecto.Hopac
+

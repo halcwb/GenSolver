@@ -6,9 +6,9 @@ module Api =
     open System
     open Informedica.GenSolver.Utils
 
-    module VD = Informedica.GenSolver.Dtos.Variable
-    module VR = Informedica.GenSolver.Lib.Variable
-    module ED = Informedica.GenSolver.Dtos.Equation
+    module VD = Informedica.GenSolver.Lib.Dtos.Variable
+    module VR = Informedica.GenSolver.Lib.Variable  
+    module ED = Informedica.GenSolver.Lib.Dtos.Equation
     module SV = Informedica.GenSolver.Lib.Solver
     module EQ = Informedica.GenSolver.Lib.Equation
 

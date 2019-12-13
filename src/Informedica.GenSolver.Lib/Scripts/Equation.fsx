@@ -1,4 +1,11 @@
-﻿#load "load-project-release.fsx"
+﻿
+#I __SOURCE_DIRECTORY__
+
+#load "../../../.paket/load/netstandard2.1/main.group.fsx"
+
+#load "../Utils.fs"
+#load "../Variable.fs"
+#load "../Equation.fs"
 
 #time
 
@@ -17,7 +24,7 @@ let varIsSolved v = VAR.isSolved
 
 let varIsSolvable =  VAR.isSolvable
 
-let solve e = E.solve
+let solve = E.solve
 
 let isSolved = E.isSolved
 
@@ -47,6 +54,8 @@ E.createSumEqExc (y, [])     |> solve
 
 E.createProductEqExc (y, [x1;x2]) |> solve //|> snd |> isSolvable
 E.createSumEqExc (y, [x1;x2])     |> solve //|> snd |> isSolvable
+E.createSumEqExc (x1, [y])     |> solve //|> snd |> isSolvable
 
 E.createProductEqExc (y, [x1;x2])
+E.createProductEqExc (x1, [y]) |> solve
 

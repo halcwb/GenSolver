@@ -1,3 +1,6 @@
+#### 0.3.0-beta - Dec 4 2019
+* Moved to dotnetcore
+
 #### 0.2.2-beta - May 26 2016
 * Removed debugging print functions
 

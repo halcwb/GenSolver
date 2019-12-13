@@ -1,5 +1,8 @@
-Unquote
-Expecto
-Expecto.BenchmarkDotNet
-Expecto.FsCheck
-Expecto.Hopac
+Informedica.GenUtils.Lib
+
+group Test
+	 Unquote
+	 Expecto
+	 Expecto.BenchmarkDotNet
+	 Expecto.FsCheck
+	 Expecto.Hopac

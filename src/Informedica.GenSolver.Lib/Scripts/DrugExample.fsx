@@ -1,4 +1,14 @@
-﻿#load "load-project-release.fsx"
+﻿
+#I __SOURCE_DIRECTORY__
+
+#load "../../../.paket/load/netstandard2.1/main.group.fsx"
+
+#load "../Utils.fs"
+#load "../Variable.fs"
+#load "../Equation.fs"
+#load "../Solver.fs"
+#load "../Dtos.fs"
+#load "../Api.fs"
 
 #time
 
