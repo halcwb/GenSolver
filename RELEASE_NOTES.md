@@ -1,3 +1,6 @@
+#### 0.3.1-beta - Dec 4 2019
+* Memoized calculation of large sets of numbers
+
 #### 0.3.0-beta - Dec 4 2019
 * Moved to dotnetcore
 

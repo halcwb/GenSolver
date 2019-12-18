@@ -1,6 +1,7 @@
 ﻿namespace Informedica.GenSolver.Lib
 
 open System
+open System.Collections.Generic
 open MathNet.Numerics
 open Informedica.GenSolver.Utils
 
@@ -788,7 +789,7 @@ module Variable =
         /// if either **x1** or **x2** is not a `ValueSet`.
         /// Doesn't perform any calculation when both
         /// **x1** and **x2** are `Unrestricted`.
-        let calc op (x1, x2) =
+        let calc_ op (x1, x2) =
             let calcOpt = calcOpt op
 
             match x1, x2 with
@@ -837,6 +838,29 @@ module Variable =
                 | None, None, None -> unrestricted
                 | _ -> create id (fun _ -> empty) false Set.empty min incr max
 
+
+        let memCalc calc =
+            let cache = ref Map.empty
+
+            let matchOp = function
+                | BR.Mult  -> "mult"
+                | BR.Add   -> "add"
+                | BR.Div   -> "div"
+                | BR.Subtr -> "subtr"
+
+            fun op (x1, x2) ->
+                if x1 |> count >= 500 && x2 |> count >= 500 then
+                    let x = (op |> matchOp , x1, x2)
+
+                    match (!cache).TryFind(x) with
+                    | Some r -> r
+                    | None ->
+                        let r = calc op (x1, x2)
+                        cache := (!cache).Add(x, r)
+                        r
+                else calc op (x1, x2)
+
+        let calc = memCalc calc_
 
         // Extend type with basic arrhythmic operations.
         type ValueRange with

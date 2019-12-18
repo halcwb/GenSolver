@@ -31,3 +31,9 @@ let add = " + "
 ["A" + eqs + "B"]
 |> Api.init
 |> Api.solve (printfn "%s") "A" "foo" [1N]
+
+// Test set min smaller than incr
+["A"]
+|> Api.init
+|> Api.solve (printfn "%s") "A" "incr" [1N]
+|> Api.solve (printfn "%s") "A" "minincl" [ 1N / 10N ]
