@@ -37,3 +37,25 @@ let add = " + "
 |> Api.init
 |> Api.solve (printfn "%s") "A" "incr" [1N]
 |> Api.solve (printfn "%s") "A" "minincl" [ 1N / 10N ]
+
+// Test sum equation
+["a" + eqs + "b" + add + "c"]
+|> Api.init
+|> Api.nonZeroNegative
+|> Api.solve (printfn "%s") "a" "vals" [5N]
+|> Api.solve (printfn "%s") "b" "incr" [1N]
+|> Api.solve (printfn "%s") "c" "vals" [2N]
+
+
+// Test sum equation and product equation
+[
+    "c" + eqs + "d" + tms + "a"
+    "a" + eqs + "b" + add + "c"
+//    "e" + eqs + "f" + tms + "g"
+]
+|> Api.init
+|> Api.nonZeroNegative
+|> Api.solve (printfn "%s") "a" "vals" [5N]
+|> Api.solve (printfn "%s") "b" "incr" [1N]
+
+

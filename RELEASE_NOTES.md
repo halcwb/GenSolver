@@ -1,3 +1,7 @@
+#### 0.3.2-beta - Dec 23 2019
+* Reverted memoized calculation of large sets of numbers
+* Added option to print changed equations
+
 #### 0.3.1-beta - Dec 4 2019
 * Memoized calculation of large sets of numbers
 

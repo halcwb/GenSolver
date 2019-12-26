@@ -78,6 +78,13 @@ module Equation =
         let f y xs = y::xs
         apply f f
 
+    let count e = 
+        e
+        |> toVars
+        |> List.fold (fun acc v ->
+            (v |> Variable.count) * acc
+        ) 1
+
     /// Make sure that the `Variables` in the
     /// `Equation` can only contain positive 
     /// non zero values.

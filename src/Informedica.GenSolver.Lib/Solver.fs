@@ -52,6 +52,10 @@ module Solver =
     let solve vr eqs =
         
         let rec loop que acc  =
+            let que =
+                que 
+                |> List.sortBy Equation.count
+
             match que with
             | [] -> acc
             | eq::tail ->
@@ -67,12 +71,10 @@ module Solver =
                     match eq |> solveEquation with
                     // Equation is changed, so every other equation can 
                     // be changed as well (if changed vars are in the other
-                    // equations, so start new
+                    // equations) so start new
                     | Changed vs ->
-                        let que, acc =  
+                        let all =  
                             let rpl, rst = (que @ acc) |> replace vs
-
-                            let all = rpl @ rst
 
                             // New que with replaced equations and
                             // equations that were allready in the que
@@ -86,9 +88,10 @@ module Solver =
                                 rst |> List.filter (fun e ->
                                     que' |> List.forall (fun e' -> e' |> EQ.equals e |> not))
 
-                            que', acc'
-
-                        loop que acc
+                            que'@ acc'
+                        
+                        // need to loop over all equations
+                        loop all []
                     // Equation did not in fact change, so put it to
                     // the accumulated equations and go on with the rest
                     | UnChanged ->

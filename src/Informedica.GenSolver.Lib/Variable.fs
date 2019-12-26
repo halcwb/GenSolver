@@ -996,6 +996,11 @@ module Variable =
     /// Apply the operator **op** to **v1** and **v2**
     /// return an intermediate *result* `Variable`.
     let calc op (v1, v2) =
+        if (v1 |> count) * (v2 |> count) > 100000 then
+            printfn "going to calculate %s and %s is going to take some time!"
+                (v1 |> getName |> Name.toString)
+                (v2 |> getName |> Name.toString)
+
         (v1 |> getValueRange) |> op <| (v2 |> getValueRange) |> createRes
 
     /// Extend type with basic arrhythmic operations.
