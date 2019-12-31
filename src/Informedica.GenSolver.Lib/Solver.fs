@@ -44,17 +44,40 @@ module Solver =
         if changed |> List.length > 0 then 
             changed |> Changed 
         else UnChanged
+
+    let memSolve f =
+        let cache = ref Map.empty
+        fun e ->
+            match (!cache).TryFind(e) with
+            | Some r -> r
+            | None ->
+                let r = f e
+                cache := (!cache).Add(e, r)
+                r
         
     /// Create the equation solver using a 
     /// product equation and a sum equation solver
     /// and function to determine whether an 
     /// equation is solved
     let solve vr eqs =
-        
-        let rec loop que acc  =
-            let que =
+        // create a new memoized version of the solveEquation
+        let solveE = memSolve solveEquation
+
+        let sortQue que =
+            que 
+            |> List.sortBy Equation.count
+            |> fun que ->
                 que 
-                |> List.sortBy Equation.count
+                |> List.rev
+                |> function 
+                | h::_ -> 
+                    h
+                    |> Equation.count
+                    |> printfn "start new loop with max equation count: %i" 
+                    que
+                | _ -> que
+
+        let rec loop que acc  =
 
             match que with
             | [] -> acc
@@ -68,7 +91,7 @@ module Solver =
 
                 // Else go solve the equation
                 else
-                    match eq |> solveEquation with
+                    match eq |> solveE with
                     // Equation is changed, so every other equation can 
                     // be changed as well (if changed vars are in the other
                     // equations) so start new
@@ -89,7 +112,8 @@ module Solver =
                                     que' |> List.forall (fun e' -> e' |> EQ.equals e |> not))
 
                             que'@ acc'
-                        
+                            |> sortQue
+
                         // need to loop over all equations
                         loop all []
                     // Equation did not in fact change, so put it to
@@ -100,7 +124,7 @@ module Solver =
                         |> loop tail
 
         let que, acc = eqs |> replace [vr] 
-        loop que acc
+        loop (que |> sortQue) acc
     
 
 

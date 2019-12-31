@@ -82,8 +82,8 @@ module Equation =
         e
         |> toVars
         |> List.fold (fun acc v ->
-            (v |> Variable.count) * acc
-        ) 1
+            (v |> Variable.count) + acc
+        ) 0
 
     /// Make sure that the `Variables` in the
     /// `Equation` can only contain positive 

@@ -486,6 +486,7 @@ module Variable =
                 | None,      Some incr', Some max' -> incrMaxValueRange incr' max' |> succ
                 | None,      Some incr', None      -> minIncrValueRange (incr' |> incrToValue |> MinIncl) incr' |> succ
                 | Some min', Some incr', Some max' -> minIncrMaxToValueSet min' incr' max' |> succ
+
             else
                 vs
                 |> filter min incr max
@@ -789,7 +790,7 @@ module Variable =
         /// if either **x1** or **x2** is not a `ValueSet`.
         /// Doesn't perform any calculation when both
         /// **x1** and **x2** are `Unrestricted`.
-        let calc_ op (x1, x2) =
+        let calc op (x1, x2) =
             let calcOpt = calcOpt op
 
             match x1, x2 with
@@ -838,29 +839,6 @@ module Variable =
                 | None, None, None -> unrestricted
                 | _ -> create id (fun _ -> empty) false Set.empty min incr max
 
-
-        let memCalc calc =
-            let cache = ref Map.empty
-
-            let matchOp = function
-                | BR.Mult  -> "mult"
-                | BR.Add   -> "add"
-                | BR.Div   -> "div"
-                | BR.Subtr -> "subtr"
-
-            fun op (x1, x2) ->
-                if x1 |> count >= 500 && x2 |> count >= 500 then
-                    let x = (op |> matchOp , x1, x2)
-
-                    match (!cache).TryFind(x) with
-                    | Some r -> r
-                    | None ->
-                        let r = calc op (x1, x2)
-                        cache := (!cache).Add(x, r)
-                        r
-                else calc op (x1, x2)
-
-        let calc = memCalc calc_
 
         // Extend type with basic arrhythmic operations.
         type ValueRange with
@@ -996,10 +974,6 @@ module Variable =
     /// Apply the operator **op** to **v1** and **v2**
     /// return an intermediate *result* `Variable`.
     let calc op (v1, v2) =
-        if (v1 |> count) * (v2 |> count) > 100000 then
-            printfn "going to calculate %s and %s is going to take some time!"
-                (v1 |> getName |> Name.toString)
-                (v2 |> getName |> Name.toString)
 
         (v1 |> getValueRange) |> op <| (v2 |> getValueRange) |> createRes
 

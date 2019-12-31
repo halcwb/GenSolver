@@ -55,13 +55,12 @@ module Api =
     /// * vs: the values to update the property of the variable
     /// * eqs: the list of equations to solve
     let solve f n p vs eqs =
-        let vrs = 
-            eqs 
-            |> List.collect (fun e -> e |> EQ.findName (n |> VR.Name.createExc))
-        
-        match vrs with
+        eqs 
+        |> List.collect (fun e -> e |> EQ.findName (n |> VR.Name.createExc))
+        |> function
         | vr::_ ->
-            sprintf "Setting variable %s %s with %s" n p (vs |> List.map BigRational.toString |> String.concat ", ") |> f
+            sprintf "Setting variable %s %s with %s" n p (vs |> List.map BigRational.toString |> String.concat ", ") 
+            |> f
 
             let vr' = 
                 vr
@@ -72,6 +71,7 @@ module Api =
             eqs 
             |> SV.solve vr'
             |> printEqs f
+
         | _ -> eqs
 
     /// Make a list of `Equation`
