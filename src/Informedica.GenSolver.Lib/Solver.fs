@@ -14,13 +14,13 @@ module Solver =
     /// in a list of `Equation` **es**, return
     /// a list of replaced `Equation` and a list
     /// of unchanged `Equation`
-    let replace vs es =
+    let replace vars es =
         let rpl, rst = 
             es 
             |> List.partition (fun e -> 
-                vs |> List.exists (fun v -> e |> EQ.contains v))
+                vars |> List.exists (fun v -> e |> EQ.contains v))
 
-        vs 
+        vars 
         |> List.fold (fun acc v -> 
             acc |> List.map (fun e -> e |> EQ.replace v)) rpl
         , rst
@@ -59,23 +59,33 @@ module Solver =
     /// product equation and a sum equation solver
     /// and function to determine whether an 
     /// equation is solved
-    let solve vr eqs =
+    let solve solveE vr eqs =
         // create a new memoized version of the solveEquation
-        let solveE = memSolve solveEquation
+        // let solveE = memSolve solveEquation
+
+        let mutable i = 0
 
         let sortQue que =
             que 
-            |> List.sortBy Equation.count
-            |> fun que ->
-                que 
-                |> List.rev
-                |> function 
-                | h::_ -> 
-                    h
-                    |> Equation.count
-                    |> printfn "start new loop with max equation count: %i" 
-                    que
-                | _ -> que
+            |> List.sortBy Equation.countProduct
+            |> fun q -> 
+                let n, c = 
+                    q 
+                    |> List.rev
+                    |> List.head
+                    |> fun e ->
+                        let n = 
+                            e
+                            |> Equation.toVars
+                            |> List.head
+                            |> Variable.getName
+
+                        n, e |> Equation.countProduct
+
+                if c <> i then 
+                    printfn "%A equation count: %i" n c
+                    i <- c
+                q
 
         let rec loop que acc  =
 
@@ -95,9 +105,9 @@ module Solver =
                     // Equation is changed, so every other equation can 
                     // be changed as well (if changed vars are in the other
                     // equations) so start new
-                    | Changed vs ->
+                    | Changed vars ->
                         let all =  
-                            let rpl, rst = (que @ acc) |> replace vs
+                            let rpl, rst = (que @ acc) |> replace vars
 
                             // New que with replaced equations and
                             // equations that were allready in the que

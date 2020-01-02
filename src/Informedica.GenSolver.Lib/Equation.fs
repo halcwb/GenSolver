@@ -85,6 +85,14 @@ module Equation =
             (v |> Variable.count) + acc
         ) 0
 
+    let countProduct e = 
+        e
+        |> toVars
+        |> List.fold (fun acc v ->
+            (v |> Variable.count) * acc
+        ) 1
+
+
     /// Make sure that the `Variables` in the
     /// `Equation` can only contain positive 
     /// non zero values.

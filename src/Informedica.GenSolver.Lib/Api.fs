@@ -54,7 +54,7 @@ module Api =
     /// * p: the property of the variable to be updated
     /// * vs: the values to update the property of the variable
     /// * eqs: the list of equations to solve
-    let solve f n p vs eqs =
+    let solve solveE f n p vs eqs =
         eqs 
         |> List.collect (fun e -> e |> EQ.findName (n |> VR.Name.createExc))
         |> function
@@ -69,7 +69,7 @@ module Api =
                 |> VD.fromDtoExc
 
             eqs 
-            |> SV.solve vr'
+            |> SV.solve solveE vr'
             |> printEqs f
 
         | _ -> eqs
