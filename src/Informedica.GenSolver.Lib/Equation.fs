@@ -194,15 +194,19 @@ module Equation =
         let rec loop op1 op2 y xs changed =
             let x   = xs |> List.head
             let xs' = xs |> List.filter ((<>) x)
+            
             // op1 = (*) or (+) and op2 = (/) or (-)
             // Calculate y = x1 op1 x2 op1 .. op1 xn
             let ychanged, y' = calc [] op1 op1 x xs' [y]
+            
             // Replace y with the new y with is in a list
             let y = y' |> List.head
+            
             // Calculate x1 = y op2 (x2 op1 x3 .. op1 xn)
             //       and x2 = y op2 (x1 op1 x3 .. op1 xn)
             //       etc..
             let xchanged, xs = calc [] op1 op2 y xs xs
+
             // If something has changed restart until nothing changes anymore
             let changed' = ychanged @ xchanged
             if changed' |> List.length = 0 then changed 

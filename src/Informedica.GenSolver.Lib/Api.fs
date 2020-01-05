@@ -70,58 +70,55 @@ module Api =
         |> function
         | vr::_ ->
 
-            let vr' = 
-                match p with
-                | VRD.Vals -> 
-                    vs
-                    |> Set.ofList
-                    |> ValueRange.ValueSet
-                | _ ->
-                    match vs with
-                    | [v] ->
-                        match p with
-                        | VRD.Vals -> "already matched" |> failwith
-                        | VRD.Incr -> 
-                            "not supported yet" |> failwith
-                        | VRD.MinIncl -> v |> ValueRange.minRange true 
-                        | VRD.MinExcl -> v |> ValueRange.minRange true 
-                        | VRD.MaxIncl -> v |> ValueRange.maxRange true 
-                        | VRD.MaxExcl -> v |> ValueRange.maxRange true 
-                        | VRD.NoProp ->
-                            p
-                            |> sprintf "property %s is not supported"
-                            |> failwith
-                        |> ValueRange.Range
-                    | _ -> 
+            match p with
+            | VRD.Vals -> 
+                vs
+                |> HashSet.ofList
+                |> ValueRange.ValueSet
+            | _ ->
+                match vs with
+                | [v] ->
+                    match p with
+                    | VRD.Vals -> "already matched" |> failwith
+                    | VRD.Incr -> 
+                        "not supported yet" |> failwith
+                    | VRD.MinIncl -> v |> ValueRange.minRange true 
+                    | VRD.MinExcl -> v |> ValueRange.minRange true 
+                    | VRD.MaxIncl -> v |> ValueRange.maxRange true 
+                    | VRD.MaxExcl -> v |> ValueRange.maxRange true 
+                    | VRD.NoProp ->
                         p
-                        |> sprintf "setting of multiple values is not supported for this prop: %s"
+                        |> sprintf "property %s is not supported"
                         |> failwith
+                    |> ValueRange.Range
+                | _ -> 
+                    p
+                    |> sprintf "setting of multiple values is not supported for this prop: %s"
+                    |> failwith
 
-                |> Variable.setValueRange vr
-                |> fun vr ->
-                    match lim with
-                    | Some l ->
-                        if vr |> Variable.count > l then
-                            vr
-                            |> Variable.getValueRange
-                            |> ValueRange.getValueSet
-                            |> Set.toList
-                            |> List.take l
-                            |> Set.ofList
-                            |> ValueRange.createValueSet
-                            |> Variable.setValueRange vr
-                        else vr
-                    | None -> vr
-                    |> fun vr -> 
-                        vr 
-                        |> Variable.count 
-                        |> sprintf "setting %s with %i values" (vr |> Variable.getName |> Name.toString)
-                        |> f
-                        
+            |> Variable.setValueRange vr
+            |> fun vr ->
+                match lim with
+                | Some l ->
+                    if vr |> Variable.count > l then
                         vr
-
+                        |> Variable.getValueRange
+                        |> ValueRange.getValueSet
+                        |> HashSet.toList
+                        |> List.take l
+                        |> HashSet.ofList
+                        |> ValueRange.createValueSet
+                        |> Variable.setValueRange vr
+                    else vr
+                | None -> vr
+                |> fun vr -> 
+                    vr 
+                    |> Variable.count 
+                    |> sprintf "setting %s with %i values" (vr |> Variable.getName |> Name.toString)
+                    |> f
+                        
             eqs 
-            |> Solver.solve f solveE sortQue vr'
+            |> Solver.solve f solveE sortQue
             |> printEqs f
 
         | _ -> eqs

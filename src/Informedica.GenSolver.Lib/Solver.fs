@@ -9,27 +9,6 @@ module Solver =
 
     type Variable = Variable.Variable
      
-    /// Replace a list of `Variable` **vs**
-    /// in a list of `Equation` **es**, return
-    /// a list of replaced `Equation` and a list
-    /// of unchanged `Equation`
-    let replace vars es =
-        let rpl, rst = 
-            es 
-            |> List.partition (fun e -> 
-                vars 
-                |> List.exists (fun v -> 
-                    e 
-                    |> Equation.contains v
-                )
-            )
-
-        vars 
-        |> List.fold (fun acc v -> 
-            acc 
-            |> List.map (Equation.replace v)
-        ) rpl
-        , rst
 
     /// Checks whether a list of `Equation` **eqs**
     /// contains an `Equation` **eq**
@@ -74,7 +53,7 @@ module Solver =
     /// product equation and a sum equation solver
     /// and function to determine whether an 
     /// equation is solved
-    let solve f solveE sortQue vr eqs =
+    let solve f solveE sortQue eqs =
 
         let rec loop n que acc =
 
@@ -113,13 +92,9 @@ module Solver =
                     // Equation is changed, so every other equation can 
                     // be changed as well (if changed vars are in the other
                     // equations) so start new
-                    | Changed vars ->
-                        let que =
-                            let rpl, rst = (que @ acc) |> replace vars
-                            loop (n + 1) (rpl |> sortQue) rst
-                            |> sortQue
+                    | Changed _ ->
                         
-                        loop (n + 1) que []
+                        loop (n + 1) (que @ acc) []
 
                     // Equation did not in fact change, so put it to
                     // the accumulated equations and go on with the rest
@@ -128,8 +103,7 @@ module Solver =
                         |> List.append acc
                         |> loop (n + 1) tail
 
-        let que, acc = eqs |> replace [vr] 
-        loop 0 (que |> sortQue) acc
+        loop 0 (eqs |> sortQue) []
     
 
 

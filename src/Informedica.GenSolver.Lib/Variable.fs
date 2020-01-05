@@ -5,6 +5,61 @@ open System.Collections.Generic
 open MathNet.Numerics
 open Informedica.GenSolver.Utils
 
+
+module HashSet =
+
+    let count (hs: HashSet<_>) = hs.Count
+
+    let contains v (hs: HashSet<_>) = hs.Contains(v)
+
+    let exists pf (hs : HashSet<_>) = hs |> Seq.exists pf
+
+    let minElement (hs : HashSet<_>) = hs |> Seq.min
+
+    let maxElement (hs : HashSet<_>) = hs |> Seq.max
+
+    let fromSeq (xs : seq<_>) =
+        let set = new HashSet<_>(xs)
+        set
+
+    let toList (hs : HashSet<_>) = hs |> Seq.toList
+
+    let ofList = fromSeq
+
+    let empty : HashSet<_> = Seq.empty |> fromSeq
+
+    let isEmpty (hs: HashSet<_>) = hs.Count = 0
+
+    let filter pf (hs: HashSet<_>) = 
+        hs 
+        |> Seq.filter pf
+        |> fromSeq
+
+    let forall pf (hs: HashSet<_>) = hs |> Seq.forall pf
+        
+    let intersect (hs1 : HashSet<_>) (hs2: HashSet<_>) = 
+        hs1.IntersectWith(hs2)
+        hs1
+
+    let deepCopy (hs: HashSet<_>) =
+        let copy = new HashSet<_>()
+        copy.UnionWith(hs)
+
+        copy
+
+    let remove v (hs: HashSet<_>) = hs.Remove(v)
+
+    module Tests =
+        
+        let testdeepcopy () = 
+            let s1 = [1..5] |> fromSeq
+            let s2 = s1 |> deepCopy
+
+            s1 |> remove 1 |> ignore
+            s2 |> contains 1 |> printfn "should be true: %A"
+            s1 |> contains 1 |> printfn "should be false: %A"
+
+
 /// Contains functions and types to represent
 /// a `Variable` in an `Equation`:
 ///
@@ -96,7 +151,7 @@ module Variable =
         /// The increment in a `Range`. 
         /// Increment has to be a non zero
         /// or negative value
-        type Increment = Increment of BigRational Set
+        type Increment = Increment of HashSet<BigRational>
 
         /// `ValueRange` represents a discrete set of 
         /// rational numbers.
@@ -104,7 +159,7 @@ module Variable =
         /// a finite set of `BigRational` or a `Range`.
         type ValueRange =
             | Unrestricted
-            | ValueSet of BigRational Set
+            | ValueSet of HashSet<BigRational>
             | Range of Range
 
         /// A `Range` is restricted by either a 
@@ -185,7 +240,7 @@ module Variable =
         /// Returns 0 if not a `ValueSet`.
         let count = 
             let zero _ = 0
-            apply 0 (fun s -> s |> Set.count) zero
+            apply 0 (fun s -> s |> HashSet.count) zero
 
         /// Checks whether a `ValueRange` is `Unrestricted`
         let isUnrestricted = 
@@ -221,7 +276,7 @@ module Variable =
                 | None              -> true  
                 | Some(Increment i) -> 
                     i 
-                    |> Set.exists (fun i -> 
+                    |> HashSet.exists (fun i -> 
                         v 
                         |> BigRational.isMultiple i
                     )
@@ -276,13 +331,13 @@ module Variable =
 
         /// Filter a set of `BigRational` according
         /// to **min**, **incr** and **max** constraints
-        let filter min incr max = Set.filter (fun v -> v |> isBetweenAndMultOf min incr max)
+        let filter min incr max = HashSet.filter (isBetweenAndMultOf min incr max)
 
         /// Get the minimal value in a `BigRational` set. Returns `None` if an empty set.
-        let getSetMin s = if s |> Set.isEmpty then None else s.MinimumElement |> MinIncl |> Some
+        let getSetMin s = if s |> HashSet.isEmpty then None else s |> HashSet.minElement |> MinIncl |> Some
 
         /// Get the maximum value in a `BigRational` set. Returns `None` if an empty set.
-        let getSetMax s = if s |> Set.isEmpty then None else s.MaximumElement |> MaxIncl |> Some
+        let getSetMax s = if s |> HashSet.isEmpty then None else s |> HashSet.maxElement |> MaxIncl |> Some
 
         /// Convert a `Minimum` to a `BigRational`.
         let minToValue = function | MinIncl v | MinExcl v -> v
@@ -308,14 +363,14 @@ module Variable =
         // Calculate `Minimum` as a multiple of `Increment` **incr**
         let minMultipleOf incr min =
             let n = match min with | MinIncl m | MinExcl m -> m 
-            let d = incr |> incrToValue |> Set.minElement
+            let d = incr |> incrToValue |> HashSet.minElement
             let n' = n |> BigRational.toMultipleOf d
             if min |> isMinExcl && n' <= n then n' + d else n'
 
         // Calculate `Maximum` **max** as a multiple of **incr**
         let maxMultipleOf incr max =
             let n = match max with | MaxIncl m | MaxExcl m -> m 
-            let d = incr |> incrToValue |> Set.maxElement
+            let d = incr |> incrToValue |> HashSet.maxElement
             let n' = n |> BigRational.toMultipleOf d
             if max |> isMaxExcl && n' >= n then n' - d else n'
 
@@ -339,6 +394,7 @@ module Variable =
                max' <= vs.MaximumElement then vs.Remove(vs.MaximumElement)
             else 
                 vs
+            |> HashSet.fromSeq
             |> ValueSet
             
         /// Create a string (to print) representation of
@@ -373,7 +429,7 @@ module Variable =
         /// Convert a `ValueRange` to a `string`.
         let toString vr =
             let fVs vs = 
-                print false (vs |> Set.toList) None false [] None false
+                print false (vs |> HashSet.toList) None false [] None false
             
             let fRange =
                 let print min minincl incr max maxincl = print false [] min minincl incr max maxincl
@@ -399,7 +455,7 @@ module Variable =
                         | MinIncl v -> v |> Some, true
                         | MinExcl v -> v |> Some ,false  
 
-                    let incr = incr |> incrToValue |> Set.toList
+                    let incr = incr |> incrToValue |> HashSet.toList
                 
                     print min minincl incr None false
 
@@ -409,7 +465,7 @@ module Variable =
                         | MaxIncl v -> v |> Some, true
                         | MaxExcl v -> v |> Some ,false  
 
-                    let incr = incr |> incrToValue |> Set.toList
+                    let incr = incr |> incrToValue |> HashSet.toList
                 
                     print None false incr max maxincl
 
@@ -440,7 +496,7 @@ module Variable =
         let unrestricted = Unrestricted
 
         /// An empty `ValueSet`.
-        let empty = Set.empty |> ValueSet
+        let empty = Seq.empty |> HashSet.fromSeq |> ValueSet
 
         /// Create a `ValueSet`.
         let createValueSet = ValueSet
@@ -456,10 +512,10 @@ module Variable =
         /// Create an `Increment` that 
         /// is a non zero or negative value
         let createIncr succ fail i = 
-            if i |> List.exists ((>) 0N) || i |> List.isEmpty then i |> fail 
+            if i |> HashSet.exists ((>) 0N) || i |> HashSet.isEmpty then i |> fail 
             else 
                 i
-                |> List.distinct
+                |> HashSet.toList
                 |> List.sort
                 |> List.fold (fun acc v ->
                     if acc |> List.isEmpty then [v]
@@ -469,7 +525,7 @@ module Variable =
                         | None   -> [v] |> List.append acc 
 
                 ) []
-                |> Set.ofList
+                |> HashSet.ofList
                 |> Increment 
                 |> succ
 
@@ -497,7 +553,7 @@ module Variable =
             if min |> minLTmax max then (min, max) |> MinLargerThanMax |> fail
             elif min |> minEQmax max then 
                 [min |> minToValue]
-                |> Set.ofList
+                |> HashSet.ofList
                 |> ValueSet 
                 |> succ
             else (min, max) |> MinMax |> Range |> succ
@@ -510,7 +566,7 @@ module Variable =
         /// create an `empty` `ValueRange`. Pass the result 
         /// to **succ**, if failing a `Message` to **fail**.
         let create succ fail vs min incr max =
-            if vs |> Set.isEmpty then 
+            if vs |> HashSet.isEmpty then 
                 match min, incr, max with
                 | None,      None,       None      -> unrestricted |> succ
                 | Some min', None,       None      -> min' |> Min |> Range |> succ
@@ -519,21 +575,22 @@ module Variable =
                 | Some min', Some incr', None      -> minIncrValueRange min' incr' |> succ
                 | None,      Some incr', Some max' -> incrMaxValueRange incr' max' |> succ
                 | None,      Some incr', None      -> 
-                    minIncrValueRange (incr' |> incrToValue |> Set.minElement |> MinIncl) incr' |> succ
+                    minIncrValueRange (incr' |> incrToValue |> HashSet.minElement |> MinIncl) incr' |> succ
                 | Some min', Some incr', Some max' -> minIncrMaxToValueSet min' incr' max' |> succ
 
             else
                 vs
                 |> filter min incr max
+                |> HashSet.ofList
                 |> ValueSet 
                 |> succ
                  
         /// Create `ValueRange` and raises 
         /// an exception if it fails.
-        let createExc = create id raiseExc 
+        let createExc vs min incr max = create id raiseExc vs min incr max 
 
         /// Return an optional `ValueRange`.
-        let createOpt = create Some Option.none
+        let createOpt vs min incr max = create Some Option.none vs min incr max 
 
         // #endregion
 
@@ -542,10 +599,11 @@ module Variable =
         /// Get a set of `BigRational` from a `ValueRange`, 
         /// returns an empty set when `ValueRange` is not 
         /// a `ValueSet` or the set of `BigRational` is actually empty.
-        let getValueSet = apply Set.empty id (fun _ -> Set.empty) 
+        let getValueSet = apply HashSet.empty id (fun _ -> HashSet.empty) 
 
         /// Get a `Minimum` option in a `Range`
         let getRangeMin = applyRange Some Option.none (fst >> Some) Option.none (fst >> Some) 
+
         /// Get a `Maximum` option in a `Range`
         let getRangeMax = applyRange  Option.none Some Option.none (snd >> Some) (snd >> Some)
 
@@ -568,7 +626,7 @@ module Variable =
         /// a `BigRational` **v**.
         let contains v vr = 
             match vr with
-            | ValueSet vs -> vs |> Set.contains v
+            | ValueSet vs -> vs |> HashSet.contains v
             | _ ->
                 let min = vr |> getMin
                 let max = vr |> getMax
@@ -598,7 +656,7 @@ module Variable =
 
                 let fMin min'             = min' |> checkMin (Min >> Range)
                 let fMinIncr (min', incr) = min' |> checkMin (fun m   -> minIncrValueRange m incr)
-                let fIncrMax (incr, max)  = create succ fail Set.empty (Some min) (Some incr) (Some max)
+                let fIncrMax (incr, max)  = create succ fail HashSet.empty (Some min) (Some incr) (Some max)
                 let fMinMax (min', max)   = min' |> checkMin (fun min -> minMaxValueRange succ fail min max) 
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax
@@ -624,7 +682,7 @@ module Variable =
                 let fMax max'             = max' |> checkMax (Max >> Range)
                 let fMinMax (min, max')   = max' |> checkMax (fun max -> minMaxValueRange id (fun _ -> vr) min max) 
                 let fIncrMax (incr, max') = max' |> checkMax (fun max -> incrMaxValueRange incr max)
-                let fMinIncr (min, incr)  = create succ fail Set.empty (Some min) (Some incr) (Some max)
+                let fMinIncr (min, incr)  = create succ fail HashSet.empty (Some min) (Some incr) (Some max)
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax
 
@@ -635,22 +693,22 @@ module Variable =
         let setIncr incr vr =
             let succ = id
             let fail _ = vr
-            let cr = create succ fail Set.empty
+            let cr = create succ fail HashSet.empty
 
             // Check whether the new incr is more restrictive than the old incr
             let checkIncr f incr' = 
                 if incr 
                    |> incrToValue 
-                   |> Set.forall (fun i ->
+                   |> HashSet.forall (fun i ->
                         incr' 
                         |> incrToValue
-                        |> Set.exists (fun i' -> i |> BigRational.isMultiple i')
+                        |> HashSet.exists (fun i' -> i |> BigRational.isMultiple i')
                     ) then 
                     incr |> f
                 
                 else vr
 
-            let unr = minIncrValueRange (createMin true (incr |> incrToValue |> Set.minElement)) incr
+            let unr = minIncrValueRange (createMin true (incr |> incrToValue |> HashSet.minElement)) incr
 
             let fValueSet = 
                 let min = vr |> getMin
@@ -681,19 +739,37 @@ module Variable =
                 let vs1, min, incr, max = vr |> getValueSet, vr |> getMin, vr |> getIncr, vr |> getMax
                     
                 let vs2 = 
-                    if vs1 |> Set.isEmpty then
+                    if vs1 |> HashSet.isEmpty then
                         vs 
                         |> filter min incr max
                     else
                         vs 
                         |> filter min incr max
-                        |> Set.intersect vs1
+                        |> HashSet.intersect vs1
             
-                if vs2 |> Set.isEmpty then vs2 |> ValueSet
+                if vs2 |> HashSet.isEmpty then vs2 |> ValueSet
                 else
                     create succ fail vs2 min incr max
 
         // #endregion
+
+
+        let deepCopy vr =
+            let vs = 
+                vr 
+                |> getValueSet
+                |> HashSet.deepCopy
+
+            let i =
+                vr
+                |> getIncr
+                |> Option.bind (incrToValue >> HashSet.deepCopy >> Increment >> Some)
+
+            let min = vr |> getMin
+            let max = vr |> getMax 
+
+            createExc vs min i max
+
         
         // #region ---- CALCULATION -----
 
@@ -837,7 +913,7 @@ module Variable =
                             for y in i2 do
                                 x * y
                     ]
-                    |> Set.ofList
+                    |> HashSet.ofList
                     |> Increment
                     |> Some
 
@@ -848,7 +924,7 @@ module Variable =
                             for y in i2 do
                                 BigRational.gcd x y
                     ]
-                    |> Set.ofList
+                    |> HashSet.ofList
                     |> Increment 
                     |> Some
 
@@ -871,7 +947,7 @@ module Variable =
             | ValueSet s1, ValueSet s2 ->
                 // When one of the sets does not contain any value then the result of 
                 // of the calculation cannot contain any value either
-                if s1 |> Set.isEmpty || s2 |> Set.isEmpty then 
+                if s1 |> HashSet.isEmpty || s2 |> HashSet.isEmpty then 
                     EmptyValueSet |> raiseExc
                 else
                     let s1 = new ResizeArray<_>(s1)
@@ -883,7 +959,6 @@ module Variable =
                             | Some v -> s3.Add(v)
                             | None -> () 
                     new HashSet<_>(s3, HashIdentity.Structural) 
-                    |> Set.ofSeq
                     |> ValueSet   
 
             // A set with an increment results in a new set of increment
@@ -922,14 +997,13 @@ module Variable =
                 let incr1 = i |> Some
                 let incr2 = 
                     s
-                    |> Set.toList
                     |> createIncr (Some) (fun _ -> None)
 
                 let incr = calcIncr op incr1 incr2
 
                 match min, incr, max with
                 | None, None, None -> unrestricted
-                | _ -> create id (fun _ -> empty) Set.empty min incr max
+                | _ -> create id (fun _ -> empty) HashSet.empty min incr max
 
                 
             // In any other case calculate min, incr and max
@@ -958,7 +1032,7 @@ module Variable =
 
                 match min, incr, max with
                 | None, None, None -> unrestricted
-                | _ -> create id (fun _ -> empty) Set.empty min incr max
+                | _ -> create id (fun _ -> empty) HashSet.empty min incr max
 
 
         // Extend type with basic arrhythmic operations.
@@ -978,11 +1052,12 @@ module Variable =
             static member (!=) (y, expr) = 
                 let set get set vr = 
                     match expr |> get with 
-                    | Some m -> vr |> set m | None -> vr 
+                    | Some m -> vr |> set m 
+                    | None -> vr 
                 match expr with 
                 | Unrestricted -> y
                 | ValueSet vs  -> 
-                    if vs |> Set.isEmpty then 
+                    if vs |> HashSet.isEmpty then 
                         EmptyValueSet
                         |> raiseExc
                     else y |> setValues vs
@@ -1010,7 +1085,7 @@ module Variable =
     type Variable =
         {
             Name: Name
-            Values: ValueRange
+            mutable Values: ValueRange
         }
 
     // #endregion
@@ -1030,6 +1105,10 @@ module Variable =
     /// calculation before applying to 
     /// the actual result `Variable`.
     let createRes = createSucc ("Result" |> Name.createExc)
+
+
+    let deepCopy (var : Variable) =
+        { var with Values = var.Values |> ValueRange.deepCopy }
 
     // #endregion
 
@@ -1051,7 +1130,6 @@ module Variable =
     /// Get the `ValueRange of a `Variable`.
     let getValueRange v = (v |> get).Values
 
-
     let contains v vr =
         vr
         |> getValueRange
@@ -1070,7 +1148,8 @@ module Variable =
     let setValueRange v vr = 
         try
             let vr' = (v |> get).Values != vr
-            { v with Values = vr'}
+            v.Values <- vr'
+            v
         with
         | e -> 
             v.Name
@@ -1082,7 +1161,8 @@ module Variable =
     /// that prevents zero or negative values.
     let setNonZeroOrNegative v = 
         let vr = (v |> get).Values |> ValueRange.setMin (BigRational.zero |> ValueRange.createMin false)
-        { v with Values = vr }
+        v.Values <- vr
+        v
     
     // #endregion
 
@@ -1233,7 +1313,7 @@ module Variable =
         let toValueSet succ fail vals =
             try
                 vals 
-                |> Set.ofSeq
+                |> HashSet.fromSeq
                 |> succ
             with 
             | _ -> vals.ToString() |> ParseFailure |> fail
@@ -1253,6 +1333,7 @@ module Variable =
             let incr = 
                 let faili i = 
                     i 
+                    |> HashSet.toList
                     |> ValueRange.ZeroOrNegativeIncrement 
                     |> ValueRangeMessage 
                     |> fail
@@ -1262,6 +1343,7 @@ module Variable =
                 | [] -> None
                 | _ ->
                     dto.Incr
+                    |> HashSet.fromSeq
                     |> ValueRange.createIncr succ faili
                     |> Some
 
@@ -1280,13 +1362,14 @@ module Variable =
             let vs = 
                 match dto.Vals |> toValueSet succ fail with
                 | Some vs' -> vs' 
-                | None -> Set.empty
+                | None -> HashSet.empty
 
             let min = dto.Min |> Option.bind (fun v -> v |> ValueRange.createMin dto.MinIncl |> Some)
             let max = dto.Max |> Option.bind (fun v -> v |> ValueRange.createMax dto.MaxIncl |> Some)
 
             let incr = 
                 dto.Incr 
+                |> HashSet.fromSeq
                 |> ValueRange.createIncr succ fail
 
             let vr = ValueRange.create succ (fun m -> m |> ValueRangeMessage |> fail) vs min incr max
@@ -1325,13 +1408,13 @@ module Variable =
                 v.Values
                 |> ValueRange.getIncr
                 |> function 
-                | Some i -> i |> ValueRange.incrToValue |> Set.toList
+                | Some i -> i |> ValueRange.incrToValue |> HashSet.toList
                 | None   -> []
 
             let vals = 
                 v.Values 
                 |> ValueRange.getValueSet 
-                |> Set.toList
+                |> HashSet.toList
 
             { dto with 
                 Unr = unr
