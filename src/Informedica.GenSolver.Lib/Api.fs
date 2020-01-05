@@ -11,7 +11,7 @@ module Api =
     module EQD = Informedica.GenSolver.Lib.Equation.Dto
     
     module ValueRange = Variable.ValueRange 
-    
+    module Name = Variable.Name
 
     /// Initialize the solver returning a set of equations
     let init eqs = 
@@ -63,7 +63,7 @@ module Api =
     /// * p: the property of the variable to be updated
     /// * vs: the values to update the property of the variable
     /// * eqs: the list of equations to solve
-    let solve solveE sortQue f n p vs eqs =
+    let solve solveE sortQue lim f n p vs eqs =
 
         eqs 
         |> List.collect (fun e -> e |> Equation.findName (n |> Variable.Name.createExc))
@@ -73,7 +73,7 @@ module Api =
             let vr' = 
                 match p with
                 | VRD.Vals -> 
-                    vs 
+                    vs
                     |> Set.ofList
                     |> ValueRange.ValueSet
                 | _ ->
@@ -99,8 +99,26 @@ module Api =
 
                 |> Variable.setValueRange vr
                 |> fun vr ->
-                    vr |> Variable.count |> sprintf "setting %i values" |> f
-                    vr
+                    match lim with
+                    | Some l ->
+                        if vr |> Variable.count > l then
+                            vr
+                            |> Variable.getValueRange
+                            |> ValueRange.getValueSet
+                            |> Set.toList
+                            |> List.take l
+                            |> Set.ofList
+                            |> ValueRange.createValueSet
+                            |> Variable.setValueRange vr
+                        else vr
+                    | None -> vr
+                    |> fun vr -> 
+                        vr 
+                        |> Variable.count 
+                        |> sprintf "setting %s with %i values" (vr |> Variable.getName |> Name.toString)
+                        |> f
+                        
+                        vr
 
             eqs 
             |> Solver.solve f solveE sortQue vr'

@@ -87,9 +87,14 @@ module Solver =
                 |> List.head
                 |> fun e ->
                     e
-                    |> Equation.Dto.toDto
-                    |> Equation.Dto.toString
-                    |> sprintf "loop %i with max count %i: %s" n (e |> Equation.countProduct)
+                    |> Equation.toVars
+                    |> List.map (fun v ->
+                        v
+                        |> Variable.count
+                        |> sprintf "%s: [%i]" (v.Name |> Variable.Name.toString)
+                    )
+                    |> String.concat ", "
+                    |> sprintf "loop with max count [%i]: %s" (e |> Equation.countProduct)
                     |> f
 
             match que with
@@ -110,15 +115,11 @@ module Solver =
                     // equations) so start new
                     | Changed vars ->
                         let que =
-                            let rpl, rst = (tail @ acc) |> replace vars
+                            let rpl, rst = (que @ acc) |> replace vars
                             loop (n + 1) (rpl |> sortQue) rst
                             |> sortQue
                         
-                        [ eq ]
-                        |> replace vars
-                        |> function
-                        | (rpl, rst) -> rpl @ rst
-                        |> loop (n + 1) que  
+                        loop (n + 1) que []
 
                     // Equation did not in fact change, so put it to
                     // the accumulated equations and go on with the rest
