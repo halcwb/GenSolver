@@ -9,7 +9,9 @@ module Equation =
 
     open Informedica.GenSolver.Utils
 
-    module VAR = Variable
+    module ValueRange = Variable.ValueRange
+
+    type Variable = Variable.Variable
     
     /// An equation is either a `ProductEquation`
     /// or a `Sumequation`, the first variable is the
@@ -17,18 +19,20 @@ module Equation =
     /// equation, the second part are the independent
     /// variables in the equation
     type Equation = 
-        | ProductEquation of VAR.Variable * VAR.Variable list
-        | SumEquation     of VAR.Variable * VAR.Variable list
+        | ProductEquation of Variable * Variable list
+        | SumEquation     of Variable * Variable list
 
-    /// Error messages
-    type Message = 
-        | DuplicateVariables of VAR.Variable list
+    module Exception =
 
-    /// Equation exception
-    exception EquationException of Message
+        /// Error messages
+        type Message = 
+            | DuplicateVariables of Variable list
 
-    /// Raise an `EquationException` with `Message` `m`.
-    let raiseExc m = m |> EquationException |> raise
+        /// Equation exception
+        exception EquationException of Message
+
+        /// Raise an `EquationException` with `Message` `m`.
+        let raiseExc m = m |> EquationException |> raise
 
     /// Create an `Equation` with an **y** and
     /// **xs**. Fails if a variable is added more
@@ -39,7 +43,7 @@ module Equation =
         let vars = y::xs
         match vars |> List.filter (fun v -> vars |> List.filter ((=) v) |> List.length > 1) with
         | [] -> (y, xs) |> c |> succ
-        | duplicates -> duplicates |> DuplicateVariables |> fail
+        | duplicates -> duplicates |> Exception.DuplicateVariables |> fail
 
     /// Create an `ProductEquation` with an **y** and
     /// **xs**. Fails if a variable is added more
@@ -54,12 +58,12 @@ module Equation =
     /// Create an `ProductEquation` with an **y** and
     /// **xs**. Fails if a variable is added more
     /// than one time raising an exception.
-    let createProductEqExc = createProductEq id raiseExc 
+    let createProductEqExc = createProductEq id Exception.raiseExc 
 
     /// Create an `SumEquation` with an **y** and
     /// **xs**. Fails if a variable is added more
     /// than one time raising an exception.
-    let createSumEqExc = createSumEq id raiseExc
+    let createSumEqExc = createSumEq id Exception.raiseExc
 
     /// Apply **fp** to a `ProductEquation` and
     /// **fs** to a `SumEquation`.
@@ -89,7 +93,8 @@ module Equation =
         e
         |> toVars
         |> List.fold (fun acc v ->
-            (v |> Variable.count) * acc
+            let c = v |> Variable.count
+            (if c = 0 then 1 else c) * acc
         ) 1
 
 
@@ -98,8 +103,8 @@ module Equation =
     /// non zero values.
     let nonZeroOrNegative e =
         let set c y xs =
-            let y' = y |> VAR.setNonZeroOrNegative
-            let xs' = xs |> List.map VAR.setNonZeroOrNegative
+            let y' = y |> Variable.setNonZeroOrNegative
+            let xs' = xs |> List.map Variable.setNonZeroOrNegative
             (y', xs') |> c 
         let fp = set ProductEquation
         let fs = set SumEquation
@@ -107,7 +112,7 @@ module Equation =
 
     /// Check whether an `Equation` contains
     /// a `Variable` **v**
-    let contains v = toVars >> (List.exists (VAR.eqName v))
+    let contains v = toVars >> (List.exists (Variable.eqName v))
 
     /// Check whether `Equation`s 
     /// **eq1** and **eq2** are equal
@@ -115,7 +120,7 @@ module Equation =
         let vrs1 = eq1 |> toVars
         let vrs2 = eq2 |> toVars
         vrs1 |> List.forall (fun vr -> 
-            vrs2 |> List.exists (VAR.eqName vr)) &&
+            vrs2 |> List.exists (Variable.eqName vr)) &&
         ((eq1 |> isProduct) && (eq2 |> isProduct) ||
          (eq1 |> isSum)     && (eq2 |> isSum))
 
@@ -125,7 +130,7 @@ module Equation =
     let find vr eq =
         eq
         |> toVars
-        |> List.filter (fun vr' -> vr' |> VAR.getName = (vr |> VAR.getName))
+        |> List.filter (fun vr' -> vr' |> Variable.getName = (vr |> Variable.getName))
 
     /// Find a `Variable` with `Name`
     /// **n** in an `Equation` **eq**
@@ -133,13 +138,13 @@ module Equation =
     let findName n eq =
         eq
         |> toVars
-        |> List.filter (fun vr -> vr |> VAR.getName = n)
+        |> List.filter (fun vr -> vr |> Variable.getName = n)
 
     /// Replace a `Variable` **v** in the 
     /// `Equation` **e**.
     let replace v e =
         let r c v vs =
-            let vs = vs |> List.replace ((VAR.eqName) v) v
+            let vs = vs |> List.replace ((Variable.eqName) v) v
             c id (fun _ -> e) ((vs |> List.head), (vs|> List.tail))
         let fp y xs = r createProductEq v (y::xs)
         let fs y xs = r createSumEq v (y::xs)
@@ -149,7 +154,8 @@ module Equation =
     let isSolved = function
         | ProductEquation (y, xs) 
         | SumEquation (y, xs) ->
-            [y] @ xs |> List.forall VAR.isSolved
+            [y] @ xs |> List.forall Variable.isSolved
+
 
     // Check whether an equation will change by calc
     // This is not the same as `isSolved`!! If all 
@@ -158,8 +164,9 @@ module Equation =
     let isSolvable = function 
         | ProductEquation (y, xs)
         | SumEquation (y, xs) ->
-            ([y] @ xs |> List.exists VAR.isSolvable) &&
-            ([y] @ xs |> List.forall VAR.isUnrestricted |> not)
+            ([y] @ xs |> List.exists Variable.isSolvable) &&
+            ([y] @ xs |> List.forall Variable.isUnrestricted |> not)
+
 
 
     /// Solve an equation **e**, return a list of
@@ -207,3 +214,82 @@ module Equation =
         | [] -> []
         | _  -> loop op1 op2 y xs  []
 
+
+    module Dto =
+
+        type VariableDto = Variable.Dto.Dto
+        type VariableMessage = Variable.Dto.Message
+
+        /// `Dto` for an `Equation`
+        type Dto = { Vars: VariableDto[]; IsProdEq: bool }
+
+        /// `Message` type for failures
+        type Message =
+            | NoVarsInEquation 
+            | EquationMessage of Exception.Message
+            | VariableMessage of VariableMessage
+
+        /// `DtoException type 
+        exception DtoException of Message
+
+        /// Raise a `DtoException` with `Message` **m**
+        let raiseExc m = m |> DtoException |> raise
+
+        /// Create a `Dto` with `vars` (variable dto array)
+        /// that is either a `ProductEquation` or a `SumEquation`
+        let create isProd vars  = { Vars = vars; IsProdEq = isProd }
+
+        /// Create a `ProductEquation` `Dto`
+        let createProd = create true
+
+        /// Create a `SumEquation` `Dto`
+        let createSum  = create false
+
+        /// Return the `string` representation of a `Dto`
+        let toString (dto: Dto) = 
+            let op = if dto.IsProdEq then "*" else "+"
+            let varToString = Variable.Dto.toString
+
+            match dto.Vars |> Array.toList with
+            | [] -> ""
+            | _::[] -> ""
+            | y::xs -> 
+                let s = 
+                    sprintf "%s = " (y |> varToString) + 
+                    (xs |> List.fold (fun s v -> s + (v |> varToString) + " " + op + " ") "")
+                s.Substring(0, s.Length - 2)
+
+        /// Helper function to create a `Variable` from a **dto**
+        let fromVarDtoExc dto = 
+            try 
+                dto |> Variable.Dto.fromDtoExc 
+            with 
+            | Variable.Dto.DtoException(m) -> m |> VariableMessage |> raiseExc
+
+        /// Create a `Dto` and raise an exception if it fails
+        let fromDtoExc dto =
+            let succ = id
+            let fail = raiseExc
+
+            match dto.Vars |> Array.toList with
+            | [] -> NoVarsInEquation |> fail
+            | y::xs ->
+                let y = y |> fromVarDtoExc
+                let e = (y, xs |> List.map fromVarDtoExc)
+            
+                if dto.IsProdEq then 
+                    e 
+                    |> createProductEq succ (fun m -> m |> EquationMessage |> fail)
+                else 
+                    e 
+                    |> createSumEq succ (fun m -> m |> EquationMessage |> fail)
+
+        /// Create a `Dto` from an `Equation` **e**
+        let toDto e =
+            let c isProd y xs =
+                { Vars = y::xs |> List.map Variable.Dto.toDto |> List.toArray; IsProdEq = isProd }
+            
+            let fp = c true 
+            let fs = c false 
+            
+            e |> apply fp fs

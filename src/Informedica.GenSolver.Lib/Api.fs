@@ -1,23 +1,24 @@
-﻿namespace Informedica.GenSolver
+﻿namespace Informedica.GenSolver.Lib
 
 /// Public funtions to use the library
 module Api =
 
     open System
     open Informedica.GenSolver.Utils
+    open Informedica.GenUtils.Lib.BCL
 
-    module VD = Informedica.GenSolver.Lib.Dtos.Variable
-    module VR = Informedica.GenSolver.Lib.Variable  
-    module ED = Informedica.GenSolver.Lib.Dtos.Equation
-    module SV = Informedica.GenSolver.Lib.Solver
-    module EQ = Informedica.GenSolver.Lib.Equation
+    module VRD = Informedica.GenSolver.Lib.Variable.Dto
+    module EQD = Informedica.GenSolver.Lib.Equation.Dto
+    
+    module ValueRange = Variable.ValueRange 
+    
 
     /// Initialize the solver returning a set of equations
     let init eqs = 
         let notempty = String.IsNullOrWhiteSpace >> not
         let prodEqs, sumEqs = eqs |> List.partition (String.contains "*")
-        let createProdEqs = List.map (ED.createProd >> ED.fromDtoExc)
-        let createSumEqs  = List.map (ED.createSum  >> ED.fromDtoExc)
+        let createProdEqs = List.map (EQD.createProd >> EQD.fromDtoExc)
+        let createSumEqs  = List.map (EQD.createSum  >> EQD.fromDtoExc)
 
         let parse eqs op = 
             eqs 
@@ -25,7 +26,7 @@ module Api =
             |> List.map (Array.collect (String.splitAt op))
             |> List.map (Array.map String.trim)
             |> List.map (Array.filter notempty)
-            |> List.map (Array.map VD.createNew)
+            |> List.map (Array.map VRD.createNew)
             
         (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
 
@@ -38,13 +39,21 @@ module Api =
             eqs 
             |> List.sortBy (fun e ->
                 e 
-                |> EQ.toVars
+                |> Equation.toVars
                 |> List.head
-                |> VR.getName)
+                |> Variable.getName)
 
-        for e in eqs |> List.map ED.toDto do 
-            sprintf "%s" (e |> ED.toString) |> f
+        "equations result:\n" |> f
+        eqs
+        |> List.map EQD.toDto
+        |> List.iteri (fun i dto ->
+            dto
+            |> EQD.toString
+            |> sprintf "%i.\t%s" i
+            |> f
+        )
         "-----" |> f 
+
         eqs    
 
     /// Solve an `Equations` list with
@@ -54,31 +63,56 @@ module Api =
     /// * p: the property of the variable to be updated
     /// * vs: the values to update the property of the variable
     /// * eqs: the list of equations to solve
-    let solve solveE f n p vs eqs =
+    let solve solveE sortQue f n p vs eqs =
+
         eqs 
-        |> List.collect (fun e -> e |> EQ.findName (n |> VR.Name.createExc))
+        |> List.collect (fun e -> e |> Equation.findName (n |> Variable.Name.createExc))
         |> function
         | vr::_ ->
-            sprintf "Setting variable %s %s with %s" n p (vs |> List.map BigRational.toString |> String.concat ", ") 
-            |> f
 
             let vr' = 
-                vr
-                |> VD.toDto
-                |> VD.setProp p vs
-                |> VD.fromDtoExc
+                match p with
+                | VRD.Vals -> 
+                    vs 
+                    |> Set.ofList
+                    |> ValueRange.ValueSet
+                | _ ->
+                    match vs with
+                    | [v] ->
+                        match p with
+                        | VRD.Vals -> "already matched" |> failwith
+                        | VRD.Incr -> 
+                            "not supported yet" |> failwith
+                        | VRD.MinIncl -> v |> ValueRange.minRange true 
+                        | VRD.MinExcl -> v |> ValueRange.minRange true 
+                        | VRD.MaxIncl -> v |> ValueRange.maxRange true 
+                        | VRD.MaxExcl -> v |> ValueRange.maxRange true 
+                        | VRD.NoProp ->
+                            p
+                            |> sprintf "property %s is not supported"
+                            |> failwith
+                        |> ValueRange.Range
+                    | _ -> 
+                        p
+                        |> sprintf "setting of multiple values is not supported for this prop: %s"
+                        |> failwith
+
+                |> Variable.setValueRange vr
+                |> fun vr ->
+                    vr |> Variable.count |> sprintf "setting %i values" |> f
+                    vr
 
             eqs 
-            |> SV.solve solveE vr'
+            |> Solver.solve f solveE sortQue vr'
             |> printEqs f
 
         | _ -> eqs
 
-    /// Make a list of `Equation`
+    /// Make a list of `EQD`
     /// to contain only positive
     /// values as solutions
     let nonZeroNegative eqs =
         eqs 
-        |> List.map EQ.nonZeroOrNegative
+        |> List.map Equation.nonZeroOrNegative
 
 

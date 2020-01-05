@@ -11,7 +11,6 @@
     <Compile Include="Variable.fs" />
     <Compile Include="Equation.fs" />
     <Compile Include="Solver.fs" />
-    <Compile Include="Dtos.fs" />
     <Compile Include="Api.fs" />
     <None Include="Scripts/load-project-release.fsx" />
     <None Include="Scripts\DrugExample.fsx" />

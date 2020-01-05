@@ -16,11 +16,12 @@ open Informedica.GenSolver.Utils
 open MathNet.Numerics
 
 module Api = Informedica.GenSolver.Api
+module Solver = Informedica.GenSolver.Lib.Solver
 
 let procss s = "> " + s + " </br> "|> String.replace "*" "\*" |> printfn "%s"
 
 let printEqs = Api.printEqs procss
-let solve    = Api.solve procss
+let solve    = Api.solve (Solver.memSolve Solver.solveEquation) procss
 let init     = Api.init
 let nonZeroNegative = Api.nonZeroNegative
 
@@ -30,21 +31,28 @@ let add = " + "
 
 ["A" + eqs + "B"]
 |> Api.init
-|> Api.solve (printfn "%s") "A" "foo" [1N]
+|> solve "A" "foo" [1N]
 
 // Test set min smaller than incr
 ["A"]
 |> Api.init
-|> Api.solve (printfn "%s") "A" "incr" [1N]
-|> Api.solve (printfn "%s") "A" "minincl" [ 1N / 10N ]
+|> solve "A" "incr" [1N]
+|> solve "A" "minincl" [ 1N / 10N ]
+
+// Test set min smaller than incr
+["A"]
+|> Api.init
+|> solve "A" "incr" [1N]
+|> solve "A" "vals" [1N / 10N]
+
 
 // Test sum equation
 ["a" + eqs + "b" + add + "c"]
 |> Api.init
 |> Api.nonZeroNegative
-|> Api.solve (printfn "%s") "a" "vals" [5N]
-|> Api.solve (printfn "%s") "b" "incr" [1N]
-|> Api.solve (printfn "%s") "c" "vals" [2N]
+|> solve "a" "vals" [5N]
+|> solve "b" "incr" [1N]
+|> solve "c" "vals" [2N]
 
 
 // Test sum equation and product equation
@@ -55,7 +63,7 @@ let add = " + "
 ]
 |> Api.init
 |> Api.nonZeroNegative
-|> Api.solve (printfn "%s") "a" "vals" [5N]
-|> Api.solve (printfn "%s") "b" "incr" [1N]
-
+|> solve "a" "vals" [5N]
+|> solve "b" "incr" [1N]
+|> solve "b" "vals" [5N]
 

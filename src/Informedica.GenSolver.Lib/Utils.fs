@@ -1,81 +1,11 @@
 ﻿namespace Informedica.GenSolver.Utils
 
 
-
-/// Helper functions for `System.String`
-module String = 
-
-    open System
-    
-    module UT = Informedica.GenUtils.Lib.BCL.String
-
-    let apply = UT.apply
-    
-    let get = UT.get
-
-    let splitAt = UT.splitAt
-
-    let contains = UT.contains
-
-    let trim = UT.trim
-
-    let toLower = UT.toLower
-
-    let length = UT.length
-
-    let isNullOrWhiteSpace = UT.isNullOrWhiteSpace
-
-    let replace = UT.replace
-
-
 /// Helper functions for `BigRational`
 module BigRational = 
 
-    module BR = Informedica.GenUtils.Lib.BCL.BigRational
+    open Informedica.GenUtils.Lib.BCL.BigRational
     
-    let apply= BR.apply
-
-    let get = BR.get
-
-    let parse = BR.parse
-
-    let fromInt = BR.fromInt
-
-    let tryParse = BR.tryParse
-
-    let gcd = BR.gcd
-
-    let toString = BR.toString
-
-    /// Convert an optional `Value` to a `string`.
-    /// If `None` then return empty `string`.
-    let optToString = BR.optToString
-
-    /// Convert `n` to a multiple of `d`.
-    let toMultipleOf = BR.toMultipleOf
-
-    /// Checks whether `v` is a multiple of `incr`
-    let isMultiple = BR.isMultiple
-
-    let zero = BR.zero
-
-    let one = BR.one
-
-    let two = BR.two
-
-    let three = BR.three
-
-    /// Check whether the operator is subtraction
-    let opIsSubtr = BR.opIsSubtr
-
-    /// Check whether the operator is addition
-    let opIsAdd = BR.opIsAdd
-
-    /// Check whether the operator is multiplication
-    let opIsMult = BR.opIsMult
-
-    /// Check whether the operator is divsion
-    let opIsDiv = BR.opIsDiv
 
     /// Match an operator `op` to either
     /// multiplication, division, addition

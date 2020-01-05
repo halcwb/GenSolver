@@ -17,6 +17,8 @@ module Variable =
     /// Funcions and type to handle `Name` that represents the name of a `Variable`.
     module Name =
 
+        open Informedica.GenUtils.Lib.BCL
+
         // #region ---- TYPES -----
 
         /// Represents a non empty/null string identifying a `Variable`.
@@ -73,10 +75,7 @@ module Variable =
     /// * `ValueRange`
     module ValueRange =
 
-        open System.Collections.Generic
-        open Informedica.GenSolver.Utils
-
-        module BR = BigRational
+        open Informedica.GenUtils.Lib.BCL
 
         // #region ---- TYPES ----
            
@@ -97,7 +96,7 @@ module Variable =
         /// The increment in a `Range`. 
         /// Increment has to be a non zero
         /// or negative value
-        type Increment = Increment of BigRational
+        type Increment = Increment of BigRational Set
 
         /// `ValueRange` represents a discrete set of 
         /// rational numbers.
@@ -129,7 +128,10 @@ module Variable =
         /// Failure messages.
         type Message =
             | MinLargerThanMax of Minimum * Maximum
-            | ZeroOrNegativeIncrement of BigRational
+            | ZeroOrNegativeIncrement of BigRational list
+            | CannotCalculateValuesetAndIncrement
+            | NotAValidOperator
+            | EmptyValueSet
              
         /// `ValueRange` exception type
         exception ValueRangeException of Message
@@ -214,7 +216,15 @@ module Variable =
             let fMin  = function | None -> fTrue  | Some(MinIncl m) -> (<=) m | Some(MinExcl m) -> (<) m
             let fMax  = function | None -> fTrue  | Some(MaxIncl m) -> (>=) m | Some(MaxExcl m) -> (>) m
 
-            let fIncr = function | None -> fTrue  | Some(Increment i) -> BR.isMultiple i 
+            let fIncr i v = 
+                match i with
+                | None              -> true  
+                | Some(Increment i) -> 
+                    i 
+                    |> Set.exists (fun i -> 
+                        v 
+                        |> BigRational.isMultiple i
+                    )
 
             v |> fIncr incr &&
             v |> fMin min &&
@@ -298,15 +308,15 @@ module Variable =
         // Calculate `Minimum` as a multiple of `Increment` **incr**
         let minMultipleOf incr min =
             let n = match min with | MinIncl m | MinExcl m -> m 
-            let d = incr |> incrToValue
-            let n' = n |> BR.toMultipleOf d
+            let d = incr |> incrToValue |> Set.minElement
+            let n' = n |> BigRational.toMultipleOf d
             if min |> isMinExcl && n' <= n then n' + d else n'
 
         // Calculate `Maximum` **max** as a multiple of **incr**
         let maxMultipleOf incr max =
             let n = match max with | MaxIncl m | MaxExcl m -> m 
-            let d = incr |> incrToValue
-            let n' = n |> BR.toMultipleOf d
+            let d = incr |> incrToValue |> Set.maxElement
+            let n' = n |> BigRational.toMultipleOf d
             if max |> isMaxExcl && n' >= n then n' - d else n'
 
         /// Create a set of `BigRational` using **min**, **incr** and a **max**.
@@ -315,7 +325,14 @@ module Variable =
             let max' = match max with | MaxIncl m | MaxExcl m -> m 
             let incr' = incr |> incrToValue
 
-            let vs = [min'..incr'..max'] |> Set.ofList
+            let vs = 
+                [
+                    for i in incr' do
+                        [ min'..i..max' ]
+                ]
+                |> List.collect id
+                |> Set.ofList
+
             // Remove the maximimum value if it equals to maximum when maximum is exclusive
             if vs |> Set.isEmpty |> not && 
                max |> isMaxExcl &&
@@ -327,6 +344,11 @@ module Variable =
         /// Create a string (to print) representation of
         /// a `ValueRange`. 
         let print unr vals min minincl incr max maxincl = 
+
+            let printVals vals =
+                let vals = vals |> List.sort |> List.map BigRational.toString
+                "[" + (vals |> List.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
+
             let printRange min incr max =
                 if unr then "<..>"
                 else
@@ -334,16 +356,12 @@ module Variable =
                     let right = if maxincl then "]" else ">"
 
                     match min, incr, max with
-                    | Some min, None, None          -> sprintf "%s%A..>" left min
-                    | Some min, None, Some max      -> sprintf "%s%A..%A%s" left min max right
-                    | None,     None, Some max      -> sprintf "<..%A%s" max right
-                    | Some min, Some incr, None     -> sprintf "%s%A..%A..>" left min incr 
-                    | None,     Some incr, Some max -> sprintf "<..%A..%A%s" incr max right
+                    | Some min, _, None     when incr |> List.isEmpty -> sprintf "%s%A..>" left min
+                    | Some min, _, Some max when incr |> List.isEmpty -> sprintf "%s%A..%A%s" left min max right
+                    | None,     _, Some max when incr |> List.isEmpty -> sprintf "<..%A%s" max right
+                    | Some min, incr, None     -> sprintf "%s%A..%A..>" left min (incr |> printVals) 
+                    | None,     incr, Some max -> sprintf "<..%A..%A%s" incr max right
                     | _ -> "[]"
-
-            let printVals vals =
-                let vals = vals |> List.sort |> List.map BR.toString
-                "[" + (vals |> List.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
 
             let vals = 
                 if vals |> List.isEmpty |> not then vals |> printVals
@@ -355,7 +373,7 @@ module Variable =
         /// Convert a `ValueRange` to a `string`.
         let toString vr =
             let fVs vs = 
-                print false (vs |> Set.toList) None false None None false
+                print false (vs |> Set.toList) None false [] None false
             
             let fRange =
                 let print min minincl incr max maxincl = print false [] min minincl incr max maxincl
@@ -365,7 +383,7 @@ module Variable =
                         match min with
                         | MinIncl v -> v |> Some, true
                         | MinExcl v -> v |> Some, false  
-                    print min minincl None None false
+                    print min minincl [] None false
 
                 let fMax max =
                     let max, maxincl = 
@@ -373,7 +391,7 @@ module Variable =
                         | MaxIncl v -> v |> Some, true
                         | MaxExcl v -> v |> Some ,false  
 
-                    print None false None max maxincl
+                    print None false [] max maxincl
 
                 let fMinIncr (min, incr)  = 
                     let min, minincl = 
@@ -381,7 +399,7 @@ module Variable =
                         | MinIncl v -> v |> Some, true
                         | MinExcl v -> v |> Some ,false  
 
-                    let incr = incr |> incrToValue |> Some
+                    let incr = incr |> incrToValue |> Set.toList
                 
                     print min minincl incr None false
 
@@ -391,7 +409,7 @@ module Variable =
                         | MaxIncl v -> v |> Some, true
                         | MaxExcl v -> v |> Some ,false  
 
-                    let incr = incr |> incrToValue |> Some
+                    let incr = incr |> incrToValue |> Set.toList
                 
                     print None false incr max maxincl
 
@@ -406,11 +424,11 @@ module Variable =
                         | MaxIncl v -> v |> Some, true
                         | MaxExcl v -> v |> Some ,false  
 
-                    print min minincl None max maxincl
+                    print min minincl [] max maxincl
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax
 
-            let unr = print true [] None false None None false
+            let unr = print true [] None false [] None false
             
             vr |> apply unr fVs fRange 
 
@@ -437,7 +455,23 @@ module Variable =
 
         /// Create an `Increment` that 
         /// is a non zero or negative value
-        let createIncr succ fail i = if i <= 0N then i |> fail else i |> Increment |> succ
+        let createIncr succ fail i = 
+            if i |> List.exists ((>) 0N) || i |> List.isEmpty then i |> fail 
+            else 
+                i
+                |> List.distinct
+                |> List.sort
+                |> List.fold (fun acc v ->
+                    if acc |> List.isEmpty then [v]
+                    else
+                        match acc |> List.tryFind (BigRational.isMultiple v) with
+                        | Some _ -> acc
+                        | None   -> [v] |> List.append acc 
+
+                ) []
+                |> Set.ofList
+                |> Increment 
+                |> succ
 
         /// Create a `Minimum` `Range` that is 
         /// either inclusive or exclusive.
@@ -475,16 +509,17 @@ module Variable =
         /// **unr** created an `Unrestricted` `ValueRange` else
         /// create an `empty` `ValueRange`. Pass the result 
         /// to **succ**, if failing a `Message` to **fail**.
-        let create succ fail unr vs min incr max =
+        let create succ fail vs min incr max =
             if vs |> Set.isEmpty then 
                 match min, incr, max with
-                | None,      None,       None      -> (if unr then unrestricted else empty) |> succ
+                | None,      None,       None      -> unrestricted |> succ
                 | Some min', None,       None      -> min' |> Min |> Range |> succ
                 | None,      None,       Some max' -> max' |> Max |> Range |> succ 
                 | Some min', None,       Some max' -> minMaxValueRange succ fail min' max'
                 | Some min', Some incr', None      -> minIncrValueRange min' incr' |> succ
                 | None,      Some incr', Some max' -> incrMaxValueRange incr' max' |> succ
-                | None,      Some incr', None      -> minIncrValueRange (incr' |> incrToValue |> MinIncl) incr' |> succ
+                | None,      Some incr', None      -> 
+                    minIncrValueRange (incr' |> incrToValue |> Set.minElement |> MinIncl) incr' |> succ
                 | Some min', Some incr', Some max' -> minIncrMaxToValueSet min' incr' max' |> succ
 
             else
@@ -533,7 +568,7 @@ module Variable =
         /// a `BigRational` **v**.
         let contains v vr = 
             match vr with
-            | ValueSet vs when vs |> Set.isEmpty -> false
+            | ValueSet vs -> vs |> Set.contains v
             | _ ->
                 let min = vr |> getMin
                 let max = vr |> getMax
@@ -563,7 +598,7 @@ module Variable =
 
                 let fMin min'             = min' |> checkMin (Min >> Range)
                 let fMinIncr (min', incr) = min' |> checkMin (fun m   -> minIncrValueRange m incr)
-                let fIncrMax (incr, max)  = create succ fail false Set.empty (Some min) (Some incr) (Some max)
+                let fIncrMax (incr, max)  = create succ fail Set.empty (Some min) (Some incr) (Some max)
                 let fMinMax (min', max)   = min' |> checkMin (fun min -> minMaxValueRange succ fail min max) 
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax
@@ -589,7 +624,7 @@ module Variable =
                 let fMax max'             = max' |> checkMax (Max >> Range)
                 let fMinMax (min, max')   = max' |> checkMax (fun max -> minMaxValueRange id (fun _ -> vr) min max) 
                 let fIncrMax (incr, max') = max' |> checkMax (fun max -> incrMaxValueRange incr max)
-                let fMinIncr (min, incr) = create succ fail false Set.empty (Some min) (Some incr) (Some max)
+                let fMinIncr (min, incr)  = create succ fail Set.empty (Some min) (Some incr) (Some max)
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax
 
@@ -600,14 +635,22 @@ module Variable =
         let setIncr incr vr =
             let succ = id
             let fail _ = vr
-            let cr = create succ fail false Set.empty
+            let cr = create succ fail Set.empty
+
             // Check whether the new incr is more restrictive than the old incr
             let checkIncr f incr' = 
-                if incr |> incrToValue |> BigRational.isMultiple (incr' |> incrToValue) then 
+                if incr 
+                   |> incrToValue 
+                   |> Set.forall (fun i ->
+                        incr' 
+                        |> incrToValue
+                        |> Set.exists (fun i' -> i |> BigRational.isMultiple i')
+                    ) then 
                     incr |> f
+                
                 else vr
 
-            let unr = minIncrValueRange (createMin true (incr |> incrToValue)) incr
+            let unr = minIncrValueRange (createMin true (incr |> incrToValue |> Set.minElement)) incr
 
             let fValueSet = 
                 let min = vr |> getMin
@@ -648,7 +691,7 @@ module Variable =
             
                 if vs2 |> Set.isEmpty then vs2 |> ValueSet
                 else
-                    create succ fail false vs2 min incr max
+                    create succ fail vs2 min incr max
 
         // #endregion
         
@@ -665,7 +708,7 @@ module Variable =
             let calc c op (x1, incl1) (x2, incl2) = 
                 match x1, x2 with
                 | Some (v1), Some (v2) -> 
-                    if op |> BR.opIsDiv && v2 = 0N then None
+                    if op |> BigRational.opIsDiv && v2 = 0N then None
                     else v1 |> op <| v2 |> c (incl1 && incl2) |> Some
                 | _ -> None
 
@@ -753,21 +796,31 @@ module Variable =
             /// Match the right minmax calcultion
             /// according to the operand
             let calcMinMax = function 
-                | BR.Mult  -> multiplication
-                | BR.Div   -> division
-                | BR.Add   -> addition
-                | BR.Subtr -> subtraction
+                | BigRational.Mult  -> multiplication
+                | BigRational.Div   -> division
+                | BigRational.Add   -> addition
+                | BigRational.Subtr -> subtraction
+                | BigRational.NoMatch ->
+                    NotAValidOperator
+                    |> raiseExc
 
 
         /// Safely calculate **v1** and **v2** using operator **op**,
         /// returns None if operator is division and **v2** is 0.
         let calcOpt op c v1 v2 = 
             match op with
-            | BR.Mult  
-            | BR.Subtr   
-            | BR.Add  -> v1 |> op <| v2 |> c |> Some
+            | BigRational.Mult  
+            | BigRational.Subtr   
+            | BigRational.Add  -> v1 |> op <| v2 |> c |> Some
             // prevent division by zero
-            | BR.Div  -> if v2 <> BR.zero then (v1 |> op <| v2) |> c |> Some else None
+            | BigRational.Div  -> 
+                if v2 <> BigRational.zero then 
+                    (v1 |> op <| v2) |> c |> Some 
+                else None
+            | BigRational.NoMatch ->
+                NotAValidOperator
+                |> raiseExc
+                
 
                        
         /// Calculate an increment with
@@ -778,11 +831,31 @@ module Variable =
             | Some (Increment i1), Some (Increment i2) ->
                 match op with
                 // y.incr = x1.incr * x2.incr
-                | BR.Mult -> i1 * i2  |> Increment|> Some
+                | BigRational.Mult -> 
+                    [
+                        for x in i1 do
+                            for y in i2 do
+                                x * y
+                    ]
+                    |> Set.ofList
+                    |> Increment
+                    |> Some
+
                 // when y = x1 + x2 then y.incr = gcd of x1.incr and x2.incr
-                | BR.Add | BR.Subtr -> BR.gcd i1 i2 |> Increment |> Some
+                | BigRational.Add | BigRational.Subtr -> 
+                    [
+                        for x in i1 do
+                            for y in i2 do
+                                BigRational.gcd x y
+                    ]
+                    |> Set.ofList
+                    |> Increment 
+                    |> Some
+
                 |  _ -> None
+
             | _ -> None
+
 
         /// Applies an infix operator **op**
         /// to `ValueRange` **x1** and **x2**. 
@@ -794,11 +867,12 @@ module Variable =
             let calcOpt = calcOpt op
 
             match x1, x2 with
-            | Unrestricted, Unrestricted -> unrestricted         
+            | Unrestricted, Unrestricted -> unrestricted
             | ValueSet s1, ValueSet s2 ->
                 // When one of the sets does not contain any value then the result of 
                 // of the calculation cannot contain any value either
-                if s1 |> Set.isEmpty || s2 |> Set.isEmpty then empty
+                if s1 |> Set.isEmpty || s2 |> Set.isEmpty then 
+                    EmptyValueSet |> raiseExc
                 else
                     let s1 = new ResizeArray<_>(s1)
                     let s2 = new ResizeArray<_>(s2)
@@ -811,6 +885,53 @@ module Variable =
                     new HashSet<_>(s3, HashIdentity.Structural) 
                     |> Set.ofSeq
                     |> ValueSet   
+
+            // A set with an increment results in a new set of increment
+            | ValueSet s, Range(MinIncr(_, i))
+            | Range(MinIncr(_, i)), ValueSet s 
+
+            | ValueSet s, Range(IncrMax(i, _))
+            | Range(IncrMax(i, _)), ValueSet s 
+
+            | ValueSet s, Range(MinIncr(_, i))
+            | Range(IncrMax(i, _)), ValueSet s 
+
+            | ValueSet s, Range(MinIncr(_, i))
+            | Range(IncrMax(i, _)), ValueSet s ->
+
+                let min1, max1 = x1 |> getMin, x1 |> getMax
+                let min2, max2 = x2 |> getMin, x2 |> getMax
+
+                let min, max = 
+                    let getMin m = 
+                        let incl = 
+                            match m with
+                            | Some v -> v |> isMinIncl
+                            | None   -> false
+                        m |> Option.bind (minToValue >> Some), incl
+
+                    let getMax m = 
+                        let incl = 
+                            match m with
+                            | Some v -> v |> isMaxIncl
+                            | None   -> false
+                        m |> Option.bind (maxToValue >> Some), incl
+
+                    MinMaxCalcultor.calcMinMax op (min1 |> getMin) (max1 |> getMax) (min2 |> getMin) (max2 |> getMax)
+
+                let incr1 = i |> Some
+                let incr2 = 
+                    s
+                    |> Set.toList
+                    |> createIncr (Some) (fun _ -> None)
+
+                let incr = calcIncr op incr1 incr2
+
+                match min, incr, max with
+                | None, None, None -> unrestricted
+                | _ -> create id (fun _ -> empty) Set.empty min incr max
+
+                
             // In any other case calculate min, incr and max
             | _ ->
                 let min1, incr1, max1 = x1 |> getMin, x1 |> getIncr, x1 |> getMax
@@ -837,7 +958,7 @@ module Variable =
 
                 match min, incr, max with
                 | None, None, None -> unrestricted
-                | _ -> create id (fun _ -> empty) false Set.empty min incr max
+                | _ -> create id (fun _ -> empty) Set.empty min incr max
 
 
         // Extend type with basic arrhythmic operations.
@@ -860,7 +981,11 @@ module Variable =
                     | Some m -> vr |> set m | None -> vr 
                 match expr with 
                 | Unrestricted -> y
-                | ValueSet vs  -> y |> setValues vs
+                | ValueSet vs  -> 
+                    if vs |> Set.isEmpty then 
+                        EmptyValueSet
+                        |> raiseExc
+                    else y |> setValues vs
                 | _ ->
                     y 
                     |> set getMin  setMin 
@@ -869,9 +994,10 @@ module Variable =
 
         // #endregion
 
-    module BR = BigRational
-    module N = Name
-    module VR = ValueRange
+    open Informedica.GenUtils.Lib.BCL
+
+    type Name = Name.Name
+    type ValueRange = ValueRange.ValueRange
 
     // #region ---- TYPES ----
 
@@ -883,8 +1009,8 @@ module Variable =
     /// a `ValueSet` or a `Range`.
     type Variable =
         {
-            Name: Name.Name
-            Values: ValueRange.ValueRange
+            Name: Name
+            Values: ValueRange
         }
 
     // #endregion
@@ -903,7 +1029,7 @@ module Variable =
     /// store the result of a `Variable` 
     /// calculation before applying to 
     /// the actual result `Variable`.
-    let createRes = createSucc ("Result" |> N.createExc)
+    let createRes = createSucc ("Result" |> Name.createExc)
 
     // #endregion
 
@@ -925,6 +1051,13 @@ module Variable =
     /// Get the `ValueRange of a `Variable`.
     let getValueRange v = (v |> get).Values
 
+
+    let contains v vr =
+        vr
+        |> getValueRange
+        |> ValueRange.contains v
+
+
     // #endregion
 
     // #region ---- SETTERS -----
@@ -935,13 +1068,20 @@ module Variable =
     /// Apply a `ValueRange` **vr** to
     /// `Variable` **v**.
     let setValueRange v vr = 
-        let vr' = (v |> get).Values != vr
-        { v with Values = vr'}
+        try
+            let vr' = (v |> get).Values != vr
+            { v with Values = vr'}
+        with
+        | e -> 
+            v.Name
+            |> Name.toString
+            |> sprintf "exception: %A\ncannot set value range %s" (e) 
+            |> failwith
 
     /// Set the values to a `ValueRange` 
     /// that prevents zero or negative values.
     let setNonZeroOrNegative v = 
-        let vr = (v |> get).Values |> VR.setMin (BR.zero |> VR.createMin false)
+        let vr = (v |> get).Values |> ValueRange.setMin (BigRational.zero |> ValueRange.createMin false)
         { v with Values = vr }
     
     // #endregion
@@ -949,7 +1089,7 @@ module Variable =
     // #region ---- PROPERTIES ----
 
     /// Get the number of distinct values
-    let count v = v |> getValueRange |> VR.count
+    let count v = v |> getValueRange |> ValueRange.count
 
     /// Checks whether **v1** and **v2** have the 
     /// same `Name`
@@ -959,8 +1099,8 @@ module Variable =
     /// i.e. there is but one possible value or
     /// there are no possible values left.
     let isSolved v = 
-        (v |> count <= 1) &&
-        (v |> getValueRange |> VR.isValueSet)
+        (v |> count = 1) &&
+        (v |> getValueRange |> ValueRange.isValueSet)
 
     /// Checks whether a `Variable` is *solvable*
     /// i.e. can be further restricted to one value
@@ -969,7 +1109,7 @@ module Variable =
 
     /// Checks whether there are no restrictions to
     /// possible values a `Variable` can contain
-    let isUnrestricted = getValueRange >> VR.isUnrestricted
+    let isUnrestricted = getValueRange >> ValueRange.isUnrestricted
 
     /// Apply the operator **op** to **v1** and **v2**
     /// return an intermediate *result* `Variable`.
@@ -993,7 +1133,211 @@ module Variable =
         /// that the resulting y is the same or a more 
         /// restricted version.
         static member (!=) (y, expr) = 
-            if y |> isSolvable then expr |> getValueRange |> setValueRange y
+            if y |> isSolvable then 
+                expr 
+                |> getValueRange 
+                |> setValueRange y
             else y
 
 
+    /// Handle the creation of a `Variable` from a `Dto` and
+    /// vice versa.
+    module Dto =
+
+        open Informedica.GenUtils.Lib.BCL
+    
+        /// The `Dto` representation of a `Variable`
+        type Dto = 
+            { 
+                Name: string
+                Unr: bool
+                Vals: BigRational list
+                Min: BigRational option
+                MinIncl: bool
+                Incr: BigRational list
+                Max: BigRational option
+                MaxIncl: bool 
+            }
+
+        /// Error messages
+        type Message = 
+            | ParseFailure of string
+            | NameMessage of Name.Message
+            | ValueRangeMessage of ValueRange.Message
+
+        /// Dto exception type 
+        exception DtoException of Message
+
+        /// Raises a `DtoException` with `Message` **m**.
+        let raiseExc m = m |> DtoException |> raise
+
+        /// Create a `Dto`
+        let createDto n unr vals min minincl incr max maxincl =  { Name = n; Unr = unr; Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl }
+
+        /// Create an *empty* *new* `Dto` with only a name **n**
+        let createNew n = createDto n true [] None false [] None false
+
+        /// Apply `f` to an `Dto` `d`
+        let apply f (d: Dto) = f d
+
+        /// Apply an array of `vals` to an **dto** 
+        /// making sure the `Unr` is set to `false`.
+        let setVals vals dto = { dto with Unr = false; Vals = vals }
+
+        /// Set a `min` to an **dto** that is either inclusive `incl` true or exclusive `false`
+        let setMin  min incl dto = { dto with Unr = false; Min = min; MinIncl = incl }
+
+        /// Set a `max` to an **dto** that is either inclusive `incl` true or exclusive `false`
+        let setMax  max incl dto = { dto with Unr = false; Max = max; MaxIncl = incl } 
+
+        /// Set an `incr` to a **dto**
+        let setIncr incr dto = { dto with Unr = false; Incr = incr }
+
+        /// Match a string **p** to a field of `Dto`
+        let (|Vals|MinIncl|MinExcl|Incr|MaxIncl|MaxExcl|NoProp|) p =  
+            match p |> String.toLower with
+            | "vals"     -> Vals
+            | "minincl"  -> MinIncl
+            | "minexcl"  -> MinExcl
+            | "incr"     -> Incr
+            | "maxincl"  -> MaxIncl
+            | "maxexcl"  -> MaxExcl
+            | _          -> NoProp
+
+        /// Set a `Dto` member **p** with a value `v` to a `Dto` **dto**.
+        /// If no field can be matched the **dto** is returned unchanged. 
+        let setProp p vs dto =
+            let getVal vs = 
+                match vs with
+                | [v] -> v |> Some
+                | _   -> None
+
+            match p with 
+            | Vals     -> dto |> setVals vs
+            | MinIncl  -> dto |> setMin  (vs |> getVal) true
+            | MinExcl  -> dto |> setMin  (vs |> getVal) false
+            | Incr     -> dto |> setIncr vs  
+            | MaxIncl  -> dto |> setMax  (vs |> getVal) true
+            | MaxExcl  -> dto |> setMax  (vs |> getVal) false
+            | NoProp   -> dto
+
+        /// Return a `string` representation of a `Dto`
+        let toString { Name = name; Unr = unr; Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl } = 
+            let vals = ValueRange.print unr vals min minincl incr max maxincl 
+            sprintf "%s%s" name vals
+    
+        /// Parse a sequence of `string` to
+        /// `BigRational`, return the result 
+        /// to the `succ` continuation or 
+        /// pass a `Message` to the `fail` function
+        let toValueSet succ fail vals =
+            try
+                vals 
+                |> Set.ofSeq
+                |> succ
+            with 
+            | _ -> vals.ToString() |> ParseFailure |> fail
+
+        /// Create a `Variable` from a `Dto` and 
+        /// raise a `DtoException` if this fails.
+        let fromDtoExc (dto: Dto) =
+            let succ = id
+            let fail = raiseExc
+    
+            let n = dto.Name |> Name.create succ (fun m -> m |> NameMessage |> fail)
+    
+            let vs = dto.Vals |> toValueSet succ fail
+
+            let min = dto.Min |> Option.bind (fun v -> v |> ValueRange.createMin dto.MinIncl |> Some)
+            let max = dto.Max |> Option.bind (fun v -> v |> ValueRange.createMax dto.MaxIncl |> Some)
+            let incr = 
+                let faili i = 
+                    i 
+                    |> ValueRange.ZeroOrNegativeIncrement 
+                    |> ValueRangeMessage 
+                    |> fail
+
+                dto.Incr 
+                |> function 
+                | [] -> None
+                | _ ->
+                    dto.Incr
+                    |> ValueRange.createIncr succ faili
+                    |> Some
+
+            let vr = ValueRange.create succ (fun m -> m |> ValueRangeMessage |> fail) vs min incr max
+
+            create succ n vr
+
+        /// Create a `Variable` option from a `Dto` and 
+        /// return `None` when this fails.
+        let fromDtoOpt (dto: Dto) =
+            let succ = Some
+            let fail = Option.none
+
+            let n = dto.Name |> Name.create succ (fun m -> m |> NameMessage |> fail)
+    
+            let vs = 
+                match dto.Vals |> toValueSet succ fail with
+                | Some vs' -> vs' 
+                | None -> Set.empty
+
+            let min = dto.Min |> Option.bind (fun v -> v |> ValueRange.createMin dto.MinIncl |> Some)
+            let max = dto.Max |> Option.bind (fun v -> v |> ValueRange.createMax dto.MaxIncl |> Some)
+
+            let incr = 
+                dto.Incr 
+                |> ValueRange.createIncr succ fail
+
+            let vr = ValueRange.create succ (fun m -> m |> ValueRangeMessage |> fail) vs min incr max
+
+            match n, vr with
+            | Some n', Some vr' -> create succ n' vr'
+            | _ -> None
+
+        /// Create a `Dto` from a `Variable`.
+        let toDto (v: Variable) =
+            let optToString = BigRational.optToString
+
+            let dto = createNew (let (Name.Name n) = v.Name in n)
+
+            let unr = v.Values |> ValueRange.isUnrestricted
+
+            let minincl = 
+                match v.Values |> ValueRange.getMin with
+                | Some m -> m |> ValueRange.isMinExcl |> not | None -> false
+        
+            let maxincl = 
+                match v.Values |> ValueRange.getMax with
+                | Some m -> m |> ValueRange.isMaxExcl |> not | None -> false
+
+            let min  = 
+                v.Values 
+                |> ValueRange.getMin 
+                |> Option.bind (ValueRange.minToValue >> Some) 
+
+            let max  = 
+                v.Values 
+                |> ValueRange.getMax 
+                |> Option.bind (ValueRange.maxToValue >> Some) 
+
+            let incr = 
+                v.Values
+                |> ValueRange.getIncr
+                |> function 
+                | Some i -> i |> ValueRange.incrToValue |> Set.toList
+                | None   -> []
+
+            let vals = 
+                v.Values 
+                |> ValueRange.getValueSet 
+                |> Set.toList
+
+            { dto with 
+                Unr = unr
+                Vals = vals
+                Min = min
+                MinIncl = minincl
+                Incr = incr
+                Max = max
+                MaxIncl = maxincl }
