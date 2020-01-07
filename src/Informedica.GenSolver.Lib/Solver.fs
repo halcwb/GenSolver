@@ -169,11 +169,20 @@ module Solver =
                         let eq = [ eq ] |> replace vars |> fst
                         eq |> printEqs true log |> ignore
 
+                        // find all eqs with vars in acc
                         acc
                         |> replace vars
                         |> function
-                        | (rpl, rst) -> 
-                            let que = tail @ rpl
+                        | (rpl, rst) ->
+                            // recalc que based on replaced vars
+                            let que = 
+                                tail
+                                |> replace vars
+                                |> function 
+                                | (es1, es2) ->
+                                    es1
+                                    |> List.append es2
+                                    |> List.append rpl
 
                             rst
                             |> List.append eq
