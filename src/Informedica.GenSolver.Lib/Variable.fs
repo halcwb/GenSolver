@@ -49,6 +49,14 @@ module HashSet =
 
     let remove v (hs: HashSet<_>) = hs.Remove(v)
 
+    let equals (s1: HashSet<_>) (s2: HashSet<_>) =
+        s1.SetEquals(s2)
+
+
+    let isSubSetOf (s1: HashSet<_>) (s2: HashSet<_>) =
+        s2.IsSubsetOf(s1)
+
+
     module Tests =
         
         let testdeepcopy () = 
@@ -394,15 +402,21 @@ module Variable =
                max' <= vs.MaximumElement then vs.Remove(vs.MaximumElement)
             else 
                 vs
+
             |> HashSet.fromSeq
             |> ValueSet
             
         /// Create a string (to print) representation of
         /// a `ValueRange`. 
-        let print unr vals min minincl incr max maxincl = 
+        let print exact unr vals min minincl incr max maxincl = 
 
             let printVals vals =
-                let vals = vals |> List.sort |> List.map BigRational.toString
+                let vals = 
+                    vals 
+                    |> List.sort 
+                    |> List.map (if exact then BigRational.toString 
+                                 else BigRational.toFloat >> sprintf "%A")
+
                 "[" + (vals |> List.fold (fun s v -> if s = "" then v else s + ", " + v) "") + "]"
 
             let printRange min incr max =
@@ -411,12 +425,26 @@ module Variable =
                     let left  = if minincl then "[" else "<"
                     let right = if maxincl then "]" else ">"
 
+                    let brToStr br = 
+                        if exact then 
+                            br 
+                            |> sprintf "%A"
+                        else 
+                            br 
+                            |> BigRational.toFloat 
+                            |> sprintf "%A"
+
                     match min, incr, max with
-                    | Some min, _, None     when incr |> List.isEmpty -> sprintf "%s%A..>" left min
-                    | Some min, _, Some max when incr |> List.isEmpty -> sprintf "%s%A..%A%s" left min max right
-                    | None,     _, Some max when incr |> List.isEmpty -> sprintf "<..%A%s" max right
-                    | Some min, incr, None     -> sprintf "%s%A..%A..>" left min (incr |> printVals) 
-                    | None,     incr, Some max -> sprintf "<..%A..%A%s" incr max right
+                    | Some min, _, None     when incr |> List.isEmpty -> 
+                        sprintf "%s%s..>" left (min |> brToStr)
+                    | Some min, _, Some max when incr |> List.isEmpty -> 
+                        sprintf "%s%s..%s%s" left (min |> brToStr) (max |> brToStr) right
+                    | None,     _, Some max when incr |> List.isEmpty -> 
+                        sprintf "<..%s%s" (max |> brToStr) right
+                    | Some min, incr, None     -> 
+                        sprintf "%s%s..%s..>" left (min |> brToStr) (incr |> printVals) 
+                    | None,     incr, Some max -> 
+                        sprintf "<..%s..%s%s" (incr |> printVals) (max |> brToStr) right
                     | _ -> "[]"
 
             let vals = 
@@ -427,12 +455,12 @@ module Variable =
             sprintf "%s" vals
 
         /// Convert a `ValueRange` to a `string`.
-        let toString vr =
+        let toString exact vr =
             let fVs vs = 
-                print false (vs |> HashSet.toList) None false [] None false
+                print exact false (vs |> HashSet.toList) None false [] None false
             
             let fRange =
-                let print min minincl incr max maxincl = print false [] min minincl incr max maxincl
+                let print min minincl incr max maxincl = print exact false [] min minincl incr max maxincl
 
                 let fMin min =
                     let min, minincl = 
@@ -484,7 +512,7 @@ module Variable =
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax
 
-            let unr = print true [] None false [] None false
+            let unr = print exact true [] None false [] None false
             
             vr |> apply unr fVs fRange 
 
@@ -736,7 +764,11 @@ module Variable =
             
             if vr |> isEmpty then vr
             else
-                let vs1, min, incr, max = vr |> getValueSet, vr |> getMin, vr |> getIncr, vr |> getMax
+                let vs1, min, incr, max = 
+                    vr |> getValueSet, 
+                    vr |> getMin, 
+                    vr |> getIncr, 
+                    vr |> getMax
                     
                 let vs2 = 
                     if vs1 |> HashSet.isEmpty then
@@ -955,11 +987,14 @@ module Variable =
                     let s3 = new ResizeArray<_>()
                     for x1 in s1 do
                         for x2 in s2 do
-                            match calcOpt id x1 x2 with
-                            | Some v -> s3.Add(v)
-                            | None -> () 
+                            s3.Add(x1 |> op <| x2)
+
+                            // not needed for non zero use case
+                            //match calcOpt id x1 x2 with
+                            //| Some v -> s3.Add(v)
+                            //| None -> () 
                     new HashSet<_>(s3, HashIdentity.Structural) 
-                    |> ValueSet   
+                    |> ValueSet 
 
             // A set with an increment results in a new set of increment
             | ValueSet s, Range(MinIncr(_, i))
@@ -1035,6 +1070,26 @@ module Variable =
                 | _ -> create id (fun _ -> empty) HashSet.empty min incr max
 
 
+
+        // HashSet doesn't have structural equation
+        let equals vr1 vr2 = 
+            match vr1, vr2 with
+            | ValueSet s1, ValueSet s2 ->
+                s1 |> HashSet.equals s2
+            | Range(MinIncr(m1, Increment(s1))), Range(MinIncr(m2, Increment(s2))) ->
+                s1 |> HashSet.equals s2 && m1 = m2
+            | Range(IncrMax(Increment(s1), m1)), Range(IncrMax(Increment(s2), m2)) ->
+                s1 |> HashSet.equals s2 && m1 = m2
+            | _ -> vr1 = vr2
+
+                    
+        let isSubSetOf vr2 vr1 = 
+            match vr1, vr2 with
+            | ValueSet s1, ValueSet s2 ->
+                s1 |> HashSet.isSubSetOf s2
+            | _ -> false
+
+
         // Extend type with basic arrhythmic operations.
         type ValueRange with
 
@@ -1054,12 +1109,14 @@ module Variable =
                     match expr |> get with 
                     | Some m -> vr |> set m 
                     | None -> vr 
+
                 match expr with 
                 | Unrestricted -> y
                 | ValueSet vs  -> 
                     if vs |> HashSet.isEmpty then 
                         EmptyValueSet
                         |> raiseExc
+
                     else y |> setValues vs
                 | _ ->
                     y 
@@ -1302,8 +1359,18 @@ module Variable =
             | NoProp   -> dto
 
         /// Return a `string` representation of a `Dto`
-        let toString { Name = name; Unr = unr; Vals = vals; Min = min; MinIncl = minincl; Incr = incr; Max = max; MaxIncl = maxincl } = 
-            let vals = ValueRange.print unr vals min minincl incr max maxincl 
+        let toString 
+                    exact 
+                    { Name = name
+                      Unr = unr
+                      Vals = vals
+                      Min = min
+                      MinIncl = minincl
+                      Incr = incr
+                      Max = max
+                      MaxIncl = maxincl } = 
+
+            let vals = ValueRange.print exact unr vals min minincl incr max maxincl 
             sprintf "%s%s" name vals
     
         /// Parse a sequence of `string` to

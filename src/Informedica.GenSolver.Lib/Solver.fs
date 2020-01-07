@@ -24,8 +24,8 @@ module Solver =
     /// Solve the equation `e` and return 
     /// the set of equations `es` it belongs 
     /// to either as `Changed` or `Unchanged`
-    let solveEquation e = 
-        let changed = e |> Equation.solve
+    let solveEquation log e = 
+        let changed = e |> Equation.solve log
 
         if changed |> List.length > 0 then 
             changed |> Changed 
@@ -53,17 +53,18 @@ module Solver =
     /// product equation and a sum equation solver
     /// and function to determine whether an 
     /// equation is solved
-    let solve f solveE sortQue eqs =
+    let solve log sortQue vr eqs =
+
+        let solveE = solveEquation log
 
         let rec loop n que acc =
 
             que 
             |> function
-            | [] -> "loop with empty que" |> f
+            | [] -> "loop with empty que" |> log
             | _  ->
                 que
-                |> List.sortByDescending Equation.countProduct
-                |> List.head
+                |> List.last
                 |> fun e ->
                     e
                     |> Equation.toVars
@@ -73,11 +74,20 @@ module Solver =
                         |> sprintf "%s: [%i]" (v.Name |> Variable.Name.toString)
                     )
                     |> String.concat ", "
-                    |> sprintf "loop with max count [%i]: %s" (e |> Equation.countProduct)
-                    |> f
+                    |> sprintf "loop %i with max count [%i]: %s" n (e |> Equation.countProduct)
+                    |> log
+
 
             match que with
-            | [] -> acc
+            | [] -> 
+                match acc |> List.filter (Equation.check >> not) with
+                | []   -> acc
+                | que -> 
+                    que
+                    |> List.length
+                    |> sprintf  "detected %i invalid equations"
+                    |> failwith
+                
             | eq::tail ->
                 // If the equation is already solved, or not solvable 
                 // just put it to  the accumulated equations and go on with the rest
@@ -92,9 +102,18 @@ module Solver =
                     // Equation is changed, so every other equation can 
                     // be changed as well (if changed vars are in the other
                     // equations) so start new
-                    | Changed _ ->
-                        
-                        loop (n + 1) (que @ acc) []
+                    | Changed vars ->
+                        vars
+                        |> List.length
+                        |> sprintf "%i changed vars" 
+                        |> log
+
+                        let que =
+                            que
+                            |> List.append acc
+                            |> sortQue
+
+                        loop (n + 1) que [] 
 
                     // Equation did not in fact change, so put it to
                     // the accumulated equations and go on with the rest
@@ -103,7 +122,12 @@ module Solver =
                         |> List.append acc
                         |> loop (n + 1) tail
 
-        loop 0 (eqs |> sortQue) []
+        eqs 
+        |> List.partition (Equation.contains vr)
+        |> function 
+        | (rpl, rst) -> loop 0 (rpl |> sortQue) rst
+            
+            
     
 
 

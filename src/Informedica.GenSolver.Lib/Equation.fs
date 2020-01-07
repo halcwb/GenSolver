@@ -150,6 +150,7 @@ module Equation =
         let fs y xs = r createSumEq v (y::xs)
         e |> apply fp fs
 
+
     // Check whether an equation is solved
     let isSolved = function
         | ProductEquation (y, xs) 
@@ -168,55 +169,98 @@ module Equation =
             ([y] @ xs |> List.forall Variable.isUnrestricted |> not)
 
 
+    let check e = 
+        let issub op (y : Variable) (xs : Variable list) = 
+            if y.Values |> ValueRange.isValueSet &&
+               xs |> List.map Variable.getValueRange
+                  |> List.forall ValueRange.isValueSet then
+                
+                y.Values
+                |> ValueRange.isSubSetOf (xs |> List.reduce (op)).Values
+
+            else true
+
+        if e |> isSolvable then
+            e
+            |> function
+            | ProductEquation (y, xs) ->
+                xs 
+                |> issub (*) y
+            | SumEquation (y, xs) ->
+                xs 
+                |> issub (+) y
+        else true
+
 
     /// Solve an equation **e**, return a list of
     /// changed `Variable`s. 
-    let solve e =
+    /// ToDo change this to be more consistent with mutable values
+    let solve log e =
+        e
+        |> countProduct
+        |> sprintf "start solving equation with perf hit: %i"
+        |> log
 
-        let rec calc changed op1 op2 y xs rest =
-            match rest with 
-            | []  -> changed, xs
-            | x::tail ->
+        if e |> isSolved then 
+            []
+
+        else
+            let rec calc changed op1 op2 y xs rest =
+                match rest with 
+                | []  -> changed, xs
+                | x::tail ->
+                    let xs'  = xs |> List.filter ((<>) x)
+                    let dpcpy = x |> Variable.deepCopy
+
+                    let x' =
+                        match xs' with
+                        | [] -> x != y
+                        | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
+
+                    let changed = 
+                        let eqs =
+                            x'.Values |> ValueRange.equals dpcpy.Values
+
+                        if eqs then changed else x'::changed
+
+                    tail |> calc changed op1 op2 y (x'::xs')
+
+            let rec loop op1 op2 y xs changed =
+                let x   = xs |> List.head
                 let xs' = xs |> List.filter ((<>) x)
-                let x' =
-                    match xs' with
-                    | [] -> x != y
-                    | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
-
-                let changed = if x' = x then changed else x'::changed
-                tail |> calc changed op1 op2 y (x'::xs')
-
-        let y, xs, op1, op2 =
-            match e with
-            | ProductEquation (y, xs) -> y, xs, (*), (/)
-            | SumEquation     (y, xs) -> y, xs, (+), (-)
-
-        let rec loop op1 op2 y xs changed =
-            let x   = xs |> List.head
-            let xs' = xs |> List.filter ((<>) x)
             
-            // op1 = (*) or (+) and op2 = (/) or (-)
-            // Calculate y = x1 op1 x2 op1 .. op1 xn
-            let ychanged, y' = calc [] op1 op1 x xs' [y]
+                // op1 = (*) or (+) and op2 = (/) or (-)
+                // Calculate y = x1 op1 x2 op1 .. op1 xn
+                let ychanged, y' = calc [] op1 op1 x xs' [y]
             
-            // Replace y with the new y with is in a list
-            let y = y' |> List.head
+                // Replace y with the new y with is in a list
+                let y = y' |> List.head
             
-            // Calculate x1 = y op2 (x2 op1 x3 .. op1 xn)
-            //       and x2 = y op2 (x1 op1 x3 .. op1 xn)
-            //       etc..
-            let xchanged, xs = calc [] op1 op2 y xs xs
+                // Calculate x1 = y op2 (x2 op1 x3 .. op1 xn)
+                //       and x2 = y op2 (x1 op1 x3 .. op1 xn)
+                //       etc..
+                let xchanged, xs = calc [] op1 op2 y xs xs
 
-            // If something has changed restart until nothing changes anymore
-            let changed' = ychanged @ xchanged
-            if changed' |> List.length = 0 then changed 
-            else
-                changed @ changed'
-                |> loop op1 op2 y xs
+                // If something has changed restart until nothing changes anymore
+                match ychanged @ xchanged with
+                | [] -> 
+                    "finished loop equation" |> log
+                    changed
+                | _  ->
+                    "loop over equation" |> log
+                    ychanged
+                    |> List.append xchanged
+                    |> List.append changed
+                    |> loop op1 op2 y xs
             
-        match xs with 
-        | [] -> []
-        | _  -> loop op1 op2 y xs  []
+            let y, xs, op1, op2 =
+                match e with
+                | ProductEquation (y, xs) -> y, xs, (*), (/)
+                | SumEquation     (y, xs) -> y, xs, (+), (-)
+
+            match xs with 
+            | [] -> []
+            | _  -> loop op1 op2 y xs  []
 
 
     module Dto =
@@ -250,9 +294,9 @@ module Equation =
         let createSum  = create false
 
         /// Return the `string` representation of a `Dto`
-        let toString (dto: Dto) = 
+        let toString exact (dto: Dto) = 
             let op = if dto.IsProdEq then "*" else "+"
-            let varToString = Variable.Dto.toString
+            let varToString = Variable.Dto.toString exact
 
             match dto.Vars |> Array.toList with
             | [] -> ""

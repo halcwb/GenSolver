@@ -27,14 +27,31 @@ module Api =
             |> List.map (Array.map String.trim)
             |> List.map (Array.filter notempty)
             |> List.map (Array.map VRD.createNew)
-            
-        (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
+        
+        let eqs =
+            (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
+
+        let vars =
+            eqs 
+            |> List.map Equation.toVars
+            |> List.collect id
+            |> List.distinctBy (Variable.getName)
+
+        // make sure that variables are the same by name
+        eqs
+        |> List.map (fun e ->
+            vars
+            |> List.fold (fun acc v ->
+                acc |> Equation.replace v
+            ) e
+        )
+
 
 
     /// Format a set of equations to print.
     /// Using **f** to allow additional processing
     /// of the string.
-    let printEqs f eqs = 
+    let printEqs exact pf eqs = 
         let eqs = 
             eqs 
             |> List.sortBy (fun e ->
@@ -43,31 +60,27 @@ module Api =
                 |> List.head
                 |> Variable.getName)
 
-        "equations result:\n" |> f
+        "equations result:\n" |> pf
         eqs
         |> List.map EQD.toDto
         |> List.iteri (fun i dto ->
             dto
-            |> EQD.toString
+            |> EQD.toString exact
             |> sprintf "%i.\t%s" i
-            |> f
+            |> pf
         )
-        "-----" |> f 
+        "-----" |> pf 
 
         eqs    
 
-    /// Solve an `Equations` list with
-    ///
-    /// * f: function used to process string message
-    /// * n: the name of the variable to be updated
-    /// * p: the property of the variable to be updated
-    /// * vs: the values to update the property of the variable
-    /// * eqs: the list of equations to solve
-    let solve solveE sortQue lim f n p vs eqs =
+
+    let setVariableValues lim n p vs eqs =
 
         eqs 
         |> List.collect (fun e -> e |> Equation.findName (n |> Variable.Name.createExc))
         |> function
+        | [] -> None
+
         | vr::_ ->
 
             match p with
@@ -105,23 +118,47 @@ module Api =
                         |> Variable.getValueRange
                         |> ValueRange.getValueSet
                         |> HashSet.toList
+                        |> List.sort
                         |> List.take l
                         |> HashSet.ofList
                         |> ValueRange.createValueSet
                         |> Variable.setValueRange vr
+
                     else vr
                 | None -> vr
-                |> fun vr -> 
-                    vr 
-                    |> Variable.count 
-                    |> sprintf "setting %s with %i values" (vr |> Variable.getName |> Name.toString)
-                    |> f
+                |> Some
+
+
+
+
+    /// Solve an `Equations` list with
+    ///
+    /// * f: function used to process string message
+    /// * n: the name of the variable to be updated
+    /// * p: the property of the variable to be updated
+    /// * vs: the values to update the property of the variable
+    /// * eqs: the list of equations to solve
+    let solve sortQue log exact lim n p vs eqs =
+
+        eqs 
+        |> setVariableValues lim n p vs
+        |> function
+        | None -> eqs
+        | Some vr -> 
+            vr 
+            |> Variable.count 
+            |> sprintf "setting %s with %i values" (vr |> Variable.getName |> Name.toString)
+            |> log
+
+            sprintf "equations after setting\n" |> log
+            eqs
+            |> printEqs exact log
+            |> ignore
                         
             eqs 
-            |> Solver.solve f solveE sortQue
-            |> printEqs f
+            |> Solver.solve log sortQue vr
+            |> printEqs exact log
 
-        | _ -> eqs
 
     /// Make a list of `EQD`
     /// to contain only positive
