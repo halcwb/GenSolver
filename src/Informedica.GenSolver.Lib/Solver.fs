@@ -7,8 +7,35 @@ module Solver =
     
     open Informedica.GenSolver.Utils
 
+    module EQD = Equation.Dto
+
     type Variable = Variable.Variable
-     
+    
+    /// Format a set of equations to print.
+    /// Using **f** to allow additional processing
+    /// of the string.
+    let printEqs exact pf eqs = 
+        let eqs = 
+            eqs 
+            |> List.sortBy (fun e ->
+                e 
+                |> Equation.toVars
+                |> List.head
+                |> Variable.getName)
+
+        "equations result:\n" |> pf
+        eqs
+        |> List.map EQD.toDto
+        |> List.iteri (fun i dto ->
+            dto
+            |> EQD.toString exact
+            |> sprintf "%i.\t%s" i
+            |> pf
+        )
+        "-----" |> pf 
+
+        eqs    
+    
 
     /// Checks whether a list of `Equation` **eqs**
     /// contains an `Equation` **eq**
@@ -21,11 +48,41 @@ module Solver =
         | UnChanged
         | Changed   of Variable list
 
+
+    /// Replace a list of `Variable` **vs**
+    /// in a list of `Equation` **es**, return
+    /// a list of replaced `Equation` and a list
+    /// of unchanged `Equation`
+    let replace vars es =
+        let rpl, rst = 
+            es 
+            |> List.partition (fun e -> 
+                vars 
+                |> List.exists (fun v -> 
+                    e 
+                    |> Equation.contains v
+                )
+            )
+
+        vars 
+        |> List.fold (fun acc v -> 
+            acc 
+            |> List.map (Equation.replace v)
+        ) rpl
+        , rst
+
     /// Solve the equation `e` and return 
     /// the set of equations `es` it belongs 
     /// to either as `Changed` or `Unchanged`
     let solveEquation log e = 
-        let changed = e |> Equation.solve log
+        "going to solve equation:\n" |> log
+        [e]
+        |> printEqs true log
+        |> ignore
+
+        let changed = 
+            e 
+            |> Equation.solve log
 
         if changed |> List.length > 0 then 
             changed |> Changed 
@@ -83,7 +140,8 @@ module Solver =
                 match acc |> List.filter (Equation.check >> not) with
                 | []   -> acc
                 | que -> 
-                    que
+                    que 
+                    |> printEqs true log
                     |> List.length
                     |> sprintf  "detected %i invalid equations"
                     |> failwith
@@ -105,15 +163,21 @@ module Solver =
                     | Changed vars ->
                         vars
                         |> List.length
-                        |> sprintf "%i changed vars" 
+                        |> sprintf "%i changed vars"
                         |> log
 
-                        let que =
-                            que
-                            |> List.append acc
-                            |> sortQue
+                        let eq = [ eq ] |> replace vars |> fst
+                        eq |> printEqs true log |> ignore
 
-                        loop (n + 1) que [] 
+                        acc
+                        |> replace vars
+                        |> function
+                        | (rpl, rst) -> 
+                            let que = tail @ rpl
+
+                            rst
+                            |> List.append eq
+                            |> loop (n + 1) que 
 
                     // Equation did not in fact change, so put it to
                     // the accumulated equations and go on with the rest
@@ -123,7 +187,7 @@ module Solver =
                         |> loop (n + 1) tail
 
         eqs 
-        |> List.partition (Equation.contains vr)
+        |> replace [vr]
         |> function 
         | (rpl, rst) -> loop 0 (rpl |> sortQue) rst
             

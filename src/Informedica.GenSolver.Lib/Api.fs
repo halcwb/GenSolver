@@ -28,23 +28,7 @@ module Api =
             |> List.map (Array.filter notempty)
             |> List.map (Array.map VRD.createNew)
         
-        let eqs =
-            (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
-
-        let vars =
-            eqs 
-            |> List.map Equation.toVars
-            |> List.collect id
-            |> List.distinctBy (Variable.getName)
-
-        // make sure that variables are the same by name
-        eqs
-        |> List.map (fun e ->
-            vars
-            |> List.fold (fun acc v ->
-                acc |> Equation.replace v
-            ) e
-        )
+        (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
 
 
 
@@ -86,7 +70,7 @@ module Api =
             match p with
             | VRD.Vals -> 
                 vs
-                |> HashSet.ofList
+                |> Set.ofList
                 |> ValueRange.ValueSet
             | _ ->
                 match vs with
@@ -117,10 +101,10 @@ module Api =
                         vr
                         |> Variable.getValueRange
                         |> ValueRange.getValueSet
-                        |> HashSet.toList
+                        |> Set.toList
                         |> List.sort
                         |> List.take l
-                        |> HashSet.ofList
+                        |> Set.ofList
                         |> ValueRange.createValueSet
                         |> Variable.setValueRange vr
 
@@ -152,8 +136,12 @@ module Api =
 
             sprintf "equations after setting\n" |> log
             eqs
-            |> printEqs exact log
-            |> ignore
+            |> Solver.replace [vr]
+            |> function 
+            | (rpl, rst) ->
+                rpl @ rst
+                |> printEqs exact log
+                |> ignore
                         
             eqs 
             |> Solver.solve log sortQue vr

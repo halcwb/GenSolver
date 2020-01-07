@@ -21,7 +21,7 @@ module Solver = Informedica.GenSolver.Lib.Solver
 let procss s = "> " + s + " </br> "|> String.replace "*" "\*" |> printfn "%s"
 
 let printEqs = Api.printEqs true procss
-let solve    = Api.solve Solver.solveEquation id true procss None
+let solve    = Api.solve id procss true None
 let init     = Api.init
 let nonZeroNegative = Api.nonZeroNegative
 
@@ -87,35 +87,31 @@ let add = " + "
 |> solve "f" "vals" [1N]
 |> solve "a" "vals" [(3N/50N)]
 
-open System.Collections.Generic
-
-let s1 = new HashSet<int>()
-let s2 = new HashSet<int>()
-s1.Add(1)
-
-s1.SetEquals(s2)
-
 
 open Informedica.GenSolver.Lib
 module Name = Variable.Name
 module ValueRange = Variable.ValueRange
 
-let vara, varb =
+let vara =
     [
-        "a"
-        "b"
+        "a" 
     ]
     |> Api.init
-    |> solve "a" "vals" [1N]
-    |> solve "b" "vals" [1N]
+    |> solve "a" "vals" [1N..5N]
     |> function
-    | [e1; e2] ->
-        e1 |> Equation.findName (Name.createExc "a") |> Seq.head ,
-        e2 |> Equation.findName (Name.createExc "b") |> Seq.head
+    | [e1] ->
+        e1 |> Equation.findName (Name.createExc "a") |> Seq.head
+ 
 
-vara = vara
-let varx = vara
-vara.Values <- vara.Values |> ValueRange.setValues (new HashSet<_>())
-(vara.Values |> ValueRange.getValueSet).Add(1N)
+[] |> List.replaceOrAdd (Variable.eqName vara) vara
+let varc =  
+    [1N..2N]
+    |> Set.ofList
+    |> ValueRange.createValueSet 
+    |> Variable.setValueRange vara
+[vara] |> List.replaceOrAdd (Variable.eqName vara) varc
 
-varx = vara
+[ { vara with Name = "b" |> Name.createExc }]
+|> List.replaceOrAdd (Variable.eqName vara) vara
+
+a[31N/500000000; 31/468750000; 31/250000000; 31/234375000; 31/187500000; 93/500000000; 31/156250000] = 1.chloride.Item.DoseAdjust.RateAdjust[31/5000000000000; 31/4687500000000; 31/2500000000000; 31/2343750000000; 31/1875000000000; 93/5000000000000; 31/1562500000000] * 1.dopamin infusion.Adjust.Qty[10000] 

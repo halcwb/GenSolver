@@ -35,6 +35,15 @@ module List =
     let distinct xs = xs |> Seq.ofList |> Seq.distinct |> Seq.toList
 
 
+    let replaceOrAdd pred x xs =
+        if xs |> List.exists pred then
+            xs 
+            |> List.map (fun x' ->
+                if x' |> pred then x else x'
+            )
+        else x::xs
+
+
 /// Helper functions for `Array`
 module Array = 
     

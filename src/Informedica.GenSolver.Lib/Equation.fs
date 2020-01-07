@@ -170,15 +170,19 @@ module Equation =
 
 
     let check e = 
-        let issub op (y : Variable) (xs : Variable list) = 
-            if y.Values |> ValueRange.isValueSet &&
-               xs |> List.map Variable.getValueRange
-                  |> List.forall ValueRange.isValueSet then
+        let issub op (y : Variable) (xs : Variable list) =
+            xs
+            |> function
+            | [] -> true
+            | _  ->
+                if y.Values |> ValueRange.isValueSet &&
+                   xs |> List.map Variable.getValueRange
+                      |> List.forall ValueRange.isValueSet then
                 
-                y.Values
-                |> ValueRange.isSubSetOf (xs |> List.reduce (op)).Values
+                    y.Values
+                    |> ValueRange.isSubSetOf (xs |> List.reduce (op)).Values
 
-            else true
+                else true
 
         if e |> isSolvable then
             e
@@ -189,6 +193,7 @@ module Equation =
             | SumEquation (y, xs) ->
                 xs 
                 |> issub (+) y
+
         else true
 
 
@@ -210,7 +215,6 @@ module Equation =
                 | []  -> changed, xs
                 | x::tail ->
                     let xs'  = xs |> List.filter ((<>) x)
-                    let dpcpy = x |> Variable.deepCopy
 
                     let x' =
                         match xs' with
@@ -218,10 +222,13 @@ module Equation =
                         | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
 
                     let changed = 
-                        let eqs =
-                            x'.Values |> ValueRange.equals dpcpy.Values
-
-                        if eqs then changed else x'::changed
+                        if x = x' then changed 
+                        else 
+                            sprintf "adding %A to changed" (x' |> Variable.getName) 
+                            |> log
+                            
+                            changed 
+                            |> List.replaceOrAdd (Variable.eqName x') x'
 
                     tail |> calc changed op1 op2 y (x'::xs')
 
