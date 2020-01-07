@@ -114,4 +114,29 @@ let varc =
 [ { vara with Name = "b" |> Name.createExc }]
 |> List.replaceOrAdd (Variable.eqName vara) vara
 
-a[31N/500000000; 31/468750000; 31/250000000; 31/234375000; 31/187500000; 93/500000000; 31/156250000] = 1.chloride.Item.DoseAdjust.RateAdjust[31/5000000000000; 31/4687500000000; 31/2500000000000; 31/2343750000000; 31/1875000000000; 93/5000000000000; 31/1562500000000] * 1.dopamin infusion.Adjust.Qty[10000] 
+
+let avals = [31N/500000000N; 31N/468750000N; 31N/250000000N; 31N/234375000N; 31N/187500000N; 93N/500000000N; 31N/156250000N]
+let bvals =[31N/5000000000000N; 31N/4687500000000N; 31N/2500000000000N; 31N/2343750000000N; 31N/1875000000000N; 93N/5000000000000N; 31N/1562500000000N] 
+let cvals = [10000N] 
+
+let avar =
+    avals
+    |> Set.ofList
+    |> ValueRange.createValueSet
+    |> Variable.createSucc ("a" |> Name.createExc)
+
+let bvar =
+    bvals
+    |> Set.ofList
+    |> ValueRange.createValueSet
+    |> Variable.createSucc ("b" |> Name.createExc)
+
+let cvar =
+    cvals
+    |> Set.ofList
+    |> ValueRange.createValueSet
+    |> Variable.createSucc ("c" |> Name.createExc)
+
+(avar, [bvar; cvar]) 
+|> Equation.createProductEqExc
+|> Equation.solve (printfn "%s")
