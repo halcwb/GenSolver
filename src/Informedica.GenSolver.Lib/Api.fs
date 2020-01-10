@@ -222,7 +222,9 @@ module Api =
                 | MaxIncl max, Increment vs
                 | MaxExcl max, Increment vs ->
                     let min = vs  |> Set.minElement
-                    ((max - min) / min) |> BigRational.ToInt32, c 
+                    let n = 
+                        try ((max - min) / min) |> BigRational.ToInt32 with |_ -> Int32.MaxValue
+                    n, c 
                 | _ ->  c |> score
             | None ->   c |> score
 

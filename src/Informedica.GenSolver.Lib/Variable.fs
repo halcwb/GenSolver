@@ -325,14 +325,14 @@ module Variable =
         let minMultipleOf incr min =
             let n = match min with | MinIncl m | MinExcl m -> m 
             let d = incr |> incrToValue |> Set.minElement
-            let n' = n |> BigRational.toMultipleOf d
+            let n' = n |> BigRational.toMinMultipleOf d
             if min |> isMinExcl && n' <= n then n' + d else n'
 
         // Calculate `Maximum` **max** as a multiple of **incr**
         let maxMultipleOf incr max =
             let n = match max with | MaxIncl m | MaxExcl m -> m 
             let d = incr |> incrToValue |> Set.maxElement
-            let n' = n |> BigRational.toMultipleOf d
+            let n' = n |> BigRational.toMaxMultipleOf d
             if max |> isMaxExcl && n' >= n then n' - d else n'            
 
         /// Create a set of `BigRational` using **min**, **incr** and a **max**.

@@ -3,7 +3,8 @@
 
 /// Helper functions for `BigRational`
 module BigRational = 
-
+    
+    open MathNet.Numerics
     open Informedica.GenUtils.Lib.BCL.BigRational
     
 
@@ -18,6 +19,19 @@ module BigRational =
         | _ when op |> opIsAdd   -> Add
         | _ when op |> opIsSubtr -> Subtr
         | _ -> failwith "Operator is not supported"
+
+
+    let toMultipleOf d n  =
+        let m = (n / d) |> BigRational.ToBigInt |> BigRational.FromBigInt
+        if m * d < n then (m + 1N) * d else m * d
+
+    
+    let toMinMultipleOf = toMultipleOf
+
+
+    let toMaxMultipleOf d n =
+        let m = n |> toMultipleOf d
+        if m > n then m - d else m
 
 
 /// Helper functions for `List`
@@ -58,7 +72,5 @@ module Array =
 module Option = 
 
     let none _ = None
-
-
 
 
