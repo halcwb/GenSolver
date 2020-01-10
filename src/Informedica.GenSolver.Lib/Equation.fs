@@ -200,26 +200,43 @@ module Equation =
     /// Solve an equation **e**, return a list of
     /// changed `Variable`s. 
     /// ToDo change this to be more consistent with mutable values
-    let solve log e =
-        e
+    let solve calcValues log eq =
+        eq
         |> countProduct
         |> sprintf "start solving equation with perf hit: %i"
         |> log
 
-        if e |> isSolved then 
+        let runOnce y xs =
+            let c1 =
+                y::xs 
+                |> List.filter (Variable.getValueRange >> ValueRange.isValueSet)
+                |> List.length
+            let c2 =  (y::xs |> List.length)
+            
+            (c2 - c1 <= 1) 
+
+        if eq |> isSolved then 
             []
 
         else
             let rec calc changed op1 op2 y xs rest =
+                sprintf "start calc ..." |> log
+
                 match rest with 
-                | []  -> changed, xs
+                | []  -> 
+                    sprintf "finished calc ..." |> log
+                    changed, xs
                 | x::tail ->
                     let xs'  = xs |> List.filter ((<>) x)
 
                     let x' =
                         match xs' with
-                        | [] -> x != y
-                        | _  -> x != (y |> op2 <| (xs' |> List.reduce op1))
+                        | [] -> if calcValues then x <== y else x ^<== y
+                        | _  -> 
+                            if calcValues then 
+                                x <== (y |> op2 <| (xs' |> List.reduce op1))
+                            else
+                                x ^<== (y |> op2 <| (xs' |> List.reduce op1))
 
                     let changed = 
                         if x = x' then changed 
@@ -232,7 +249,7 @@ module Equation =
 
                     tail |> calc changed op1 op2 y (x'::xs')
 
-            let rec loop op1 op2 y xs changed =
+            let rec loop b op1 op2 y xs changed =
                 let x   = xs |> List.head
                 let xs' = xs |> List.filter ((<>) x)
             
@@ -249,25 +266,39 @@ module Equation =
                 let xchanged, xs = calc [] op1 op2 y xs xs
 
                 // If something has changed restart until nothing changes anymore
+                // or only has to run once
                 match ychanged @ xchanged with
-                | [] -> 
+                | [] ->
                     "finished loop equation" |> log
                     changed
                 | _  ->
-                    "loop over equation" |> log
-                    ychanged
-                    |> List.append xchanged
-                    |> List.append changed
-                    |> loop op1 op2 y xs
+                    ychanged @ xchanged
+                    |> List.fold (fun acc v ->  
+                        acc |> List.replaceOrAdd (Variable.eqName v) v
+                    ) changed
+                    |> fun changed ->
+                        // only run once so now is ready
+                        if b then changed
+                        else
+                            "loop over equation" |> log
+                            let b = runOnce y xs
+                            loop b op1 op2 y xs changed
             
-            let y, xs, op1, op2 =
-                match e with
-                | ProductEquation (y, xs) -> y, xs, (*), (/)
-                | SumEquation     (y, xs) -> y, xs, (+), (-)
-
+            let b, y, xs, op1, op2 =
+                match eq with
+                | ProductEquation (y, xs) -> 
+                    if calcValues then y, xs, (*), (/)
+                    else y, xs, (^*), (^/)
+                | SumEquation     (y, xs) -> 
+                    if calcValues then y, xs, (+), (-)
+                    else y, xs, (^+), (^-)
+                |> fun (y, xs, op1, op2) ->
+                    // run only once when all but one is a value set
+                    runOnce y xs, y, xs, op1, op2
+                        
             match xs with 
             | [] -> []
-            | _  -> loop op1 op2 y xs  []
+            | _  -> loop b op1 op2 y xs  []
 
 
     module Dto =

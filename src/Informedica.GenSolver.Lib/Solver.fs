@@ -32,6 +32,7 @@ module Solver =
             |> sprintf "%i.\t%s" i
             |> pf
         )
+//        sprintf "raw: \n%A" eqs |> pf
         "-----" |> pf 
 
         eqs    
@@ -74,7 +75,7 @@ module Solver =
     /// Solve the equation `e` and return 
     /// the set of equations `es` it belongs 
     /// to either as `Changed` or `Unchanged`
-    let solveEquation log e = 
+    let solveEquation calc log e = 
         "going to solve equation:\n" |> log
         [e]
         |> printEqs true log
@@ -82,7 +83,7 @@ module Solver =
 
         let changed = 
             e 
-            |> Equation.solve log
+            |> Equation.solve calc log
 
         if changed |> List.length > 0 then 
             changed |> Changed 
@@ -110,9 +111,9 @@ module Solver =
     /// product equation and a sum equation solver
     /// and function to determine whether an 
     /// equation is solved
-    let solve log sortQue vr eqs =
+    let solve calc log sortQue vr eqs =
 
-        let solveE = solveEquation log
+        let solveE = solveEquation calc log
 
         let rec loop n que acc =
 
@@ -169,12 +170,12 @@ module Solver =
                         let eq = [ eq ] |> replace vars |> fst
                         eq |> printEqs true log |> ignore
 
-                        // find all eqs with vars in acc
+                        // find all eqs with vars in acc and put these back on que
                         acc
                         |> replace vars
                         |> function
                         | (rpl, rst) ->
-                            // recalc que based on replaced vars
+                            // replace vars in tail
                             let que = 
                                 tail
                                 |> replace vars
