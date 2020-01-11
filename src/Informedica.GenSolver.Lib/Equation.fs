@@ -98,6 +98,20 @@ module Equation =
         ) 1
 
 
+    let toString exact eq = 
+        let op = if eq |> isProduct then "*" else "+"
+        let varToString = Variable.toString exact
+
+        match eq |> toVars with
+        | [] -> ""
+        | _::[] -> ""
+        | y::xs -> 
+            let s = 
+                sprintf "%s = " (y |> varToString) + 
+                (xs |> List.fold (fun s v -> s + (v |> varToString) + " " + op + " ") "")
+            s.Substring(0, s.Length - 2)
+
+
     /// Make sure that the `Variables` in the
     /// `Equation` can only contain positive 
     /// non zero values.
@@ -203,7 +217,7 @@ module Equation =
     let solve calcValues log eq =
         eq
         |> countProduct
-        |> sprintf "start solving equation with perf hit: %i"
+        |> sprintf "start solving equation\n%s\n with perf hit: %i" (eq |> toString true)
         |> log
 
         let runOnce y xs =

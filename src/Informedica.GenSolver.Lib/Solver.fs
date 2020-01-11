@@ -25,10 +25,9 @@ module Solver =
 
         "equations result:\n" |> pf
         eqs
-        |> List.map EQD.toDto
-        |> List.iteri (fun i dto ->
-            dto
-            |> EQD.toString exact
+        |> List.map (Equation.toString exact)
+        |> List.iteri (fun i s ->
+            s
             |> sprintf "%i.\t%s" i
             |> pf
         )
@@ -76,10 +75,6 @@ module Solver =
     /// the set of equations `es` it belongs 
     /// to either as `Changed` or `Unchanged`
     let solveEquation calc log e = 
-        "going to solve equation:\n" |> log
-        [e]
-        |> printEqs true log
-        |> ignore
 
         let changed = 
             e 

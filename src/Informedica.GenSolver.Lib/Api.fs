@@ -94,10 +94,9 @@ module Api =
 
         "equations result:\n" |> pf
         eqs
-        |> List.map EQD.toDto
-        |> List.iteri (fun i dto ->
-            dto
-            |> EQD.toString exact
+        |> List.map (Equation.toString exact)
+        |> List.iteri (fun i s ->
+            s
             |> sprintf "%i.\t%s" i
             |> pf
         )
@@ -204,7 +203,7 @@ module Api =
         let scoreConstraint c cs =
             let score c =
                 match c.Property with
-                | Vals vs -> 
+                | Vals vs -> // vs |> Set.count, c
                     let n = vs |> Set.count
                     if n = 1 then -3, c
                     else n, c
@@ -213,20 +212,22 @@ module Api =
                 | Increment _ -> -4, c
                 | _ ->           -2, c
 
-            match cs 
-                  |> List.tryFind (fun c' ->
-                    c' |> eqsName c &&
-                    c'.Property |> (Props.getIncr >> Option.isSome)) with
-            | Some c' ->
-                match c.Property, c'.Property with
-                | MaxIncl max, Increment vs
-                | MaxExcl max, Increment vs ->
-                    let min = vs  |> Set.minElement
-                    let n = 
-                        try ((max - min) / min) |> BigRational.ToInt32 with |_ -> Int32.MaxValue
-                    n, c 
-                | _ ->  c |> score
-            | None ->   c |> score
+            c |> score
+
+            //match cs 
+            //      |> List.tryFind (fun c' ->
+            //        c' |> eqsName c &&
+            //        c'.Property |> (Props.getIncr >> Option.isSome)) with
+            //| Some c' ->
+            //    match c.Property, c'.Property with
+            //    | MaxIncl max, Increment vs
+            //    | MaxExcl max, Increment vs ->
+            //        let min = vs  |> Set.minElement
+            //        let n = 
+            //            try ((max - min) / min) |> BigRational.ToInt32 with |_ -> Int32.MaxValue
+            //        n, c 
+            //    | _ ->  c |> score
+            //| None ->   c |> score
 
 
         let orderConstraints log cs =
@@ -298,8 +299,8 @@ module Api =
                 |> fun vr ->
                     match c.Limit with
                     | NoLimit -> vr
-                    | MaxLim l -> vr |> lim l false  
-                    | MinLim l -> vr |> lim l true
+                    | MaxLim l -> sprintf "setting limit to max: %A" l |> log;  vr |> lim l false  
+                    | MinLim l -> sprintf "setting limit to min: %A" l |> log;  vr |> lim l true
                 |> Some
             |> function
             | None -> eqs

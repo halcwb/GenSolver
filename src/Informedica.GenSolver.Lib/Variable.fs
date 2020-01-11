@@ -570,13 +570,12 @@ module Variable =
 
 
         let minIncrMaxToRange min incr max =
-            let min' = min |> minMultipleOf incr
-            let max' = max |> maxMultipleOf incr
-            let incr' = incr |> incrToValue
+            let min' = min |> minMultipleOf incr |> createMin true
+            let max' = max |> maxMultipleOf incr |> createMax true
 
+            if min' |> minLTmax max' then (min', max') |> MinLargerThanMax |> raiseExc
 
-            (min' |> createMin true, incr' |> createIncr, max' |> createMax true)
-            |> MinIncrMax
+            (min', incr, max') |> MinIncrMax |> Range
 
 
         /// Create a `ValueRange` using a `ValueSet` **vs**
@@ -604,7 +603,6 @@ module Variable =
                     if calc then minIncrMaxToValueSet min' incr' max' 
                     else 
                         minIncrMaxToRange min' incr' max'
-                        |> Range
 
             | Some vs ->
                 vs
@@ -684,7 +682,9 @@ module Variable =
                 let fMinIncr (min', incr) = min' |> checkMin (fun m   -> minIncrValueRange m incr)
                 let fIncrMax (incr, max)  = create calc None (Some min) (Some incr) (Some max)
                 let fMinMax (min', max)   = min' |> checkMin (fun min -> minMaxValueRange min max) 
-                let fMinIncrMax (min', incr, max) = create calc None (Some min') (Some incr) (Some max)
+                let fMinIncrMax (min', incr, max) = 
+                    min' |> checkMin (fun m -> minIncrMaxToRange m incr max)
+//                    create calc None (Some min') (Some incr) (Some max)
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax fMinIncrMax
 
@@ -708,7 +708,8 @@ module Variable =
                 let fMinMax (min, max')   = max' |> checkMax (fun max -> minMaxValueRange min max) 
                 let fIncrMax (incr, max') = max' |> checkMax (fun max -> incrMaxValueRange incr max)
                 let fMinIncr (min, incr)  = create calc None (Some min) (Some incr) (Some max)
-                let fMinIncrMax (min, incr, max') = create calc None (Some min) (Some incr) (Some max')
+                let fMinIncrMax (min, incr, max') = 
+                    max' |> checkMax (fun m -> minIncrMaxToRange min incr m)
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax fMinIncrMax
 
@@ -747,7 +748,7 @@ module Variable =
                 let fMinIncr (min, incr') = incr' |> checkIncr (fun i -> minIncrValueRange min i) 
                 let fIncrMax (incr', max) = incr' |> checkIncr (fun i -> incrMaxValueRange i max)
                 let fMinIncrMax (min, incr', max) = 
-                    incr' |> checkIncr (fun i -> minIncrMaxToRange min i max |> Range)
+                    incr' |> checkIncr (fun i -> minIncrMaxToRange min i max)
 
                 applyRange fMin fMax fMinIncr fIncrMax fMinMax fMinIncrMax
 
@@ -1009,7 +1010,12 @@ module Variable =
                             | None   -> false
                         m |> Option.bind (maxToValue >> Some), incl
 
-                    MinMaxCalcultor.calcMinMax op (min1 |> getMin) (max1 |> getMax) (min2 |> getMin) (max2 |> getMax)
+                    MinMaxCalcultor.calcMinMax 
+                        op 
+                        (min1 |> getMin) 
+                        (max1 |> getMax) 
+                        (min2 |> getMin) 
+                        (max2 |> getMax)
 
                 let incr1 = i |> Some
                 let incr2 = s |> createIncr |> Some 
@@ -1041,7 +1047,12 @@ module Variable =
                             | None   -> false
                         m |> Option.bind (maxToValue >> Some), incl
 
-                    MinMaxCalcultor.calcMinMax op (min1 |> getMin) (max1 |> getMax) (min2 |> getMin) (max2 |> getMax)
+                    MinMaxCalcultor.calcMinMax 
+                        op 
+                        (min1 |> getMin) 
+                        (max1 |> getMax) 
+                        (min2 |> getMin) 
+                        (max2 |> getMax)
 
                 let incr = calcIncr op incr1 incr2
 
@@ -1109,7 +1120,7 @@ module Variable =
                 let set get set vr = 
                     match expr |> get with 
                     | Some m -> vr |> set m 
-                    | None -> vr 
+                    | None   -> vr 
 
                 match expr with 
                 | Unrestricted -> y
@@ -1173,6 +1184,12 @@ module Variable =
 
     /// Helper function for type inference
     let get = apply id
+
+    let toString exact { Name = n; Values = vs } =
+        vs 
+        |> ValueRange.toString exact
+        |> sprintf "%s %s" (n |> Name.toString) 
+
 
     // #endregion
 
