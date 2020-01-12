@@ -112,32 +112,20 @@ module Solver =
 
         let rec loop n que acc =
 
-            que 
-            |> function
-            | [] -> "loop with empty que" |> log
-            | _  ->
-                que
-                |> List.last
-                |> fun e ->
-                    e
-                    |> Equation.toVars
-                    |> List.map (fun v ->
-                        v
-                        |> Variable.count
-                        |> sprintf "%s: [%i]" (v.Name |> Variable.Name.toString)
-                    )
-                    |> String.concat ", "
-                    |> sprintf "loop %i with max count [%i]: %s" n (e |> Equation.countProduct)
-                    |> log
-
+            Logger.LoopSolverQue
+            |> Logger.createMessage que
+            |> Logger.logInfo log
 
             match que with
             | [] -> 
                 match acc |> List.filter (Equation.check >> not) with
                 | []   -> acc
-                | que -> 
+                | invalid -> 
+                    Logger.InvalidEquationsException
+                    |> Logger.createMessage invalid
+                    |> Logger.logError log
+
                     que 
-                    |> printEqs true log
                     |> List.length
                     |> sprintf  "detected %i invalid equations"
                     |> failwith
@@ -157,13 +145,8 @@ module Solver =
                     // be changed as well (if changed vars are in the other
                     // equations) so start new
                     | Changed vars ->
-                        vars
-                        |> List.length
-                        |> sprintf "%i changed vars"
-                        |> log
 
                         let eq = [ eq ] |> replace vars |> fst
-                        eq |> printEqs true log |> ignore
 
                         // find all eqs with vars in acc and put these back on que
                         acc

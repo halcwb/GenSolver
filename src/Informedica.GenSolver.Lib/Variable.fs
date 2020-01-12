@@ -984,8 +984,6 @@ module Variable =
                     |> Exceptions.raiseExc
 
                 else
-                    let timer = System.Diagnostics.Stopwatch.StartNew()
-                    printfn "start calculating %i with %i" (s1 |> Set.count) (s2 |> Set.count)
                     let s1 = new ResizeArray<_>(s1)
                     let s2 = new ResizeArray<_>(s2)
                     let s3 = new ResizeArray<_>()
@@ -999,9 +997,6 @@ module Variable =
                             //| None -> () 
                     new Set<_>(s3) 
                     |> createValueSet 
-                    |> fun vs ->
-                        printfn "finished calculation in %f sec" timer.Elapsed.TotalSeconds
-                        vs
 
             // A set with an increment results in a new set of increment
             | ValueSet s, Range(MinIncr(_, i))
@@ -1336,8 +1331,6 @@ module Variable =
     /// Handle the creation of a `Variable` from a `Dto` and
     /// vice versa.
     module Dto =
-
-        open Informedica.GenUtils.Lib.BCL
     
         /// The `Dto` representation of a `Variable`
         type Dto = 

@@ -215,10 +215,9 @@ module Equation =
     /// changed `Variable`s. 
     /// ToDo change this to be more consistent with mutable values
     let solve calcValues log eq =
-        eq
-        |> countProduct
-        |> sprintf "start solving equation\n%s\n with perf hit: %i" (eq |> toString true)
-        |> log
+        Logger.StartSolvingEquation
+        |> Logger.createMessage eq
+        |> Logger.logInfo log
 
         let runOnce y xs =
             let c1 =
@@ -234,11 +233,16 @@ module Equation =
 
         else
             let rec calc changed op1 op2 y xs rest =
-                sprintf "start calc ..." |> log
+                Logger.StartCalulation
+                |> Logger.createMessage (y::xs)
+                |> Logger.logInfo log
 
                 match rest with 
                 | []  -> 
-                    sprintf "finished calc ..." |> log
+                    Logger.FinishedCalculation
+                    |> Logger.createMessage (changed, xs)
+                    |> Logger.logInfo log
+
                     changed, xs
                 | x::tail ->
                     let xs'  = xs |> List.filter ((<>) x)
@@ -255,8 +259,9 @@ module Equation =
                     let changed = 
                         if x = x' then changed 
                         else 
-                            sprintf "adding %A to changed" (x' |> Variable.getName) 
-                            |> log
+                            Logger.VariableChanged
+                            |> Logger.createMessage x'
+                            |> Logger.logInfo log
                             
                             changed 
                             |> List.replaceOrAdd (Variable.eqName x') x'
@@ -283,7 +288,10 @@ module Equation =
                 // or only has to run once
                 match ychanged @ xchanged with
                 | [] ->
-                    "finished loop equation" |> log
+                    Logger.FinishedSolvingEquation
+                    |> Logger.createMessage changed
+                    |> Logger.logInfo  log
+
                     changed
                 | _  ->
                     ychanged @ xchanged
@@ -294,7 +302,10 @@ module Equation =
                         // only run once so now is ready
                         if b then changed
                         else
-                            "loop over equation" |> log
+                            Logger.LoopSolvingEquation
+                            |> Logger.createMessage (b, y, xs, changed)
+                            |> Logger.logInfo log
+
                             let b = runOnce y xs
                             loop b op1 op2 y xs changed
             
