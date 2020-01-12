@@ -318,7 +318,6 @@ module Equation =
     module Dto =
 
         type VariableDto = Variable.Dto.Dto
-        type VariableMessage = Variable.Dto.Message
 
         /// `Dto` for an `Equation`
         type Dto = { Vars: VariableDto[]; IsProdEq: bool }
@@ -327,7 +326,7 @@ module Equation =
         type Message =
             | NoVarsInEquation 
             | EquationMessage of Exception.Message
-            | VariableMessage of VariableMessage
+            | VariableMessage of Variable.Exceptions.VariableException
 
         /// `DtoException type 
         exception DtoException of Message
@@ -364,7 +363,7 @@ module Equation =
             try 
                 dto |> Variable.Dto.fromDtoExc 
             with 
-            | Variable.Dto.DtoException(m) -> m |> VariableMessage |> raiseExc
+            | :? Variable.Exceptions.VariableException as m -> m |> VariableMessage |> raiseExc
 
         /// Create a `Dto` and raise an exception if it fails
         let fromDtoExc dto =
