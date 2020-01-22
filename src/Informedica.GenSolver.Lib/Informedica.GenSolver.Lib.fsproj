@@ -7,8 +7,9 @@
   <ItemGroup>
     <None Include="paket.template" />
     <None Include="paket.references" />
+    <Compile Include="Types.fs" />
     <Compile Include="Utils.fs" />
-    <Compile Include="Logger.fs" />
+    <Compile Include="Logging.fs" />
     <Compile Include="Variable.fs" />
     <Compile Include="Equation.fs" />
     <Compile Include="Solver.fs" />

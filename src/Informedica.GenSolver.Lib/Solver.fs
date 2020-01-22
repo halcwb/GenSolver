@@ -9,8 +9,17 @@ module Solver =
 
     module EQD = Equation.Dto
 
-    type Variable = Variable.Variable
+    open Types
     
+    module Exception =
+
+        /// Equation exception
+        exception SolverException of Exceptions.Message
+
+        /// Raise an `EquationException` with `Message` `m`.
+        let raiseExc m = m |> SolverException |> raise
+
+
     /// Format a set of equations to print.
     /// Using **f** to allow additional processing
     /// of the string.
@@ -74,11 +83,11 @@ module Solver =
     /// Solve the equation `e` and return 
     /// the set of equations `es` it belongs 
     /// to either as `Changed` or `Unchanged`
-    let solveEquation calc log e = 
+    let solveEquation log e = 
 
         let changed = 
             e 
-            |> Equation.solve calc log
+            |> Equation.solve log
 
         if changed |> List.length > 0 then 
             changed |> Changed 
@@ -106,29 +115,26 @@ module Solver =
     /// product equation and a sum equation solver
     /// and function to determine whether an 
     /// equation is solved
-    let solve calc log sortQue vr eqs =
+    let solve log sortQue vr eqs =
 
-        let solveE = solveEquation calc log
+        let solveE = solveEquation log
 
         let rec loop n que acc =
-
-            Logger.LoopSolverQue
-            |> Logger.createMessage que
-            |> Logger.logInfo log
+            que
+            |> Logging.SolverLoopQue
+            |> Logging.logInfo log
 
             match que with
             | [] -> 
                 match acc |> List.filter (Equation.check >> not) with
                 | []   -> acc
                 | invalid -> 
-                    Logger.InvalidEquationsException
-                    |> Logger.createMessage invalid
-                    |> Logger.logError log
-
-                    que 
-                    |> List.length
-                    |> sprintf  "detected %i invalid equations"
-                    |> failwith
+                    let msg =
+                        invalid
+                        |> Exceptions.SolverInvalidEquations
+                    
+                    msg |> Logging.logError log
+                    msg |> Exception.raiseExc
                 
             | eq::tail ->
                 // If the equation is already solved, or not solvable 

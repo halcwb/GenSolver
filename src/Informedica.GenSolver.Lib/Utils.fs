@@ -20,18 +20,16 @@ module BigRational =
         | _ when op |> opIsSubtr -> Subtr
         | _ -> failwith "Operator is not supported"
 
-
-    let toMultipleOf d n  =
+    let private toMultipleOf b d n  =
         let m = (n / d) |> BigRational.ToBigInt |> BigRational.FromBigInt
-        if m * d < n then (m + 1N) * d else m * d
-
+        if b then
+            if m * d < n then (m + 1N) * d else m * d
+        else 
+            if m * d > n then (m - 1N) * d else m * d
     
-    let toMinMultipleOf = toMultipleOf
+    let toMinMultipleOf = toMultipleOf true
 
-
-    let toMaxMultipleOf d n =
-        let m = n |> toMultipleOf d
-        if m > n then m - d else m
+    let toMaxMultipleOf = toMultipleOf false
 
 
 /// Helper functions for `List`

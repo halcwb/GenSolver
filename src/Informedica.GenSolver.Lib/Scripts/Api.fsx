@@ -4,10 +4,13 @@
 #load "../../../.paket/load/netstandard2.1/main.group.fsx"
 
 #load "../Utils.fs"
+#load "../Logger.fs"
 #load "../Variable.fs"
 #load "../Equation.fs"
 #load "../Solver.fs"
+#load "../Constraint.fs"
 #load "../Api.fs"
+#load "../SolverLogger.fs"
 
 #time
 
@@ -20,14 +23,16 @@ module Api = Informedica.GenSolver.Lib.Api
 module Solver = Informedica.GenSolver.Lib.Solver
 module Name = Variable.Name
 module ValueRange = Variable.ValueRange
-module Props = Api.Props
 
 let procss s = "> " + s + " </br> "|> String.replace "*" "\*" |> printfn "%s"
 
-let printEqs = Api.printEqs true procss
-let solve n  = 
+
+let printEqs = Solver.printEqs true procss
+let solve n p eqs = 
     let n = n |> Name.createExc
-    Api.solve id procss true None n
+    Api.solve id SolverLogger.logger None n p eqs
+    |> fun eqs -> eqs |> printEqs |> printfn "%A"; eqs
+
 let init     = Api.init
 let nonZeroNegative = Api.nonZeroNegative
 
@@ -36,141 +41,108 @@ let tms = " * "
 let add = " + "
 
 // Test set min smaller than incr
-["A"]
-|> Api.init
-|> solve "A" (1N |> Set.singleton |> Props.Increment )
-|> solve "A" (Props.MaxIncl (1N / 10N))
-
-
-// Test set max larget than max
-["A"]
-|> Api.init
-|> solve "A" (Props.MaxIncl 1N)
-|> solve "A" (Props.MaxIncl 10N)
-
-// Test set min smaller than incr
-["A"]
-|> Api.init
-|> solve "A" "incr" [1N]
-|> solve "A" "vals" [1N / 10N]
-
-
-// Test sum equation
-["a" + eqs + "b" + add + "c"]
-|> Api.init
-|> Api.nonZeroNegative
-|> solve "a" "vals" [5N]
-|> solve "b" "incr" [1N]
-|> solve "c" "vals" [2N]
-
-
-// Test sum equation and product equation
-[
-    "c" + eqs + "d" + tms + "a"
-//    "a" + eqs + "b" + add + "c"
-    "a" + eqs + "f" + add + "g"
+["A" + eqs + "B" + tms + "C"
+ "C" + eqs + "X" + add + "Y"
 ]
 |> Api.init
-|> Api.nonZeroNegative
-|> solve "d" "vals" [1N; 2N]
-|> solve "c" "vals" [10N]
-|> solve "f" "vals" [5N]
-
-
-// FAILING CASE
-// setting a to 3/50
-//a[3/50, 3/25, 6/25] = b[3/50, 3/25, 6/25] * c[1] 
-//d[3/50, 3/25, 6/25] = e[3/50, 3/25, 6/25] * f[1] 
-[
-    "a" + eqs + "b" + tms + "c"
-//    "a" + eqs + "b" + add + "c"
-    "d" + eqs + "e" + tms + "f"
-]
-|> Api.init
-|> Api.nonZeroNegative
-|> solve "a" "vals" [(3N/50N); (3N/25N); (6N/25N)]
-|> solve "b" "vals" [(3N/50N); (3N/25N); (6N/25N)]
-|> solve "c" "vals" [1N]
-|> solve "d" "vals" [(3N/50N); (3N/25N); (6N/25N)]
-|> solve "e" "vals" [(3N/50N); (3N/25N); (6N/25N)]
-|> solve "f" "vals" [1N]
-|> solve "a" "vals" [(3N/50N)]
+|> solve "A" (Props.MinIncl 0N)
+|> solve "B" (Props.MinIncl 0N)
+|> solve "C" (Props.MinIncl 10N)
+|> solve "A" ([1N] |> set |> Props.Increment )
+|> solve "A" (Props.MaxExcl 10N)
 
 
 
-let vara =
-    [
-        "a" 
-    ]
-    |> Api.init
-    |> solve "a" "vals" [1N..5N]
-    |> function
-    | [e1] ->
-        e1 |> Equation.findName (Name.createExc "a") |> Seq.head
- 
+//=== Error Setting Setting ValueRange !! ===
+//variable: 1.gentamicin.Component.Orderable.Qty [1/10000N..[1/10000]..1/2500N]
+//valuerange: [11/100000N..1/9000N]
+//error: ValueRangeException (MinLargerThanMax (MinIncl 1/5000N,MaxIncl 1/10000N))
 
-[] |> List.replaceOrAdd (Variable.eqName vara) vara
-let varc =  
-    [1N..2N]
-    |> Set.ofList
-    |> ValueRange.createValueSet 
-    |> Variable.setValueRange vara
-[vara] |> List.replaceOrAdd (Variable.eqName vara) varc
+(11N/100000N) 
+|> BigRational.toMinMultipleOf (1N/10000N)
 
-[ { vara with Name = "b" |> Name.createExc }]
-|> List.replaceOrAdd (Variable.eqName vara) vara
+(11N/100000N) / (1N/10000N)
+(11N/100000N) > (2N/10000N)
 
+(1N/9000N) 
+|> Variable.ValueRange.Maximum.createMax true
+|> Variable.ValueRange.maxMultipleOf 
+    ((1N/10000N) |> Set.singleton |> ValueRange.Increment.createIncr)
 
-let avals = [31N/500000000N; 31N/468750000N; 31N/250000000N; 31N/234375000N; 31N/187500000N; 93N/500000000N; 31N/156250000N]
-let bvals =[31N/5000000000000N; 31N/4687500000000N; 31N/2500000000000N; 31N/2343750000000N; 31N/1875000000000N; 93N/5000000000000N; 31N/1562500000000N] 
-let cvals = [10000N] 
+(1N/9000N) 
+|> BigRational.toMinMultipleOf 
+    ((1N/10000N))
 
-let avar =
-    avals
-    |> Set.ofList
-    |> ValueRange.createValueSet
-    |> Variable.createSucc ("a" |> Name.createExc)
+((1N/5000N) - (1N/10000N)) < (1N/9000N) 
 
-let bvar =
-    bvals
-    |> Set.ofList
-    |> ValueRange.createValueSet
-    |> Variable.createSucc ("b" |> Name.createExc)
-
-let cvar =
-    cvals
-    |> Set.ofList
-    |> ValueRange.createValueSet
-    |> Variable.createSucc ("c" |> Name.createExc)
-
-(avar, [bvar; cvar]) 
-|> Equation.createProductEqExc
-|> Equation.solve (printfn "%s")
-
-1000N * (7N/3600000N)
+(11N/100000N) 
 |> BigRational.toFloat
-|> printfn "%A"
 
-1000N * (531N/61600000N)
-|> BigRational.toFloat
-|> printfn "%A"
+//- 3.912436
+//=== Error Setting Setting ValueRange !! ===
+//variable: 1.gentamicin.Component.Orderable.Qty [1/10000N..[1/10000]..1/2500N]
+//valuerange: [11/100000N..1/9000N]
+//error: ValueRangeException (MinLargerThanMax (MinIncl 1/5000N,MaxIncl 1/10000N))
 
-printfn "%A - %A" (1000N * (9N/100000N) |> BigRational.toFloat)
-                  (1000N * (1N/2250N) |> BigRational.toFloat)
+//- 3.923305
+//=== Cannot Solve Equation ===
+//1.gentamicin.Item.Orderable.Qty [11/2500N..1/225N] = 
+//1.gentamicin.Item.Component.Conc [10, 40] * 
+//1.gentamicin.Component.Orderable.Qty [1/10000N..[1/10000]..1/2500N] 
 
-
-
-[
-    for x in [1..39999] do 
-        for y in [1..39999] do x / y
-]
-|> List.length
-
-printfn "going to calc list length"
-[(1N/500N)..1N/1000N..(2000000N/50000N)]
-|> List.length
+(1N/225N) * 1000N |> BigRational.toFloat
+(11N/2500N) * 1000N |> BigRational.toFloat
 
 
-(10000N*60N*60N*2000N/30000000N) |> BigRational.toFloat
-(1000N*60N*60N/36000000N) |> BigRational.toFloat
-(60N*60N/(2000N*36000000N)) |> BigRational.toFloat
+
+for x in [1..10000] do   
+    for y in [1..100000] do   
+        x * y |> ignore
+
+
+
+module Types =
+    
+    type MyType = MyType of int
+
+
+module MyType =
+
+    open Types
+
+    type MyTypeExtension = | MyTypeExtension with
+
+        static member inline (?<-) (MyTypeExtension, x1 : ^a, x2 : ^a) = x1 * x2
+        
+        static member inline (?<-) (MyTypeExtension, x1 , x2) = 
+            match x1, x2 with
+            | (MyType x1), (MyType x2) -> x1 * x2 |> MyType
+
+        
+    let inline (*) x1 x2 = (?<-) MyTypeExtension x1 x2 
+
+//    let inline (/) x1 x2 = (?<-) Div x1 x2
+
+open Types
+open MyType
+
+(MyType 1) * (MyType 2)
+
+1 * 2
+1. * 2.
+
+
+
+type ListExtension = ListExtension with
+    static member        (?<-) (ListExtension, a , b) = a @ b
+    static member inline (?<-) (ListExtension, a , b) = a + b
+
+let inline (+) a b = (?<-) ListExtension a b
+
+// test
+
+let lst = [1;2] + [3;4]
+// val lst : int list = [1; 2; 3; 4]
+
+let sum = 1 + 2 + 3 + 4
+// val sum : int = 10

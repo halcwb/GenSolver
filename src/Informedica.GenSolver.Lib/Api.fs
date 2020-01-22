@@ -8,21 +8,21 @@ module Api =
     open Informedica.GenSolver.Utils
     open Informedica.GenUtils.Lib.BCL
 
+    open Types
+
     module VRD = Informedica.GenSolver.Lib.Variable.Dto
     module EQD = Informedica.GenSolver.Lib.Equation.Dto
     
     module ValueRange = Variable.ValueRange 
     module Name = Variable.Name
 
-    type Name = Variable.Name.Name
-
 
     /// Initialize the solver returning a set of equations
     let init eqs = 
         let notempty = String.IsNullOrWhiteSpace >> not
         let prodEqs, sumEqs = eqs |> List.partition (String.contains "*")
-        let createProdEqs = List.map (EQD.createProd >> EQD.fromDtoExc)
-        let createSumEqs  = List.map (EQD.createSum  >> EQD.fromDtoExc)
+        let createProdEqs = List.map (EQD.createProd >> EQD.fromDto)
+        let createSumEqs  = List.map (EQD.createSum  >> EQD.fromDto)
 
         let parse eqs op = 
             eqs 
@@ -35,7 +35,7 @@ module Api =
         (parse prodEqs '*' |> createProdEqs) @ (parse sumEqs '+' |> createSumEqs)
 
 
-    let setVariableValues calc lim n p eqs =
+    let setVariableValues lim n p eqs =
 
         eqs 
         |> List.collect (Equation.findName n)
@@ -46,7 +46,7 @@ module Api =
 
             p
             |> Props.matchProp
-            |> Variable.setValueRange calc vr
+            |> Variable.setValueRange vr
             |> fun vr ->
                 match lim with
                 | Some l ->
@@ -60,7 +60,7 @@ module Api =
                             |> Seq.sort 
                             |> Seq.take l 
                             |> ValueRange.createValueSet
-                            |> Variable.setValueRange calc vr
+                            |> Variable.setValueRange vr
                         | None -> vr
 
                     else vr
@@ -80,20 +80,20 @@ module Api =
     let solve sortQue log lim n p eqs =
 
         eqs 
-        |> setVariableValues true lim n p
+        |> setVariableValues lim n p
         |> function
         | None -> eqs
         | Some vr -> 
-            Logger.ApiSettingVariable
-            |> Logger.createMessage vr
-            |> Logger.logInfo log
+            (vr, eqs)
+            |> Logging.ApiSettingVariable
+            |> Logging.logInfo log
                         
             eqs 
-            |> Solver.solve true log sortQue vr
+            |> Solver.solve log sortQue vr
             |> fun eqs ->
-                Logger.ApiEquationsSolved
-                |> Logger.createMessage eqs
-                |> Logger.logInfo log
+                eqs
+                |> Logging.ApiEquationsSolved
+                |> Logging.logInfo log
 
                 eqs
 
@@ -106,20 +106,31 @@ module Api =
         |> List.map Equation.nonZeroOrNegative
 
 
-    let solveConstraints log constrains eqs = 
+    let solveConstraints log cs eqs = 
         let apply = 
-            Constraint.apply false log Solver.sortQue
+            fun c eqs ->
+                try
+                    Constraint.apply log Solver.sortQue c eqs
+                with
+                | Variable.Exceptions.VariableException m -> 
+                    m
+                    |> Logging.logError log
 
-        constrains
+                    m 
+                    |> Variable.Exceptions.raiseExc
+                | e -> 
+                    e |> raise
+
+        cs
         |> Constraint.orderConstraints log
         |> List.fold (fun acc c ->
             acc
             |> apply c
         ) eqs
         |> fun eqs ->
-            Logger.ApiAppliedConstraints
-            |> Logger.createMessage (constrains, eqs)
-            |> Logger.logInfo log
+            (cs, eqs)
+            |> Logging.ApiAppliedConstraints
+            |> Logging.logInfo log
 
             eqs
         
