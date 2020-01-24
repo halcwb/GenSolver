@@ -147,6 +147,8 @@ module Types =
 
     module Logging =
 
+        type IMessage = interface end
+
         type Level =
             | Informative
             | Debug
@@ -163,8 +165,6 @@ module Types =
            | EquationFinishedSolving of Variable list
            | EquationLoopSolving of bool * Variable * Variable list * Variable list
            | SolverLoopQue of Equation list
-           | InvalidEquationsException of obj
-           | ApplyConstraintToVariable of obj
            | ConstraintSortOrder of (int * Constraint) list
            | ConstraintVariableNotFound of Constraint * Equation list
            | ConstraintSetLimitToVariable of Limit * Variable
@@ -173,11 +173,11 @@ module Types =
            | ApiSettingVariable of Variable * Equation list
            | ApiEquationsSolved of Equation list
            | ApiAppliedConstraints of Constraint list * Equation list
+           interface IMessage
 
     
         type Logger =   
             {
-                Log : Level -> Message -> unit
-                Report : unit -> Level -> Message list
+                Log : Level -> IMessage -> unit
             }
 
