@@ -1,5 +1,4 @@
-environment:
-  deploy_password:
+image: Visual Studio 2019
 
 shallow_clone: true
 
