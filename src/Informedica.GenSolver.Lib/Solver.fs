@@ -121,7 +121,7 @@ module Solver =
 
         let rec loop n que acc =
             que
-            |> Logging.SolverLoopQue
+            |> Events.SolverLoopedQue
             |> Logging.logInfo log
 
             match que with

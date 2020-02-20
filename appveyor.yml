@@ -6,7 +6,8 @@ shallow_clone: true
 before_build:
 
 build_script:
-  - build.cmd
+  - dotnet tool restore
+  - dotnet fake build --target test
 
 test: off
 

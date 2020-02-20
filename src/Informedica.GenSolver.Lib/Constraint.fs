@@ -44,9 +44,13 @@ module Constraint =
     open Types
 
     module ValueRange = Variable.ValueRange
-
+    module Name = Variable.Name
 
     let eqsName (c1 : Constraint) (c2 : Constraint) = c1.Name = c2.Name  
+
+
+    let toString { Name = n; Property = p; Limit = l} =
+        sprintf "%s: %A %A" (n |> Name.toString) p l
 
 
     let scoreConstraint c =
@@ -80,7 +84,7 @@ module Constraint =
         |> List.sortBy fst
         |> fun cs ->
             cs
-            |> Logging.ConstraintSortOrder
+            |> Events.ConstraintSortOrder
             |> Logging.logInfo log
 
             cs
@@ -113,7 +117,7 @@ module Constraint =
         |> function
         | [] -> 
             (c, eqs)
-            |> Logging.ConstraintVariableNotFound
+            |> Events.ConstraintVariableNotFound
             |> Logging.logWarning log
 
             None
@@ -128,13 +132,13 @@ module Constraint =
                 | NoLimit -> vr
                 | MaxLim l -> 
                     (c.Limit, vr)
-                    |> Logging.ConstraintSetLimitToVariable
+                    |> Events.ConstraintLimitSetToVariable
                     |> Logging.logInfo log
 
                     vr |> lim l false  
                 | MinLim l -> 
                     (c.Limit, vr)
-                    |> Logging.ConstraintSetLimitToVariable
+                    |> Events.ConstraintLimitSetToVariable
                     |> Logging.logInfo log
 
                     vr |> lim l true
@@ -146,14 +150,14 @@ module Constraint =
         | None -> eqs
         | Some vr ->
             (c, vr)
-            |> Logging.ConstraintApplyToVariable
+            |> Events.ConstraintVariableApplied
             |> Logging.logInfo log
 
             eqs 
             |> Solver.solve log sortQue vr
             |> fun eqs ->
                 (c, eqs)
-                |> Logging.ConstrainedEquationsSolved
+                |> Events.ConstrainedEquationsSolved
                 |> Logging.logInfo log
 
                 eqs

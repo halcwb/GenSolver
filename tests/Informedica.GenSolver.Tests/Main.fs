@@ -4,5 +4,11 @@ module Main =
     open Expecto
 
     [<EntryPoint>]
-    let main argv =
-        Tests.runTestsInAssembly defaultConfig argv
+    let main argv =    
+        testList "All" [
+            ValueRange.tests
+            Name.tests
+        ]
+        |> runTests { defaultConfig with verbosity = Logging.LogLevel.Verbose }
+    
+//        Tests.runTestsInAssembly defaultConfig argv

@@ -83,6 +83,7 @@ module Variable =
 
         open Informedica.GenUtils.Lib.BCL
 
+
         module Minimum =
 
             /// Apply **f** to the bigrational
@@ -131,6 +132,7 @@ module Variable =
             /// Create a `Minimum` that is
             /// either inclusive or exclusive.
             let createMin isIncl m = if isIncl then m |> MinIncl else m |> MinExcl
+
 
         module Maximum =
 
@@ -931,8 +933,8 @@ module Variable =
                     calcMin (*) min1 min2, calcMax (*) max1 max2
                 | PP, NN -> // min = max1 * min2, max = min1 * max2
                     calcMin (*) max1 min2, calcMax (*) min1 max2
-                | PP, NP -> // min = max1 * min2, max = max1 * max2
-                    calcMin (*) max1 min2, calcMax (*) min1 max2
+                | PP, NP -> // min = min1 * min2, max = max1 * max2
+                    calcMin (*) min1 min2, calcMax (*) max1 max2
                 | NN, PP -> // min = min1 * max2, max = max1 * min2
                     calcMin (*) min1 max2, calcMax (*) max1 min2
                 | NN, NN -> // min = max1 * max2, max = min1 * min2
@@ -1506,16 +1508,21 @@ module Variable =
             let max = dto.Max |> Option.bind (fun v -> v |> Maximum.createMax dto.MaxIncl |> Some)
 
             let incr =
-                dto.Incr
-                |> Set.ofList
-                |> Increment.createIncr
-                |> Some
+                match dto.Incr with 
+                | [] -> None
+                | _ -> 
+                    dto.Incr
+                    |> Set.ofList
+                    |> Increment.createIncr
+                    |> Some
 
-            let vr = ValueRange.create vs min incr max
+            try
+                let vr = ValueRange.create vs min incr max
 
-            match n with
-            | Some n' -> create succ n' vr
-            | _ -> None
+                match n with
+                | Some n' -> create succ n' vr
+                | _ -> None
+            with _ -> None
 
 
         /// Create a `Dto` from a `Variable`.

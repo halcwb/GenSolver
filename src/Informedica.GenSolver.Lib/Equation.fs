@@ -206,7 +206,7 @@ module Equation =
     /// ToDo change this to be more consistent with mutable values
     let solve log eq =
         eq
-        |> Logging.EquationStartSolving
+        |> Events.EquationStartedSolving
         |> Logging.logInfo log
 
         let runOnce y xs =
@@ -224,13 +224,13 @@ module Equation =
         else
             let rec calc changed op1 op2 y xs rest =
                 (y::xs)
-                |> Logging.EquationStartCalulation
+                |> Events.EquationStartedCalculation
                 |> Logging.logInfo log
 
                 match rest with 
                 | []  -> 
                     (changed, xs)
-                    |> Logging.EquationFinishedCalculation
+                    |> Events.EquationFinishedCalculation
                     |> Logging.logInfo log
 
                     changed, xs
@@ -246,7 +246,7 @@ module Equation =
                         if x = x' then changed 
                         else
                             x'
-                            |> Logging.EquationVariableChanged
+                            |> Events.EquationVariableChanged
                             |> Logging.logInfo log
                             
                             changed 
@@ -275,7 +275,7 @@ module Equation =
                 match ychanged @ xchanged with
                 | [] ->
                     changed
-                    |> Logging.EquationFinishedSolving
+                    |> Events.EquationFinishedSolving
                     |> Logging.logInfo  log
 
                     changed
@@ -289,7 +289,7 @@ module Equation =
                         if b then changed
                         else
                             (b, y, xs, changed)
-                            |> Logging.EquationLoopSolving
+                            |> Events.EquationLoopedSolving
                             |> Logging.logInfo log
 
                             let b = runOnce y xs
@@ -314,7 +314,7 @@ module Equation =
                     |> Logging.logError log
 
                     eq
-                    |> Logging.EquationCannotSolve
+                    |> Events.EquationCouldNotBeSolved
                     |> Logging.logWarning log
 
                     m 

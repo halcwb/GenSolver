@@ -6,6 +6,7 @@ module SolverLogging =
 
     open Types
     open Types.Logging
+    open Types.Events
 
     module Name = Variable.Name
     module ValueRange = Variable.ValueRange
@@ -50,34 +51,89 @@ module SolverLogging =
     | ExceptionMessage m ->
         m 
         |> printException
-    | EquationCannotSolve eq -> 
-        eq
-        |> Equation.toString true
-        |> sprintf "=== Cannot solve Equation ===\n%s" 
-    | EquationStartCalulation vars -> ""
-    | EquationStartSolving eq -> 
-        eq
-        |> Equation.toString true
-        |> sprintf "=== Start solving Equation ===\n%s"
-    | EquationFinishedCalculation (changed, vars) -> ""
-    | EquationVariableChanged var -> ""
-    | EquationFinishedSolving vars -> ""
-    | EquationLoopSolving (b, var, changed, vars) -> ""
-    | SolverLoopQue eqs -> ""
-    | ConstraintSortOrder cs -> 
-        cs
-        |> List.map (fun (i, c) ->
-            sprintf "%i: %A" i c
-        )
-        |> String.concat "\n"
-        |> sprintf "=== Constraint sort order ===\n%s"
-    | ConstraintVariableNotFound (c, eqs) -> ""
-    | ConstraintSetLimitToVariable (l, var) -> ""
-    | ConstraintApplyToVariable (c, var) -> ""
-    | ConstrainedEquationsSolved (c, eqs) -> ""
-    | ApiSettingVariable (var, eqs) -> ""
-    | ApiEquationsSolved eqs -> ""
-    | ApiAppliedConstraints (cs, eqs) -> ""
+    | SolverMessage m ->
+        match m with
+        | EquationCouldNotBeSolved eq -> 
+            eq
+            |> Equation.toString true
+            |> sprintf "=== Cannot solve Equation ===\n%s" 
+        | EquationStartedCalculation vars -> ""
+        | EquationStartedSolving eq -> 
+            eq
+            |> Equation.toString true
+            |> sprintf "=== Start solving Equation ===\n%s"
+        | EquationFinishedCalculation (changed, vars) -> 
+            changed
+            |> List.map (Variable.getName >> Name.toString)
+            |> String.concat ", "
+            |> fun s -> 
+                if s |> String.isNullOrWhiteSpace then "No changed vars"
+                else s
+            |> sprintf "=== Equation finished calculation ===\n%s"
+        | EquationVariableChanged var -> 
+            var
+            |> Variable.toString true
+            |> sprintf "=== Equation Variable changed ===\n%s"
+        | EquationFinishedSolving vars -> ""
+        | EquationLoopedSolving (b, var, changed, vars) -> 
+            "=== Equation loop solving"
+        | SolverLoopedQue eqs -> ""
+        | ConstraintSortOrder cs -> 
+            cs
+            |> List.map (fun (i, c) ->
+                c
+                |> Constraint.toString
+                |> sprintf "%i: %s" i
+            )
+            |> String.concat "\n"
+            |> sprintf "=== Constraint sort order ===\n%s"
+        | ConstraintVariableNotFound (c, eqs) -> 
+            c
+            |> sprintf "Constraint %A cannot be set"
+            |> (fun s -> 
+                eqs
+                |> List.map (Equation.toString true)
+                |> String.concat "\n"
+                |> sprintf "%s\In equations:\%s" s
+            )
+            |> sprintf "=== Constraint Variable not found ===\n%s"
+        | ConstraintLimitSetToVariable (l, var) -> ""
+        | ConstraintVariableApplied (c, var) -> 
+            c
+            |> Constraint.toString
+            |> fun s -> 
+                var
+                |> Variable.getName
+                |> Name.toString
+                |> sprintf "%s apply to %s" s
+            |> sprintf "=== Constraint apply Variable ===\n%s"
+        | ConstrainedEquationsSolved (c, eqs) -> 
+            c 
+            |> Constraint.toString
+            |> fun s ->
+                eqs
+                |> List.sort
+                |> List.map (Equation.toString true)
+                |> String.concat "\n"
+                |> sprintf "Constraint: %s applied to\n%s" s
+            |> sprintf "=== Equations solved ===\n%s"
+        | ApiSetVariable (var, eqs) -> ""
+        | ApiEquationsSolved eqs -> ""
+        | ApiAppliedConstraints (cs, eqs) -> ""
 
 
-
+    let logger f =
+        {
+            Log = 
+                fun { TimeStamp = _; Level = _; Message = msg } ->
+                    match msg with
+                    | :? Logging.SolverMessage as m ->
+                        m 
+                        |> printMsg
+                        |> f
+                    | _ -> 
+                        msg
+                        |> sprintf "cannot print msg: %A" 
+                        |> f
+                        
+        }

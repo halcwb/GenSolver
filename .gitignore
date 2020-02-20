@@ -27,6 +27,10 @@ publishnuget.cmd
 # Add proc file
 !Procfile
 
+# Add config
+!/.config/
+!/.config/*.json
+
 # Add paket bootstrapper
 !/.paket/
 !/.paket/paket.exe

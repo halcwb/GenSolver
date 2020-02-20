@@ -1,5 +1,6 @@
 ﻿namespace Informedica.GenSolver.Lib
 
+open System
 open MathNet.Numerics
 
 module Types =
@@ -129,6 +130,27 @@ module Types =
             Limit : Limit
         }
 
+
+    module Events =
+
+        type Event =
+        | EquationCouldNotBeSolved of Equation
+        | EquationStartedCalculation of Variable list
+        | EquationStartedSolving of Equation
+        | EquationFinishedCalculation of Variable list * Variable list
+        | EquationVariableChanged of Variable
+        | EquationFinishedSolving of Variable list
+        | EquationLoopedSolving of bool * Variable * Variable list * Variable list
+        | SolverLoopedQue of Equation list
+        | ConstraintSortOrder of (int * Constraint) list
+        | ConstraintVariableNotFound of Constraint * Equation list
+        | ConstraintLimitSetToVariable of Limit * Variable
+        | ConstraintVariableApplied of Constraint * Variable
+        | ConstrainedEquationsSolved of Constraint * Equation list
+        | ApiSetVariable of Variable * Equation list
+        | ApiEquationsSolved of Equation list
+        | ApiAppliedConstraints of Constraint list * Equation list
+
     
     module Exceptions =
 
@@ -147,7 +169,10 @@ module Types =
 
     module Logging =
 
+
         type IMessage = interface end
+        type TimeStamp = DateTime
+
 
         type Level =
             | Informative
@@ -155,29 +180,23 @@ module Types =
             | Warning
             | Error
 
+
+        type SolverMessage =
+            | ExceptionMessage of Exceptions.Message
+            | SolverMessage of Events.Event
+            interface IMessage
+
+
         type Message =
-           | ExceptionMessage of Exceptions.Message
-           | EquationCannotSolve of Equation
-           | EquationStartCalulation of Variable list
-           | EquationStartSolving of Equation
-           | EquationFinishedCalculation of Variable list * Variable list
-           | EquationVariableChanged of Variable
-           | EquationFinishedSolving of Variable list
-           | EquationLoopSolving of bool * Variable * Variable list * Variable list
-           | SolverLoopQue of Equation list
-           | ConstraintSortOrder of (int * Constraint) list
-           | ConstraintVariableNotFound of Constraint * Equation list
-           | ConstraintSetLimitToVariable of Limit * Variable
-           | ConstraintApplyToVariable of Constraint * Variable
-           | ConstrainedEquationsSolved of Constraint * Equation list
-           | ApiSettingVariable of Variable * Equation list
-           | ApiEquationsSolved of Equation list
-           | ApiAppliedConstraints of Constraint list * Equation list
-           interface IMessage
+            {
+                TimeStamp : TimeStamp
+                Level : Level
+                Message : IMessage
+            }
 
     
         type Logger =   
             {
-                Log : Level -> IMessage -> unit
+                Log : Message -> unit
             }
 

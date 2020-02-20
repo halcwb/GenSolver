@@ -3,14 +3,15 @@
 
 #load "../../../.paket/load/netstandard2.1/main.group.fsx"
 
+#load "../Types.fs"
 #load "../Utils.fs"
-#load "../Logger.fs"
+#load "../Logging.fs"
 #load "../Variable.fs"
 #load "../Equation.fs"
 #load "../Solver.fs"
 #load "../Constraint.fs"
 #load "../Api.fs"
-#load "../SolverLogger.fs"
+#load "../SolverLogging.fs"
 
 #time
 
@@ -18,6 +19,7 @@ open Informedica.GenSolver.Lib
 open Informedica.GenUtils.Lib.BCL
 open Informedica.GenSolver.Utils
 open MathNet.Numerics
+open Types
 
 module Api = Informedica.GenSolver.Lib.Api
 module Solver = Informedica.GenSolver.Lib.Solver
@@ -26,11 +28,13 @@ module ValueRange = Variable.ValueRange
 
 let procss s = "> " + s + " </br> "|> String.replace "*" "\*" |> printfn "%s"
 
+type Logger = Types.Logging.Logger
 
 let printEqs = Solver.printEqs true procss
-let solve n p eqs = 
+let solve n p eqs =
+    let logger = { Logger.Log = ignore }
     let n = n |> Name.createExc
-    Api.solve id SolverLogger.logger None n p eqs
+    Api.solve id logger None n p eqs
     |> fun eqs -> eqs |> printEqs |> printfn "%A"; eqs
 
 let init     = Api.init
@@ -45,11 +49,11 @@ let add = " + "
  "C" + eqs + "X" + add + "Y"
 ]
 |> Api.init
-|> solve "A" (Props.MinIncl 0N)
-|> solve "B" (Props.MinIncl 0N)
-|> solve "C" (Props.MinIncl 10N)
-|> solve "A" ([1N] |> set |> Props.Increment )
-|> solve "A" (Props.MaxExcl 10N)
+|> solve "A" (MinInclProp 0N)
+|> solve "B" (MinInclProp 0N)
+|> solve "C" (MinInclProp 10N)
+|> solve "A" ([1N] |> set |> IncrProp )
+|> solve "A" (MaxExclProp 10N)
 
 
 
@@ -123,26 +127,3 @@ module MyType =
 
 //    let inline (/) x1 x2 = (?<-) Div x1 x2
 
-open Types
-open MyType
-
-(MyType 1) * (MyType 2)
-
-1 * 2
-1. * 2.
-
-
-
-type ListExtension = ListExtension with
-    static member        (?<-) (ListExtension, a , b) = a @ b
-    static member inline (?<-) (ListExtension, a , b) = a + b
-
-let inline (+) a b = (?<-) ListExtension a b
-
-// test
-
-let lst = [1;2] + [3;4]
-// val lst : int list = [1; 2; 3; 4]
-
-let sum = 1 + 2 + 3 + 4
-// val sum : int = 10

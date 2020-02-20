@@ -85,14 +85,14 @@ module Api =
         | None -> eqs
         | Some vr -> 
             (vr, eqs)
-            |> Logging.ApiSettingVariable
+            |> Events.ApiSetVariable
             |> Logging.logInfo log
                         
             eqs 
             |> Solver.solve log sortQue vr
             |> fun eqs ->
                 eqs
-                |> Logging.ApiEquationsSolved
+                |> Events.ApiEquationsSolved
                 |> Logging.logInfo log
 
                 eqs
@@ -129,7 +129,7 @@ module Api =
         ) eqs
         |> fun eqs ->
             (cs, eqs)
-            |> Logging.ApiAppliedConstraints
+            |> Events.ApiAppliedConstraints
             |> Logging.logInfo log
 
             eqs
